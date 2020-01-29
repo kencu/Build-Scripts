@@ -18,7 +18,7 @@ PKG_NAME=iconv
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -69,7 +69,7 @@ fi
 
 rm -rf "$ICONV_DIR" &>/dev/null
 gzip -d < "$ICONV_TAR" | tar xf -
-cd "$ICONV_DIR"
+cd "$ICONV_DIR" || exit 1
 
 cp ../patch/iconv.patch .
 patch -u -p0 < iconv.patch
@@ -135,7 +135,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
