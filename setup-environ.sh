@@ -24,11 +24,12 @@
 
 # Prerequisites needed for nearly all packages. Set to false to skip check.
 
-if true; then
-
-if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
-    echo "Some packages require Package-Config. Please install pkg-config."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+if [[ "$INSTX_DISABLE_AUTOTOOLS_CHECK" -ne 1 ]]
+then
+    if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
+        echo "Some packages require Package-Config. Please install pkg-config."
+        [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+    fi
 fi
 
 if false; then
@@ -63,8 +64,6 @@ fi
 if [[ -z $(command -v tar 2>/dev/null) ]]; then
     echo "Some packages require Tar. Please install Tar."
     [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
 fi
 
 ###############################################################################

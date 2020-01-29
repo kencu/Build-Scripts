@@ -24,6 +24,9 @@ trap finish EXIT
 
 ###############################################################################
 
+# pkg-config is special
+export INSTX_DISABLE_AUTOTOOLS_CHECK=1
+
 # Get the environment as needed. We can't export it because it includes arrays.
 if ! source ./setup-environ.sh
 then
@@ -50,11 +53,21 @@ echo
 echo "********** pkg-config **********"
 echo
 
-if ! "$WGET" -O "$PKGCONFIG_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://pkg-config.freedesktop.org/releases/$PKGCONFIG_TAR"
+if [[ -n $(command -v "$WGET" 2>/dev/null) ]]
 then
-    echo "Failed to download pkg-config"
-    exit 1
+    if ! "$WGET" -O "$PKGCONFIG_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+         "https://pkg-config.freedesktop.org/releases/$PKGCONFIG_TAR"
+    then
+        echo "Failed to download pkg-config"
+        exit 1
+    fi
+else
+    if ! curl -L -o "$PKGCONFIG_TAR" --cacert "$LETS_ENCRYPT_ROOT" \
+         "https://pkg-config.freedesktop.org/releases/$PKGCONFIG_TAR"
+    then
+        echo "Failed to download pkg-config"
+        exit 1
+    fi
 fi
 
 rm -rf "$PKGCONFIG_DIR" &>/dev/null
@@ -64,13 +77,22 @@ cd "$PKGCONFIG_DIR"
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
+CONFIG_OPTS=()
+CONFIG_OPTS=("--prefix=$INSTX_PREFIX")
+CONFIG_OPTS=("--libdir=$INSTX_LIBDIR")
+
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    CONFIG_OPTS=(--with-internal-glib)
+fi
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure pkg-config"

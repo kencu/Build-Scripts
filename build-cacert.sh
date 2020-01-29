@@ -49,12 +49,25 @@ if [[ -z "$SUDO_PASSWORD" ]]; then
 fi
 
 ###############################################################################
+
+# Most systems will use Wget. Some OS X machines will use cURL
 CACERT_FILE=$(basename "$SH_CACERT_FILE")
-if ! "$WGET" -O "$CACERT_FILE" --ca-certificate="$GLOBALSIGN_ROOT" \
-     "https://curl.haxx.se/ca/cacert.pem"
+
+if [[ -n $(command -v "$WGET" 2>/dev/null) ]]
 then
-    echo "Failed to download $CACERT_FILE"
-    exit 1
+	if ! "$WGET" -O "$CACERT_FILE" --ca-certificate="$GLOBALSIGN_ROOT" \
+		 "https://curl.haxx.se/ca/cacert.pem"
+	then
+		echo "Failed to download $CACERT_FILE"
+		exit 1
+	fi
+else
+	if ! curl -L -o "$CACERT_FILE" --cacert "$GLOBALSIGN_ROOT" \
+		 "https://curl.haxx.se/ca/cacert.pem"
+	then
+		echo "Failed to download $CACERT_FILE"
+		exit 1
+	fi
 fi
 
 if [[ -d /private/etc ]]
