@@ -78,7 +78,9 @@ cd "$PCSC_DIR"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-static \
-    --enable-shared
+    --enable-shared \
+    --disable-libsystemd \
+    --disable-libudev
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure PC/SC-Lite"

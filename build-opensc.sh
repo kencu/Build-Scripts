@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds OpenSC from sources.
 
-OPENSC_VER=0.19.0
+OPENSC_VER=0.20.0
 OPENSC_TAR=opensc-"$OPENSC_VER".tar.gz
 OPENSC_DIR=opensc-"$OPENSC_VER"
 PKG_NAME=opensc
@@ -12,7 +12,7 @@ PKG_NAME=opensc
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -95,11 +95,16 @@ fi
 
 rm -rf "$OPENSC_DIR" &>/dev/null
 gzip -d < "$OPENSC_TAR" | tar xf -
-cd "$OPENSC_DIR"
+cd "$OPENSC_DIR" || exit 1
+
+cp src/libopensc/pkcs15-openpgp.c src/libopensc/pkcs15-openpgp.c.orig
 
 cp ../patch/opensc.patch .
 patch -u -p0 < opensc.patch
 echo ""
+
+diff -u src/libopensc/pkcs15-openpgp.c.orig src/libopensc/pkcs15-openpgp.c > ../patch/opensc.patch
+exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -166,7 +171,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
