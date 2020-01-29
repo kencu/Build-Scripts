@@ -51,12 +51,7 @@ fi
 IS_DARWIN=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'darwin')
 IS_LINUX=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'linux')
 IS_AMD64=$(echo -n "$(uname -m 2>&1)" | grep -i -c -E 'x86_64|amd64')
-#IS_SOLARIS=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'sunos')
-
-# OpenSSL PowerMac and friends
-if [[ "$IS_DARWIN" -ne "0" ]]; then
-    DARWIN_CFLAGS="-force_cpusubtype_ALL"
-fi
+#IS_SOLARIS=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'sunos')f
 
 # DH is 2x to 4x faster with ec_nistp_64_gcc_128, but it is
 # only available on x64 machines with uint128 available.
@@ -97,7 +92,7 @@ cd "$BOOTSTRAP_DIR/$SSL_DIR" || exit 1
 ./config \
     --prefix="$PREFIX" \
     --openssldir="$PREFIX" \
-    "$AMD64_OPT" -fPIC "$DARWIN_CFLAGS" \
+    "$AMD64_OPT" -fPIC \
     no-ssl2 no-ssl3 no-comp no-zlib no-zlib-dynamic no-asm no-threads no-shared no-dso no-engine
 
 # This will need to be fixed for BSDs and PowerMac
@@ -138,7 +133,7 @@ rm -rf "$UNISTR_DIR" &>/dev/null
 gzip -d < "$UNISTR_TAR" | tar xf -
 cd "$BOOTSTRAP_DIR/$UNISTR_DIR" || exit 1
 
-    CFLAGS="$CFLAGS $DARWIN_CFLAGS" \
+    CFLAGS="$CFLAGS" \
     LDFLAGS="$LDFLAGS" \
     PKG_CONFIG_PATH="$LIBDIR/pkgconfig/" \
     OPENSSL_LIBS="$OPENSSL_LIBS" \
@@ -180,7 +175,7 @@ if [[ -f "$PREFIX/etc/wgetrc" ]]; then
     rm "$PREFIX/etc/wgetrc"
 fi
 
-    CFLAGS="$CFLAGS $DARWIN_CFLAGS" \
+    CFLAGS="$CFLAGS" \
     LDFLAGS="$LDFLAGS" \
     PKG_CONFIG_PATH="$LIBDIR/pkgconfig/" \
     OPENSSL_LIBS="$OPENSSL_LIBS" \
