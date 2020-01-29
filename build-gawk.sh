@@ -50,6 +50,22 @@ fi
 
 ###############################################################################
 
+if ! ./build-mpfr.sh
+then
+    echo "Failed to build MPFR"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-gmp.sh
+then
+    echo "Failed to build GMP"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** GNU Awk **********"
 echo
@@ -61,7 +77,7 @@ then
     exit 1
 fi
 
-rm -rf "$GAWK_DIR" &>/dev/null
+rm -rf "$GAWK_TAR" "$GAWK_DIR" &>/dev/null
 unxz "$GAWK_XZ" && tar -xf "$GAWK_TAR"
 cd "$GAWK_DIR" || exit 1
 
@@ -76,7 +92,10 @@ cd "$GAWK_DIR" || exit 1
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --with-libiconv-prefix="$INSTX_PREFIX" \
+    --with-libintl-prefix="$INSTX_PREFIX" \
+    --with-mpfr="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GNU Awk"
@@ -138,7 +157,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$GAWK_TAR" "$GAWK_DIR")
+    ARTIFACTS=("$GAWK_XZ" "$GAWK_TAR" "$GAWK_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
