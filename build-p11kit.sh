@@ -4,7 +4,8 @@
 # This script builds P11-Kit from sources.
 
 P11KIT_VER=0.23.19
-P11KIT_TAR=p11-kit-"$P11KIT_VER".tar.gz
+P11KIT_XZ=p11-kit-"$P11KIT_VER".tar.xz
+P11KIT_TAR=p11-kit-"$P11KIT_VER".tar
 P11KIT_DIR=p11-kit-"$P11KIT_VER"
 PKG_NAME=p11-kit
 
@@ -70,15 +71,15 @@ echo
 echo "********** p11-kit **********"
 echo
 
-if ! "$WGET" -O "$P11KIT_TAR" --ca-certificate="$CA_ZOO" \
-     "https://github.com/p11-glue/p11-kit/releases/download/$P11KIT_VER/$P11KIT_TAR"
+if ! "$WGET" -O "$P11KIT_XZ" --ca-certificate="$CA_ZOO" \
+     "https://github.com/p11-glue/p11-kit/releases/download/$P11KIT_VER/$P11KIT_XZ"
 then
     echo "Failed to download p11-kit"
     exit 1
 fi
 
 rm -rf "$P11KIT_DIR" &>/dev/null
-gzip -d < "$P11KIT_TAR" | tar xf -
+unxz "$P11KIT_XZ" && tar -xf "$P11KIT_TAR"
 cd "$P11KIT_DIR"
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
