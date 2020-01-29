@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+wget -O config.guess 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
+wget -O config.sub 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
+wget -O ../bootstrap/cacert.pem 'https://curl.haxx.se/ca/cacert.pem'
+
+chmod +x config.guess
+chmod +x config.sub
+
+exit 0

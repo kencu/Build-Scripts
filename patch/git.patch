@@ -1,0 +1,97 @@
+--- t/Makefile
++++ t/Makefile
+@@ -7,15 +7,28 @@
+ -include ../config.mak
+ 
+ #GIT_TEST_OPTS = --verbose --debug
+-SHELL_PATH ?= $(SHELL)
+ TEST_SHELL_PATH ?= $(SHELL_PATH)
+ PERL_PATH ?= /usr/bin/perl
+-TAR ?= $(TAR)
++TAR ?= $(TAR)
++AWK ?= awk
++SED ?= sed
++GREP ?= grep
+ RM ?= rm -f
+ PROVE ?= prove
+ DEFAULT_TEST_TARGET ?= test
+ TEST_LINT ?= test-lint
+ 
++# Fix Solaris tools. GNU tools at /usr/gnu/bin. Posix tools at /usr/xpg4/bin.
++ifneq ($(wildcard /usr/gnu/bin/grep),)
++  GREP := /usr/gnu/bin/grep
++endif
++ifneq ($(wildcard /usr/gnu/bin/sed),)
++  SED := /usr/gnu/bin/sed
++endif
++ifneq ($(wildcard /usr/gnu/bin/awk),)
++  AWK := /usr/gnu/bin/awk
++endif
++
+ ifdef TEST_OUTPUT_DIRECTORY
+ TEST_RESULTS_DIRECTORY = $(TEST_OUTPUT_DIRECTORY)/test-results
+ CHAINLINTTMP = $(TEST_OUTPUT_DIRECTORY)/chainlinttmp
+@@ -35,7 +48,7 @@
+ TGITWEB = $(sort $(wildcard t95[0-9][0-9]-*.sh))
+ THELPERS = $(sort $(filter-out $(T),$(wildcard *.sh)))
+ CHAINLINTTESTS = $(sort $(patsubst chainlint/%.test,%,$(wildcard chainlint/*.test)))
+-CHAINLINT = sed -f chainlint.sed
++CHAINLINT = $(SED) -f chainlint.sed
+ 
+ all: $(DEFAULT_TEST_TARGET)
+ 
+@@ -44,8 +57,8 @@
+ 
+ failed:
+ 	@failed=$$(cd '$(TEST_RESULTS_DIRECTORY_SQ)' && \
+-		grep -l '^failed [1-9]' *.counts | \
+-		sed -n 's/\.counts$$/.sh/p') && \
++		$(GREP) -l '^failed [1-9]' *.counts | \
++		$(SED) -n 's/\.counts$$/.sh/p') && \
+ 	test -z "$$failed" || $(MAKE) $$failed
+ 
+ prove: pre-clean check-chainlint $(TEST_LINT)
+@@ -73,7 +86,7 @@
+ 	err=0 && \
+ 	for i in $(CHAINLINTTESTS); do \
+ 		$(CHAINLINT) <chainlint/$$i.test | \
+-		sed -e '/^# LINT: /d' >'$(CHAINLINTTMP_SQ)'/$$i.actual && \
++		$(SED) -e '/^# LINT: /d' >'$(CHAINLINTTMP_SQ)'/$$i.actual && \
+ 		diff -u chainlint/$$i.expect '$(CHAINLINTTMP_SQ)'/$$i.actual || err=1; \
+ 	done && exit $$err
+ 
+@@ -81,7 +94,7 @@
+ 	test-lint-filenames
+ 
+ test-lint-duplicates:
+-	@dups=`echo $(T) | tr ' ' '\n' | sed 's/-.*//' | sort | uniq -d` && \
++	@dups=`echo $(T) | tr ' ' '\n' | $(SED) 's/-.*//' | sort | uniq -d` && \
+ 		test -z "$$dups" || { \
+ 		echo >&2 "duplicate test numbers:" $$dups; exit 1; }
+ 
+@@ -97,7 +110,7 @@
+ 	@# We do *not* pass a glob to ls-files but use grep instead, to catch
+ 	@# non-ASCII characters (which are quoted within double-quotes)
+ 	@bad="$$(git -c core.quotepath=true ls-files 2>/dev/null | \
+-			grep '["*:<>?\\|]')"; \
++			$(GREP) '["*:<>?\\|]')"; \
+ 		test -z "$$bad" || { \
+ 		echo >&2 "non-portable file name(s): $$bad"; exit 1; }
+ 
+--- sha1dc/sha1.c
++++ sha1dc/sha1.c
+@@ -26,14 +26,6 @@
+ #include "sha1.h"
+ #include "ubc_check.h"
+ 
+-#if (defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || \
+-     defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__)  || \
+-     defined(__i586__) || defined(__i686__) || defined(_M_IX86) || defined(__X86__) || \
+-     defined(_X86_) || defined(__THW_INTEL__) || defined(__I86__) || defined(__INTEL__) || \
+-     defined(__386) || defined(_M_X64) || defined(_M_AMD64))
+-#define SHA1DC_ON_INTEL_LIKE_PROCESSOR
+-#endif
+-
+ /*
+    Because Little-Endian architectures are most common,
+    we only set SHA1DC_BIGENDIAN if one of these conditions is met.

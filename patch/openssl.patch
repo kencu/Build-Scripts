@@ -1,0 +1,175 @@
+--- crypto/cast/cast_lcl.h
++++ crypto/cast/cast_lcl.h
+@@ -152,10 +152,8 @@
+ 
+ #if defined(OPENSSL_SYS_WIN32) && defined(_MSC_VER)
+ # define ROTL(a,n)     (_lrotl(a,n))
+-#elif defined(PEDANTIC)
+-# define ROTL(a,n)     ((((a)<<(n))&0xffffffffL)|((a)>>((32-(n))&31)))
+ #else
+-# define ROTL(a,n)     ((((a)<<(n))&0xffffffffL)|((a)>>(32-(n))))
++# define ROTL(a,n)     ((((a)<<((n)&31))|((a)>>((32-(n))&31)))&0xffffffffL)
+ #endif
+ 
+ #define C_M    0x3fc
+--- crypto/lhash/lhash.c
++++ crypto/lhash/lhash.c
+@@ -463,7 +463,7 @@
+         v = n | (*c);
+         n += 0x100;
+         r = (int)((v >> 2) ^ v) & 0x0f;
+-        ret = (ret << r) | (ret >> (32 - r));
++        ret = (ret << (r&31)) | (ret >> ((32-r)&31));
+         ret &= 0xFFFFFFFFL;
+         ret ^= v * v;
+         c++;
+--- crypto/ec/ecp_nistp224.c
++++ crypto/ec/ecp_nistp224.c
+@@ -317,10 +317,22 @@
+  */
+ static void bin28_to_felem(felem out, const u8 in[28])
+ {
++#ifdef PEDANTIC
++    uint64_t temp;
++    memcpy(&temp, in+ 0, sizeof(temp));
++    out[0] = temp & 0x00ffffffffffffff;
++    memcpy(&temp, in+ 7, sizeof(temp));
++    out[1] = temp & 0x00ffffffffffffff;
++    memcpy(&temp, in+14, sizeof(temp));
++    out[2] = temp & 0x00ffffffffffffff;
++    memcpy(&temp, in+20, sizeof(temp));
++    out[3] = temp >> 8;
++#else   
+     out[0] = *((const uint64_t *)(in)) & 0x00ffffffffffffff;
+     out[1] = (*((const uint64_t *)(in + 7))) & 0x00ffffffffffffff;
+     out[2] = (*((const uint64_t *)(in + 14))) & 0x00ffffffffffffff;
+     out[3] = (*((const uint64_t *)(in+20))) >> 8;
++#endif
+ }
+ 
+ static void felem_to_bin28(u8 out[28], const felem in)
+--- crypto/ec/ecp_nistp521.c
++++ crypto/ec/ecp_nistp521.c
+@@ -139,6 +139,27 @@
+  */
+ static void bin66_to_felem(felem out, const u8 in[66])
+ {
++#ifdef PEDANTIC
++    limb temp;
++    memcpy(&temp, in+ 0, sizeof(temp));
++    out[0] = temp & bottom58bits;
++    memcpy(&temp, in+ 7, sizeof(temp));
++    out[1] = (temp >> 2) & bottom58bits;
++    memcpy(&temp, in+14, sizeof(temp));
++    out[2] = (temp >> 4) & bottom58bits;
++    memcpy(&temp, in+21, sizeof(temp));
++    out[3] = (temp >> 6) & bottom58bits;
++    memcpy(&temp, in+29, sizeof(temp));
++    out[4] = temp & bottom58bits;
++    memcpy(&temp, in+36, sizeof(temp));
++    out[5] = (temp >> 2) & bottom58bits;
++    memcpy(&temp, in+43, sizeof(temp));
++    out[6] = (temp >> 4) & bottom58bits;
++    memcpy(&temp, in+50, sizeof(temp));
++    out[7] = (temp >> 6) & bottom58bits;
++    memcpy(&temp, in+58, sizeof(temp));
++    out[8] = temp & bottom57bits;
++#else
+     out[0] = (*((limb *) & in[0])) & bottom58bits;
+     out[1] = (*((limb *) & in[7]) >> 2) & bottom58bits;
+     out[2] = (*((limb *) & in[14]) >> 4) & bottom58bits;
+@@ -148,6 +169,7 @@
+     out[6] = (*((limb *) & in[43]) >> 4) & bottom58bits;
+     out[7] = (*((limb *) & in[50]) >> 6) & bottom58bits;
+     out[8] = (*((limb *) & in[58])) & bottom57bits;
++#endif
+ }
+ 
+ /*
+@@ -156,6 +178,46 @@
+  */
+ static void felem_to_bin66(u8 out[66], const felem in)
+ {
++#ifdef PEDANTIC
++    limb temp;
++    memset(out, 0, 66);
++
++    memcpy(&temp, out+ 0, sizeof(temp));
++    temp = in[0];
++    memcpy(out+ 0, &temp, sizeof(temp));
++
++    memcpy(&temp, out+ 7, sizeof(temp));
++    temp |= in[1] << 2;
++    memcpy(out+ 7, &temp, sizeof(temp));
++
++    memcpy(&temp, out+14, sizeof(temp));
++    temp |= in[2] << 4;
++    memcpy(out+14, &temp, sizeof(temp));
++
++    memcpy(&temp, out+21, sizeof(temp));
++    temp |= in[3] << 6;
++    memcpy(out+21, &temp, sizeof(temp));
++
++    memcpy(&temp, out+29, sizeof(temp));
++    temp = in[4];
++    memcpy(out+29, &temp, sizeof(temp));
++
++    memcpy(&temp, out+36, sizeof(temp));
++    temp |= in[5] << 2;
++    memcpy(out+36, &temp, sizeof(temp));
++
++    memcpy(&temp, out+43, sizeof(temp));
++    temp |= in[6] << 4;
++    memcpy(out+43, &temp, sizeof(temp));
++
++    memcpy(&temp, out+50, sizeof(temp));
++    temp |= in[7] << 6;
++    memcpy(out+50, &temp, sizeof(temp));
++
++    memcpy(&temp, out+58, sizeof(temp));
++    temp = in[8];
++    memcpy(out+58, &temp, sizeof(temp));
++#else
+     memset(out, 0, 66);
+     (*((limb *) & out[0])) = in[0];
+     (*((limb *) & out[7])) |= in[1] << 2;
+@@ -166,6 +228,7 @@
+     (*((limb *) & out[43])) |= in[6] << 4;
+     (*((limb *) & out[50])) |= in[7] << 6;
+     (*((limb *) & out[58])) = in[8];
++#endif
+ }
+ 
+ /* To preserve endianness when using BN_bn2bin and BN_bin2bn */
+--- ssl/t1_lib.c
++++ ssl/t1_lib.c
+@@ -133,7 +133,8 @@
+ #endif
+ 
+ #define CHECKLEN(curr, val, limit) \
+-    (((curr) >= (limit)) || (size_t)((limit) - (curr)) < (size_t)(val))
++    (((size_t)(curr) >= (size_t)(limit)) || \
++     ((size_t)(limit) - (size_t)(curr)) < (size_t)(val))
+ 
+ SSL3_ENC_METHOD TLSv1_enc_data = {
+     tls1_enc,
+--- ssl/ssltest.c
++++ ssl/ssltest.c
+@@ -470,10 +470,17 @@
+ static int verify_alpn(SSL *client, SSL *server)
+ {
+     const unsigned char *client_proto, *server_proto;
++    const unsigned char null_protocol[1] = {0};
+     unsigned int client_proto_len = 0, server_proto_len = 0;
+     SSL_get0_alpn_selected(client, &client_proto, &client_proto_len);
+     SSL_get0_alpn_selected(server, &server_proto, &server_proto_len);
+ 
++    if (client_proto == NULL)
++        client_proto = null_protocol;
++
++    if (server_proto == NULL)
++        server_proto = null_protocol;
++
+     if (alpn_selected != NULL) {
+         OPENSSL_free(alpn_selected);
+         alpn_selected = NULL;
