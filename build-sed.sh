@@ -3,8 +3,10 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Sed from sources.
 
-SED_TAR=sed-4.8.tar.xz
+SED_XZ=sed-4.8.tar.xz
+SED_TAR=sed-4.8.tar
 SED_DIR=sed-4.8
+PKG_NAME=sed
 
 ###############################################################################
 
@@ -24,6 +26,13 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
+fi
+
+if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
+    # Already installed, return success
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -52,9 +61,9 @@ then
     exit 1
 fi
 
-rm -rf "$SED_DIR" &>/dev/null
-tar xf "$SED_TAR"
-cd "$SED_DIR"
+rm -rf "$SED_TAR" "$SED_DIR" &>/dev/null
+unxz "$SED_XZ" && tar -xf "$SED_TAR"
+cd "$SED_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -117,6 +126,9 @@ else
 fi
 
 cd "$CURR_DIR"
+
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_CACHE/$PKG_NAME"
 
 ###############################################################################
 
