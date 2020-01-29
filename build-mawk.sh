@@ -5,13 +5,13 @@
 # It is needed on Debian and Ubuntu, not Fedora, OS X, Solaris or friends
 
 MAWK_TAR=mawk.tar.gz
-MAWK_DIR=mawk-1.3.4-20171017
+MAWK_DIR=mawk-1.3.4-20200120
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -46,7 +46,7 @@ echo
 echo "********** mawk **********"
 echo
 
-if ! "$WGET" -O "$MAWK_TAR" --ca-certificate="$IDENTRUST_ROOT" \
+if ! "$WGET" -O "$MAWK_TAR" --ca-certificate="$CA_ZOO" \
      "http://invisible-island.net/datafiles/release/$MAWK_TAR"
 then
     echo "Failed to download mawk"
@@ -55,7 +55,7 @@ fi
 
 rm -rf "$MAWK_DIR" &>/dev/null
 gzip -d < "$MAWK_TAR" | tar xf -
-cd "$MAWK_DIR"
+cd "$MAWK_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -66,7 +66,9 @@ cd "$MAWK_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure mawk"
@@ -116,7 +118,7 @@ else
     ln -s "$INSTX_PREFIX/bin/mawk" "$INSTX_PREFIX/bin/awk" 2>/dev/null
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
