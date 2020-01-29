@@ -65,6 +65,10 @@ rm -rf "$TASN1_DIR" &>/dev/null
 gzip -d < "$TASN1_TAR" | tar xf -
 cd "$TASN1_DIR"
 
+cp ../patch/tasn1.patch .
+patch -u -p0 < tasn1.patch
+echo ""
+
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
@@ -74,7 +78,10 @@ cd "$TASN1_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --enable-shared --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libtasn1"
