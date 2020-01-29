@@ -41,14 +41,6 @@ fi
 
 ###############################################################################
 
-if ! ./build-iconv-gettext.sh
-then
-    echo "Failed to build iConv and GetText"
-    exit 1
-fi
-
-###############################################################################
-
 echo
 echo "********** Sed **********"
 echo
@@ -73,10 +65,10 @@ cd "$SED_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
-    --disable-assert \
-    --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libintl-prefix="$INSTX_PREFIX"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --disable-assert
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Sed"
