@@ -5,7 +5,7 @@
  
  		if (e.type) {
 -			int add = 0;
-+		    int i, add = 0;
++			int i, add = 0;
  
  			// we leave the lowest 8 bit out
  			if ((e.type & 0xFF) == 17) {
