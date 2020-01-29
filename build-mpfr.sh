@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds GNU MPFR from sources.
+# This script builds MPFR from sources.
 
 MPFR_XZ=mpfr-4.0.2.tar.xz
 MPFR_TAR=mpfr-4.0.2.tar
@@ -59,13 +59,13 @@ fi
 ###############################################################################
 
 echo
-echo "********** GNU MPFR **********"
+echo "********** MPFR **********"
 echo
 
 if ! "$WGET" -O "$MPFR_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/mpfr/$MPFR_XZ"
 then
-    echo "Failed to download GNU MPFR"
+    echo "Failed to download MPFR"
     exit 1
 fi
 
@@ -89,7 +89,7 @@ cd "$MPFR_DIR" || exit 1
     --enable-static
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure GNU MPFR"
+    echo "Failed to configure MPFR"
     exit 1
 fi
 
@@ -100,7 +100,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build GNU MPFR"
+    echo "Failed to build MPFR"
     exit 1
 fi
 
@@ -111,7 +111,7 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test GNU MPFR"
+    echo "Failed to test MPFR"
     exit 1
 fi
 
@@ -119,7 +119,7 @@ echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
-    echo "Failed to test GNU MPFR"
+    echo "Failed to test MPFR"
     exit 1
 fi
 
