@@ -91,10 +91,10 @@ echo 'int main(int argc, char* argv[]) {return 0;}' > "$infile"
 echo "" >> "$infile"
 
 function finish {
-  cd "$CURR_DIR"
-  rm -f "$infile" 2>/dev/null
-  rm -f "$outfile" 2>/dev/null
-  rm -rf "$outfile.dSYM" 2>/dev/null
+  rm -f "$CURR_DIR/$infile" 2>/dev/null
+  rm -f "$CURR_DIR/$outfile" 2>/dev/null
+  rm -rf "$CURR_DIR/$outfile.dSYM" 2>/dev/null
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
