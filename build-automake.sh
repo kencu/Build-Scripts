@@ -4,14 +4,14 @@
 # This script builds Automake from sources. A separate
 # script is available for Autotools for brave souls.
 
-AUTOMAKE_TAR=automake-1.15.1.tar.gz
-AUTOMAKE_DIR=automake-1.15.1
+AUTOMAKE_TAR=automake-1.16.1.tar.gz
+AUTOMAKE_DIR=automake-1.16.1
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -55,7 +55,7 @@ fi
 
 rm -rf "$AUTOMAKE_DIR" &>/dev/null
 gzip -d < "$AUTOMAKE_TAR" | tar xf -
-cd "$AUTOMAKE_DIR"
+cd "$AUTOMAKE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -66,7 +66,9 @@ cd "$AUTOMAKE_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 sed -e 's|^MAKEINFO =.*|MAKEINFO = true|g' Makefile > Makefile.fixed
 mv Makefile.fixed Makefile
@@ -98,7 +100,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Update program cache
 [[ "$0" = "${BASH_SOURCE[0]}" ]] && hash -r

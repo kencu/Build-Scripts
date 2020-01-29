@@ -14,14 +14,14 @@ M4_DIR=m4-1.4.18
 AUTOCONF_TAR=autoconf-2.69.tar.gz
 AUTOCONF_DIR=autoconf-2.69
 
-AUTOMAKE_TAR=automake-1.15.1.tar.gz
-AUTOMAKE_DIR=automake-1.15.1
+AUTOMAKE_TAR=automake-1.16.1.tar.gz
+AUTOMAKE_DIR=automake-1.16.1
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -65,7 +65,7 @@ fi
 
 rm -rf "$M4_DIR" &>/dev/null
 gzip -d < "$M4_TAR" | tar xf -
-cd "$M4_DIR"
+cd "$M4_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -76,7 +76,9 @@ cd "$M4_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure M4"
@@ -105,7 +107,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Update program cache
 hash -r &>/dev/null
@@ -125,16 +127,20 @@ fi
 
 rm -rf "$AUTOCONF_DIR" &>/dev/null
 gzip -d < "$AUTOCONF_TAR" | tar xf -
-cd "$AUTOCONF_DIR"
+cd "$AUTOCONF_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+    CFLAGS="${BUILD_CFLAGS[*]}" \
+    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
+    LDFLAGS="${BUILD_LDFLAGS[*]}" \
+    LIBS="${BUILD_LIBS[*]}" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Autoconf"
@@ -163,7 +169,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Update program cache
 hash -r &>/dev/null
@@ -183,16 +189,20 @@ fi
 
 rm -rf "$AUTOMAKE_DIR" &>/dev/null
 gzip -d < "$AUTOMAKE_TAR" | tar xf -
-cd "$AUTOMAKE_DIR"
+cd "$AUTOMAKE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+    CFLAGS="${BUILD_CFLAGS[*]}" \
+    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
+    LDFLAGS="${BUILD_LDFLAGS[*]}" \
+    LIBS="${BUILD_LIBS[*]}" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 sed -e 's|^MAKEINFO =.*|MAKEINFO = true|g' Makefile > Makefile.fixed
 mv Makefile.fixed Makefile
@@ -224,7 +234,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Update program cache
 hash -r &>/dev/null
@@ -241,8 +251,10 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$M4_TAR" "$M4_DIR" "$AUTOCONF_TAR" "$AUTOCONF_DIR"
-        "$AUTOCONF_ARCH_TAR" "$AUTOCONF_ARCH_DIR" "$AUTOMAKE_TAR" "$AUTOMAKE_DIR")
+    ARTIFACTS=("$M4_TAR" "$M4_DIR"
+        "$AUTOCONF_TAR" "$AUTOCONF_DIR"
+        "$AUTOMAKE_TAR" "$AUTOMAKE_DIR")
+
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
