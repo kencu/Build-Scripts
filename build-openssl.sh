@@ -132,7 +132,8 @@ do
     touch -t 197001010000 "$file"
 done
 
-CONFIG_OPTS=("no-comp")
+CONFIG_OPTS=()
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
 
 if [[ "$IS_X86_64" -eq 1 && "$INT128_OPT" -eq 1 ]]; then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="enable-ec_nistp_64_gcc_128"
@@ -148,11 +149,11 @@ CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
 
     KERNEL_BITS="$INSTX_BITNESS" \
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[@]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[@]}" \
-    CFLAGS="${BUILD_CFLAGS[@]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[@]}" \
-    LDFLAGS="${BUILD_LDFLAGS[@]}" \
+    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
+    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
+    CFLAGS="${BUILD_CFLAGS[*]}" \
+    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
+    LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./config \
     "${CONFIG_OPTS[@]}"
 

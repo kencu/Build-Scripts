@@ -125,7 +125,7 @@ fi
 ###############################################################################
 
 # Wget is special. We have to be able to bootstrap it and
-# use the latest version throughout these scripts
+# use a modern version throughout these scripts.
 
 if [[ -z "$WGET" ]]; then
     if [[ -e "$HOME/bootstrap/bin/wget" ]]; then
