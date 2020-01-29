@@ -58,9 +58,10 @@ if [[ "$IS_DARWIN" -ne "0" ]]; then
     DARWIN_CFLAGS="-force_cpusubtype_ALL"
 fi
 
+# DH is 2x to 4x faster with ec_nistp_64_gcc_128, but it is
+# only available on x64 machines with uint128 available.
 INT128_OPT=$("$CC" -dM -E - </dev/null | grep -i -c "__SIZEOF_INT128__")
 
-# DH is 2x to 4x faster with 
 if [[ "$IS_AMD64" -ne "0" && "$INT128_OPT" -eq 1 ]]; then
     AMD64_OPT="enable-ec_nistp_64_gcc_128"
 fi

@@ -88,6 +88,8 @@ then
     SKIP_OPENSSL_TESTS=1
 fi
 
+# DH is 2x to 4x faster with ec_nistp_64_gcc_128, but it is
+# only available on x64 machines with uint128 available.
 INT128_OPT=$("$CC" -dM -E - </dev/null | grep -i -c "__SIZEOF_INT128__")
 
 ###############################################################################
