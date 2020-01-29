@@ -11,7 +11,7 @@ OPENSSH_DIR=openssh-8.1p1
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -58,10 +58,14 @@ fi
 
 ###############################################################################
 
-if ! ./build-ldns.sh
+# On OS X, requires OS X 10.10 or above
+if [[ "$IS_DARWIN" -eq 0 || ("$IS_DARWIN" -eq 1 && "$OSX_1010_OR_ABOVE" -eq 1) ]]
 then
-    echo "Failed to build LDNS"
-    exit 1
+    if ! ./build-ldns.sh
+    then
+        echo "Failed to build LDNS"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -79,10 +83,27 @@ fi
 
 rm -rf "$OPENSSH_DIR" &>/dev/null
 gzip -d < "$OPENSSH_TAR" | tar xf -
-cd "$OPENSSH_DIR"
+cd "$OPENSSH_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
+
+CONFIG_OPTS=()
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${BUILD_CPPFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cflags=${BUILD_CFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldflags=${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-libs=-lz ${BUILD_LIBS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-zlib=$INSTX_PREFIX"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ssl-dir=$INSTX_PREFIX"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-pie"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--disable-strip"
+
+if [[ "$IS_DARWIN" -eq 0 || ("$IS_DARWIN" -eq 1 && "$OSX_1010_OR_ABOVE" -eq 1) ]]
+then
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldns=$INSTX_PREFIX"
+fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -91,18 +112,7 @@ cd "$OPENSSH_DIR"
     LDFLAGS="${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
-    --with-cppflags="${BUILD_CPPFLAGS[*]}" \
-    --with-cflags="${BUILD_CFLAGS[*]}" \
-    --with-ldflags="${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}" \
-    --with-libs="-lz ${BUILD_LIBS[*]}"\
-    --with-zlib="$INSTX_PREFIX" \
-    --with-ssl-dir="$INSTX_PREFIX" \
-    --with-ldns="$INSTX_PREFIX" \
-    --with-pie \
-    --without-ssh1 \
-    --disable-strip
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure SSH"
@@ -157,7 +167,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
