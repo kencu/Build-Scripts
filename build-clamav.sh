@@ -11,7 +11,7 @@ CLAMAV_DIR=clamav-0.101.2
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -87,7 +87,7 @@ fi
 
 rm -rf "$CLAMAV_DIR" &>/dev/null
 gzip -d < "$CLAMAV_TAR" | tar xf -
-cd "$CLAMAV_DIR"
+cd "$CLAMAV_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -147,7 +147,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 

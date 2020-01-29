@@ -11,7 +11,7 @@ PKG_NAME=c-ares
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -63,7 +63,7 @@ fi
 
 rm -rf "$CARES_DIR" &>/dev/null
 gzip -d < "$CARES_TAR" | tar xf -
-cd "$CARES_DIR"
+cd "$CARES_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -122,7 +122,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
