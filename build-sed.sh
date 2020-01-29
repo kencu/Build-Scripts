@@ -55,7 +55,7 @@ echo "********** Sed **********"
 echo
 
 if ! "$WGET" -O "$SED_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/sed/$SED_TAR"
+     "https://ftp.gnu.org/gnu/sed/$SED_XZ"
 then
     echo "Failed to download Sed"
     exit 1
