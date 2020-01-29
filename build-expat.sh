@@ -3,15 +3,15 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Expat from sources.
 
-EXPAT_TAR=expat-2.2.6.tar.bz2
-EXPAT_DIR=expat-2.2.6
+EXPAT_TAR=expat-2.2.9.tar.bz2
+EXPAT_DIR=expat-2.2.9
 PKG_NAME=expat
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -62,7 +62,7 @@ fi
 
 rm -rf "$EXPAT_DIR" &>/dev/null
 bzip2 -dk < "$EXPAT_TAR" | tar xf -
-cd "$EXPAT_DIR"
+cd "$EXPAT_DIR" || exit 1
 
 cp ../patch/expat.patch .
 patch -u -p0 < expat.patch
@@ -129,7 +129,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
