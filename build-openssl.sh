@@ -132,10 +132,10 @@ do
     touch -t 197001010000 "$file"
 done
 
-CONFIG_FLAGS=("no-comp")
+CONFIG_OPTS=("no-comp")
 
 if [[ "$IS_X86_64" -eq 1 && "$INT128_OPT" -eq 1 ]]; then
-    CONFIG_FLAGS[${#CONFIG_FLAGS[@]}]="enable-ec_nistp_64_gcc_128"
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="enable-ec_nistp_64_gcc_128"
 fi
 
 if [[ "$IS_FREEBSD" -eq 1 ]]; then
@@ -143,9 +143,9 @@ if [[ "$IS_FREEBSD" -eq 1 ]]; then
 fi
 
 # Configure the library
-CONFIG_FLAGS[${#CONFIG_FLAGS[@]}]="--prefix=$INSTX_PREFIX"
-CONFIG_FLAGS[${#CONFIG_FLAGS[@]}]="--libdir=$INSTX_LIBDIR"
-CONFIG_FLAGS[${#CONFIG_FLAGS[@]}]="--openssldir=$INSTX_LIBDIR"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
 
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[@]}" \
@@ -154,7 +154,7 @@ CONFIG_FLAGS[${#CONFIG_FLAGS[@]}]="--openssldir=$INSTX_LIBDIR"
     CXXFLAGS="${BUILD_CXXFLAGS[@]}" \
     LDFLAGS="${BUILD_LDFLAGS[@]}" \
 ./config \
-    "${CONFIG_FLAGS[@]}"
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenSSL"

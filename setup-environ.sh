@@ -158,6 +158,9 @@ IS_REDHAT=$(grep -i -c 'redhat' /etc/redhat-release 2>/dev/null)
 IS_CENTOS=$(grep -i -c 'centos' /etc/centos-release 2>/dev/null)
 IS_FEDORA=$(grep -i -c 'fedora' /etc/fedora-release 2>/dev/null)
 
+OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | grep 'System Version:' | awk '{print $6}')
+OSX_1010_OR_ABOVE=$(echo -n "$OSX_VERSION" | grep -i -c -E "(^10.10|^1[1-9].|^[2-9][0-9])")
+
 if [[ "$IS_REDHAT" -ne 0 ]] || [[ "$IS_CENTOS" -ne 0 ]] || [[ "$IS_FEDORA" -ne 0 ]]
 then
     IS_RH_FAMILY=1
