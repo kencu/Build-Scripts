@@ -56,6 +56,18 @@ fi
 
 ###############################################################################
 
+if [[ "$IS_LINUX" -eq 0 ]]
+then
+    # GetText requires GNU Sed
+    if ! ./build-sed.sh
+    then
+        echo "Failed to build Sed"
+        exit 1
+    fi
+fi
+
+###############################################################################
+
 echo
 echo "********** GetText **********"
 echo
