@@ -80,13 +80,6 @@ rm -rf "$LDNS_DIR" &>/dev/null
 gzip -d < "$LDNS_TAR" | tar xf -
 cd "$LDNS_DIR"
 
-if [[ "$IS_OLD_DARWIN" -ne 0 ]]
-then
-    cp ../patch/ldns-darwin.patch .
-    patch -u -p0 < ldns-darwin.patch
-    echo ""
-fi
-
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
