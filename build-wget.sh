@@ -10,7 +10,7 @@ WGET_DIR=wget-1.20.3
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -30,40 +30,6 @@ fi
 # subshell goes out of scope.
 if [[ -z "$SUDO_PASSWORD" ]]; then
     source ./setup-password.sh
-fi
-
-###############################################################################
-
-# Optional. For Solaris see https://community.oracle.com/thread/1915569.
-SKIP_WGET_TESTS=0
-if [[ -z $(command -v python) ]]; then
-    SKIP_WGET_TESTS=1
-else
-    if ! perl -MHTTP::Daemon -e1 2>/dev/null
-    then
-         echo ""
-         echo "Wget requires Perl's HTTP::Daemon. Skipping Wget self tests."
-         echo "To fix this issue, please install HTTP-Daemon."
-         SKIP_WGET_TESTS=1
-    fi
-
-    if ! perl -MHTTP::Request -e1 2>/dev/null
-    then
-         echo ""
-         echo "Wget requires Perl's HTTP::Request.  Skipping Wget self tests."
-         echo "To fix this issue, please install HTTP-Request or HTTP-Message."
-         SKIP_WGET_TESTS=1
-    fi
-fi
-
-# PSL may be skipped if Python is too old. libpsl requires Python 2.7
-# Also see https://stackoverflow.com/a/40950971/608639
-SKIP_LIBPSL=1
-if [[ -n $(command -v python) ]]; then
-    ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
-    if [ "$ver" -ge 27 ]; then
-        SKIP_LIBPSL=0
-    fi
 fi
 
 ###############################################################################
@@ -140,15 +106,44 @@ fi
 
 ###############################################################################
 
-if [[ "$SKIP_LIBPSL" -eq 0 ]]; then
-
-if ! ./build-libpsl.sh
+# PSL may be skipped if Python is too old. libpsl requires Python 2.7
+# Also see https://stackoverflow.com/a/40950971/608639
+if [[ -n $(command -v python) ]]
 then
-    echo "Failed to build Public Suffix List library"
-    exit 1
+    ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+    if [ "$ver" -ge 27 ]
+    then
+        if ! ./build-libpsl.sh
+        then
+            echo "Failed to build Public Suffix List library"
+            exit 1
+        fi
+    fi
 fi
 
-fi  # SKIP_LIBPSL
+###############################################################################
+
+# Optional. For Solaris see https://community.oracle.com/thread/1915569.
+SKIP_WGET_TESTS=0
+if [[ -z $(command -v python) ]]; then
+    SKIP_WGET_TESTS=1
+else
+    if ! perl -MHTTP::Daemon -e1 2>/dev/null
+    then
+         echo ""
+         echo "Wget requires Perl's HTTP::Daemon. Skipping Wget self tests."
+         echo "To fix this issue, please install HTTP-Daemon."
+         SKIP_WGET_TESTS=1
+    fi
+
+    if ! perl -MHTTP::Request -e1 2>/dev/null
+    then
+         echo ""
+         echo "Wget requires Perl's HTTP::Request.  Skipping Wget self tests."
+         echo "To fix this issue, please install HTTP-Request or HTTP-Message."
+         SKIP_WGET_TESTS=1
+    fi
+fi
 
 ###############################################################################
 
@@ -165,10 +160,9 @@ fi
 
 rm -rf "$WGET_DIR" &>/dev/null
 gzip -d < "$WGET_TAR" | tar xf -
-cd "$WGET_DIR"
+cd "$WGET_DIR" || exit 1
 
 echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
-echo "SKIP_LIBPSL: ${SKIP_LIBPSL}"
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
@@ -277,10 +271,13 @@ fi
 # will fail with the message "... use --no-check-certifcate ...". Fix it
 # through the system's wgetrc configuration file.
 cp "./doc/sample.wgetrc" "./wgetrc"
-echo "" >> "./wgetrc"
-echo "# Default CA zoo file added by Build-Scripts" >> "./wgetrc"
-echo "ca_directory = $SH_CACERT_PATH" >> "./wgetrc"
-echo "ca_certificate = $SH_CACERT_FILE" >> "./wgetrc"
+{
+    echo ""
+    echo "# Default CA zoo file added by Build-Scripts"
+    echo "ca_directory = $SH_CACERT_PATH"
+    echo "ca_certificate = $SH_CACERT_FILE"
+    echo ""
+} > "./wgetrc"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_PREFIX/etc"
@@ -290,7 +287,7 @@ else
     cp "./wgetrc" "$INSTX_PREFIX/etc/"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 

@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds P11-Kit from sources.
 
-P11KIT_VER=0.23.17
+P11KIT_VER=0.23.19
 P11KIT_TAR=p11-kit-"$P11KIT_VER".tar.gz
 P11KIT_DIR=p11-kit-"$P11KIT_VER"
 PKG_NAME=p11-kit
@@ -80,13 +80,6 @@ fi
 rm -rf "$P11KIT_DIR" &>/dev/null
 gzip -d < "$P11KIT_TAR" | tar xf -
 cd "$P11KIT_DIR"
-
-# cp p11-kit/rpc-message.c p11-kit/rpc-message.c.old
-# cp trust/utf8.c trust/utf8.c.old
-
-cp ../patch/p11kit.patch .
-patch -u -p0 < p11kit.patch
-echo ""
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
