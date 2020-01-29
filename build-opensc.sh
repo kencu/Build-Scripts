@@ -97,14 +97,9 @@ rm -rf "$OPENSC_DIR" &>/dev/null
 gzip -d < "$OPENSC_TAR" | tar xf -
 cd "$OPENSC_DIR" || exit 1
 
-cp src/libopensc/pkcs15-openpgp.c src/libopensc/pkcs15-openpgp.c.orig
-
 cp ../patch/opensc.patch .
 patch -u -p0 < opensc.patch
 echo ""
-
-diff -u src/libopensc/pkcs15-openpgp.c.orig src/libopensc/pkcs15-openpgp.c > ../patch/opensc.patch
-exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
