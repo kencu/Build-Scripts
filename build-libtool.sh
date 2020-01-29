@@ -10,7 +10,7 @@ LIBTOOL_DIR=libtool-2.4.6
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+  cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -54,7 +54,7 @@ fi
 
 rm -rf "$LIBTOOL_DIR" &>/dev/null
 gzip -d < "$LIBTOOL_TAR" | tar xf -
-cd "$LIBTOOL_DIR"
+cd "$LIBTOOL_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -65,7 +65,10 @@ cd "$LIBTOOL_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --enable-shared --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libtool and libltdl"
@@ -114,7 +117,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 [[ "$0" = "${BASH_SOURCE[0]}" ]] && hash -r
 
