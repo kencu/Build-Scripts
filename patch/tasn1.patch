@@ -18,3 +18,15 @@
  				if ((e.type & (1U << i)) && typename[i - 8]) {
  					printf(add ? "|%s" : ", %s", typename[i - 8]);
  					add = 1;
+--- fuzz/libtasn1_array2tree_fuzzer.c
++++ fuzz/libtasn1_array2tree_fuzzer.c
+@@ -57,7 +57,8 @@
+ 	int nelem = size / sizeof(struct fuzz_elem);
+ 	asn1_static_node tab[MAXELEM + 1]; // avoid VLA here
+ 
+-	for (int it = 0; it < nelem; it++) {
++	int it;
++	for (it = 0; it < nelem; it++) {
+ 		tab[it].type = elem[it].type;
+ 		elem[it].name[NAMESIZE - 1] = 0;
+ 		if (strcmp(elem[it].name, "NULL"))
