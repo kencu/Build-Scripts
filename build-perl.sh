@@ -5,7 +5,8 @@
 
 # Perl is needed by OpenSSL 1.1.x, but Perl is very fragile. Perl can't seem to
 # configure/install itself anywhere except magic directories like /usr/local.
-# We also can't install packages like HTTP. There's something broke with the cspan program that gets built. We need to keep an eye on what breaks because of Perl.
+# We also can't install packages like HTTP. There's something broke with the cpan
+# program that gets built. We need to keep an eye on what breaks because of Perl.
 
 PERL_TAR=perl-5.30.1.tar.gz
 PERL_DIR=perl-5.30.1
