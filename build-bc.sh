@@ -65,9 +65,12 @@ rm -rf "$BC_DIR" &>/dev/null
 gzip -d < "$BC_TAR" | tar xf -
 cd "$BC_DIR"
 
-cp ../patch/bc.patch .
-patch -u -p0 < bc.patch
-echo ""
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/bc.patch ]]; then
+    cp ../patch/bc.patch .
+    patch -u -p0 < bc.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -105,7 +108,9 @@ echo "**********************"
 MAKE_FLAGS=("check")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test BC"
+    echo "**********************"
     exit 1
 fi
 
@@ -113,7 +118,9 @@ echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
+    echo "**********************"
     echo "Failed to test BC"
+    echo "**********************"
     exit 1
 fi
 
