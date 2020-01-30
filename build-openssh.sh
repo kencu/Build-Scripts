@@ -11,7 +11,7 @@ OPENSSH_DIR=openssh-8.1p1
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR" || exit 1
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 

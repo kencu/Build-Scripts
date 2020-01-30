@@ -15,7 +15,7 @@ PKGCONFIG_DIR=pkg-config-0.29.2
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+    cd "$CURR_DIR"
 }
 trap finish EXIT
 

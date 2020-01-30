@@ -13,7 +13,7 @@ PKG_NAME=p11-kit
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+    cd "$CURR_DIR"
 }
 trap finish EXIT
 

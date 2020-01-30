@@ -18,7 +18,7 @@ PKG_NAME=gettext
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR"
+    cd "$CURR_DIR"
 }
 trap finish EXIT
 

@@ -11,7 +11,7 @@ MAWK_DIR=mawk-1.3.4-20200120
 
 CURR_DIR=$(pwd)
 function finish {
-  cd "$CURR_DIR" || exit 1
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 

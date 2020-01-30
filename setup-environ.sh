@@ -94,7 +94,7 @@ function finish {
   rm -f "$CURR_DIR/$infile" 2>/dev/null
   rm -f "$CURR_DIR/$outfile" 2>/dev/null
   rm -rf "$CURR_DIR/$outfile.dSYM" 2>/dev/null
-  cd "$CURR_DIR" || exit 1
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
