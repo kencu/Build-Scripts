@@ -6,8 +6,8 @@
 TUNTAP_TAR=v1.3.3.tar.gz
 TUNTAP_DIR=tuntap-1.3.3
 
-OPENVPN_TAR=openvpn-2.4.7.tar.gz
-OPENVPN_DIR=openvpn-2.4.7
+OPENVPN_TAR=openvpn-2.4.8.tar.gz
+OPENVPN_DIR=openvpn-2.4.8
 
 ###############################################################################
 
