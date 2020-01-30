@@ -5,13 +5,12 @@
 
 BC_TAR=bc-1.07.1.tar.gz
 BC_DIR=bc-1.07.1
-PKG_NAME=bash
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -63,7 +62,7 @@ fi
 
 rm -rf "$BC_DIR" &>/dev/null
 gzip -d < "$BC_TAR" | tar xf -
-cd "$BC_DIR"
+cd "$BC_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/bc.patch ]]; then
@@ -135,7 +134,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
