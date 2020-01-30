@@ -438,6 +438,7 @@ fi
 # -fno-sanitize-recover causes an abort(). Useful for test
 # programs that swallow UBsan output and pretty print "OK"
 if [[ -n "$INSTX_UBSAN" ]]; then
+    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_UBSAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=undefined"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-sanitize-recover"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=undefined"
@@ -446,12 +447,14 @@ if [[ -n "$INSTX_UBSAN" ]]; then
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fno-sanitize-recover"
 
 elif [[ -n "$INSTX_ASAN" ]]; then
+    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_ASAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=address"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-omit-frame-pointer"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=address"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=address"
 elif [[ -n "$INSTX_MSAN" ]]; then
+    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_MSAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=address"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize-memory-track-origins"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-omit-frame-pointer"
