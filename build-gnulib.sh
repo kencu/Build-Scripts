@@ -7,6 +7,8 @@
 # are available for download. Also see
 # https://www.linux.com/news/using-gnulib-improve-software-portability
 
+# Testing Gnulib is detailed at https://lists.gnu.org/archive/html/bug-gnulib/2017-05/msg00118.html.
+
 GNULIB_DIR=gnulib
 PKG_NAME=Gnulib
 
