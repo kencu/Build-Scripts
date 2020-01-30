@@ -71,7 +71,7 @@ fi
 cd "$GNULIB_DIR" || exit 1
 
 echo "Copying Gnulib sources"
-if ! ./gnulib-tool --create-testdir --dir=../"$GNULIB_TEST_DIR" --single-configure --without-privileged-tests;
+if ! ./gnulib-tool --create-testdir --dir=../"$GNULIB_TEST_DIR" --avoid=gettext --single-configure --without-privileged-tests;
 then
     echo "Failed to copy Gnulib sources"
     exit 1
