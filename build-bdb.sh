@@ -121,7 +121,7 @@ echo "Unable to test Berkeley DB"
 #fi
 
 #echo "Searching for errors hidden in log files"
-#COUNT=$(find . -name '*.log' -exec grep -o 'runtime error:' {} \; | wc -l)
+#COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 #if [[ "${COUNT}" -ne 0 ]];
 #then
 #    echo "Failed to test BerkeleyDB"

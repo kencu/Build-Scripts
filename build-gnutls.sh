@@ -260,7 +260,7 @@ then
 fi
 
 echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' -exec grep -o 'runtime error:' {} \; | wc -l)
+COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
     # Still can't pass all self-tests, even after OpenSSL 1.1 cutover.

@@ -144,7 +144,7 @@ then
 fi
 
 echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' -exec grep -o 'runtime error:' {} \; | grep -v -E 'doc/|man/' | wc -l)
+COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | grep -v -E 'doc/|man/' | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
     echo "Failed to test ncurses"
