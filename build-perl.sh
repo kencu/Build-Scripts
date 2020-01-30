@@ -3,10 +3,10 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Perl from sources.
 
-# Perl is needed by OpenSSL 1.1.x, but Perl is very fragile. Perl can't seem to
-# configure/install itself anywhere except magic directories like /usr/local.
-# We also can't install packages like HTTP. There's something broke with the cpan
-# program that gets built. We need to keep an eye on what breaks because of Perl.
+# Perl is needed by OpenSSL 1.1.x, but Perl is fragile. We can't install packages
+# like HTTP unless it is in a magic directory like `/usr/local`. There's something
+# broke with the cpan program that gets built. We need to keep an eye on what
+# breaks because of Perl.
 
 PERL_TAR=perl-5.30.1.tar.gz
 PERL_DIR=perl-5.30.1

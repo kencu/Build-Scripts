@@ -10,13 +10,14 @@
 # Testing Gnulib is detailed at https://lists.gnu.org/archive/html/bug-gnulib/2017-05/msg00118.html.
 
 GNULIB_DIR=gnulib
-PKG_NAME=Gnulib
+GNULIB_TEST_DIR=gnulib_test
+PKG_NAME=gnulib
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -58,24 +59,29 @@ echo
 echo "********** Gnulib **********"
 echo
 
+# Cleanup old artifacts in case of early out
+rm -rf "$GNULIB_DIR" "$GNULIB_TEST_DIR" 2>/dev/null
+
 if ! git clone --depth=3 git://git.savannah.gnu.org/gnulib.git "$GNULIB_DIR"
 then
     echo "Failed to clone Gnulib"
     exit 1
 fi
 
-cd "$GNULIB_DIR"
+cd "$GNULIB_DIR" || exit 1
 
-#cp ../patch/gnulib.patch .
-#patch -u -p0 < gnulib.patch
-#echo ""
+echo "Copying Gnulib sources"
+if ! ./gnulib-tool --create-testdir --dir=../"$GNULIB_TEST_DIR" --single-configure --without-privileged-tests;
+then
+    echo "Failed to copy Gnulib sources"
+    exit 1
+fi
+
+cd "$CURR_DIR" || exit 1
+cd "$GNULIB_TEST_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
-
-echo "**********************"
-echo "Building package"
-echo "**********************"
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -83,10 +89,20 @@ echo "**********************"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-    SHELL="$(command -v bash)" \
-"$MAKE" "-j" "$INSTX_JOBS" "V=1"
+./configure
 
 if [[ "$?" -ne 0 ]]; then
+    echo "Failed to configure Gnulib"
+    exit 1
+fi
+
+echo "**********************"
+echo "Building package"
+echo "**********************"
+
+MAKE_FLAGS=("-j" "$INSTX_JOBS")
+if ! "$MAKE" "${MAKE_FLAGS[@]}"
+then
     echo "Failed to build Gnulib"
     exit 1
 fi
@@ -95,10 +111,12 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test Gnulib"
+    echo "**********************"
     exit 1
 fi
 
@@ -110,18 +128,7 @@ then
     exit 1
 fi
 
-echo "**********************"
-echo "Installing package"
-echo "**********************"
-
-MAKE_FLAGS=("install")
-if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
-else
-    "$MAKE" "${MAKE_FLAGS[@]}"
-fi
-
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
@@ -131,7 +138,7 @@ touch "$INSTX_CACHE/$PKG_NAME"
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$GNULIB_DIR")
+    ARTIFACTS=("$GNULIB_DIR" "$GNULIB_TEST_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
