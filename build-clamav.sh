@@ -170,8 +170,6 @@ if true; then
     if [[ -e build-clamav.log ]]; then
         rm -f build-clamav.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

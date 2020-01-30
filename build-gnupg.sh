@@ -243,8 +243,6 @@ if true; then
     if [[ -e build-gnupg.log ]]; then
         rm -f build-gnupg.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

@@ -218,8 +218,6 @@ if true; then
     if [[ -e build-openvpn.log ]]; then
         rm -f build-openvpn.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

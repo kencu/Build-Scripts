@@ -179,8 +179,6 @@ if true; then
     if [[ -e build-openldap.log ]]; then
         rm -f build-openldap.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

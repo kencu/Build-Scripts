@@ -141,8 +141,6 @@ if true; then
     if [[ -e build-mawk.log ]]; then
         rm -f build-mawk.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

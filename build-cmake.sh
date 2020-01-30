@@ -134,8 +134,6 @@ if true; then
     if [[ -e build-cmake.log ]]; then
         rm -f build-cmake.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

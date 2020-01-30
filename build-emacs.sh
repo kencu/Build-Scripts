@@ -177,8 +177,6 @@ if true; then
     if [[ -e build-emacs.log ]]; then
         rm -f build-emacs.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0

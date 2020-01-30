@@ -306,8 +306,6 @@ if true; then
     if [[ -e build-gnutls.log ]]; then
         rm -f build-gnutls.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0
