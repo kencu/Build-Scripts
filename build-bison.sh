@@ -3,16 +3,19 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Bison from sources.
 
+# The Bison recipe is broken at the moment. 'make && make check' fails.
+# The 'make check' recipe tries to build the documentation even when the
+# tools are missing. Derp...
+
 BISON_XZ=bison-3.5.1.tar.xz
 BISON_TAR=bison-3.5.1.tar
 BISON_DIR=bison-3.5.1
-PKG_NAME=bash
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -138,7 +141,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
@@ -152,12 +155,12 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$BISON_TAR" "$BISON_DIR")
+    ARTIFACTS=("$BISON_XZ" "$BISON_TAR" "$BISON_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
 
-    # ./build-make.sh 2>&1 | tee build-bison.log
+    # ./build-bison.sh 2>&1 | tee build-bison.log
     if [[ -e build-bison.log ]]; then
         rm -f build-bison.log
     fi
