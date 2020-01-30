@@ -142,7 +142,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$SED_TAR" "$SED_DIR")
+    ARTIFACTS=("$SED_XZ "$SED_TAR" "$SED_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
