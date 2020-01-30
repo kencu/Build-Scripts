@@ -8,6 +8,10 @@
 # broke with the cpan program that gets built. We need to keep an eye on what
 # breaks because of Perl.
 
+# This downloads and installs Perl's package manager. I'm not sure if we should do
+# something with it.
+#     curl -L http://cpanmin.us | perl - App::cpanminus
+
 PERL_TAR=perl-5.30.1.tar.gz
 PERL_DIR=perl-5.30.1
 PKG_NAME=perl
@@ -156,9 +160,6 @@ if [[ -n "$SUDO_PASSWORD" ]]; then
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
-
-# This downloads and installs Perl's package manager
-# curl -L http://cpanmin.us | perl - App::cpanminus
 
 cd "$CURR_DIR" || exit 1
 
