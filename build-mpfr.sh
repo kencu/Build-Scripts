@@ -58,6 +58,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-gmp.sh
+then
+    echo "Failed to build GMP"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** MPFR **********"
 echo
@@ -73,6 +81,16 @@ rm -rf "$MPFR_TAR" "$MPFR_DIR" &>/dev/null
 unxz "$MPFR_XZ" && tar -xf "$MPFR_TAR"
 cd "$MPFR_DIR" || exit 1
 
+# Per INSTALL
+if "$WGET" -O allpatches --ca-certificate="$CA_ZOO" \
+     https://www.mpfr.org/mpfr-4.0.2/allpatches
+then
+    patch -N -Z -p1 < allpatches
+else
+    echo "Failed to download MPFR patches"
+    exit 1
+fi
+
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
@@ -86,7 +104,9 @@ cd "$MPFR_DIR" || exit 1
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-shared \
-    --enable-static
+    --enable-static \
+    --with-gmp-include="$INSTX_PREFIX/include" \
+    --with-gmp-lib="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure MPFR"
