@@ -77,6 +77,13 @@ rm -rf "$PERL_DIR" &>/dev/null
 gzip -d < "$PERL_TAR" | tar xf -
 cd "$PERL_DIR" || exit 1
 
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/perl.patch ]]; then
+    cp ../patch/perl.patch .
+    patch -u -p0 < perl.patch
+    echo ""
+fi
+
 # The HTTP gear breaks on all distros, like Ubuntu 4 and Fedora 32
 # It looks like Perl is building shit during 'make install'.
 # -Dextras="HTTP::Daemon HTTP::Request Test::More Text::Template"
@@ -116,8 +123,10 @@ echo "**********************"
 MAKE_FLAGS=(check)
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test Perl"
-    # Perl can't pass its self tests. Go figure....
+    echo "Installing anyway..."
+    echo "**********************"
     # exit 1
 fi
 
@@ -125,7 +134,9 @@ echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
+    echo "**********************"
     echo "Failed to test Perl"
+    echo "**********************"
     exit 1
 fi
 
