@@ -153,7 +153,7 @@ if true; then
         rm -rf "$artifact"
     done
 
-    # ./build-make.sh 2>&1 | tee build-bc.log
+    # ./build-bc.sh 2>&1 | tee build-bc.log
     if [[ -e build-bc.log ]]; then
         rm -f build-bc.log
     fi
