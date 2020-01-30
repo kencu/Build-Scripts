@@ -82,14 +82,6 @@ fi
 
 ###############################################################################
 
-if ! ./build-cares.sh
-then
-    echo "Failed to build c-ares"
-    exit 1
-fi
-
-###############################################################################
-
 if ! ./build-pcre2.sh
 then
     echo "Failed to build PCRE2"
@@ -101,6 +93,14 @@ fi
 if ! ./build-openssl.sh
 then
     echo "Failed to build OpenSSL"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-cares.sh
+then
+    echo "Failed to build c-ares"
     exit 1
 fi
 
