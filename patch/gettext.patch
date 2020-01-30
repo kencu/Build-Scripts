@@ -61,3 +61,15 @@
  
  static __inline int compute_minrun(const uint64_t size) {
    const int top_bit = 64 - CLZ(size);
+--- gettext-tools/src/read-properties.c
++++ gettext-tools/src/read-properties.c
+@@ -582,7 +582,8 @@
+   /* Return the result.  */
+   {
+     unsigned char *utf8_string = XNMALLOC (utf8_buflen + 1, unsigned char);
+-    memcpy (utf8_string, utf8_buffer, utf8_buflen);
++    if (utf8_buffer)
++      memcpy (utf8_string, utf8_buffer, utf8_buflen);
+     utf8_string[utf8_buflen] = '\0';
+ 
+     return (char *) utf8_string;
