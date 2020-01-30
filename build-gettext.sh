@@ -83,9 +83,12 @@ rm -rf "$GETTEXT_DIR" &>/dev/null
 gzip -d < "$GETTEXT_TAR" | tar xf -
 cd "$GETTEXT_DIR"
 
-cp ../patch/gettext.patch .
-patch -u -p0 < gettext.patch
-echo ""
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/gettext.patch ]]; then
+    cp ../patch/gettext.patch .
+    patch -u -p0 < gettext.patch
+    echo ""
+if
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
