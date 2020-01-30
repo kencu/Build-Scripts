@@ -173,7 +173,6 @@ echo ""
     --with-ssl=openssl \
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libunistring="$INSTX_PREFIX" \
     --with-libidn2="$INSTX_PREFIX" \
     --with-libpcre2="$INSTX_PREFIX"
 
