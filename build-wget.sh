@@ -108,7 +108,7 @@ fi
 
 # PSL may be skipped if Python is too old. libpsl requires Python 2.7
 # Also see https://stackoverflow.com/a/40950971/608639
-if [[ -n $(command -v python) ]]
+if [[ -n $(command -v python 2>/dev/null) ]]
 then
     ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
     if [ "$ver" -ge 27 ]
@@ -125,7 +125,7 @@ fi
 
 # Optional. For Solaris see https://community.oracle.com/thread/1915569.
 SKIP_WGET_TESTS=0
-if [[ -z $(command -v perl) ]]; then
+if [[ -z $(command -v perl 2>/dev/null) ]]; then
     SKIP_WGET_TESTS=1
 else
     if ! perl -MHTTP::Daemon -e1 2>/dev/null
@@ -211,9 +211,11 @@ done
     --libdir="$INSTX_LIBDIR" \
     --sysconfdir="$INSTX_PREFIX/etc" \
     --with-ssl=openssl --with-libssl-prefix="$INSTX_PREFIX" \
+    --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libunistring-prefix="$INSTX_PREFIX" \
-    --with-libidn="$INSTX_PREFIX" \
+    --with-libunistring="$INSTX_PREFIX" \
+    --with-libidn2="$INSTX_PREFIX" \
+    --with-libpcre2="$INSTX_PREFIX" \
     --with-cares
 
 if [[ "$?" -ne 0 ]]; then
