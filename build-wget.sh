@@ -125,7 +125,7 @@ fi
 
 # Optional. For Solaris see https://community.oracle.com/thread/1915569.
 SKIP_WGET_TESTS=0
-if [[ -z $(command -v python) ]]; then
+if [[ -z $(command -v perl) ]]; then
     SKIP_WGET_TESTS=1
 else
     if ! perl -MHTTP::Daemon -e1 2>/dev/null
@@ -139,7 +139,7 @@ else
     if ! perl -MHTTP::Request -e1 2>/dev/null
     then
          echo ""
-         echo "Wget requires Perl's HTTP::Request.  Skipping Wget self tests."
+         echo "Wget requires Perl's HTTP::Request. Skipping Wget self tests."
          echo "To fix this issue, please install HTTP-Request or HTTP-Message."
          SKIP_WGET_TESTS=1
     fi
@@ -175,9 +175,9 @@ echo ""
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-sed -e 's|$(LTLIBICONV)|$(LIBICONV)|g' fuzz/Makefile.am > fuzz/Makefile.am.fixed
-mv fuzz/Makefile.am.fixed fuzz/Makefile.am
-touch -t 197001010000 fuzz/Makefile.am
+#sed -e 's|$(LTLIBICONV)|$(LIBICONV)|g' fuzz/Makefile.am > fuzz/Makefile.am.fixed
+#mv fuzz/Makefile.am.fixed fuzz/Makefile.am
+#touch -t 197001010000 fuzz/Makefile.am
 
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 for file in $(find "$PWD" -name '*.h')
@@ -206,7 +206,9 @@ done
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --sysconfdir="$INSTX_PREFIX/etc" \
     --with-ssl=openssl --with-libssl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
@@ -264,7 +266,9 @@ then
         exit 1
     fi
 else
+    echo "**********************"
     echo "Wget not tested."
+    echo "**********************"
 fi
 
 echo "**********************"
@@ -321,8 +325,6 @@ if true; then
     if [[ -e build-wget.log ]]; then
         rm -f build-wget.log
     fi
-
-    unset SUDO_PASSWORD
 fi
 
 exit 0
