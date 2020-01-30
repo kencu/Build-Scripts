@@ -10,7 +10,7 @@ FLEX_DIR=flex-2.6.4
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -62,7 +62,14 @@ fi
 
 rm -rf "$FLEX_DIR" &>/dev/null
 gzip -d < "$FLEX_TAR" | tar xf -
-cd "$FLEX_DIR"
+cd "$FLEX_DIR" || exit 1
+
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/flex.patch ]]; then
+    cp ../patch/flex.patch .
+    patch -u -p0 < flex.patch
+    echo ""
+fi
 
 sed -e 's|1\.11\.3|1\.11\.2|g' configure.ac > configure.ac.fixed
 mv configure.ac.fixed configure.ac; chmod +x configure.ac
@@ -78,7 +85,9 @@ mv configure.ac.fixed configure.ac; chmod +x configure.ac
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Flex"
@@ -126,7 +135,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
