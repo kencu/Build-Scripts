@@ -73,3 +73,20 @@
      utf8_string[utf8_buflen] = '\0';
  
      return (char *) utf8_string;
+--- gettext-tools/gnulib-tests/test-canonicalize-lgpl.c
++++ gettext-tools/gnulib-tests/test-canonicalize-lgpl.c
+@@ -70,10 +70,14 @@
+     result = canonicalize_file_name ("");
+     ASSERT (result == NULL);
+     ASSERT (errno == ENOENT);
++
++#if 0
++    /* Disabled due to UBsan finding */
+     errno = 0;
+     result = canonicalize_file_name (null_ptr ());
+     ASSERT (result == NULL);
+     ASSERT (errno == EINVAL);
++#endif
+   }
+ 
+   /* Check that a non-directory with trailing slash yields NULL.  */
