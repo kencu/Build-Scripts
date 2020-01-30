@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Expect from sources.
 
-EXPECT_VER=5.45.3
+EXPECT_VER=5.45.4
 EXPECT_TAR=expect$EXPECT_VER.tar.gz
 EXPECT_DIR=expect$EXPECT_VER
 PKG_NAME=expect
