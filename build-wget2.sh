@@ -199,22 +199,13 @@ echo "**********************"
 
 if [[ "$SKIP_WGET_TESTS" -eq 0 ]]
 then
-    # Perl IPv6 may be broken and cause Wget self tests to fail.
-    # Ignore failures about Socket::inet_itoa and incorrect sizes.
-    # https://rt.cpan.org/Public/Bug/Display.html?id=91699
-    # Perl does not include PWD so it compiles and executes
-    # tests like Test-https-pfs.px, but fails to find
-    # WgetFeature.pm which is located in the same directory.
-    # I fail to see the difference in risk. How is
-    # Test-https-pfs.px safe, but WgetFeature.pm dangerous?
     MAKE_FLAGS=("check" "V=1")
     if ! PERL_USE_UNSAFE_INC=1 "$MAKE" "${MAKE_FLAGS[@]}"
     then
         echo "**********************"
         echo "Failed to test Wget2"
-        echo "Installing anyway..."
         echo "**********************"
-        # exit 1
+        exit 1
     fi
 
     echo "Searching for errors hidden in log files"
