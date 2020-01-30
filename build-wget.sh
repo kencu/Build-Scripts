@@ -162,6 +162,13 @@ rm -rf "$WGET_DIR" &>/dev/null
 gzip -d < "$WGET_TAR" | tar xf -
 cd "$WGET_DIR" || exit 1
 
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/wget.patch ]]; then
+    cp ../patch/wget.patch .
+    patch -u -p0 < wget.patch
+    echo ""
+fi
+
 echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
 echo ""
 
@@ -240,16 +247,20 @@ then
     MAKE_FLAGS=("check" "V=1")
     if ! PERL_USE_UNSAFE_INC=1 "$MAKE" "${MAKE_FLAGS[@]}"
     then
+        echo "**********************"
         echo "Failed to test Wget"
-        echo "Installing anyways..."
-        #exit 1
+        echo "Installing anyway..."
+        echo "**********************"
+        # exit 1
     fi
 
     echo "Searching for errors hidden in log files"
     COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
     if [[ "${COUNT}" -ne 0 ]];
     then
+        echo "**********************"
         echo "Failed to test Wget"
+        echo "**********************"
         exit 1
     fi
 else
