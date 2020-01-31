@@ -69,7 +69,7 @@ then
     exit 1
 fi
 
-rm -rf "$GREP_DIR" &>/dev/null
+rm -rf "$GREP_TAR" "$GREP_DIR" &>/dev/null
 unxz "$GREP_XZ" && tar -xf "$GREP_TAR"
 cd "$GREP_DIR"
 
@@ -97,7 +97,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Grep"
@@ -108,7 +108,7 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check")
+MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test Grep"
