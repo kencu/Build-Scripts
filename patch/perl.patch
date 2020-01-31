@@ -31,68 +31,68 @@
      }
  #ifdef ZLIB_DEBUG
 -    flags += 1 << 8;
-+    flags += 1U << 8;
++    flags += 1UL << 8;
  #endif
  #if defined(ASMV) || defined(ASMINF)
 -    flags += 1 << 9;
-+    flags += 1U << 9;
++    flags += 1UL << 9;
  #endif
  #ifdef ZLIB_WINAPI
 -    flags += 1 << 10;
-+    flags += 1U << 10;
++    flags += 1UL << 10;
  #endif
  #ifdef BUILDFIXED
 -    flags += 1 << 12;
-+    flags += 1U << 12;
++    flags += 1UL << 12;
  #endif
  #ifdef DYNAMIC_CRC_TABLE
 -    flags += 1 << 13;
-+    flags += 1U << 13;
++    flags += 1UL << 13;
  #endif
  #ifdef NO_GZCOMPRESS
 -    flags += 1L << 16;
-+    flags += 1U << 16;
++    flags += 1UL << 16;
  #endif
  #ifdef NO_GZIP
 -    flags += 1L << 17;
-+    flags += 1U << 17;
++    flags += 1UL << 17;
  #endif
  #ifdef PKZIP_BUG_WORKAROUND
 -    flags += 1L << 20;
-+    flags += 1U << 20;
++    flags += 1UL << 20;
  #endif
  #ifdef FASTEST
 -    flags += 1L << 21;
-+    flags += 1U << 21;
++    flags += 1UL << 21;
  #endif
  #if defined(STDC) || defined(Z_HAVE_STDARG_H)
  #  ifdef NO_vsnprintf
 -    flags += 1L << 25;
-+    flags += 1U << 25;
++    flags += 1UL << 25;
  #    ifdef HAS_vsprintf_void
 -    flags += 1L << 26;
-+    flags += 1U << 26;
++    flags += 1UL << 26;
  #    endif
  #  else
  #    ifdef HAS_vsnprintf_void
 -    flags += 1L << 26;
-+    flags += 1U << 26;
++    flags += 1UL << 26;
  #    endif
  #  endif
  #else
 -    flags += 1L << 24;
-+    flags += 1U << 24;
++    flags += 1UL << 24;
  #  ifdef NO_snprintf
 -    flags += 1L << 25;
-+    flags += 1U << 25;
++    flags += 1UL << 25;
  #    ifdef HAS_sprintf_void
 -    flags += 1L << 26;
-+    flags += 1U << 26;
++    flags += 1UL << 26;
  #    endif
  #  else
  #    ifdef HAS_snprintf_void
 -    flags += 1L << 26;
-+    flags += 1U << 26;
++    flags += 1UL << 26;
  #    endif
  #  endif
  #endif
