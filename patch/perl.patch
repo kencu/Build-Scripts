@@ -167,3 +167,140 @@
      if (write(fd, src, itmsz * nitm) == EOF) return EOF;
      return nitm;
    }
+--- pp.c
++++ pp.c
+@@ -32,6 +32,13 @@
+ #include "reentr.h"
+ #include "regcharclass.h"
+ 
++/* Inline ASM due to undefined buhavior and testing with UBsan. ASM does
++ * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
++ */
++#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
++# define GCC_INLINE_ASM 1
++#endif
++
+ /* variations on pp_null */
+ 
+ PP(pp_stub)
+@@ -2618,7 +2625,17 @@
+     tryAMAGICbin_MG(mult_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("imulq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "rdx", "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("imull %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "edx", "cc" );
++      SETi( res );
++#else
+       SETi( left * right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2637,10 +2654,25 @@
+ 
+       /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
+       if (value == -1)
+-          value = - num;
++          value = -(unsigned long int)num;
+       else
+-          value = num / value;
+-      SETi(value);
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      {
++          long int res;
++          __asm__ ("xorq %%rdx, %%rdx; idivq %2;" : "=a" (res) : "a" (num), "g" (value) : "rdx", "cc" );
++          SETi( res );
++      }
++#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++      {
++          long int res;
++          __asm__ ("xorl %%edx, %%edx; idivl %2;" : "=a" (res) : "a" (num), "g" (value) : "edx", "cc" );
++          SETi( res );
++      }
++#else
++      {
++          SETi(num / value);
++      }
++#endif
+       RETURN;
+     }
+ }
+@@ -2654,11 +2686,28 @@
+ 	  dPOPTOPiirl_nomg;
+ 	  if (!right)
+ 	       DIE(aTHX_ "Illegal modulus zero");
++
+ 	  /* avoid FPE_INTOVF on some platforms when left is IV_MIN */
+ 	  if (right == -1)
+ 	      SETi( 0 );
+ 	  else
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++	  {
++	      long int res;
++	      __asm__ ("xorq %%rdx, %%rdx; idivq %2;" : "=d" (res) : "a" (left), "g" (right) : "cc" );
++	      SETi( res );
++	  }
++#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++	  {
++	      long int res;
++	      __asm__ ("xorl %%edx, %%edx; idivl %2;" : "=d" (res) : "a" (left), "g" (right) : "cc" );
++	      SETi( res );
++	  }
++#else
++	  {
+ 	      SETi( left % right );
++	  }
++#endif
+ 	  RETURN;
+      }
+ }
+@@ -2693,7 +2742,17 @@
+     tryAMAGICbin_MG(add_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("addq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("addl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#else
+       SETi( left + right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2704,7 +2763,17 @@
+     tryAMAGICbin_MG(subtr_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("subq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("subl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#else
+       SETi( left - right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2802,7 +2871,7 @@
+     {
+ 	SV * const sv = TOPs;
+ 	IV const i = SvIV_nomg(sv);
+-	SETi(-i);
++	SETi( -(unsigned long int)i );
+ 	return NORMAL;
+     }
+ }
