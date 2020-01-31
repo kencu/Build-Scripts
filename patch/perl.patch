@@ -8,8 +8,8 @@
 -    case 8:     flags += 2 << 2;        break;
 -    default:    flags += 3 << 2;
 +    case 4:     flags += 1U << 2;        break;
-+    case 8:     flags += 1U << 2;        break;
-+    default:    flags += 1U << 2;
++    case 8:     flags += 2U << 2;        break;
++    default:    flags += 3U << 2;
      }
      switch ((int)(sizeof(voidpf))) {
      case 2:     break;
@@ -17,8 +17,8 @@
 -    case 8:     flags += 2 << 4;        break;
 -    default:    flags += 3 << 4;
 +    case 4:     flags += 1U << 4;        break;
-+    case 8:     flags += 1U << 4;        break;
-+    default:    flags += 1U << 4;
++    case 8:     flags += 2U << 4;        break;
++    default:    flags += 3U << 4;
      }
      switch ((int)(sizeof(z_off_t))) {
      case 2:     break;
@@ -26,8 +26,8 @@
 -    case 8:     flags += 2 << 6;        break;
 -    default:    flags += 3 << 6;
 +    case 4:     flags += 1U << 6;        break;
-+    case 8:     flags += 1U << 6;        break;
-+    default:    flags += 1U << 6;
++    case 8:     flags += 2U << 6;        break;
++    default:    flags += 3U << 6;
      }
  #ifdef ZLIB_DEBUG
 -    flags += 1 << 8;
