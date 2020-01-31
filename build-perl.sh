@@ -83,13 +83,24 @@ cd "$PERL_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/perl.patch ]]; then
+    chmod +w op.c
+    chmod +w pp.c
+    chmod +w regcomp.c
+    chmod +w vms/vms.c
+    chmod +w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
+
     cp ../patch/perl.patch .
     patch -u -p0 < perl.patch
     echo ""
 fi
 
+# Perl creates files in the user's home directory, but owned by root:root.
+# It looks like they are building shit during 'make install'. WTF???
+# Note to future maintainers: never build shit during 'make install'.
+mkdir -p "$HOME/.cpan"
+
 # The HTTP gear breaks on all distros, like Ubuntu 4 and Fedora 32
-# It looks like Perl is building shit during 'make install'.
+# https://www.nntp.perl.org/group/perl.beginners/2020/01/msg127308.html
 # -Dextras="HTTP::Daemon HTTP::Request Test::More Text::Template"
 
 PERL_PKGCONFIG="${BUILD_PKGCONFIG[*]}"
@@ -104,7 +115,7 @@ if ! ./Configure -des \
      -Acppflags="$PERL_CPPFLAGS" \
      -Accflags="$PERL_CFLAGS" \
      -Aldflags="$PERL_LDFLAGS" \
-     -Dextras="Test::More Text::Template"
+     -Dextras="Text::Template Test::More"
 then
     echo "Failed to configure Perl"
     exit 1
@@ -128,26 +139,20 @@ echo "**********************"
 MAKE_FLAGS=(check)
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    # Perl can't pass its self-tests.
-    # https://github.com/Perl/perl5/issues/17508
     echo "**********************"
     echo "Failed to test Perl"
-    echo "Installing anyway..."
     echo "**********************"
-    # exit 1
+    exit 1
 fi
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
-    # Perl can't pass its self-tests.
-    # https://github.com/Perl/perl5/issues/17508
     echo "**********************"
     echo "Failed to test Perl"
-    echo "Installing anyway..."
     echo "**********************"
-    # exit 1
+    exit 1
 fi
 
 echo "**********************"
@@ -159,6 +164,15 @@ if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
+fi
+
+if [[ -n "$SUDO_PASSWORD" ]]
+then
+    echo "**********************"
+    echo "Fixing permissions"
+    echo "**********************"
+
+    echo "$SUDO_PASSWORD" | sudo -S chown -R "$SUDO_USER:$SUDO_USER" "$HOME/.cpan"
 fi
 
 cd "$CURR_DIR" || exit 1

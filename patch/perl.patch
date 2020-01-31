@@ -167,3 +167,85 @@
      if (write(fd, src, itmsz * nitm) == EOF) return EOF;
      return nitm;
    }
+--- pp.c
++++ pp.c
+@@ -32,6 +32,13 @@
+ #include "reentr.h"
+ #include "regcharclass.h"
+ 
++/* Inline ASM due to testing with UBsan and undefined behavior. ASM does
++ * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
++ */
++#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
++# define GCC_INLINE_ASM 1
++#endif
++
+ /* variations on pp_null */
+ 
+ PP(pp_stub)
+@@ -2618,7 +2625,13 @@
+     tryAMAGICbin_MG(mult_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long long int a;
++      __asm__ ("imul %%rcx, %%rax;" : "=a" (a) : "a" (left), "c" (right) : "cc" );
++      SETi( a );
++#else
+       SETi( left * right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2637,7 +2650,7 @@
+ 
+       /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
+       if (value == -1)
+-          value = - num;
++          value = -(unsigned long long int)num;
+       else
+           value = num / value;
+       SETi(value);
+@@ -2693,7 +2706,13 @@
+     tryAMAGICbin_MG(add_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long long int a;
++      __asm__ ("add %%rcx, %%rax;" : "=a" (a) : "a" (left), "c" (right) : "cc" );
++      SETi( a );
++#else
+       SETi( left + right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2704,7 +2723,13 @@
+     tryAMAGICbin_MG(subtr_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++      long long int a;
++      __asm__ ("sub %%rcx, %%rax;" : "=a" (a) : "a" (left), "c" (right) : "cc" );
++      SETi( a );
++#else
+       SETi( left - right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2800,10 +2825,10 @@
+     tryAMAGICun_MG(neg_amg, 0);
+     if (S_negate_string(aTHX)) return NORMAL;
+     {
+-	SV * const sv = TOPs;
+-	IV const i = SvIV_nomg(sv);
+-	SETi(-i);
+-	return NORMAL;
++	SV * const sv = TOPs;
++	IV const i = SvIV_nomg(sv);
++	SETi( -(unsigned long long int)i );
++	return NORMAL;
+     }
+ }
+ 
