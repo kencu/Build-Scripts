@@ -88,7 +88,7 @@ if [[ -e ../patch/gettext.patch ]]; then
     cp ../patch/gettext.patch .
     patch -u -p0 < gettext.patch
     echo ""
-if
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
