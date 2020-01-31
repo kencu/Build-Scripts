@@ -18,7 +18,7 @@ PKG_NAME=gettext
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -81,7 +81,7 @@ fi
 
 rm -rf "$GETTEXT_DIR" &>/dev/null
 gzip -d < "$GETTEXT_TAR" | tar xf -
-cd "$GETTEXT_DIR"
+cd "$GETTEXT_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/gettext.patch ]]; then
@@ -169,7 +169,7 @@ else
     rm -rf "$INSTX_PREFIX/share/doc/gettext"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"

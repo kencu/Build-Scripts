@@ -58,19 +58,6 @@ fi
 
 ###############################################################################
 
-if false; then
-
-# For libint.h, https://stackoverflow.com/q/11370684/608639
-if ! ./build-gnulib.sh
-then
-    echo "Failed to build GnuLib"
-    exit 1
-fi
-
-fi
-
-###############################################################################
-
 echo
 echo "********** Grep **********"
 echo
@@ -95,10 +82,11 @@ cd "$GREP_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libintl-prefix="$INSTX_PREFIX" \
-    --with-openssl=yes
+    --with-libintl-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Grep"
