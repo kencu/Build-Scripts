@@ -1,0 +1,138 @@
+--- cpan/Compress-Raw-Zlib/zlib-src/zutil.c
++++ cpan/Compress-Raw-Zlib/zlib-src/zutil.c
+@@ -42,70 +42,70 @@
+     }
+     switch ((int)(sizeof(uLong))) {
+     case 2:     break;
+-    case 4:     flags += 1 << 2;        break;
+-    case 8:     flags += 2 << 2;        break;
+-    default:    flags += 3 << 2;
++    case 4:     flags += 1U << 2;        break;
++    case 8:     flags += 1U << 2;        break;
++    default:    flags += 1U << 2;
+     }
+     switch ((int)(sizeof(voidpf))) {
+     case 2:     break;
+-    case 4:     flags += 1 << 4;        break;
+-    case 8:     flags += 2 << 4;        break;
+-    default:    flags += 3 << 4;
++    case 4:     flags += 1U << 4;        break;
++    case 8:     flags += 1U << 4;        break;
++    default:    flags += 1U << 4;
+     }
+     switch ((int)(sizeof(z_off_t))) {
+     case 2:     break;
+-    case 4:     flags += 1 << 6;        break;
+-    case 8:     flags += 2 << 6;        break;
+-    default:    flags += 3 << 6;
++    case 4:     flags += 1U << 6;        break;
++    case 8:     flags += 1U << 6;        break;
++    default:    flags += 1U << 6;
+     }
+ #ifdef ZLIB_DEBUG
+-    flags += 1 << 8;
++    flags += 1U << 8;
+ #endif
+ #if defined(ASMV) || defined(ASMINF)
+-    flags += 1 << 9;
++    flags += 1U << 9;
+ #endif
+ #ifdef ZLIB_WINAPI
+-    flags += 1 << 10;
++    flags += 1U << 10;
+ #endif
+ #ifdef BUILDFIXED
+-    flags += 1 << 12;
++    flags += 1U << 12;
+ #endif
+ #ifdef DYNAMIC_CRC_TABLE
+-    flags += 1 << 13;
++    flags += 1U << 13;
+ #endif
+ #ifdef NO_GZCOMPRESS
+-    flags += 1L << 16;
++    flags += 1U << 16;
+ #endif
+ #ifdef NO_GZIP
+-    flags += 1L << 17;
++    flags += 1U << 17;
+ #endif
+ #ifdef PKZIP_BUG_WORKAROUND
+-    flags += 1L << 20;
++    flags += 1U << 20;
+ #endif
+ #ifdef FASTEST
+-    flags += 1L << 21;
++    flags += 1U << 21;
+ #endif
+ #if defined(STDC) || defined(Z_HAVE_STDARG_H)
+ #  ifdef NO_vsnprintf
+-    flags += 1L << 25;
++    flags += 1U << 25;
+ #    ifdef HAS_vsprintf_void
+-    flags += 1L << 26;
++    flags += 1U << 26;
+ #    endif
+ #  else
+ #    ifdef HAS_vsnprintf_void
+-    flags += 1L << 26;
++    flags += 1U << 26;
+ #    endif
+ #  endif
+ #else
+-    flags += 1L << 24;
++    flags += 1U << 24;
+ #  ifdef NO_snprintf
+-    flags += 1L << 25;
++    flags += 1U << 25;
+ #    ifdef HAS_sprintf_void
+-    flags += 1L << 26;
++    flags += 1U << 26;
+ #    endif
+ #  else
+ #    ifdef HAS_snprintf_void
+-    flags += 1L << 26;
++    flags += 1U << 26;
+ #    endif
+ #  endif
+ #endif
+--- op.c
++++ op.c
+@@ -13542,7 +13542,7 @@
+             op_sibling_splice(parent, first, -1, NULL);
+ 	op_free(entersubop);
+ 
+-	if (cvflags == (OP_ENTEREVAL | (1<<16)))
++	if (cvflags == (OP_ENTEREVAL | (1U<<16)))
+ 	    flags |= OPpEVAL_BYTES <<8;
+ 	
+ 	switch (PL_opargs[opnum] & OA_CLASS_MASK) {
+--- vms/vms.c
++++ vms/vms.c
+@@ -11145,7 +11145,7 @@
+       sockflagsize = fdoff + 2;
+     }
+     if (fstat(fd, &sbuf.crtl_stat) == 0 && S_ISSOCK(sbuf.st_mode))
+-      sockflags[fdoff] |= 1 << (fd % sizeof(unsigned int));
++      sockflags[fdoff] |= 1U << (fd % sizeof(unsigned int));
+   }
+   return fp;
+ 
+@@ -11166,7 +11166,7 @@
+     unsigned int fdoff = fd / sizeof(unsigned int);
+ 
+     if (sockflagsize && fdoff < sockflagsize)
+-      sockflags[fdoff] &= ~(1 << fd % sizeof(unsigned int));
++      sockflags[fdoff] &= ~(1U << fd % sizeof(unsigned int));
+   }
+   return fclose(fp);
+ }
+@@ -11193,7 +11193,7 @@
+   int bufsize = itmsz * nitm + 1;
+ 
+   if (fdoff < sockflagsize &&
+-      (sockflags[fdoff] | 1 << (fd % sizeof(unsigned int)))) {
++      (sockflags[fdoff] | 1U << (fd % sizeof(unsigned int)))) {
+     if (write(fd, src, itmsz * nitm) == EOF) return EOF;
+     return nitm;
+   }
