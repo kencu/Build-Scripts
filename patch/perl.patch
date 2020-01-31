@@ -201,65 +201,16 @@
        RETURN;
      }
  }
-@@ -2637,10 +2654,25 @@
+@@ -2637,7 +2654,7 @@
  
        /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
        if (value == -1)
 -          value = - num;
 +          value = -(unsigned long int)num;
        else
--          value = num / value;
--      SETi(value);
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
-+      {
-+          long int res;
-+          __asm__ ("xorq %%rdx, %%rdx; idivq %2;" : "=a" (res) : "a" (num), "g" (value) : "rdx", "cc" );
-+          SETi( res );
-+      }
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
-+      {
-+          long int res;
-+          __asm__ ("xorl %%edx, %%edx; idivl %2;" : "=a" (res) : "a" (num), "g" (value) : "edx", "cc" );
-+          SETi( res );
-+      }
-+#else
-+      {
-+          SETi(num / value);
-+      }
-+#endif
-       RETURN;
-     }
- }
-@@ -2654,11 +2686,28 @@
- 	  dPOPTOPiirl_nomg;
- 	  if (!right)
- 	       DIE(aTHX_ "Illegal modulus zero");
-+
- 	  /* avoid FPE_INTOVF on some platforms when left is IV_MIN */
- 	  if (right == -1)
- 	      SETi( 0 );
- 	  else
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
-+	  {
-+	      long int res;
-+	      __asm__ ("xorq %%rdx, %%rdx; idivq %2;" : "=d" (res) : "a" (left), "g" (right) : "cc" );
-+	      SETi( res );
-+	  }
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
-+	  {
-+	      long int res;
-+	      __asm__ ("xorl %%edx, %%edx; idivl %2;" : "=d" (res) : "a" (left), "g" (right) : "cc" );
-+	      SETi( res );
-+	  }
-+#else
-+	  {
- 	      SETi( left % right );
-+	  }
-+#endif
- 	  RETURN;
-      }
- }
-@@ -2693,7 +2742,17 @@
+           value = num / value;
+       SETi(value);
+@@ -2693,7 +2710,17 @@
      tryAMAGICbin_MG(add_amg, AMGf_assign);
      {
        dPOPTOPiirl_ul_nomg;
@@ -277,7 +228,7 @@
        RETURN;
      }
  }
-@@ -2704,7 +2763,17 @@
+@@ -2704,7 +2731,17 @@
      tryAMAGICbin_MG(subtr_amg, AMGf_assign);
      {
        dPOPTOPiirl_ul_nomg;
@@ -295,7 +246,7 @@
        RETURN;
      }
  }
-@@ -2802,7 +2871,7 @@
+@@ -2802,7 +2839,7 @@
      {
  	SV * const sv = TOPs;
  	IV const i = SvIV_nomg(sv);
