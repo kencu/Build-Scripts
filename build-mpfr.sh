@@ -162,7 +162,7 @@ touch "$INSTX_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$MPFR_XZ" "$MPFR_TAR" "$MPFR_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
