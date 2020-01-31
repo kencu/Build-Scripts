@@ -107,6 +107,37 @@
  	    flags |= OPpEVAL_BYTES <<8;
  	
  	switch (PL_opargs[opnum] & OA_CLASS_MASK) {
+--- regcomp.c
++++ regcomp.c
+@@ -334,7 +334,7 @@
+ 
+ 
+ #define PBYTE(u8str,paren) ((U8*)(u8str))[(paren) >> 3]
+-#define PBITVAL(paren) (1 << ((paren) & 7))
++#define PBITVAL(paren) (1U << ((paren) & 7))
+ #define PAREN_TEST(u8str,paren) ( PBYTE(u8str,paren) & PBITVAL(paren))
+ #define PAREN_SET(u8str,paren) PBYTE(u8str,paren) |= PBITVAL(paren)
+ #define PAREN_UNSET(u8str,paren) PBYTE(u8str,paren) &= (~PBITVAL(paren))
+@@ -19983,7 +19983,7 @@
+     ASSUME(REG_INTFLAGS_NAME_SIZE <= sizeof(flags)*8);
+ 
+     for (bit=0; bit<REG_INTFLAGS_NAME_SIZE; bit++) {
+-        if (flags & (1<<bit)) {
++        if (flags & (1U<<bit)) {
+             if (!set++ && lead)
+                 Perl_re_printf( aTHX_  "%s", lead);
+             Perl_re_printf( aTHX_  "%s ", PL_reg_intflags_name[bit]);
+@@ -20007,8 +20007,8 @@
+     ASSUME(REG_EXTFLAGS_NAME_SIZE <= sizeof(flags)*8);
+ 
+     for (bit=0; bit<REG_EXTFLAGS_NAME_SIZE; bit++) {
+-        if (flags & (1<<bit)) {
+-	    if ((1<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
++        if (flags & (1U<<bit)) {
++	    if ((1U<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
+ 		continue;
+ 	    }
+             if (!set++ && lead)
 --- vms/vms.c
 +++ vms/vms.c
 @@ -11145,7 +11145,7 @@
