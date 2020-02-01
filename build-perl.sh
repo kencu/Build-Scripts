@@ -107,11 +107,13 @@ PERL_PKGCONFIG="${BUILD_PKGCONFIG[*]}"
 PERL_CPPFLAGS="${BUILD_CPPFLAGS[*]}"
 PERL_CFLAGS="${BUILD_CFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
+PERL_CC="${CC}"
 
 if ! ./Configure -des \
      -Dprefix="$INSTX_PREFIX" \
      -Dlibdir="$INSTX_LIBDIR" \
      -Dpkgconfig="$PERL_PKGCONFIG" \
+     -Dcc="$PERL_CC" \
      -Acppflags="$PERL_CPPFLAGS" \
      -Accflags="$PERL_CFLAGS" \
      -Aldflags="$PERL_LDFLAGS" \
