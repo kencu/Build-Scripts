@@ -81,9 +81,11 @@ rm -rf "$HIREDIS_DIR" &>/dev/null
 gzip -d < "$HIREDIS_TAR" | tar xf -
 cd "$HIREDIS_DIR"
 
-cp ../patch/hiredis.patch .
-patch -u -p0 < hiredis.patch
-echo ""
+if [[ -e ../patch/hiredis.patch ]]; then
+    cp ../patch/hiredis.patch .
+    patch -u -p0 < hiredis.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
