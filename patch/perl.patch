@@ -173,7 +173,7 @@
  #include "reentr.h"
  #include "regcharclass.h"
  
-+/* Inline ASM due to undefined buhavior and testing with UBsan. ASM does
++/* Inline ASM due to undefined behavior and testing with UBsan. ASM does
 + * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
 + * SunC added GCC inline asm support at version 12.1.
 + */
