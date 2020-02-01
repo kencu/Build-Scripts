@@ -9,15 +9,6 @@ PKG_NAME=cpuid
 
 ###############################################################################
 
-# Bail early
-if [[ $(uname -m 2>/dev/null | grep -E -i -c 'i86pc|i.86|amd64|x86_64') -eq 0 ]]
-then
-    echo "Failed to build cpuid. The program is only valid for x86 platforms."
-    exit 1
-fi
-
-###############################################################################
-
 CURR_DIR=$(pwd)
 function finish {
     cd "$CURR_DIR"
@@ -33,6 +24,13 @@ trap finish EXIT
 if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
+    exit 1
+fi
+
+# Bail early
+if [[ $(uname -m 2>/dev/null | grep -i -c -E 'i86pc|i.86|amd64|x86_64') -eq 0 ]]
+then
+    echo "Failed to build cpuid. The program is only valid for x86 platforms."
     exit 1
 fi
 
