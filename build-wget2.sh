@@ -3,8 +3,12 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Wget2 and its dependencies from sources.
 
-WGET_TAR=wget2-1.99.2.tar.gz
-WGET_DIR=wget2-1.99.2
+# Per TR, the tarballs are pre-release. We should use Master.
+
+# WGET_TAR=wget2-1.99.2.tar.gz
+# WGET_DIR=wget2-1.99.2
+
+WGET_DIR=wget2
 
 ###############################################################################
 
@@ -135,23 +139,39 @@ echo
 echo "********** Wget2 **********"
 echo
 
-if ! "$WGET" -O "$WGET_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/pub/gnu/wget/$WGET_TAR"
+#if ! "$WGET" -O "$WGET_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+#     "https://ftp.gnu.org/pub/gnu/wget/$WGET_TAR"
+#then
+#    echo "Failed to download Wget2"
+#    exit 1
+#fi
+#
+#rm -rf "$WGET_DIR" &>/dev/null
+#gzip -d < "$WGET_TAR" | tar xf -
+#cd "$WGET_DIR" || exit 1
+
+rm -rf "$WGET_DIR" &>/dev/null
+
+if ! git clone https://gitlab.com/gnuwget/wget2.git;
 then
-    echo "Failed to download Wget2"
+    echo "Failed to clone Wget2"
     exit 1
 fi
 
-rm -rf "$WGET_DIR" &>/dev/null
-gzip -d < "$WGET_TAR" | tar xf -
 cd "$WGET_DIR" || exit 1
 
-# Patches are created with 'diff -u' from the pkg root directory.
-if [[ -e ../patch/wget2.patch ]]; then
-    cp ../patch/wget2.patch .
-    patch -u -p0 < wget2.patch
-    echo ""
+if ! ./bootstrap;
+then
+    echo "Failed to bootstrap Wget2"
+    exit 1
 fi
+
+# Patches are created with 'diff -u' from the pkg root directory.
+#if [[ -e ../patch/wget2.patch ]]; then
+#    cp ../patch/wget2.patch .
+#    patch -u -p0 < wget2.patch
+#    echo ""
+#fi
 
 echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
 echo ""
@@ -233,29 +253,23 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-# TODO... Determine the config filename
-if false; then
-
 # Wget does not have any CA's configured at the moment. HTTPS downloads
 # will fail with the message "... use --no-check-certifcate ...". Fix it
-# through the system's wgetrc configuration file.
-cp "./doc/sample.wgetrc" "./wgetrc"
+# through the system's wget2rc configuration file.
 {
     echo ""
     echo "# Default CA zoo file added by Build-Scripts"
     echo "ca_directory = $SH_CACERT_PATH"
     echo "ca_certificate = $SH_CACERT_FILE"
     echo ""
-} > "./wgetrc"
+} > "./wget2rc"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_PREFIX/etc"
-    echo "$SUDO_PASSWORD" | sudo -S cp "./wgetrc" "$INSTX_PREFIX/etc/"
+    echo "$SUDO_PASSWORD" | sudo -S cp "./wget2rc" "$INSTX_PREFIX/etc/"
 else
     mkdir -p "$INSTX_PREFIX/etc"
-    cp "./wgetrc" "$INSTX_PREFIX/etc/"
-fi
-
+    cp "./wget2rc" "$INSTX_PREFIX/etc/"
 fi
 
 cd "$CURR_DIR" || exit 1
@@ -270,7 +284,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$WGET_TAR" "$WGET_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
