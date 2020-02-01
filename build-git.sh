@@ -158,25 +158,27 @@ then
 fi
 
 # Solaris 11.3 no longer has /usr/ucb/install
-for file in $(find "$PWD" -name 'config*')
-do
-    if [[ ! -f "$file" ]]
-    then
-        continue
-    fi
+if [[ "$IS_SOLARIS" -ne 0 ]]
+then
+    for file in $(find "$PWD" -name 'config*')
+    do
+        if [[ ! -f "$file" ]]; then
+            continue
+        fi
 
-    sed -e 's|/usr/ucb/install|install|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    chmod +x "$file"
-    touch -t 197001010000 "$file"
-done
+        sed -e 's|/usr/ucb/install|install|g' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
+        chmod +x "$file"
+        touch -t 197001010000 "$file"
+    done
+fi
 
 if [[ -e /usr/local/bin/perl ]]; then
-    SH_PERL=/usr/local/bin/perl
+    GIT_PERL=/usr/local/bin/perl
 elif [[ -e /usr/bin/perl ]]; then
-    SH_PERL=/usr/bin/perl
+    GIT_PERL=/usr/bin/perl
 else
-    SH_PERL=perl
+    GIT_PERL=perl
 fi
 
     CURLDIR="$INSTX_PREFIX" \
@@ -197,12 +199,24 @@ fi
     --with-zlib="$INSTX_PREFIX" \
     --with-iconv="$INSTX_PREFIX" \
     --with-expat="$INSTX_PREFIX" \
-    --with-perl="$SH_PERL" \
+    --with-perl="$GIT_PERL" \
     --without-tcltk
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Git"
     exit 1
+fi
+
+# Solaris 11.3 work-around. The OS has inet_ntop and inet_pton
+if [[ "$IS_SOLARIS" -ne 0 ]]
+then
+    for file in $(find "$PWD" -name 'Makefile')
+    do
+        sed '/ifdef NO_INET_NTOP/,+3 d' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
+        sed '/ifdef NO_INET_PTON/,+3 d' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
+    done
 fi
 
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
