@@ -461,6 +461,7 @@ elif [[ -n "$INSTX_ASAN" ]]; then
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=address"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=address"
+
 elif [[ -n "$INSTX_MSAN" ]]; then
     BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_MSAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=memory"
