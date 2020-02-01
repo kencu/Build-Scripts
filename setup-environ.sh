@@ -32,33 +32,9 @@ then
     fi
 fi
 
-if false; then
-
-if [[ -z $(command -v autoconf 2>/dev/null) ]]; then
-    echo "Some packages require Autoconf. Please install autoconf."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
-if [[ -z $(command -v automake 2>/dev/null) ]]; then
-    echo "Some packages require Automake. Please install automake."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
-if [[ -z $(command -v autoreconf 2>/dev/null) ]]; then
-    echo "Some packages require Autoreconf. Please install autoconf."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
-if [[ -z $(command -v libtool 2>/dev/null) ]]; then
-    echo "Some packages require Libtool. Please install libtool."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
 if [[ -z $(command -v gzip 2>/dev/null) ]]; then
     echo "Some packages require Gzip. Please install Gzip."
     [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
-fi
-
 fi
 
 if [[ -z $(command -v tar 2>/dev/null) ]]; then
