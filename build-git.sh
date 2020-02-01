@@ -201,6 +201,9 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
+../fix-library-path.sh
+
 # Solaris 11.3 work-around. The OS has inet_ntop and inet_pton
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
@@ -212,9 +215,6 @@ then
         mv "$file.fixed" "$file"
     done
 fi
-
-# Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
-../fix-library-path.sh
 
 # See INSTALL for the formats and the requirements
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")

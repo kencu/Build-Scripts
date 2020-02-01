@@ -173,7 +173,7 @@ IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | grep -i -c -E "
 
 THIS_MACHINE=$(uname -m 2>&1)
 IS_IA32=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'i86pc|i.86|amd64|x86_64')
-IS_X86_64=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'amd64|x86_64')
+IS_AMD64=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'amd64|x86_64')
 IS_MIPS=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'mips')
 
 # The BSDs and Solaris should have GMake installed if its needed
@@ -270,7 +270,7 @@ fi
 
 # Solaris Fixup
 if [[ "$IS_IA32" -eq 1 ]] && [[ "$INSTX_BITNESS" -eq 64 ]]; then
-    IS_X86_64=1
+    IS_AMD64=1
 fi
 
 ###############################################################################

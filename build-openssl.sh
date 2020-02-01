@@ -135,7 +135,7 @@ done
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
 
-if [[ "$IS_X86_64" -eq 1 && "$INT128_OPT" -eq 1 ]]; then
+if [[ "$IS_AMD64" -eq 1 && "$INT128_OPT" -eq 1 ]]; then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="enable-ec_nistp_64_gcc_128"
 fi
 
