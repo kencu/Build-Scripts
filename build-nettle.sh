@@ -65,8 +65,9 @@ fi
 
 ###############################################################################
 
-# See if AES-NI is available in the compiler
+# See if AES-NI and SHA are available in the compiler
 AESNI_OPT=$("$CC" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
+SHANI_OPT=$("$CC" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
 
 ###############################################################################
 
@@ -85,12 +86,20 @@ rm -rf "$NETTLE_DIR" &>/dev/null
 gzip -d < "$NETTLE_TAR" | tar xf -
 cd "$NETTLE_DIR" || exit 1
 
-cp ../patch/nettle.patch .
-patch -u -p0 < nettle.patch
-echo ""
+if [[ -e ../patch/nettle.patch ]]; then
+    cp ../patch/nettle.patch .
+    patch -u -p0 < nettle.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
+
+for file in $(find "$PWD" -name 'Makefile' -name 'Makefile.in')
+do
+    sed 's/ -ggdb3//g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done
 
 # Awful Solaris 64-bit hack. Rewrite some values
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
@@ -106,8 +115,19 @@ CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--disable-documentation")
 
+if [[ "$IS_SOLARIS" -eq 1 ]]
+then
+    if [[ "$INSTX_BITNESS" -eq 64 && "$IS_AMD64" -eq 1 ]]; then
+        CONFIG_OPTS+=(--host=amd64-sun-solaris)
+    fi
+fi
+
 if [[ "$IS_IA32" -ne 0 && "$AESNI_OPT" -eq 1 ]]; then
-    CONFIG_OPTS+=("--enable-fat")
+    CONFIG_OPTS+=("--enable-x86-aesni")
+fi
+
+if [[ "$IS_IA32" -ne 0 && "$SHANI_OPT" -eq 1 ]]; then
+    CONFIG_OPTS+=("--enable-x86-sha-ni")
 fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
