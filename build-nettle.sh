@@ -95,18 +95,12 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-sed 's/ -ggdb3 / /g' configure > configure.fixed
-mv configure.fixed configure; chmod +x configure
-
-sed 's/ -G / -shared /g' configure > configure.fixed
-mv configure.fixed configure; chmod +x configure
-
 # Awful Solaris 64-bit hack. Rewrite some values
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
-    # Solaris requires -shared for shared object
-    sed 's| -G -h| -shared -h|g' configure.ac > configure.ac.fixed
-    mv configure.ac.fixed configure.ac; chmod +x configure.ac
-    touch -t 197001010000 configure.ac
+    sed 's/ -ggdb3 / /g' configure > configure.fixed
+    mv configure.fixed configure; chmod +x configure
+    sed 's/ -G / -shared /g' configure > configure.fixed
+    mv configure.fixed configure; chmod +x configure
 fi
 
 CONFIG_OPTS=()
