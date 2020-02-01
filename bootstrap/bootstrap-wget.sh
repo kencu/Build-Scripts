@@ -30,9 +30,41 @@ trap finish EXIT
 # Sets the number of make jobs if not set in environment
 : "${INSTX_JOBS:=2}"
 
+###############################################################################
+
+# Autotools on Solaris has an implied requirement for GNU gear. Things fall apart without it.
+# Also see https://blogs.oracle.com/partnertech/entry/preparing_for_the_upcoming_removal.
+if [[ -d "/usr/gnu/bin" ]]; then
+    if [[ ! ("$PATH" == *"/usr/gnu/bin"*) ]]; then
+        echo
+        echo "Adding /usr/gnu/bin to PATH for Solaris"
+        export PATH="/usr/gnu/bin:$PATH"
+    fi
+elif [[ -d "/usr/swf/bin" ]]; then
+    if [[ ! ("$PATH" == *"/usr/sfw/bin"*) ]]; then
+        echo
+        echo "Adding /usr/sfw/bin to PATH for Solaris"
+        export PATH="/usr/sfw/bin:$PATH"
+    fi
+elif [[ -d "/usr/ucb/bin" ]]; then
+    if [[ ! ("$PATH" == *"/usr/ucb/bin"*) ]]; then
+        echo
+        echo "Adding /usr/ucb/bin to PATH for Solaris"
+        export PATH="/usr/ucb/bin:$PATH"
+    fi
+fi
+
 ############################## Misc ##############################
 
-: "${CC:=cc}"
+if [[ -z "$CC" ]]
+then
+    if [[ -n $(command -v cc 2>/dev/null) ]]; then
+        CC=cc
+    elif [[ -n $(command -v gcc 2>/dev/null) ]]; then
+        CC=gcc
+    fi
+fi
+
 if $CC $CFLAGS bitness.c -o /dev/null &>/dev/null; then
     INSTX_BITNESS=64
 else
