@@ -94,6 +94,7 @@ mv configure.new configure
 chmod +x configure
 
 CONFIG_OPTS=()
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--with-tls=openssl")
@@ -112,7 +113,8 @@ fi
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-./configure "${CONFIG_OPTS[@]}"
+./configure \
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenLDAP"

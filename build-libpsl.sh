@@ -109,7 +109,11 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --enable-shared --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --host="$AUTOCONF_HOST" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared \
     --enable-runtime=libidn2 \
     --enable-builtin=libidn2 \
     --with-libiconv-prefix="$INSTX_PREFIX" \

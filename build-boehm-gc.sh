@@ -71,6 +71,7 @@ cd "$GC_DIR"
 ../fix-config.sh
 
 CONFIG_OPTS=()
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
@@ -81,7 +82,8 @@ CONFIG_OPTS+=("--enable-shared")
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure "${CONFIG_OPTS[@]}"
+./configure \
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Boehm GC"

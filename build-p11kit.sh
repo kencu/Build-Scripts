@@ -85,7 +85,11 @@ cd "$P11KIT_DIR"
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-CONFIG_OPTS=("--enable-shared" "--prefix=$INSTX_PREFIX" "--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS=()
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
+CONFIG_OPTS+=("--prefix=$INSTX_PREFIX"
+CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--enable-shared")
 
 # Use the path if available
 if [[ -n "$SH_CACERT_PATH" ]]; then
@@ -105,7 +109,8 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure "${CONFIG_OPTS[@]}"
+./configure \
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure p11-kit"

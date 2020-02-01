@@ -78,8 +78,9 @@ cd "$PKGCONFIG_DIR"
 ../fix-config.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS=("--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
+CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS=(--with-internal-glib)

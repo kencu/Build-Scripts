@@ -77,20 +77,13 @@ fi
 ../fix-config.sh
 
 CONFIG_OPTS=()
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-static")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--enable-assert=no")
-
-if [[ "$IS_SOLARIS" -ne 0 ]]
-then
-    if [[ "$INSTX_BITNESS" -eq 64 && "$IS_AMD64" -eq 1 ]]; then
-        CONFIG_OPTS+=(--host=amd64-sun-solaris)
-    fi
-fi
-
-CONFIG_OPTS+=(ABI="$INSTX_BITNESS")
+CONFIG_OPTS+=("ABI=$INSTX_BITNESS")
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

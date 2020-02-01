@@ -104,17 +104,11 @@ if [[ "$IS_SOLARIS" -eq 1 ]]; then
 fi
 
 CONFIG_OPTS=()
+CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--disable-documentation")
-
-if [[ "$IS_SOLARIS" -eq 1 ]]
-then
-    if [[ "$INSTX_BITNESS" -eq 64 && "$IS_AMD64" -eq 1 ]]; then
-        CONFIG_OPTS+=(--host=amd64-sun-solaris)
-    fi
-fi
 
 if [[ "$IS_IA32" -ne 0 && "$AESNI_OPT" -eq 1 ]]; then
     CONFIG_OPTS+=("--enable-x86-aesni")
