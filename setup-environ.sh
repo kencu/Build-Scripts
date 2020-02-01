@@ -407,6 +407,14 @@ else
     fi
 fi
 
+# Msan option
+if [[ -z "$SH_MSAN_ORIGIN" ]]; then
+    SH_ERROR=$($TEST_CC -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$SH_ERROR" -eq 0 ]]; then
+        SH_MSAN_ORIGIN=1
+    fi
+fi
+
 ###############################################################################
 
 # CA cert path? Also see http://gagravarr.org/writing/openssl-certs/others.shtml
@@ -456,13 +464,17 @@ elif [[ -n "$INSTX_ASAN" ]]; then
 elif [[ -n "$INSTX_MSAN" ]]; then
     BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_MSAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=memory"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize-memory-track-origins"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-omit-frame-pointer"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=memory"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize-memory-track-origins"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=memory"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fno-omit-frame-pointer"
+
+    if [[ -n "$SH_MSAN_ORIGIN" ]]; then
+        BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize-memory-track-origins"
+        BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize-memory-track-origins"
+        BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize-memory-track-origins"
+    fi
 fi
 
 if [[ -n "$SH_ARMV8" ]]; then
