@@ -59,9 +59,11 @@ fi
 if [[ -z "$CC" ]]
 then
     if [[ -n $(command -v cc 2>/dev/null) ]]; then
-        CC=cc
+        CC=cc; CXX=CC
     elif [[ -n $(command -v gcc 2>/dev/null) ]]; then
-        CC=gcc
+        CC=gcc; CXX=g++
+    elif [[ -n $(command -v clang 2>/dev/null) ]]; then
+        CC=clang; CXX=clang++
     fi
 fi
 

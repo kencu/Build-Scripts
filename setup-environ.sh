@@ -150,7 +150,7 @@ IS_CYGWIN=$(echo -n "$THIS_SYSTEM" | grep -i -c 'cygwin')
 IS_OPENBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'openbsd')
 IS_FREEBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'freebsd')
 IS_NETBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'netbsd')
-IS_BSD_FAMILY=$(echo -n "$THIS_SYSTEM" | grep -i -c -E 'freebsd|netbsd|openbsd')
+IS_BSD_FAMILY=$(echo -n "$THIS_SYSTEM" | grep -i -c -E 'dragonfly|freebsd|netbsd|openbsd')
 
 # Red Hat and derivatives use /lib64, not /lib.
 IS_REDHAT=$(grep -i -c 'redhat' /etc/redhat-release 2>/dev/null)
