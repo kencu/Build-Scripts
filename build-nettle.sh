@@ -95,7 +95,7 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-for file in $(find "$PWD" -name 'Makefile' -name 'Makefile.in')
+for file in $(find "$PWD" -name 'Makefile' -name 'Makefile.in' -name 'configure')
 do
     sed 's/ -ggdb3//g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
