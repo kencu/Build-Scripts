@@ -161,9 +161,6 @@ if [[ -z "$MAKE" ]]; then
     fi
 fi
 
-# Needed for OpenSSL and make jobs
-IS_GMAKE=$($MAKE -v 2>&1 | grep -i -c 'gnu make')
-
 # If CC and CXX are not set, then use default or assume GCC
 if [[ -z "$CC" ]] && [[ -n "$(command -v gcc)" ]]; then export CC='gcc'; fi
 if [[ -z "$CC" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
