@@ -169,29 +169,30 @@
    }
 --- pp.c
 +++ pp.c
-@@ -32,6 +32,13 @@
+@@ -32,6 +32,14 @@
  #include "reentr.h"
  #include "regcharclass.h"
  
 +/* Inline ASM due to undefined buhavior and testing with UBsan. ASM does
 + * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
++ * SunC added GCC inline asm support at version 12.1.
 + */
-+#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER)
++#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER) || (__SUNPRO_C >= 0x5100)
 +# define GCC_INLINE_ASM 1
 +#endif
 +
  /* variations on pp_null */
  
  PP(pp_stub)
-@@ -2618,7 +2625,17 @@
+@@ -2618,7 +2626,17 @@
      tryAMAGICbin_MG(mult_amg, AMGf_assign);
      {
        dPOPTOPiirl_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
 +      long int res;
 +      __asm__ ("imulq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "rdx", "cc" );
 +      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
 +      long int res;
 +      __asm__ ("imull %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "edx", "cc" );
 +      SETi( res );
@@ -201,7 +202,7 @@
        RETURN;
      }
  }
-@@ -2637,7 +2654,7 @@
+@@ -2637,7 +2655,7 @@
  
        /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
        if (value == -1)
@@ -210,15 +211,15 @@
        else
            value = num / value;
        SETi(value);
-@@ -2693,7 +2710,17 @@
+@@ -2693,7 +2711,17 @@
      tryAMAGICbin_MG(add_amg, AMGf_assign);
      {
        dPOPTOPiirl_ul_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
 +      long int res;
 +      __asm__ ("addq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
 +      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
 +      long int res;
 +      __asm__ ("addl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
 +      SETi( res );
@@ -228,15 +229,15 @@
        RETURN;
      }
  }
-@@ -2704,7 +2731,17 @@
+@@ -2704,7 +2732,17 @@
      tryAMAGICbin_MG(subtr_amg, AMGf_assign);
      {
        dPOPTOPiirl_ul_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64__) || defined(__amd64__))
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
 +      long int res;
 +      __asm__ ("subq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
 +      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386__) || defined(__i686__))
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
 +      long int res;
 +      __asm__ ("subl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
 +      SETi( res );
@@ -246,7 +247,7 @@
        RETURN;
      }
  }
-@@ -2802,7 +2839,7 @@
+@@ -2802,7 +2840,7 @@
      {
  	SV * const sv = TOPs;
  	IV const i = SvIV_nomg(sv);
