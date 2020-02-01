@@ -171,12 +171,16 @@ IS_GCC=$("$CC" --version 2>&1 | grep -i -c -E 'gcc')
 IS_CLANG=$("$CC" --version 2>&1 | grep -i -c -E 'clang|llvm')
 TEST_CC="$CC"
 
+# Where the package will run. We need to override for 64-bit Solaris.
+# On Solaris some Autotools packages use 32-bit instead of 64-bit build.
+AUTOCONF_HOST=$(bash patch/config.guess 2>/dev/null)
+
 ###############################################################################
 
 # Use 64-bit for Solaris if available
 # https://docs.oracle.com/cd/E37838_01/html/E66175/features-1.html
 
-if [[ "$IS_SOLARIS" -ne 0 ]] && [[ -n $(command -v isainfo) ]]
+if [[ "$IS_SOLARIS" -ne 0 ]]
 then
     if [[ $(isainfo -b 2>/dev/null) = 64 ]]; then
         CFLAGS64=-m64
@@ -205,9 +209,7 @@ if [[ -z "$INSTX_PREFIX" ]]; then
     INSTX_PREFIX="/usr/local"
 fi
 
-# Don't override a user choice of INSTX_LIBDIR. Use relative paths so we
-# don't need hard-coded paths. Initial check-in at for INSTX_RPATH at
-# https://github.com/noloader/Build-Scripts/commit/e100e6dc7d8e .
+# Don't override a user choice of INSTX_LIBDIR. Also see
 # https://blogs.oracle.com/dipol/dynamic-libraries,-rpath,-and-mac-os
 if [[ -z "$INSTX_LIBDIR" ]]
 then
@@ -221,9 +223,6 @@ then
     if [[ "$IS_SOLARIS" -ne 0 ]]; then
         INSTX_LIBDIR="$INSTX_PREFIX/lib"
         INSTX_RPATH="'""\$\$ORIGIN/../lib""'"
-    elif [[ "$IS_DARWIN" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
-        INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_RPATH="@loader_path/../lib"
     elif [[ "$IS_DARWIN" -ne 0 ]]; then
         INSTX_LIBDIR="$INSTX_PREFIX/lib"
         INSTX_RPATH="@loader_path/../lib"
@@ -244,6 +243,11 @@ fi
 # Solaris Fixup
 if [[ "$IS_IA32" -eq 1 ]] && [[ "$INSTX_BITNESS" -eq 64 ]]; then
     IS_AMD64=1
+fi
+
+# Solaris Fixup
+if [[ "$IS_SOLARIS" -eq 1 && "$IS_AMD64" -eq 1 ]]; then
+    AUTOCONF_HOST="amd64-sun-solaris"
 fi
 
 ###############################################################################
@@ -544,6 +548,7 @@ if [[ -z "$PRINT_ONCE" ]]; then
     echo "   INSTX_LIBDIR: $INSTX_LIBDIR"
     echo "    INSTX_RPATH: $INSTX_RPATH"
     echo ""
+    echo "  AUTOCONF_HOST: $AUTOCONF_HOST"
     echo "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
     echo "       CPPFLAGS: ${BUILD_CPPFLAGS[*]}"
     echo "         CFLAGS: ${BUILD_CFLAGS[*]}"
