@@ -121,14 +121,6 @@ echo
 echo "********** Git **********"
 echo
 
-echo "Environment:"
-echo "  PATH: $PATH"
-echo "  wget: $WGET"
-echo "  grep: $(command -v grep)"
-echo "   sed: $(command -v sed)"
-echo "   awk: $(command -v awk)"
-echo ""
-
 if ! "$WGET" -O "$GIT_TAR" --ca-certificate="$CA_ZOO" \
      "https://mirrors.edge.kernel.org/pub/software/scm/git/$GIT_TAR"
 then
@@ -140,9 +132,11 @@ rm -rf "$GIT_DIR" &>/dev/null
 gzip -d < "$GIT_TAR" | tar xf -
 cd "$GIT_DIR"
 
-cp ../patch/git.patch .
-patch -u -p0 < git.patch
-echo ""
+if [[ -e ../patch/git.patch ]]; then
+    cp ../patch/git.patch .
+    patch -u -p0 < git.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
