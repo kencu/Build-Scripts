@@ -137,9 +137,11 @@ rm -rf "$GNUTLS_TAR" "$GNUTLS_DIR" &>/dev/null
 unxz "$GNUTLS_XZ" && tar -xf "$GNUTLS_TAR"
 cd "$GNUTLS_DIR" || exit 1
 
-#cp ../patch/gnutls.patch .
-#patch -u -p0 < gnutls.patch
-#echo ""
+if [[ -e ../patch/gnutls.patch ]]; then
+    cp ../patch/gnutls.patch .
+    patch -u -p0 < gnutls.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -149,6 +151,8 @@ if [[ "$IS_SOLARIS" -ne 0 ]]; then
     # Don't use CPPFLAGS. _XOPEN_SOURCE will cross-pollinate into CXXFLAGS.
     BUILD_CFLAGS+=("-D_XOPEN_SOURCE=600 -std=gnu99")
 fi
+
+# We should probably include --disable-anon-authentication below
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -160,21 +164,24 @@ fi
     --host="$AUTOCONF_HOST" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --enable-static \
     --enable-shared \
     --enable-seccomp-tests \
+    --enable-sha1-support \
     --disable-guile \
     --disable-ssl2-support \
     --disable-ssl3-support \
-    --disable-gtk-doc \
-    --disable-gtk-doc-html \
-    --disable-gtk-doc-pdf \
+    --disable-openssl-compatibility \
+    --disable-doc \
     --with-p11-kit \
     --with-libregex \
-    --with-nettle-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libseccomp-prefix="$INSTX_PREFIX" \
-    --with-unbound-root-key-file="$SH_UNBOUND_ROOTKEY_FILE"
+    --with-libcrypto-prefix="$INSTX_PREFIX" \
+    --with-unbound-root-key-file="$SH_UNBOUND_ROOTKEY_FILE" \
+    --with-default-trust-store-file="$SH_CACERT_FILE" \
+    --with-default-trust-store-dir="$SH_CACERT_PATH"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GnuTLS"
