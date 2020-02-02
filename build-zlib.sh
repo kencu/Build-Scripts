@@ -11,7 +11,7 @@ PKG_NAME=zlib
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -63,7 +63,7 @@ fi
 
 rm -rf "$ZLIB_DIR" &>/dev/null
 gzip -d < "$ZLIB_TAR" | tar xf -
-cd "$ZLIB_DIR"
+cd "$ZLIB_DIR" || exit 1
 
 cp ../patch/zlib.patch .
 patch -u -p0 < zlib.patch
@@ -78,7 +78,9 @@ echo ""
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
@@ -127,7 +129,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"

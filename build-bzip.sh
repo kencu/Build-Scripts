@@ -9,6 +9,7 @@
 
 BZIP2_TAR=bzip2-1.0.8.tar.gz
 BZIP2_DIR=bzip2-1.0.8
+BZIP2_VER=1.0.8
 PKG_NAME=bzip2
 
 ###############################################################################
@@ -140,11 +141,12 @@ echo "**********************"
     echo "prefix=$INSTX_PREFIX"
     echo "exec_prefix=\${prefix}"
     echo "libdir=$INSTX_LIBDIR"
+    echo "sharedlibdir=\${libdir}"
     echo "includedir=\${prefix}/include"
     echo ""
-    echo "Name: Berkeley DB"
-    echo "Description: Bzip2 client library"
-    echo "Version: 1.0.8"
+    echo "Name: Bzip2"
+    echo "Description: Bzip2 compression library"
+    echo "Version: $BZIP2_VER"
     echo ""
     echo "Requires:"
     echo "Libs: -L\${libdir} -lbz2"
