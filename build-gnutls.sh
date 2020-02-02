@@ -171,7 +171,6 @@ fi
     --disable-guile \
     --disable-ssl2-support \
     --disable-ssl3-support \
-    --disable-openssl-compatibility \
     --disable-doc \
     --with-p11-kit \
     --with-libregex \
