@@ -78,9 +78,15 @@ then
     exit 1
 fi
 
-rm -rf "$P11KIT_DIR" &>/dev/null
+rm -rf "$P11KIT_TAR" "$P11KIT_DIR" &>/dev/null
 unxz "$P11KIT_XZ" && tar -xf "$P11KIT_TAR"
 cd "$P11KIT_DIR"
+
+if [[ -e ../patch/p11kit.patch ]]; then
+    cp ../patch/p11kit.patch .
+    patch -u -p0 < p11kit.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -90,6 +96,10 @@ CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
+CONFIG_OPTS+=("--with-libiconv-prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-libintl-prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--without-systemd")
+CONFIG_OPTS+=("--without-bash-completion")
 
 # Use the path if available
 if [[ -n "$SH_CACERT_PATH" ]]; then
@@ -119,9 +129,10 @@ fi
 
 # On Solaris the script puts /usr/gnu/bin on-path, so we get a useful grep
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
-    for sfile in $(grep -IR '#define _XOPEN_SOURCE' "$PWD" | cut -f 1 -d ':' | sort | uniq); do
-        sed -e '/#define _XOPEN_SOURCE/d' "$sfile" > "$sfile.fixed"
-        mv "$sfile.fixed" "$sfile"
+    for file in $(grep -IR '#define _XOPEN_SOURCE' "$PWD" | cut -f 1 -d ':' | sort | uniq)
+    do
+        sed -e '/#define _XOPEN_SOURCE/d' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
     done
 fi
 
