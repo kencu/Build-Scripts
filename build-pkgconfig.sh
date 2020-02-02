@@ -25,7 +25,7 @@ trap finish EXIT
 ###############################################################################
 
 # pkg-config is special
-export INSTX_DISABLE_AUTOTOOLS_CHECK=1
+export INSTX_DISABLE_PKGCONFIG_CHECK=1
 
 # Get the environment as needed. We can't export it because it includes arrays.
 if ! source ./setup-environ.sh

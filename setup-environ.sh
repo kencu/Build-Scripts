@@ -24,7 +24,7 @@
 
 # Prerequisites needed for nearly all packages. Set to false to skip check.
 
-if [[ "$INSTX_DISABLE_AUTOTOOLS_CHECK" -ne 1 ]]
+if [[ "$INSTX_DISABLE_PKGCONFIG_CHECK" -ne 1 ]]
 then
     if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
         echo "Some packages require Package-Config. Please install pkg-config."

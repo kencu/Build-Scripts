@@ -183,7 +183,9 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="-lssl -lcrypto -lz ${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" \
+./configure \
+    --host="$AUTOCONF_HOST" \
+    --prefix="$INSTX_PREFIX" \
     --with-lib="$(basename "$INSTX_LIBDIR")" \
     --with-sane-tool-path="$INSTX_PREFIX/bin" \
     --enable-pthreads \
