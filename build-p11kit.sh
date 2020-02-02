@@ -87,7 +87,7 @@ cd "$P11KIT_DIR"
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--host=$AUTOCONF_HOST")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX"
+CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 
