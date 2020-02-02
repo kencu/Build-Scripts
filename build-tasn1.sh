@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds tasn1 from sources.
 
-TASN1_TAR=libtasn1-4.15.0.tar.gz
-TASN1_DIR=libtasn1-4.15.0
+TASN1_TAR=libtasn1-4.16.0.tar.gz
+TASN1_DIR=libtasn1-4.16.0
 PKG_NAME=tasn1
 
 ###############################################################################
@@ -79,6 +79,7 @@ echo ""
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    --host="$AUTOCONF_HOST"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-shared
