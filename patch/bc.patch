@@ -1,5 +1,5 @@
---- Makefile.in.orig	2019-05-07 11:44:50.080221092 -0400
-+++ Makefile.in	2019-05-07 11:46:25.240028617 -0400
+--- Makefile.in
++++ Makefile.in
 @@ -288,7 +288,7 @@
  top_build_prefix = @top_build_prefix@
  top_builddir = @top_builddir@
