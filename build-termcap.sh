@@ -5,13 +5,14 @@
 
 TERMCAP_TAR=termcap-1.3.1.tar.gz
 TERMCAP_DIR=termcap-1.3.1
+TERMCAP_VER=1.3.1
 PKG_NAME=termcap
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -63,24 +64,13 @@ fi
 
 rm -rf "$TERMCAP_DIR" &>/dev/null
 gzip -d < "$TERMCAP_TAR" | tar xf -
-cd "$TERMCAP_DIR"
+cd "$TERMCAP_DIR" || exit 1
 
-cp ../patch/termcap.patch .
-patch -u -p0 < termcap.patch
-echo ""
-
-# Write package config file
-rm -f 2>/dev/null termcap.pc
-echo 'prefix='"$INSTX_PREFIX" >> termcap.pc
-echo 'libdir=${prefix}/'"$(basename "$INSTX_LIBDIR")" >> termcap.pc
-echo 'includedir=${prefix}/include' >> termcap.pc
-echo '' >> termcap.pc
-echo 'Name: Termcap' >> termcap.pc
-echo 'Version: 1.3.1' >> termcap.pc
-echo 'Description: Terminal capabilites library' >> termcap.pc
-echo 'URL: https://www.gnu.org/software/termutils' >> termcap.pc
-echo 'Libs: -L${libdir} -ltermcap' >> termcap.pc
-echo 'Cflags: -I${includedir}' >> termcap.pc
+if [[ -e ../patch/termcap.patch ]]; then
+    cp ../patch/termcap.patch .
+    patch -u -p0 < termcap.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -118,33 +108,54 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check" "V=1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
-then
-    echo "Failed to test Termcap"
-    #exit 1
-fi
+#MAKE_FLAGS=("check" "V=1")
+#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#then
+#    echo "Failed to test Termcap"
+#    exit 1
+#fi
 
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
-then
-    echo "Failed to test Termcap"
-    exit 1
-fi
+echo "Package not tested"
 
 echo "**********************"
 echo "Installing package"
 echo "**********************"
 
+# Write the *.pc file
+{
+    echo ""
+    echo "prefix=$INSTX_PREFIX"
+    echo "exec_prefix=\${prefix}"
+    echo "libdir=$INSTX_LIBDIR"
+    echo "sharedlibdir=\${libdir}"
+    echo "includedir=\${prefix}/include"
+    echo ""
+    echo "Name: Termcap"
+    echo "Description: Terminal capabilites library"
+    echo 'URL: https://www.gnu.org/software/termutils'
+    echo "Version: $TERMCAP_VER"
+    echo ""
+    echo "Requires:"
+    echo "Libs: -L\${libdir} -ltermcap"
+    echo "Cflags: -I\${includedir}"
+} > termcap.pc
+
 MAKE_FLAGS=("install" "libdir=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+
+    echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S cp termcap.pc "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/termcap.pc"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
+
+    mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    cp termcap.pc "$INSTX_LIBDIR/pkgconfig"
+    chmod 644 "$INSTX_LIBDIR/pkgconfig/termcap.pc"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
