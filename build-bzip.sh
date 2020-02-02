@@ -134,18 +134,43 @@ echo "**********************"
 echo "Installing package"
 echo "**********************"
 
+# Write the *.pc file
+{
+    echo ""
+    echo "prefix=$INSTX_PREFIX"
+    echo "exec_prefix=\${prefix}"
+    echo "libdir=$INSTX_LIBDIR"
+    echo "includedir=\${prefix}/include"
+    echo ""
+    echo "Name: Berkeley DB"
+    echo "Description: Bzip2 client library"
+    echo "Version: 1.0.8"
+    echo ""
+    echo "Requires:"
+    echo "Libs: -L\${libdir} -lbz2"
+    echo "Cflags: -I\${includedir}"
+} > libbz2.pc
+
 if [[ -n "$SUDO_PASSWORD" ]]; then
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+
+    echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
 
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
+
+    mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 fi
 
 cd "$CURR_DIR" || exit 1
