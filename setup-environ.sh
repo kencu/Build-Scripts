@@ -279,6 +279,7 @@ fi
 if [[ $(grep -i -c -E 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
     SH_ERROR=$($TEST_CC -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
+        IS_ARM_NEON=1
         SH_ARMV7="-march=armv7-a -mfpu=neon"
     fi
 fi

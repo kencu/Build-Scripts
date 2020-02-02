@@ -66,8 +66,9 @@ fi
 ###############################################################################
 
 # See if AES-NI and SHA are available in the compiler
-AESNI_OPT=$("$CC" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
-SHANI_OPT=$("$CC" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
+AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
+SHANI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
+NEON_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E - </dev/null 2>&1 | grep -i -c "__NEON__")
 
 ###############################################################################
 
@@ -97,8 +98,6 @@ fi
 
 # Awful Solaris 64-bit hack. Rewrite some values
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
-    sed 's/ -ggdb3 / /g' configure > configure.fixed
-    mv configure.fixed configure; chmod +x configure
     sed 's/ -G / -shared /g' configure > configure.fixed
     mv configure.fixed configure; chmod +x configure
 fi
@@ -110,12 +109,24 @@ CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--disable-documentation")
 
-if [[ "$IS_IA32" -ne 0 && "$AESNI_OPT" -eq 1 ]]; then
+if [[ "$IS_IA32" -eq 1 && "$AESNI_OPT" -eq 1 ]]; then
+    echo "Compiler supports AES-NI. Adding --enable-x86-aesni"
     CONFIG_OPTS+=("--enable-x86-aesni")
 fi
 
-if [[ "$IS_IA32" -ne 0 && "$SHANI_OPT" -eq 1 ]]; then
+if [[ "$IS_IA32" -eq 1 && "$SHANI_OPT" -eq 1 ]]; then
+    echo "Compiler supports SHA-NI. Adding --enable-x86-sha-ni"
     CONFIG_OPTS+=("--enable-x86-sha-ni")
+fi
+
+if [[ "$IS_ARM_NEON" -eq 1 && "$NEON_OPT" -eq 1 ]]; then
+    echo "Compiler supports ARM NEON. Adding --enable-arm-neon"
+    CONFIG_OPTS+=("--enable-arm-neon")
+fi
+
+if [[ ("$IS_IA32" -eq 1 || "$IS_ARM_NEON" -eq 1) && "$IS_IA32" -eq 1 ]]; then
+    echo "Using runtime algorithm selection. Adding --enable-fat"; echo ""
+    CONFIG_OPTS+=("--enable-fat")
 fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
