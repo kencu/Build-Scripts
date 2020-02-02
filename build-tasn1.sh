@@ -79,7 +79,7 @@ echo ""
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    --host="$AUTOCONF_HOST"
+    --host="$AUTOCONF_HOST" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-shared
