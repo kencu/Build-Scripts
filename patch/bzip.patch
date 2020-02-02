@@ -14,8 +14,8 @@
  #else
  #ifdef _MSC_VER
     typedef  unsigned __int64  MaybeUInt64;
---- Makefile.orig	2020-02-02 11:02:56.380930103 -0500
-+++ Makefile	2020-02-02 11:03:28.025421865 -0500
+--- Makefile
++++ Makefile
 @@ -46,7 +46,7 @@
        decompress.o \
        bzlib.o
