@@ -241,7 +241,7 @@ if [[ -z "$INSTX_RPATH" ]]; then
 fi
 
 # Solaris Fixup
-if [[ "$IS_IA32" -eq 1 ]] && [[ "$INSTX_BITNESS" -eq 64 ]]; then
+if [[ "$IS_IA32" -eq 1 ]] && [[ "$IS_64BIT" -eq 1 ]]; then
     IS_AMD64=1
 fi
 
