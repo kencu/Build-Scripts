@@ -111,12 +111,12 @@ then
     AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
     SHANI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
 
-    if [[ "$AESNI_OPT" -eq 1 ]]; then
+    if [[ "$AESNI_OPT" -ne 0 ]]; then
         echo "Compiler supports AES-NI. Adding --enable-x86-aesni"
         CONFIG_OPTS+=("--enable-x86-aesni")
     fi
 
-    if [[ "$SHANI_OPT" -eq 1 ]]; then
+    if [[ "$SHANI_OPT" -ne 0 ]]; then
         echo "Compiler supports SHA-NI. Adding --enable-x86-sha-ni"
         CONFIG_OPTS+=("--enable-x86-sha-ni")
     fi
@@ -130,7 +130,7 @@ then
 
     NEON_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E - </dev/null 2>&1 | grep -i -c "__NEON__")
 
-    if [[ "$NEON_OPT" -eq 1 ]]; then
+    if [[ "$NEON_OPT" -ne 0 ]]; then
         echo "Compiler supports ARM NEON. Adding --enable-arm-neon"
         CONFIG_OPTS+=("--enable-arm-neon")
     fi
