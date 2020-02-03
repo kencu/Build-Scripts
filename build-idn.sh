@@ -80,6 +80,12 @@ rm -rf "$IDN_DIR" &>/dev/null
 gzip -d < "$IDN_TAR" | tar xf -
 cd "$IDN_DIR" || exit 1
 
+if [[ -e ../patch/idn.patch ]]; then
+    cp ../patch/idn.patch .
+    patch -u -p0 < idn.patch
+    echo ""
+fi
+
 # https://bugs.launchpad.net/ubuntu/+source/binutils/+bug/1340250
 if [[ -n "$SH_NO_AS_NEEDED" ]]; then
     BUILD_LIBS+=("$SH_NO_AS_NEEDED")
@@ -100,6 +106,7 @@ fi
     --enable-shared \
     --disable-rpath \
     --disable-doc \
+    --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
     --with-libunistring-prefix="$INSTX_PREFIX"
 

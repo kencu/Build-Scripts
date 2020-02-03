@@ -80,6 +80,12 @@ rm -rf "$IDN2_DIR" &>/dev/null
 gzip -d < "$IDN2_TAR" | tar xf -
 cd "$IDN2_DIR" || exit 1
 
+if [[ -e ../patch/idn2.patch ]]; then
+    cp ../patch/idn2.patch .
+    patch -u -p0 < idn2.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
@@ -164,9 +170,9 @@ if true; then
         rm -rf "$artifact"
     done
 
-    # ./build-idn.sh 2>&1 | tee build-idn.log
-    if [[ -e build-idn.log ]]; then
-        rm -f build-idn.log
+    # ./build-idn2.sh 2>&1 | tee build-idn2.log
+    if [[ -e build-idn2.log ]]; then
+        rm -f build-idn2.log
     fi
 fi
 
