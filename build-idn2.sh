@@ -11,7 +11,7 @@ PKG_NAME=libidn2
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -78,7 +78,7 @@ fi
 
 rm -rf "$IDN2_DIR" &>/dev/null
 gzip -d < "$IDN2_TAR" | tar xf -
-cd "$IDN2_DIR"
+cd "$IDN2_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
@@ -94,6 +94,7 @@ cd "$IDN2_DIR"
     --libdir="$INSTX_LIBDIR" \
     --enable-shared \
     --disable-doc \
+    --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
     --with-libunistring-prefix="$INSTX_PREFIX"
 
@@ -117,31 +118,12 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Clang static links, GCC dynamic links. LIBASAB may be empty.
-if [[ -n "$INSTX_ASAN" ]]
+MAKE_FLAGS=("check" "V=1")
+if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    # Determine the libasan.so that will be used.
-    LIBASAB=$(ldd lib/.libs/libidn2.so | grep -E 'libasan.so.*' | awk '{print $3}')
-    echo "Using Asan library: $LIBASAB"
-fi
-
-# See if we need to LD_PRELOAD.
-if [[ -n "$LIBASAB" ]]
-then
-    MAKE_FLAGS=("check" "V=1")
-    if ! LD_PRELOAD="$LIBASAB" "$MAKE" "${MAKE_FLAGS[@]}"
-    then
-        echo "Failed to test IDN2"
-        exit 1
-    fi
-else
-    MAKE_FLAGS=("check" "V=1")
-    if ! "$MAKE" "${MAKE_FLAGS[@]}"
-    then
-        echo "Failed to test IDN2"
-        echo "Installing IDN2 anyways..."
-        #exit 1
-    fi
+    echo "Failed to test IDN2"
+    echo "Installing IDN2 anyways..."
+    #exit 1
 fi
 
 echo "Searching for errors hidden in log files"
@@ -156,6 +138,10 @@ echo "**********************"
 echo "Installing package"
 echo "**********************"
 
+# Delete Libs.private from the *.pc file. Some scripts cannot parse the output.
+sed '/^Libs.private/d' libidn2.pc > libidn2.pc.new
+mv libidn2.pc.new libidn2.pc
+
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
@@ -163,7 +149,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"
