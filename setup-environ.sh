@@ -174,7 +174,7 @@ TEST_CC="$CC"
 
 # Where the package will run. We need to override for 64-bit Solaris.
 # On Solaris some Autotools packages use 32-bit instead of 64-bit build.
-AUTOCONF_HOST=$(bash patch/config.guess 2>/dev/null)
+AUTOCONF_BUILD=$(bash patch/config.guess 2>/dev/null)
 
 ###############################################################################
 
@@ -248,7 +248,7 @@ fi
 
 # Solaris Fixup
 if [[ "$IS_SOLARIS" -eq 1 && "$IS_AMD64" -eq 1 ]]; then
-    AUTOCONF_HOST="amd64-sun-solaris"
+    AUTOCONF_BUILD="amd64-sun-solaris"
 fi
 
 ###############################################################################
@@ -550,7 +550,7 @@ if [[ -z "$PRINT_ONCE" ]]; then
     echo "   INSTX_LIBDIR: $INSTX_LIBDIR"
     echo "    INSTX_RPATH: $INSTX_RPATH"
     echo ""
-    echo "  AUTOCONF_HOST: $AUTOCONF_HOST"
+    echo " AUTOCONF_BUILD: $AUTOCONF_BUILD"
     echo "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
     echo "       CPPFLAGS: ${BUILD_CPPFLAGS[*]}"
     echo "         CFLAGS: ${BUILD_CFLAGS[*]}"

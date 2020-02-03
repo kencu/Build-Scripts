@@ -191,7 +191,7 @@ fi
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="-lssl -lcrypto -lz ${BUILD_LIBS[*]}" \
 ./configure \
-    --host="$AUTOCONF_HOST" \
+    --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --with-lib="$(basename "$INSTX_LIBDIR")" \
     --with-sane-tool-path="$INSTX_PREFIX/bin" \
