@@ -213,18 +213,6 @@ fi
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
 ../fix-library-path.sh
 
-# Solaris 11.3 work-around. The OS has inet_ntop and inet_pton
-if [[ "$IS_SOLARIS" -ne 0 ]]
-then
-    for file in $(find "$PWD" -name 'Makefile')
-    do
-        sed '/ifdef NO_INET_NTOP/,+3 d' "$file" > "$file.fixed"
-        mv "$file.fixed" "$file"
-        sed '/ifdef NO_INET_PTON/,+3 d' "$file" > "$file.fixed"
-        mv "$file.fixed" "$file"
-    done
-fi
-
 # See INSTALL for the formats and the requirements
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 
