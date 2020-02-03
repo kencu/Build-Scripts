@@ -151,6 +151,14 @@ then
     exit 1
 fi
 
+# Fix "rm: conftest.dSYM: is a directory" on Darwin
+# https://lists.gnu.org/archive/html/bug-autoconf/2007-11/msg00032.html
+if [[ "$IS_DARWIN" -ne 0 ]]
+then
+    sed 's/rm -f core/rm -rf core/g' configure > configure.new
+    mv configure.new configure; chmod +x configure
+fi
+
 # Solaris 11.3 no longer has /usr/ucb/install
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
@@ -271,9 +279,11 @@ echo "**********************"
 MAKE_FLAGS=("install")
 
 # Git builds things during install, and they end up root:root.
+# The chmod allows us to remove them at cleanup. Can't use octal
+# due to OS X 10.5 on PowerMac.
 if [[ -n "$SUDO_PASSWORD" ]]; then
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
-    echo "$SUDO_PASSWORD" | sudo -S chmod -R 0777
+    echo "$SUDO_PASSWORD" | sudo -S chmod -R a+rwx
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
