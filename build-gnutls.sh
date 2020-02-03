@@ -222,10 +222,6 @@ do
     cp -p "$file" "$file.fixed"
     sed -e 's| -DNDEBUG||g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-
-    #cp -p "$file" "$file.fixed"
-    #sed -e 's|$(cipher_openssl_compat_LDADD) $(LIBS)|$(cipher_openssl_compat_LDADD) $(LIBS) -lcrypto|g' "$file" > "$file.fixed"
-    #mv "$file.fixed" "$file"
 done
 
 echo "Patching La files"
