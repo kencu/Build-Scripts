@@ -270,12 +270,20 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    # Still can't pass all self-tests, even after OpenSSL 1.1 cutover.
-    # I'd love to know what is wrong with the test-ciphers-api...
-    echo "**********************"
-    echo "Failed to test GnuTLS"
-    echo "**********************"
-    #exit 1
+    # Still can't pass all the self-tests, even after OpenSSL 1.1 cutover.
+    # I'd love to know what is wrong with the test-ciphers-api. Below,
+    # we expect 1 failure due to test-ciphers-api.
+
+    # Count the number of failures, like :XFAIL: 0" and "FAIL:  0". Compress two
+    # spaces to one to make it easy to invert the match 'FAIL: 0'.
+    COUNT=$(grep -i 'FAIL:' tests/test-suite.log | sed 's/  / /g' | grep -i -c -v 'FAIL: 0')
+    if [[ "$COUNT" -gt 1 ]]
+    then
+        echo "**********************"
+        echo "Failed to test GnuTLS"
+        echo "**********************"
+        exit 1
+    fi
 fi
 
 echo "Searching for errors hidden in log files"
