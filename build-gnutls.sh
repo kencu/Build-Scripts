@@ -196,19 +196,6 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-for file in $(find "$PWD/tests" -iname 'Makefile')
-do
-    # Test suite does not compile with NDEBUG defined.
-    echo "Patching $file"
-    cp -p "$file" "$file.fixed"
-    sed -e 's| -DNDEBUG||g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-
-    cp -p "$file" "$file.fixed"
-    sed -e 's|$(cipher_openssl_compat_LDADD) $(LIBS)|$(cipher_openssl_compat_LDADD) $(LIBS) -lcrypto|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-done
-
 echo "Patching Makefiles"
 for file in $(find "$PWD" -iname 'Makefile')
 do
@@ -218,6 +205,19 @@ do
     mv "$file.fixed" "$file"
     cp -p "$file" "$file.fixed"
     sed -e 's|-fno-common .*|-fno-common -Wall |g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done
+
+echo "Patching test Makefiles"
+for file in $(find "$PWD/tests" -iname 'Makefile')
+do
+    # Test suite does not compile with NDEBUG defined.
+    cp -p "$file" "$file.fixed"
+    sed -e 's| -DNDEBUG||g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+
+    cp -p "$file" "$file.fixed"
+    sed -e 's|$(cipher_openssl_compat_LDADD) $(LIBS)|$(cipher_openssl_compat_LDADD) $(LIBS) -lcrypto|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 done
 
@@ -242,15 +242,16 @@ do
     mv "$file.fixed" "$file"
 done
 
-echo "Patching common.sh"
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
-    # Fix shell script
+    # Solaris netstat is different then GNU netstat
+    echo "Patching common.sh"
     file=tests/scripts/common.sh
     cp -p "$file" "$file.fixed"
     sed -e 's|PFCMD -anl|PFCMD -an|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 fi
+echo ""
 
 echo "**********************"
 echo "Building package"
