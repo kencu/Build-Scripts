@@ -87,9 +87,10 @@ fi
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    --enable-shared \
+    --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --enable-shared \
     --with-libgpg-error-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then

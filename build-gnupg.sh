@@ -75,15 +75,6 @@ fi
 
 ###############################################################################
 
-# Need gnulib for intl.h
-#if ! ./build-libintl.sh
-#then
-#    echo "Failed to build libintl"
-#    exit 1
-#fi
-
-###############################################################################
-
 if ! ./build-gpgerror.sh
 then
     echo "Failed to build Libgpg-error"
@@ -164,6 +155,7 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --disable-scdaemon \
