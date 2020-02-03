@@ -87,6 +87,12 @@ if [[ -e ../patch/hiredis.patch ]]; then
     echo ""
 fi
 
+# Awful Solaris 64-bit hack. Use -G for SunC, and -shared for GCC
+if [[ "$IS_SOLARIS" -ne 0 && "$IS_SUNC" -eq 0 ]]; then
+    sed 's/ -G / -shared /g' Makefile > Makefile.fixed
+    mv Makefile.fixed Makefile; chmod +x Makefile
+fi
+
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 

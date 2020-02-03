@@ -47,7 +47,7 @@
 -  REAL_LDFLAGS+= -ldl -lnsl -lsocket
 -  DYLIB_MAKE_CMD=$(CC) -G -o $(DYLIBNAME) -h $(DYLIB_MINOR_NAME) $(LDFLAGS)
 +  REAL_LDFLAGS+= -lsocket -lnsl -ldl
-+  DYLIB_MAKE_CMD=$(CC) -shared -o $(DYLIBNAME) -h $(DYLIB_MINOR_NAME) $(LDFLAGS)
++  DYLIB_MAKE_CMD=$(CC) -G -o $(DYLIBNAME) -h $(DYLIB_MINOR_NAME) $(LDFLAGS)
  endif
  ifeq ($(uname_S),Darwin)
    DYLIBSUFFIX=dylib

@@ -167,8 +167,9 @@ if [[ -z "$CC" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
 
-IS_GCC=$("$CC" --version 2>&1 | grep -i -c -E 'gcc')
+IS_GCC=$("$CC" --version 2>&1 | grep -i -c 'gcc')
 IS_CLANG=$("$CC" --version 2>&1 | grep -i -c -E 'clang|llvm')
+IS_SUNC=$("$CC" -V 2>&1 | grep -i -c -E 'sun|studio')
 TEST_CC="$CC"
 
 # Where the package will run. We need to override for 64-bit Solaris.

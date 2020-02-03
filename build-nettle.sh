@@ -89,8 +89,8 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-# Awful Solaris 64-bit hack. Rewrite some values
-if [[ "$IS_SOLARIS" -eq 1 ]]; then
+# Awful Solaris 64-bit hack. Use -G for SunC, and -shared for GCC
+if [[ "$IS_SOLARIS" -ne 0 && "$IS_SUNC" -eq 0 ]]; then
     sed 's/ -G / -shared /g' configure > configure.fixed
     mv configure.fixed configure; chmod +x configure
 fi
