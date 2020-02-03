@@ -277,8 +277,11 @@ then
 
     # Count the number of failures, like :XFAIL: 0" and "FAIL:  0". Compress two
     # spaces to one to make it easy to invert the match 'FAIL: 0'.
-    COUNT=$(grep -i 'FAIL:' tests/test-suite.log | sed 's/  / /g' | grep -i -c -v 'FAIL: 0')
-    if [[ "$COUNT" -gt 1 ]]
+    COUNT=$(grep -i 'FAIL:' tests/test-suite.log tests/slow/test-suite.log | sed 's/  / /g' | grep -i -c -v 'FAIL: 0')
+    if [[ "${COUNT}" -eq 1 ]]
+    then
+        echo "One failed to test GnuTLS. Proceeding with install."
+    elif [[ "${COUNT}" -gt 1 ]]
     then
         echo "**********************"
         echo "Failed to test GnuTLS"
