@@ -83,6 +83,7 @@ fi
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
     --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --enable-shared \
     --enable-install-termcap \
     --with-termcap="$INSTX_PREFIX/etc"
