@@ -127,7 +127,6 @@ then
     echo ""
     echo "datefudge not found. Some tests will be skipped."
     echo "To fix this issue, please install datefudge."
-    exit 1
 fi
 
 ###############################################################################
