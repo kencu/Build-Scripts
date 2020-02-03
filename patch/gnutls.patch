@@ -12,7 +12,7 @@
  /* The _Noreturn keyword of C11.  */
  #ifndef _Noreturn
 -# if (defined __cplusplus \
-+# if defined(__APPLE__) && defined(__clang__) && (__has_attribute(__noreturn__) == 1)
++# if defined(__APPLE__) && defined(__clang__) && (__has_attribute(_Noreturn) == 1)
 +   /* Don't do anything. Stay out of code paths below. */
 +# elif (defined __cplusplus \
        && ((201103 <= __cplusplus && !(__GNUC__ == 4 && __GNUC_MINOR__ == 7)) \
@@ -31,7 +31,7 @@
 +
  #ifndef _Noreturn
 -# if (defined __cplusplus \
-+# if defined(__APPLE__) && defined(__clang__) && (__has_attribute(__noreturn__) == 1)
++# if defined(__APPLE__) && defined(__clang__) && (__has_attribute(_Noreturn) == 1)
 +   /* Don't do anything. Stay out of code paths below. */
 +# elif (defined __cplusplus \
        && ((201103 <= __cplusplus && !(__GNUC__ == 4 && __GNUC_MINOR__ == 7)) \
