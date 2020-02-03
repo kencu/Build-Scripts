@@ -155,20 +155,27 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
+GNUTLS_PKGCONFIG="${BUILD_PKGCONFIG[*]}"
+GNUTLS_CPPFLAGS="${BUILD_CPPFLAGS[*]}"
+GNUTLS_CFLAGS="${BUILD_CFLAGS[*]}"
+GNUTLS_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
+GNUTLS_LDFLAGS="${BUILD_LDFLAGS[*]}"
+GNUTLS_LIBS="${BUILD_LIBS[*]}"
+
 # Solaris is a tab bit stricter than libc
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
-    # Don't use CPPFLAGS. _XOPEN_SOURCE will cross-pollinate into CXXFLAGS.
-    BUILD_CFLAGS+=("-D_XOPEN_SOURCE=600 -std=gnu99")
+    # Don't use CPPFLAGS. Options will cross-pollinate into CXXFLAGS.
+    GNUTLS_CFLAGS+=" -D_XOPEN_SOURCE=600 -std=gnu99"
 fi
 
 # We should probably include --disable-anon-authentication below
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${GNUTLS_PKGCONFIG}" \
+    CPPFLAGS="${GNUTLS_CPPFLAGS}" \
+    CFLAGS="${GNUTLS_CFLAGS}" \
+    CXXFLAGS="${GNUTLS_CXXFLAGS}" \
+    LDFLAGS="${GNUTLS_LDFLAGS}" \
+    LIBS="${GNUTLS_LIBS}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
@@ -216,9 +223,9 @@ do
     sed -e 's| -DNDEBUG||g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 
-    cp -p "$file" "$file.fixed"
-    sed -e 's|$(cipher_openssl_compat_LDADD) $(LIBS)|$(cipher_openssl_compat_LDADD) $(LIBS) -lcrypto|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+    #cp -p "$file" "$file.fixed"
+    #sed -e 's|$(cipher_openssl_compat_LDADD) $(LIBS)|$(cipher_openssl_compat_LDADD) $(LIBS) -lcrypto|g' "$file" > "$file.fixed"
+    #mv "$file.fixed" "$file"
 done
 
 echo "Patching La files"
