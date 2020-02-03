@@ -141,8 +141,8 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-# The command line tools need this.
-if [[ "$IS_DARWIN" -eq 0 ]]
+# Command line tools, like sed and awk, need this on OS X.
+if [[ "$IS_DARWIN" -ne 0 ]]
 then
     export LC_ALL="${LC_ALL:-en_US.UTF-8}"
     export LANG="${LANG:-en_US.UTF-8}"
