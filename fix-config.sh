@@ -18,6 +18,21 @@ trap finish EXIT
 
 echo "patching sys_lib_dlsearch_path_spec..."
 
+# Fix "rm: conftest.dSYM: is a directory" on Darwin
+# https://lists.gnu.org/archive/html/bug-autoconf/2007-11/msg00032.html
+if [[ $(uname -s 2>&1 | grep -i -c 'darwin') -ne 0 ]]
+then
+    # Keep configure in the future
+    for file in $(find "$PWD" -iname 'configure')
+    do
+        cp -p "$file" "$file.fixed"
+        chmod +w "$file" && chmod +w "$file.fixed"
+        sed 's/rm -f core/rm -rf core/g' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file" && chmod +x "$file"
+        touch "$file"
+    done
+fi
+
 # Keep configure in the future
 for file in $(find "$PWD" -iname 'configure')
 do
@@ -28,7 +43,7 @@ do
     touch "$file"
 done
 
-# And keep configure in the past
+# And keep configure.ac in the past
 for file in $(find "$PWD" -iname 'configure.ac')
 do
     cp -p "$file" "$file.fixed"

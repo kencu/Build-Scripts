@@ -84,14 +84,6 @@ cd "$GAWK_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-# Fix "rm: conftest.dSYM: is a directory" on Darwin
-# https://lists.gnu.org/archive/html/bug-autoconf/2007-11/msg00032.html
-if [[ "$IS_DARWIN" -ne 0 ]]
-then
-    sed 's/rm -f core/rm -rf core/g' configure > configure.new
-    mv configure.new configure; chmod +x configure
-fi
-
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \

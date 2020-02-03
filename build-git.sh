@@ -151,14 +151,6 @@ then
     exit 1
 fi
 
-# Fix "rm: conftest.dSYM: is a directory" on Darwin
-# https://lists.gnu.org/archive/html/bug-autoconf/2007-11/msg00032.html
-if [[ "$IS_DARWIN" -ne 0 ]]
-then
-    sed 's/rm -f core/rm -rf core/g' configure > configure.new
-    mv configure.new configure; chmod +x configure
-fi
-
 # Solaris 11.3 no longer has /usr/ucb/install
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
