@@ -122,6 +122,16 @@ fi
 
 ###############################################################################
 
+if [[ -z $(command -v datefudge 2>/dev/null) ]]
+then
+    echo ""
+    echo "datefudge not found. Some tests will be skipped."
+    echo "To fix this issue, please install datefudge."
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** GnuTLS **********"
 echo
