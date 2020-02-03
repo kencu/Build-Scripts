@@ -141,6 +141,13 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
+# The command line tools need this.
+if [[ "$IS_DARWIN" -eq 0 ]]
+then
+    export LC_ALL="${LC_ALL:-en_US.UTF-8}"
+    export LANG="${LANG:-en_US.UTF-8}"
+fi
+
 echo "**********************"
 echo "Building configure"
 echo "**********************"
@@ -244,23 +251,19 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Skip self tests on OS X 10.5 for the moment.
-if [[ "$IS_OLD_DARWIN" -eq 0 ]]
+MAKE_FLAGS=("test" "V=1")
+if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    MAKE_FLAGS=("test" "V=1")
-    if ! "$MAKE" "${MAKE_FLAGS[@]}"
-    then
-        echo "Failed to test Git"
-        exit 1
-    fi
+    echo "Failed to test Git"
+    exit 1
+fi
 
-    echo "Searching for errors hidden in log files"
-    COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-    if [[ "${COUNT}" -ne 0 ]];
-    then
-        echo "Failed to test Git"
-        exit 1
-    fi
+echo "Searching for errors hidden in log files"
+COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
+if [[ "${COUNT}" -ne 0 ]];
+then
+    echo "Failed to test Git"
+    exit 1
 fi
 
 echo "**********************"
