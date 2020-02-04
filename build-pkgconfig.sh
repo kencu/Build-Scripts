@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds Autotools from sources. A separate
-# script is available for Libtool for brave souls.
-
-# Trying to update Autotools may be more trouble than it is
-# worth. If the upgrade goes bad, then you can uninstall
-# it with the script clean-pkgconfig.sh
+# This script builds pkg-config from sources.
 
 PKGCONFIG_TAR=pkg-config-0.29.2.tar.gz
 PKGCONFIG_DIR=pkg-config-0.29.2
@@ -62,7 +57,7 @@ then
         exit 1
     fi
 else
-    if ! curl -L -o "$PKGCONFIG_TAR" --cacert "$LETS_ENCRYPT_ROOT" \
+    if ! curl -o "$PKGCONFIG_TAR" --cacert "$LETS_ENCRYPT_ROOT" \
          "https://pkg-config.freedesktop.org/releases/$PKGCONFIG_TAR"
     then
         echo "Failed to download pkg-config"
