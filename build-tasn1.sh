@@ -104,6 +104,9 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
+# For NetBSD and failed self tests.
+export LD_LIBRARY_PATH="$PWD/lib/.libs:$LD_LIBRARY_PATH"
+
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
