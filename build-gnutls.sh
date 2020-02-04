@@ -188,6 +188,7 @@ fi
     --disable-ssl2-support \
     --disable-ssl3-support \
     --disable-doc \
+    --disable-full-test-suite \
     --with-p11-kit \
     --with-libregex \
     --with-libiconv-prefix="$INSTX_PREFIX" \
