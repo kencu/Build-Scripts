@@ -32,9 +32,7 @@
  	return 1;
  }
  
-+#ifndef GCC_VERSION
 +#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100)
-+#endif
 +
  /* Based on the example in "How to detect New Instruction support in
   * the 4th generation Intel Core processor family.
