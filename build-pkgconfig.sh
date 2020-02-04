@@ -81,10 +81,7 @@ CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
-
-if [[ "$IS_DARWIN" -ne 0 ]]; then
-    CONFIG_OPTS=(--with-internal-glib)
-fi
+CONFIG_OPTS+=("--with-internal-glib")
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
