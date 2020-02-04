@@ -61,7 +61,7 @@ then
 fi
 
 rm -rf "$CRYPTOPP_DIR" &>/dev/null
-unzip -aoq "$CRYPTOPP_ZIP" -d "$CRYPTOPP_DIR"
+unzip -oq "$CRYPTOPP_ZIP" -d "$CRYPTOPP_DIR"
 cd "$CRYPTOPP_DIR"
 
 echo "**********************"

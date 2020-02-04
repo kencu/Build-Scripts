@@ -72,7 +72,7 @@ cd "$BZIP2_DIR" || exit 1
 
 # The Makefiles needed so much work it was easier to rewrite them.
 cp ../patch/bzip-makefiles.zip .
-unzip -aoq bzip-makefiles.zip
+unzip -oq bzip-makefiles.zip
 
 # Now, patch them for this script.
 cp ../patch/bzip.patch .
