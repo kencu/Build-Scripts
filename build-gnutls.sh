@@ -146,15 +146,11 @@ rm -rf "$GNUTLS_TAR" "$GNUTLS_DIR" &>/dev/null
 unxz "$GNUTLS_XZ" && tar -xf "$GNUTLS_TAR"
 cd "$GNUTLS_DIR" || exit 1
 
-cp lib/accelerated/x86/x86-common.c lib/accelerated/x86/x86-common.c.orig
-
 if [[ -e ../patch/gnutls.patch ]]; then
     cp ../patch/gnutls.patch .
     patch -u -p0 < gnutls.patch
     echo ""
 fi
-
-exit
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
