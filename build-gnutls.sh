@@ -187,6 +187,7 @@ fi
     --disable-guile \
     --disable-ssl2-support \
     --disable-ssl3-support \
+    --disable-padlock \
     --disable-doc \
     --disable-full-test-suite \
     --with-p11-kit \
