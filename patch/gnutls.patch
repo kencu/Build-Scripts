@@ -1,39 +1,28 @@
---- config.h.in
-+++ config.h.in
-@@ -1806,9 +1806,16 @@
- /* Define to 1 to make NetBSD features available. MINIX 3 needs this. */
- #undef _NETBSD_SOURCE
- 
-+/* https://clang.llvm.org/docs/LanguageExtensions.html */
-+#ifndef __has_attribute         // Optional of course.
-+# define __has_attribute(x) 0   // Compatibility non-clang compilers.
-+#endif
-+
- /* The _Noreturn keyword of C11.  */
- #ifndef _Noreturn
--# if (defined __cplusplus \
-+# if defined(__clang__) && (__has_attribute(_Noreturn) == 1)
-+   /* _Noreturn works as-is.  */
-+# elif (defined __cplusplus \
-       && ((201103 <= __cplusplus && !(__GNUC__ == 4 && __GNUC_MINOR__ == 7)) \
-           || (defined _MSC_VER && 1900 <= _MSC_VER)))
- #  define _Noreturn [[noreturn]]
 --- src/gl/_Noreturn.h
 +++ src/gl/_Noreturn.h
-@@ -14,8 +14,15 @@
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
- 
-+/* https://clang.llvm.org/docs/LanguageExtensions.html */
-+#ifndef __has_attribute         // Optional of course.
-+# define __has_attribute(x) 0   // Compatibility non-clang compilers.
-+#endif
-+
- #ifndef _Noreturn
--# if (defined __cplusplus \
-+# if defined(__clang__) && (__has_attribute(_Noreturn) == 1)
-+   /* _Noreturn works as-is.  */
-+# elif (defined __cplusplus \
-       && ((201103 <= __cplusplus && !(__GNUC__ == 4 && __GNUC_MINOR__ == 7)) \
-           || (defined _MSC_VER && 1900 <= _MSC_VER)))
+@@ -21,7 +21,10 @@
  #  define _Noreturn [[noreturn]]
+ # elif ((!defined __cplusplus || defined __clang__)                     \
+         && (201112 <= (defined __STDC_VERSION__ ? __STDC_VERSION__ : 0)  \
+-            || 4 < __GNUC__ + (7 <= __GNUC_MINOR__)))
++            || 4 < __GNUC__ + (7 <= __GNUC_MINOR__) \
++            || (defined __apple_build_version__ \
++                ? 6000000 <= __apple_build_version__ \
++                : 3 < __clang_major__ + (5 <= __clang_minor__))))
+    /* _Noreturn works as-is.  */
+ # elif 2 < __GNUC__ + (8 <= __GNUC_MINOR__) || 0x5110 <= __SUNPRO_C
+ #  define _Noreturn __attribute__ ((__noreturn__))
+--- config.h.in
++++ config.h.in
+@@ -1814,7 +1814,10 @@
+ #  define _Noreturn [[noreturn]]
+ # elif ((!defined __cplusplus || defined __clang__) \
+         && (201112 <= (defined __STDC_VERSION__ ? __STDC_VERSION__ : 0)  \
+-            || 4 < __GNUC__ + (7 <= __GNUC_MINOR__)))
++            || 4 < __GNUC__ + (7 <= __GNUC_MINOR__) \
++            || (defined __apple_build_version__ \
++                ? 6000000 <= __apple_build_version__ \
++                : 3 < __clang_major__ + (5 <= __clang_minor__))))
+    /* _Noreturn works as-is.  */
+ # elif 2 < __GNUC__ + (8 <= __GNUC_MINOR__) || 0x5110 <= __SUNPRO_C
+ #  define _Noreturn __attribute__ ((__noreturn__))
