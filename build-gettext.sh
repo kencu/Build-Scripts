@@ -106,7 +106,12 @@ fi
 ./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared --with-pic
+    --enable-static \
+    --enable-shared \
+    --with-pic \
+    --with-included-libxml \
+    --with-libiconv-prefix="$INSTX_PREFIX" \
+    --with-libunistring-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GetText"
