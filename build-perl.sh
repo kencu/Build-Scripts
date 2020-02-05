@@ -109,6 +109,22 @@ PERL_CFLAGS="${BUILD_CFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
 PERL_CC="${CC}"
 
+if [[ "$IS_NETBSD" -ne 0 ]]
+then
+    # On NetBSD Perl looks in /usr/pkg/lib, not /usr/local/lib
+    LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
+    LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
+    export LD_LIBRARY_PATH
+fi
+
+# Perl munges -Wl,-R,$$ORIGIN/../lib. -Wl,-R,$$ORIGIN/../lib is
+# transformed into Wl,-R,$13562ORIGIN/../lib. Perl also munges
+# -Wl,-R,$ORIGIN/../lib The $$ is usually needed to pass through
+# the makefile so gcc gets -Wl,-R,$ORIGIN/../lib.
+# PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$/\$/g')
+
+echo "Using PERL_LDFLAGS: $PERL_LDFLAGS"
+
 if ! ./Configure -des \
      -Dprefix="$INSTX_PREFIX" \
      -Dlibdir="$INSTX_LIBDIR" \
