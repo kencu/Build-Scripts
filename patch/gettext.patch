@@ -430,3 +430,60 @@
 +
 +    AS_VAR_POPDEF([ac_var])
 +])
+--- gettext-tools/src/Makefile.in
++++ gettext-tools/src/Makefile.in
+@@ -1790,7 +1790,7 @@
+ LDFLAGS = @LDFLAGS@
+ LIBGREP_LIBDEPS = @LIBGREP_LIBDEPS@
+ LIBGREP_LTLIBDEPS = @LIBGREP_LTLIBDEPS@
+-LIBICONV = @LIBICONV@
++LIBICONV = -liconv
+ LIBINTL = @LIBINTL@
+ LIBMULTITHREAD = @LIBMULTITHREAD@
+ LIBOBJS = @LIBOBJS@
+@@ -1830,7 +1830,7 @@
+ LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
+ LOCALE_ZH_CN = @LOCALE_ZH_CN@
+ LOG10_LIBM = @LOG10_LIBM@
+-LTLIBICONV = @LTLIBICONV@
++LTLIBICONV = -liconv
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
+ LTLIBOBJS = @LTLIBOBJS@
+@@ -2533,21 +2533,21 @@
+ # INTL_MACOSX_LIBS is needed because the programs depend on libintl.la
+ # but libtool doesn't put -Wl,-framework options into .la files.
+ # For msginit, it is also needed because of localename.c.
+-msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD)
+-msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD) $(OPENMP_CFLAGS)
+-msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @LTLIBICONV@ $(WOE32_LDADD)
+-msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
++msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD)
++msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD) $(OPENMP_CFLAGS)
++msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
+ 
+ # Specify when to relink the programs.
+ msgcmp_DEPENDENCIES = libgettextsrc.la ../gnulib-lib/libgettextlib.la $(WOE32_LDADD)
