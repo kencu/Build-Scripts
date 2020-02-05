@@ -432,15 +432,32 @@
 +])
 --- gettext-tools/src/Makefile.in
 +++ gettext-tools/src/Makefile.in
-@@ -1790,7 +1790,7 @@
- LDFLAGS = @LDFLAGS@
- LIBGREP_LIBDEPS = @LIBGREP_LIBDEPS@
- LIBGREP_LTLIBDEPS = @LIBGREP_LTLIBDEPS@
--LIBICONV = @LIBICONV@
-+LIBICONV = -liconv
- LIBINTL = @LIBINTL@
- LIBMULTITHREAD = @LIBMULTITHREAD@
- LIBOBJS = @LIBOBJS@
+@@ -564,7 +564,7 @@
+ 	$(CFLAGS) $(cldr_plurals_LDFLAGS) $(LDFLAGS) -o $@
+ am_hostname_OBJECTS = hostname-hostname.$(OBJEXT)
+ hostname_OBJECTS = $(am_hostname_OBJECTS)
+-hostname_LDADD = $(LDADD)
++hostname_LDADD = $(LTLIBICONV) $(LDADD)
+ hostname_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(hostname_LDFLAGS) $(LDFLAGS) -o $@
+@@ -666,14 +666,14 @@
+ 	recode_sr_latin-recode-sr-latin.$(OBJEXT) \
+ 	recode_sr_latin-filter-sr-latin.$(OBJEXT)
+ recode_sr_latin_OBJECTS = $(am_recode_sr_latin_OBJECTS)
+-recode_sr_latin_LDADD = $(LDADD)
++recode_sr_latin_LDADD = $(LTLIBICONV) $(LDADD)
+ recode_sr_latin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+ 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+ 	$(AM_CFLAGS) $(CFLAGS) $(recode_sr_latin_LDFLAGS) $(LDFLAGS) \
+ 	-o $@
+ am_urlget_OBJECTS = urlget-urlget.$(OBJEXT)
+ urlget_OBJECTS = $(am_urlget_OBJECTS)
+-urlget_LDADD = $(LDADD)
++urlget_LDADD = $(LTLIBICONV) $(LDADD)
+ urlget_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(urlget_LDFLAGS) $(LDFLAGS) -o $@
 @@ -1830,7 +1830,7 @@
  LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
  LOCALE_ZH_CN = @LOCALE_ZH_CN@
@@ -450,6 +467,15 @@
  LTLIBINTL = @LTLIBINTL@
  LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
  LTLIBOBJS = @LTLIBOBJS@
+@@ -2508,7 +2508,7 @@
+ urlget_SOURCES = urlget.c
+ cldr_plurals_SOURCES = cldr-plural.y cldr-plural-exp.c cldr-plurals.c
+ cldr_plurals_CFLAGS = $(AM_CFLAGS) $(INCXML)
+-cldr_plurals_LDADD = libgettextsrc.la $(LDADD)
++cldr_plurals_LDADD = libgettextsrc.la $(LTLIBICONV) $(LDADD)
+ 
+ # How to build libgettextsrc.la.
+ # Need ../gnulib-lib/libgettextlib.la.
 @@ -2533,21 +2533,21 @@
  # INTL_MACOSX_LIBS is needed because the programs depend on libintl.la
  # but libtool doesn't put -Wl,-framework options into .la files.
