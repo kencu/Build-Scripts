@@ -54,11 +54,16 @@ rm -rf "$INSTX_CACHE/gettext"
 
 ###############################################################################
 
+# pkg-config is special
+export INSTX_DISABLE_ICONV_TEST=1
+
 if ! ./build-iconv.sh
 then
     echo "Failed to build iConv and GetText (1st time)"
     exit 1
 fi
+
+unset INSTX_DISABLE_ICONV_TEST
 
 ###############################################################################
 

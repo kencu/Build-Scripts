@@ -105,23 +105,28 @@ then
     exit 1
 fi
 
-echo "**********************"
-echo "Testing package"
-echo "**********************"
-
-MAKE_FLAGS=("check" "V=1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+# build-iconv-gettext has a circular dependency.
+# The first build of iConv does not need 'make check'.
+if [[ "${INSTX_DISABLE_ICONV_TEST:-0}" -ne 1 ]]
 then
-    echo "Failed to test iConv"
-    exit 1
-fi
+    echo "**********************"
+    echo "Testing package"
+    echo "**********************"
 
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]]
-then
-    echo "Failed to test iConv"
-    exit 1
+    MAKE_FLAGS=("check" "V=1")
+    if ! "$MAKE" "${MAKE_FLAGS[@]}"
+    then
+        echo "Failed to test iConv"
+        exit 1
+    fi
+
+    echo "Searching for errors hidden in log files"
+    COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
+    if [[ "${COUNT}" -ne 0 ]]
+    then
+        echo "Failed to test iConv"
+        exit 1
+    fi
 fi
 
 echo "**********************"

@@ -133,12 +133,15 @@ AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
 
 ## sysmacros.h
 
-Some older versions of `sysmacros.h` have a bug related to the `__THROW` macro. Affected versions include the header supplied with Fedora 1. If you encounter a build error due to a unexpected symbol `{` or unexpected symbol `}`, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
+Some older versions of `sysmacros.h` have a bug related to the `__THROW`. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html).
+
+If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
 
 ```
 #include <features.h>
 
-/* Modern Wget build fails */
+/* Gnulib redefines __THROW to __attribute__ ((__nothrow__)) */
+/* This GCC compiler cannot handle the attribute.            */
 #ifndef __cplusplus
 # undef __THROW
 # define __THROW

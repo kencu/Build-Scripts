@@ -93,16 +93,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 ../fix-config.sh
 
-# # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
-for file in $(find "$PWD" -name '*.h')
-do
-    if [[ ! -f "$file" ]]; then
-        continue
-    fi
-
-    sed -e 's|__GNUC_PREREQ (3, 3)|__GNUC_PREREQ (4, 0)|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-done
+if [[ -e "$INSTX_PREFIX/bin/sed" ]]; then
+    export SED="$INSTX_PREFIX/bin/sed"
+fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
