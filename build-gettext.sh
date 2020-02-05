@@ -108,6 +108,7 @@ fi
     --libdir="$INSTX_LIBDIR" \
     --enable-static \
     --enable-shared \
+    --enable-relocatable \
     --with-pic \
     --with-included-libxml \
     --with-libiconv-prefix="$INSTX_PREFIX" \
