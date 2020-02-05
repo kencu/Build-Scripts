@@ -59,10 +59,22 @@ fi
 
 ###############################################################################
 
-if ! ./build-perl.sh
+if [[ -n $(command -v perl 2>/dev/null) ]]; then
+    PERL_MAJ=$(perl -V | head -n 1 | awk '{ print $6 }')
+    PERL_MIN=$(perl -V | head -n 1 | awk '{ print $8 }')
+else
+    PERL_MAJ=0
+    PERL_MIN=0
+fi
+
+# OpenSSL needs Perl 5.10 or above.
+if [[ "$PERL_MAJ" -lt 5 || ("$PERL_MAJ" -eq 5 && "$PERL_MIN" -lt 10) ]]
 then
-    echo "Failed to build Perl"
-    exit 1
+    if ! ./build-perl.sh
+    then
+        echo "Failed to build Perl"
+        exit 1
+    fi
 fi
 
 ###############################################################################
