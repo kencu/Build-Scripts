@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds BerkeleyDB from sources.
+# This script builds Berkeley DB from sources.
 
 # Note: we do not build with OpenSSL. There is a circular
-# dependency between BerkeleyDB, OpenSSL and Perl.
-# The loss of SSL/TLS in BerkeleyDB means the Replication
+# dependency between Berkeley DB, OpenSSL and Perl.
+# The loss of SSL/TLS in Berkeley DB means the Replication
 # Manager does not have SSL/TLS support.
 
 BDB_TAR=db-6.2.32.tar.gz
@@ -91,7 +91,7 @@ cd "$BDB_DIR" || exit 1
     --enable-cxx
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure BerkeleyDB"
+    echo "Failed to configure Berkeley DB"
     exit 1
 fi
 
@@ -102,7 +102,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build BerkeleyDB"
+    echo "Failed to build Berkeley DB"
     exit 1
 fi
 
@@ -116,7 +116,7 @@ echo "Unable to test Berkeley DB"
 #MAKE_FLAGS=("check" "V=1")
 #if ! "$MAKE" "${MAKE_FLAGS[@]}"
 #then
-#    echo "Failed to test BerkeleyDB"
+#    echo "Failed to test Berkeley DB"
 #    exit 1
 #fi
 
@@ -124,7 +124,7 @@ echo "Unable to test Berkeley DB"
 #COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 #if [[ "${COUNT}" -ne 0 ]];
 #then
-#    echo "Failed to test BerkeleyDB"
+#    echo "Failed to test Berkeley DB"
 #    exit 1
 #fi
 
