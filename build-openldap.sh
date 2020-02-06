@@ -108,6 +108,14 @@ then
     CONFIG_OPTS+=("--enable-mdb=no")
 fi
 
+if [[ "$IS_NETBSD" -ne 0 ]]
+then
+    # On NetBSD Perl looks in /usr/pkg/lib, not /usr/local/lib
+    LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
+    LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
+    export LD_LIBRARY_PATH
+fi
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
