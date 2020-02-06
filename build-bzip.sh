@@ -98,7 +98,8 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("-f" "Makefile" "check" "-j" "$INSTX_JOBS"
-            CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
+            CC="${CC}" CPPFLAGS="${BUILD_CPPFLAGS[*]}"
+            CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
 
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
@@ -174,7 +175,8 @@ else
 fi
 
 MAKE_FLAGS=("-f" "$MAKEFILE" "-j" "$INSTX_JOBS"
-            CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
+            CC="${CC}" CPPFLAGS="${BUILD_CPPFLAGS[*]}"
+            CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
 
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
