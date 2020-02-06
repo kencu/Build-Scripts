@@ -16,7 +16,7 @@
     typedef  unsigned __int64  MaybeUInt64;
 --- Makefile
 +++ Makefile
-@@ -46,7 +46,7 @@
+@@ -47,7 +47,7 @@
        decompress.o \
        bzlib.o
  
@@ -24,8 +24,8 @@
 +all: libbz2.a bzip2 bzip2recover
  
  bzip2: bzip2.o libbz2.a
- 	$(CC) $(BZIP_CFLAGS) $(LDFLAGS) $< -o $@ -L. -lbz2
-@@ -65,7 +65,6 @@
+ 	$(CC) $(CPPFLAGS) $(BZIP_CFLAGS) $(LDFLAGS) $< -o $@ ./libbz2.a
+@@ -66,7 +66,6 @@
  
  check: test
  test: bzip2
@@ -33,7 +33,7 @@
  	./bzip2 -1  < sample1.ref > sample1.rb2
  	./bzip2 -2  < sample2.ref > sample2.rb2
  	./bzip2 -3  < sample3.ref > sample3.rb2
-@@ -78,7 +77,6 @@
+@@ -79,7 +78,6 @@
  	cmp sample1.tst sample1.ref
  	cmp sample2.tst sample2.ref
  	cmp sample3.tst sample3.ref
@@ -41,15 +41,15 @@
  
  install: bzip2 bzip2recover
  	if ( test ! -d $(BINDIR) ) ; then mkdir -p $(BINDIR) ; fi
-@@ -126,7 +124,6 @@
+@@ -127,7 +125,6 @@
  
  # https://www.gnu.org/prep/standards/html_node/Makefile-Basics.html
  blocksort.o: blocksort.c
 -	@cat words0
- 	$(CC) $(BZIP_CFLAGS) -c $< -o $@
+ 	$(CC) $(CPPFLAGS) $(BZIP_CFLAGS) -c $< -o $@
  huffman.o: huffman.c
- 	$(CC) $(BZIP_CFLAGS) -c $< -o $@
-@@ -170,10 +167,6 @@
+ 	$(CC) $(CPPFLAGS) $(BZIP_CFLAGS) -c $< -o $@
+@@ -171,10 +168,6 @@
  	   $(DISTNAME)/bzip2.1 \
  	   $(DISTNAME)/bzip2.1.preformatted \
  	   $(DISTNAME)/bzip2.txt \
