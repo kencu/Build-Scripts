@@ -117,12 +117,10 @@ then
     export LD_LIBRARY_PATH
 fi
 
-# Perl munges -Wl,-R,$$ORIGIN/../lib. -Wl,-R,$$ORIGIN/../lib is
-# transformed into Wl,-R,13562ORIGIN/../lib. Perl also munges
-# -Wl,-R,$ORIGIN/../lib The $$ is usually needed to pass through
-# the makefile so gcc gets -Wl,-R,$ORIGIN/../lib.
+# Perl munges -Wl,-R,$$ORIGIN/../lib. Set it to XXORIGIN so we
+# can fix it later after Perl produces the makefiles.
 # Also see https://github.com/Perl/perl5/issues/17534
-# PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$/\$/g')
+PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$ORIGIN/XXORIGIN/g')
 
 echo "Using PERL_LDFLAGS: $PERL_LDFLAGS"
 
@@ -139,6 +137,15 @@ then
     echo "Failed to configure Perl"
     exit 1
 fi
+
+# Fix -Wl,-R,$$ORIGIN/../lib
+echo "Patching Makefiles"
+for file in $(find "$PWD" -iname 'Makefile')
+do
+    chmod +w "$file"
+    sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done
 
 echo "**********************"
 echo "Building package"
