@@ -153,23 +153,30 @@ echo "**********************"
     echo "Cflags: -I\${includedir}"
 } > libbz2.pc
 
-if [[ -n "$SUDO_PASSWORD" ]]; then
+if [[ -n "$SUDO_PASSWORD" ]]
+then
+    echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
+    echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
+    echo "Installing pkgconfig file..."
     echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
     echo "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
+    echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
 
+    echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
 
+    echo "Installing pkgconfig file..."
     mkdir -p "$INSTX_LIBDIR/pkgconfig"
     cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
