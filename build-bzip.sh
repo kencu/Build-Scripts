@@ -83,12 +83,6 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-if [[ "$IS_DARWIN" -ne 0 ]]; then
-    MAKEFILE=Makefile-libbz2_dylib
-else
-    MAKEFILE=Makefile-libbz2_so
-fi
-
 MAKE_FLAGS=("-f" "Makefile" "-j" "$INSTX_JOBS"
             CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
@@ -96,16 +90,6 @@ MAKE_FLAGS=("-f" "Makefile" "-j" "$INSTX_JOBS"
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Bzip archive"
-    exit 1
-fi
-
-MAKE_FLAGS=("-f" "$MAKEFILE" "-j" "$INSTX_JOBS"
-            CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
-            LDFLAGS="${BUILD_LDFLAGS[*]}")
-
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
-then
-    echo "Failed to build Bzip shared object"
     exit 1
 fi
 
@@ -159,10 +143,6 @@ then
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
-    echo "Installing shared object..."
-    MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
-
     echo "Installing pkgconfig file..."
     echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
     echo "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
@@ -172,6 +152,70 @@ else
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
 
+    echo "Installing pkgconfig file..."
+    mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
+fi
+
+# Clean old artifacts
+"$MAKE" clean 2>/dev/null
+
+###############################################################################
+
+echo "**********************"
+echo "Building package"
+echo "**********************"
+
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    MAKEFILE=Makefile-libbz2_dylib
+else
+    MAKEFILE=Makefile-libbz2_so
+fi
+
+MAKE_FLAGS=("-f" "$MAKEFILE" "-j" "$INSTX_JOBS"
+            CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
+            LDFLAGS="${BUILD_LDFLAGS[*]}")
+
+if ! "$MAKE" "${MAKE_FLAGS[@]}"
+then
+    echo "Failed to build Bzip shared object"
+    exit 1
+fi
+
+echo "**********************"
+echo "Installing package"
+echo "**********************"
+
+# Write the *.pc file
+{
+    echo ""
+    echo "prefix=$INSTX_PREFIX"
+    echo "exec_prefix=\${prefix}"
+    echo "libdir=$INSTX_LIBDIR"
+    echo "sharedlibdir=\${libdir}"
+    echo "includedir=\${prefix}/include"
+    echo ""
+    echo "Name: Bzip2"
+    echo "Description: Bzip2 compression library"
+    echo "Version: $BZIP2_VER"
+    echo ""
+    echo "Requires:"
+    echo "Libs: -L\${libdir} -lbz2"
+    echo "Cflags: -I\${includedir}"
+} > libbz2.pc
+
+if [[ -n "$SUDO_PASSWORD" ]]
+then
+    echo "Installing shared object..."
+    MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
+    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+
+    echo "Installing pkgconfig file..."
+    echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
+else
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
     "$MAKE" "${MAKE_FLAGS[@]}"
@@ -181,6 +225,8 @@ else
     cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 fi
+
+###############################################################################
 
 cd "$CURR_DIR" || exit 1
 

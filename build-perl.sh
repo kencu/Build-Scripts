@@ -110,14 +110,6 @@ PERL_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
 PERL_CC="${CC}"
 
-if [[ "$IS_NETBSD" -ne 0 ]]
-then
-    # On NetBSD Perl looks in /usr/pkg/lib, not /usr/local/lib
-    LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
-    LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
-    export LD_LIBRARY_PATH
-fi
-
 # Perl munges -Wl,-R,$$ORIGIN/../lib. Set it to XXORIGIN so we
 # can fix it later after Perl produces the makefiles.
 # Also see https://github.com/Perl/perl5/issues/17534

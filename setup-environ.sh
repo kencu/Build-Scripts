@@ -518,6 +518,18 @@ fi
 
 ###############################################################################
 
+# NetBSD only puts /usr/lib on path. NetBSD does not use ldconf. 
+# Many build systems assume can get past configure.
+# NetBSD ELF FAQ, https://www.netbsd.org/docs/elf.html
+if [[ "$IS_NETBSD" -ne 0 ]]
+then    
+    LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
+    LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
+    export LD_LIBRARY_PATH
+fi
+
+###############################################################################
+
 # If the package is older than 7 days, then rebuild it. This sidesteps the
 # problem of continually rebuilding the same package when installing a
 # program like Git and SSH. It also avoids version tracking by automatically
