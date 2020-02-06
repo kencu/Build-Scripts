@@ -106,6 +106,7 @@ mkdir -p "$HOME/.cpan"
 PERL_PKGCONFIG="${BUILD_PKGCONFIG[*]}"
 PERL_CPPFLAGS="${BUILD_CPPFLAGS[*]}"
 PERL_CFLAGS="${BUILD_CFLAGS[*]}"
+PERL_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
 PERL_CC="${CC}"
 
@@ -122,8 +123,6 @@ fi
 # Also see https://github.com/Perl/perl5/issues/17534
 PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$ORIGIN/XXORIGIN/g')
 
-echo "Using PERL_LDFLAGS: $PERL_LDFLAGS"
-
 if ! ./Configure -des \
      -Dprefix="$INSTX_PREFIX" \
      -Dlibdir="$INSTX_LIBDIR" \
@@ -131,6 +130,7 @@ if ! ./Configure -des \
      -Dcc="$PERL_CC" \
      -Acppflags="$PERL_CPPFLAGS" \
      -Accflags="$PERL_CFLAGS" \
+     -Acxxflags="$PERL_CXXFLAGS" \
      -Aldflags="$PERL_LDFLAGS" \
      -Dextras="Text::Template Test::More"
 then
