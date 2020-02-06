@@ -118,9 +118,10 @@ then
 fi
 
 # Perl munges -Wl,-R,$$ORIGIN/../lib. -Wl,-R,$$ORIGIN/../lib is
-# transformed into Wl,-R,$13562ORIGIN/../lib. Perl also munges
+# transformed into Wl,-R,13562ORIGIN/../lib. Perl also munges
 # -Wl,-R,$ORIGIN/../lib The $$ is usually needed to pass through
 # the makefile so gcc gets -Wl,-R,$ORIGIN/../lib.
+# Also see https://github.com/Perl/perl5/issues/17534
 # PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$/\$/g')
 
 echo "Using PERL_LDFLAGS: $PERL_LDFLAGS"
