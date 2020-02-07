@@ -110,7 +110,7 @@ PERL_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
 PERL_CC="${CC}"; PERL_CXX="${CXX}"
 
-# Perl munges -Wl,-R,$$ORIGIN/../lib. Set it to XXORIGIN so we
+# Perl munges -Wl,-R,'$$ORIGIN/../lib'. Set it to XXORIGIN so we
 # can fix it later after Perl produces the makefiles.
 # Also see https://github.com/Perl/perl5/issues/17534
 PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$ORIGIN/XXORIGIN/g')
@@ -125,15 +125,16 @@ if ! ./Configure -des \
      -Accflags="$PERL_CFLAGS" \
      -Acxxflags="$PERL_CXXFLAGS" \
      -Aldflags="$PERL_LDFLAGS" \
-     -Dextras="Text::Template Test::More"
+     -Dextras="Test::More Text::Template"
 then
     echo "Failed to configure Perl"
     exit 1
 fi
 
-# Fix -Wl,-R,$$ORIGIN/../lib
+# Fix -Wl,-R,'$$ORIGIN/../lib'
 echo "Patching Makefiles"
-IFS="\r\n" find "$PWD" -iname '*Makefile*' -print | while read file
+SAVED_IFS="$IFS"
+IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
 do
     chmod +w "$file"
     cp -p "$file" "$file.fixed"
@@ -141,6 +142,7 @@ do
     mv "$file.fixed" "$file"
     chmod -w "$file"
 done
+IFS="$SAVED_IFS"
 
 echo "**********************"
 echo "Building package"
