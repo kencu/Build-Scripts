@@ -108,7 +108,7 @@ PERL_CPPFLAGS="${BUILD_CPPFLAGS[*]}"
 PERL_CFLAGS="${BUILD_CFLAGS[*]}"
 PERL_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
 PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
-PERL_CC="${CC}"
+PERL_CC="${CC}"; PERL_CXX="${CXX}"
 
 # Perl munges -Wl,-R,$$ORIGIN/../lib. Set it to XXORIGIN so we
 # can fix it later after Perl produces the makefiles.
@@ -120,6 +120,7 @@ if ! ./Configure -des \
      -Dlibdir="$INSTX_LIBDIR" \
      -Dpkgconfig="$PERL_PKGCONFIG" \
      -Dcc="$PERL_CC" \
+     -Dcxx="$PERL_CXX" \
      -Acppflags="$PERL_CPPFLAGS" \
      -Accflags="$PERL_CFLAGS" \
      -Acxxflags="$PERL_CXXFLAGS" \
@@ -132,7 +133,7 @@ fi
 
 # Fix -Wl,-R,$$ORIGIN/../lib
 echo "Patching Makefiles"
-for file in $(find "$PWD" -iname 'Makefile')
+for file in $(find "$PWD" -iname '*Makefile*')
 do
     chmod +w "$file"
     sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
@@ -143,7 +144,16 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+# CPAN uses Make rather than Gmake. it breaks on some of the BSDs.
+# Also see https://github.com/Perl/perl5/issues/17543.
+export MAKE="${MAKE}"
+
+if [[ "$IS_NETBSD" -ne 0 ]]; then
+    MAKE_FLAGS=("-j" "1")
+else
+    MAKE_FLAGS=("-j" "$INSTX_JOBS")
+fi
+
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Perl"
@@ -154,7 +164,10 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=(check)
+# Needed by NetBSD 8.1
+export PERL5LIB="$PWD/lib"
+
+MAKE_FLAGS=("check" "-j" "1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
