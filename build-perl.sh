@@ -133,18 +133,20 @@ fi
 
 # Fix -Wl,-R,$$ORIGIN/../lib
 echo "Patching Makefiles"
-for file in $(find "$PWD" -iname '*Makefile*')
+IFS="\r\n" find "$PWD" -iname '*Makefile*' -print | while read file
 do
     chmod +w "$file"
+    cp -p "$file" "$file.fixed"
     sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
+    chmod -w "$file"
 done
 
 echo "**********************"
 echo "Building package"
 echo "**********************"
 
-# CPAN uses Make rather than Gmake. it breaks on some of the BSDs.
+# CPAN uses Make rather than Gmake. It breaks on some of the BSDs.
 # Also see https://github.com/Perl/perl5/issues/17543.
 export MAKE="${MAKE}"
 
