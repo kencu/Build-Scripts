@@ -82,9 +82,11 @@ cp ../patch/bzip-makefiles.zip .
 unzip -oq bzip-makefiles.zip
 
 # Now, patch them for this script.
-cp ../patch/bzip.patch .
-patch -u -p0 < bzip.patch
-echo ""
+if [[ -e ../patch/bzip.patch ]]; then
+    cp ../patch/bzip.patch .
+    patch -u -p0 < bzip.patch
+    echo ""
+fi
 
 echo "**********************"
 echo "Building package"

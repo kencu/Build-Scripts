@@ -39,9 +39,9 @@
  	cmp sample3.tst sample3.ref
 -	@cat words3
  
- install: bzip2 bzip2recover
- 	if ( test ! -d $(BINDIR) ) ; then mkdir -p $(BINDIR) ; fi
-@@ -127,7 +125,6 @@
+ install: install_dirs bzip2 bzip2recover
+ 	cp -f bzip2 $(BINDIR)/bzip2
+@@ -129,7 +127,6 @@
  
  # https://www.gnu.org/prep/standards/html_node/Makefile-Basics.html
  blocksort.o: blocksort.c
@@ -49,7 +49,7 @@
  	$(CC) $(CPPFLAGS) $(BZIP_CFLAGS) -c $< -o $@
  huffman.o: huffman.c
  	$(CC) $(CPPFLAGS) $(BZIP_CFLAGS) -c $< -o $@
-@@ -171,10 +168,6 @@
+@@ -173,10 +170,6 @@
  	   $(DISTNAME)/bzip2.1 \
  	   $(DISTNAME)/bzip2.1.preformatted \
  	   $(DISTNAME)/bzip2.txt \
