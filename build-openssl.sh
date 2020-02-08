@@ -158,15 +158,15 @@ if [[ "$IS_FREEBSD" -eq 1 ]]; then
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-Wno-error"
 fi
 
-# https://github.com/openssl/openssl/pull/10565
-if [[ "$IS_OPENBSD" -eq 1 ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="no-devcryptoeng"
-fi
-
 # Configure the library
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
+
+# https://github.com/openssl/openssl/pull/10565
+if [[ "$IS_OPENBSD" -eq 1 ]]; then
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-devcryptoeng"
+fi
 
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
