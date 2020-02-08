@@ -182,27 +182,11 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-# Fix makefiles
-if [[ "$IS_GCC" -eq 0 ]]; then
-    for mfile in $(find "$PWD" -iname 'Makefile*'); do
-        sed -e 's|-Wno-invalid-offsetof||g' -e 's|-Wno-extended-offsetof||g' "$mfile" > "$mfile.fixed"
-        mv "$mfile.fixed" "$mfile"
-    done
-fi
-
-# Fix makefiles
-if [[ "$IS_DARWIN" -ne 0 ]]; then
-    for mfile in $(find "$PWD" -iname 'Makefile*'); do
-        sed -e 's|LD_LIBRARY_PATH|DYLD_LIBRARY_PATH|g' "$mfile" > "$mfile.fixed"
-        mv "$mfile.fixed" "$mfile"
-    done
-fi
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" all)
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build OpenSSL"
