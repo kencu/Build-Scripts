@@ -132,7 +132,7 @@ then
 fi
 
 # Fix -Wl,-R,'$$ORIGIN/../lib'
-echo "Patching Makefiles"
+echo "Patching Makefiles..."
 SAVED_IFS="$IFS"
 IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
 do
