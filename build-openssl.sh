@@ -158,15 +158,17 @@ if [[ "$IS_FREEBSD" -eq 1 ]]; then
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-Wno-error"
 fi
 
+# OpenSSL fails to link its engines and self tests on OpenBSD
+if [[ "$IS_OPENBSD" -eq 1 ]]; then
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-engine"
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-tests"
+    SKIP_OPENSSL_TESTS=1
+fi
+
 # Configure the library
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
-
-# https://github.com/openssl/openssl/pull/10565
-if [[ "$IS_OPENBSD" -eq 1 ]]; then
-    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-devcryptoeng"
-fi
 
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
@@ -186,6 +188,13 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
+# The OpenSSL makefile is fucked up. We can't seem to build
+# only libcrypto, libssl and openssl app. The configuration
+# system does not honor our options. Instead, we have to
+# build everything, and work around the build failures of
+# unneeded shit on some platforms.
+
+# MAKE_FLAGS=("-j" "$INSTX_JOBS" build_libs build_apps)
 MAKE_FLAGS=("-j" "$INSTX_JOBS" all)
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
@@ -203,8 +212,9 @@ then
     MAKE_FLAGS=("-j" "$INSTX_JOBS" test)
     if ! "$MAKE" "${MAKE_FLAGS[@]}"
     then
+        echo "**********************"
         echo "Failed to test OpenSSL"
-        # Too many failures. Sigh...
+        echo "**********************"
         # exit 1
     fi
 else
@@ -215,7 +225,9 @@ echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
+    echo "**********************"
     echo "Failed to test OpenSSL"
+    echo "**********************"
     exit 1
 fi
 
