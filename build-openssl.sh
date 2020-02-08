@@ -144,8 +144,6 @@ do
     mv "$file.fixed" "$file"
     sed 's|libdir=$${exec_prefix}/$(LIBDIR)|libdir=$(LIBDIR)|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-
-    # touch -t 197001010000 "$file"
 done
 IFS="$SAVED_IFS"
 
