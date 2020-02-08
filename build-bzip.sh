@@ -39,6 +39,13 @@ if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
     exit 0
 fi
 
+# Needed to unpack the new Makefiles
+if [[ -z $(command -v unzip 2>/dev/null) ]]; then
+    echo ""
+    echo "Please install unzip command."
+    exit 1
+fi
+
 # Get a sudo password as needed. The password should die when this
 # subshell goes out of scope.
 if [[ -z "$SUDO_PASSWORD" ]]; then
