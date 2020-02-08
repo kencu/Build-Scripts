@@ -121,9 +121,11 @@ rm -rf "$OPENSSL_DIR" &>/dev/null
 gzip -d < "$OPENSSL_TAR" | tar xf -
 cd "$OPENSSL_DIR" || exit 1
 
-#cp ../patch/openssl.patch .
-#patch -u -p0 < openssl.patch
-#echo ""
+if [[ -e ../patch/openssl.patch ]]; then
+    cp ../patch/openssl.patch .
+    patch -u -p0 < openssl.patch
+    echo ""
+fi
 
 #if [[ -n "$INSTX_ASAN" ]]; then
 #    cp ../patch/openssl-nopreload.patch .
@@ -131,9 +133,13 @@ cd "$OPENSSL_DIR" || exit 1
 #    echo ""
 #fi
 
-echo "Patching Makefiles..."
-for file in $(find . -iname '*Makefile*')
+exit 1
+
+echo "Patching Makefiles"
+SAVED_IFS="$IFS"
+IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
 do
+    cp -p "$file" "$file.fixed"
     sed 's|$(INSTALL_PREFIX)||g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     sed 's|$(INSTALLTOP)/$(LIBDIR)|$(LIBDIR)|g' "$file" > "$file.fixed"
@@ -141,8 +147,9 @@ do
     sed 's|libdir=$${exec_prefix}/$(LIBDIR)|libdir=$(LIBDIR)|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 
-    touch -t 197001010000 "$file"
+    # touch -t 197001010000 "$file"
 done
+IFS="$SAVED_IFS"
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
