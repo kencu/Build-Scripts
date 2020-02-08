@@ -133,8 +133,6 @@ fi
 #    echo ""
 #fi
 
-exit 1
-
 echo "Patching Makefiles"
 SAVED_IFS="$IFS"
 IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
