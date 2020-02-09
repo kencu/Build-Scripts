@@ -56,10 +56,14 @@ done)
 # Find the path to config.guess and config.sub, if not given on the command line
 if [[ -n "$1" ]]; then
     PROG_PATH="$1"
+elif [[ -d "./patch" ]]; then
+    PROG_PATH="./patch"
 elif [[ -d "../patch" ]]; then
     PROG_PATH="../patch"
 elif [[ -d "../../patch" ]]; then
     PROG_PATH="../../patch"
+elif [[ -d "../../../patch" ]]; then
+    PROG_PATH="../../../patch"
 fi
 
 echo "patching config.sub..."
