@@ -3,7 +3,6 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds OpenSSL from sources.
 
-# OpenSSH and a few other key programs can only use OpenSSL 1.0.2 at the moment
 OPENSSL_TAR=openssl-1.1.1d.tar.gz
 OPENSSL_DIR=openssl-1.1.1d
 PKG_NAME=openssl
@@ -54,6 +53,14 @@ fi
 if ! ./build-zlib.sh
 then
     echo "Failed to build zLib"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-unistr.sh
+then
+    echo "Failed to build Unistring"
     exit 1
 fi
 
@@ -170,7 +177,7 @@ CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
 
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
+    CPPFLAGS="${BUILD_CPPFLAGS[*]} -DPEDANTIC" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
