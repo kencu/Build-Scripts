@@ -102,6 +102,27 @@ then
     exit 1
 fi
 
+# Write the *.pc file
+{
+    echo ""
+    echo "prefix=$INSTX_PREFIX"
+    echo "exec_prefix=\${prefix}"
+    echo "libdir=$INSTX_LIBDIR"
+    echo "sharedlibdir=\${libdir}"
+    echo "includedir=\${prefix}/include"
+    echo ""
+    echo "Name: Bzip2"
+    echo "Description: Bzip2 compression library"
+    echo "Version: $BZIP2_VER"
+    echo ""
+    echo "Requires:"
+    echo "Libs: -L\${libdir} -lbz2"
+    echo "Cflags: -I\${includedir}"
+} > libbz2.pc
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
@@ -128,24 +149,6 @@ fi
 echo "**********************"
 echo "Installing package"
 echo "**********************"
-
-# Write the *.pc file
-{
-    echo ""
-    echo "prefix=$INSTX_PREFIX"
-    echo "exec_prefix=\${prefix}"
-    echo "libdir=$INSTX_LIBDIR"
-    echo "sharedlibdir=\${libdir}"
-    echo "includedir=\${prefix}/include"
-    echo ""
-    echo "Name: Bzip2"
-    echo "Description: Bzip2 compression library"
-    echo "Version: $BZIP2_VER"
-    echo ""
-    echo "Requires:"
-    echo "Libs: -L\${libdir} -lbz2"
-    echo "Cflags: -I\${includedir}"
-} > libbz2.pc
 
 if [[ -n "$SUDO_PASSWORD" ]]
 then
@@ -197,24 +200,6 @@ fi
 echo "**********************"
 echo "Installing package"
 echo "**********************"
-
-# Write the *.pc file
-{
-    echo ""
-    echo "prefix=$INSTX_PREFIX"
-    echo "exec_prefix=\${prefix}"
-    echo "libdir=$INSTX_LIBDIR"
-    echo "sharedlibdir=\${libdir}"
-    echo "includedir=\${prefix}/include"
-    echo ""
-    echo "Name: Bzip2"
-    echo "Description: Bzip2 compression library"
-    echo "Version: $BZIP2_VER"
-    echo ""
-    echo "Requires:"
-    echo "Libs: -L\${libdir} -lbz2"
-    echo "Cflags: -I\${includedir}"
-} > libbz2.pc
 
 if [[ -n "$SUDO_PASSWORD" ]]
 then

@@ -93,9 +93,6 @@ if [[ "$IS_SOLARIS" -ne 0 && "$IS_SUNC" -eq 0 ]]; then
     mv Makefile.fixed Makefile; chmod +x Makefile
 fi
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -118,6 +115,9 @@ if [[ "$?" -ne 0 ]]; then
     echo "Failed to build Hiredis"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

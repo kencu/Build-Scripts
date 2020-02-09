@@ -68,7 +68,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("all" "-j" "$INSTX_JOBS")
+MAKE_FLAGS=("all" "libcryptopp.pc" "-j" "$INSTX_JOBS")
 if ! CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
      CFLAGS="${BUILD_CFLAGS[*]}" \
      CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
@@ -79,6 +79,9 @@ then
     echo "Failed to build Crypto++"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

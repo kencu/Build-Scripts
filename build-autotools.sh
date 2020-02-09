@@ -68,7 +68,7 @@ gzip -d < "$M4_TAR" | tar xf -
 cd "$M4_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -95,6 +95,9 @@ then
     echo "Failed to build M4"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Installing package"
@@ -130,7 +133,7 @@ gzip -d < "$AUTOCONF_TAR" | tar xf -
 cd "$AUTOCONF_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -157,6 +160,9 @@ then
     echo "Failed to build Autoconf"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Installing package"
@@ -192,7 +198,7 @@ gzip -d < "$AUTOMAKE_TAR" | tar xf -
 cd "$AUTOMAKE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -222,6 +228,9 @@ then
     echo "Failed to build Automake"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Installing package"

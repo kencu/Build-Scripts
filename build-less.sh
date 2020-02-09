@@ -65,7 +65,7 @@ gzip -d < "$LESS_TAR" | tar xf -
 cd "$LESS_DIR"
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

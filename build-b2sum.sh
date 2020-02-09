@@ -58,12 +58,14 @@ rm -rf "$B2SUM_DIR" &>/dev/null
 gzip -d < "$B2SUM_TAR" | tar xf -
 cd "$B2SUM_DIR"
 
-cp sse/blake2s-load-sse2.h sse/blake2s-load-sse2.h.orig
-cp sse/blake2b-load-sse2.h sse/blake2b-load-sse2.h.orig
+# cp sse/blake2s-load-sse2.h sse/blake2s-load-sse2.h.orig
+# cp sse/blake2b-load-sse2.h sse/blake2b-load-sse2.h.orig
 
-cp ../patch/b2sum.patch .
-patch -u -p0 < b2sum.patch
-echo ""
+if [[ -e ../patch/b2sum.patch ]] then
+    cp ../patch/b2sum.patch .
+    patch -u -p0 < b2sum.patch
+    echo ""
+fi
 
 cd "b2sum"
 
@@ -115,6 +117,9 @@ then
     echo "Failed to build b2sum"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 #echo "**********************"
 #echo "Testing package"

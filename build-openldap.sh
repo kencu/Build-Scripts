@@ -87,8 +87,10 @@ patch -u -p0 < openldap.patch
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
+# Fix Berkeley DB version test
+configure -p configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure
 chmod +x configure
@@ -130,6 +132,9 @@ then
     echo "Failed to build OpenLDAP"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

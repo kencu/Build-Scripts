@@ -94,7 +94,7 @@ patch -u -p0 < libpsl.patch
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 # Solaris is a tab bit stricter than libc
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
@@ -149,6 +149,9 @@ then
     echo "Failed to build libpsl"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

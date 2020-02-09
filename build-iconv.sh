@@ -76,7 +76,7 @@ patch -u -p0 < iconv.patch
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -104,6 +104,9 @@ then
     echo "Failed to build iConv"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 # build-iconv-gettext has a circular dependency.
 # The first build of iConv does not need 'make check'.

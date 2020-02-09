@@ -86,7 +86,7 @@ gzip -d < "$OPENSSH_TAR" | tar xf -
 cd "$OPENSSH_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
@@ -129,6 +129,9 @@ then
     echo "Failed to build SSH"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

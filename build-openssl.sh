@@ -134,8 +134,7 @@ fi
 #fi
 
 echo "Patching Makefiles..."
-SAVED_IFS="$IFS"
-IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
+(IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
 do
     cp -p "$file" "$file.fixed"
     sed 's|$(INSTALL_PREFIX)||g' "$file" > "$file.fixed"
@@ -144,8 +143,7 @@ do
     mv "$file.fixed" "$file"
     sed 's|libdir=$${exec_prefix}/$(LIBDIR)|libdir=$(LIBDIR)|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
-IFS="$SAVED_IFS"
+done)
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
@@ -201,6 +199,9 @@ then
     echo "Failed to build OpenSSL"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

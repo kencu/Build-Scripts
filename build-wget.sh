@@ -162,6 +162,9 @@ rm -rf "$WGET_DIR" &>/dev/null
 gzip -d < "$WGET_TAR" | tar xf -
 cd "$WGET_DIR" || exit 1
 
+echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
+echo ""
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/wget.patch ]]; then
     cp ../patch/wget.patch .
@@ -169,11 +172,8 @@ if [[ -e ../patch/wget.patch ]]; then
     echo ""
 fi
 
-echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
-echo ""
-
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 #sed -e 's|$(LTLIBICONV)|$(LIBICONV)|g' fuzz/Makefile.am > fuzz/Makefile.am.fixed
 #mv fuzz/Makefile.am.fixed fuzz/Makefile.am
@@ -230,6 +230,9 @@ then
     echo "Failed to build Wget"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

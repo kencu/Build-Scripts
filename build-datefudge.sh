@@ -58,6 +58,9 @@ rm -rf "$DATEFUDGE_TAR" "$DATEFUDGE_DIR" &>/dev/null
 unxz "$DATEFUDGE_XZ" && tar -xf "$DATEFUDGE_TAR"
 cd "$DATEFUDGE_DIR"
 
+# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
+cp -p ../fix-config.sh .; ./fix-config.sh
+
 #cp Makefile Makefile.orig
 #cp datefudge.c datefudge.c.orig
 
@@ -78,6 +81,9 @@ then
     echo "Failed to build Datefudge"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

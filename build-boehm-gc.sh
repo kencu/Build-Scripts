@@ -68,7 +68,7 @@ gzip -d < "$GC_TAR" | tar xf -
 cd "$GC_DIR"
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
@@ -100,6 +100,9 @@ then
     echo "Failed to build Boehm GC"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

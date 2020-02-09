@@ -139,7 +139,7 @@ if [[ -e ../patch/git.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 # Command line tools, like sed and awk, need this on OS X.
 if [[ "$IS_DARWIN" -ne 0 ]]
@@ -234,6 +234,9 @@ then
     echo "Failed to build Git"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

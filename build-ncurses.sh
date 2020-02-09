@@ -127,7 +127,6 @@ fi
 echo "Patching Makefiles..."
 (IFS="\r\n" find "$PWD" -name 'Makefile' -print | while read -r file
 do
-    echo "Fixing $file..."
     cp -p "$file" "$file.fixed"
     sed 's| --param max-inline-insns-single=1200||g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"

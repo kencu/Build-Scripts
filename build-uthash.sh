@@ -98,6 +98,9 @@ then
     exit 1
 fi
 
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
+
 echo "**********************"
 echo "Installing package"
 echo "**********************"
