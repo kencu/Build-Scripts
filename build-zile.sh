@@ -85,6 +85,7 @@ CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--enable-debug=no")
 CONFIG_OPTS+=("HELP2MAN=true")
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
