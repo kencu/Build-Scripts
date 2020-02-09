@@ -72,8 +72,26 @@ rm -rf "$ZILE_DIR" &>/dev/null
 gzip -d < "$ZILE_TAR" | tar xf -
 cd "$ZILE_DIR"
 
+if [[ -e ../patch/zile.patch ]]; then
+    cp ../patch/zile.patch .
+    patch -u -p0 < zile.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 cp -p ../fix-config.sh .; ./fix-config.sh
+
+CONFIG_OPTS=()
+CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
+CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS+=("HELP2MAN=true")
+
+if [[ "$IS_SOLARIS" -ne 0 ]]; then
+    CONFIG_OPTS+=("--enable-threads=solaris")
+else
+    CONFIG_OPTS+=("--enable-threads=posix")
+fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -82,20 +100,26 @@ cp -p ../fix-config.sh .; ./fix-config.sh
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
-    --enable-shared
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne "0" ]]; then
     echo "Failed to configure Zile"
     exit 1
 fi
 
+echo "Patching Makefiles..."
+(IFS="\r\n" find "$PWD" -name 'Makefile' -print | while read -r file
+do
+    cp -p "$file" "$file.fixed"
+    sed 's|-lncurses|-lncurses -ltinfo|g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done)
+
 echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$MAKE_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Zile"
@@ -109,20 +133,20 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
-then
-    echo "Failed to test Zile"
-    exit 1
-fi
+#MAKE_FLAGS=("check")
+#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#then
+#    echo "Failed to test Zile"
+#    exit 1
+#fi
 
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' | grep -oIR 'runtime error:' ./* | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
-then
-	echo "Failed to test Zile"
-	exit 1
-fi
+#echo "Searching for errors hidden in log files"
+#COUNT=$(find . -name '*.log' | grep -oIR 'runtime error:' ./* | wc -l)
+#if [[ "${COUNT}" -ne 0 ]];
+#then
+#	echo "Failed to test Zile"
+#	exit 1
+#fi
 
 echo "**********************"
 echo "Installing package"

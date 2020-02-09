@@ -65,9 +65,11 @@ rm -rf "$ZLIB_DIR" &>/dev/null
 gzip -d < "$ZLIB_TAR" | tar xf -
 cd "$ZLIB_DIR" || exit 1
 
-cp ../patch/zlib.patch .
-patch -u -p0 < zlib.patch
-echo ""
+if [[ -e ../patch/zlib.patch ]]; then
+    cp ../patch/zlib.patch .
+    patch -u -p0 < zlib.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 cp -p ../fix-config.sh .; ./fix-config.sh
