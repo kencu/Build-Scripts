@@ -20,7 +20,7 @@ trap finish EXIT
 ###############################################################################
 
 # Get the environment as needed. We can't export it because it includes arrays.
-if ! source ./build-environ.sh
+if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
@@ -28,12 +28,12 @@ fi
 
 # The password should die when this subshell goes out of scope
 if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./build-password.sh
+    source ./setup-password.sh
 fi
 
 ###############################################################################
 
-if ! ./build-cacerts.sh
+if ! ./build-cacert.sh
 then
     echo "Failed to install CA Certs"
     exit 1
@@ -44,6 +44,14 @@ fi
 if ! ./build-termcap.sh
 then
     echo "Failed to build Termcap"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-ncurses.sh
+then
+    echo "Failed to build Ncurses"
     exit 1
 fi
 
@@ -65,7 +73,7 @@ gzip -d < "$ZILE_TAR" | tar xf -
 cd "$ZILE_DIR"
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -73,9 +81,10 @@ cd "$ZILE_DIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
-    --enable-shared \
-    --enable-threads=posix
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared
 
 if [[ "$?" -ne "0" ]]; then
     echo "Failed to configure Zile"
@@ -92,6 +101,9 @@ then
     echo "Failed to build Zile"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

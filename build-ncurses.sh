@@ -11,7 +11,7 @@ PKG_NAME=ncurses
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -49,6 +49,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-termcap.sh
+then
+    echo "Failed to build Termcap"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** ncurses **********"
 echo
@@ -62,10 +70,10 @@ fi
 
 rm -rf "$NCURSES_DIR" &>/dev/null
 gzip -d < "$NCURSES_TAR" | tar xf -
-cd "$NCURSES_DIR"
+cd "$NCURSES_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
@@ -115,13 +123,15 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-# Fix Clang warning
-if [[ "$IS_CLANG" -ne 0 ]]; then
-    for mfile in $(find "$PWD" -name 'Makefile'); do
-        sed -e 's|--param max-inline-insns-single=1200||g' "$mfile" > "$mfile.fixed"
-        mv "$mfile.fixed" "$mfile"
-    done
-fi
+# Remove unneeded warning
+echo "Patching Makefiles..."
+(IFS="\r\n" find "$PWD" -name 'Makefile' -print | while read -r file
+do
+    echo "Fixing $file..."
+    cp -p "$file" "$file.fixed"
+    sed 's| --param max-inline-insns-single=1200||g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done)
 
 echo "**********************"
 echo "Building package"
@@ -130,9 +140,14 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build ncurses"
+    echo "**********************"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"
@@ -141,7 +156,9 @@ echo "**********************"
 MAKE_FLAGS=("test")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test ncurses"
+    echo "**********************"
     exit 1
 fi
 
@@ -164,7 +181,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_CACHE/$PKG_NAME"

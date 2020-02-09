@@ -133,16 +133,14 @@ fi
 
 # Fix -Wl,-R,'$$ORIGIN/../lib'
 echo "Patching Makefiles..."
-SAVED_IFS="$IFS"
-IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
+(IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read -r file
 do
     chmod +w "$file"
     cp -p "$file" "$file.fixed"
     sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     chmod -w "$file"
-done
-IFS="$SAVED_IFS"
+done)
 
 echo "**********************"
 echo "Building package"
@@ -163,6 +161,9 @@ then
     echo "Failed to build Perl"
     exit 1
 fi
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
 
 echo "**********************"
 echo "Testing package"

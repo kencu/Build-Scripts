@@ -73,7 +73,7 @@ if [[ -e ../patch/termcap.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-../fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -84,7 +84,6 @@ fi
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
     --enable-shared \
     --enable-install-termcap \
     --with-termcap="$INSTX_PREFIX/etc"
@@ -106,23 +105,6 @@ then
     exit 1
 fi
 
-echo "**********************"
-echo "Testing package"
-echo "**********************"
-
-#MAKE_FLAGS=("check" "V=1")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
-#then
-#    echo "Failed to test Termcap"
-#    exit 1
-#fi
-
-echo "Package not tested"
-
-echo "**********************"
-echo "Installing package"
-echo "**********************"
-
 # Write the *.pc file
 {
     echo ""
@@ -141,6 +123,26 @@ echo "**********************"
     echo "Libs: -L\${libdir} -ltermcap"
     echo "Cflags: -I\${includedir}"
 } > termcap.pc
+
+# Fix flags in *.pc files
+cp -p ../fix-pc.sh .; ./fix-pc.sh
+
+echo "**********************"
+echo "Testing package"
+echo "**********************"
+
+#MAKE_FLAGS=("check" "V=1")
+#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#then
+#    echo "Failed to test Termcap"
+#    exit 1
+#fi
+
+echo "Package not tested"
+
+echo "**********************"
+echo "Installing package"
+echo "**********************"
 
 MAKE_FLAGS=("install" "libdir=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then

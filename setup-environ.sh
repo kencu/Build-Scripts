@@ -518,11 +518,11 @@ fi
 
 ###############################################################################
 
-# NetBSD only puts /usr/lib on path. NetBSD does not use ldconf. 
+# NetBSD only puts /usr/lib on path. NetBSD does not use ldconf.
 # Many build systems assume can get past configure.
 # NetBSD ELF FAQ, https://www.netbsd.org/docs/elf.html
 if [[ "$IS_NETBSD" -ne 0 ]]
-then    
+then
     LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
     LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
     export LD_LIBRARY_PATH
