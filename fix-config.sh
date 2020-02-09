@@ -23,52 +23,59 @@ echo "patching sys_lib_dlsearch_path_spec..."
 if [[ $(uname -s 2>&1 | grep -i -c 'darwin') -ne 0 ]]
 then
     # Keep configure in the future
-    for file in $(find "$PWD" -iname 'configure')
+    (IFS="\r\n" find "$PWD" -iname 'configure' -print | while read -r file
     do
         cp -p "$file" "$file.fixed"
         chmod +w "$file" && chmod +w "$file.fixed"
         sed 's/rm -f core/rm -rf core/g' "$file" > "$file.fixed"
         mv "$file.fixed" "$file" && chmod +x "$file"
         touch "$file"
-    done
+    done)
 fi
 
 # Keep configure in the future
-for file in $(find "$PWD" -iname 'configure')
+(IFS="\r\n" find "$PWD" -iname 'configure' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     chmod +w "$file" && chmod +w "$file.fixed"
     sed -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spec="/lib %{_libdir} /usr/lib|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file" && chmod +x "$file"
     touch "$file"
-done
+done)
 
 # And keep configure.ac in the past
-for file in $(find "$PWD" -iname 'configure.ac')
+(IFS="\r\n" find "$PWD" -iname 'configure.ac' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     chmod +w "$file" && chmod +w "$file.fixed"
     sed -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spec="/lib %{_libdir} /usr/lib|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file" && chmod +x "$file"
     touch -t 197001010000 "$file"
-done
+done)
+
+# Find the path to config.guess and config.sub, if not given on the command line
+if [[ -n "$1" ]]; then
+    PROG_PATH="$1"
+elif [[ -d "../patch" ]]; then
+    PROG_PATH="../patch"
+elif [[ -d "../../patch" ]]; then
+    PROG_PATH="../../patch"
+fi
 
 echo "patching config.sub..."
-if [[ -e ../../patch/config.sub ]]; then
-    find "$PWD" -name config.sub \
-		-exec bash -c 'chmod +w "$1" && cp ../../patch/config.sub "$1"' _ {} \;
-else
-    find "$PWD" -name config.sub \
-		-exec bash -c 'chmod +w "$1" && cp ../patch/config.sub "$1"' _ {} \;
-fi
+(IFS="\r\n" find "$PWD" -name 'config.sub' -print | while read -r file
+do
+    chmod +w "$file"
+    cp "$PROG_PATH/config.sub" "$file"
+    chmod -w "$file"; chmod +x "$file"
+done)
 
 echo "patching config.guess..."
-if [[ -e ../../patch/config.guess ]]; then
-    find "$PWD" -name config.guess \
-		-exec bash -c 'chmod +w "$1" && cp ../../patch/config.guess "$1"' _ {} \;
-else
-    find "$PWD" -name config.guess \
-		-exec bash -c 'chmod +w "$1" && cp ../patch/config.guess "$1"' _ {} \;
-fi
+(IFS="\r\n" find "$PWD" -name 'config.guess' -print | while read -r file
+do
+    chmod +w "$file"
+    cp "$PROG_PATH/config.guess" "$file"
+    chmod -w "$file"; chmod +x "$file"
+done)
 
 echo ""
