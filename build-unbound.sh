@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Unbound from sources.
 
-UNBOUND_TAR=unbound-1.9.6.tar.gz
-UNBOUND_DIR=unbound-1.9.6
+UNBOUND_TAR=unbound-1.10.0.tar.gz
+UNBOUND_DIR=unbound-1.10.0
 PKG_NAME=unbound
 
 ###############################################################################
