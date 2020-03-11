@@ -23,10 +23,6 @@ trap finish EXIT
 # Sets the number of make jobs if not set in environment
 : "${INSTX_JOBS:=4}"
 
-# OpenLDAP cannot build on NetBSD ???
-IS_NETBSD=$(uname -s 2>/dev/null | grep -i -c NetBSD)
-IS_NETBSD=0
-
 ###############################################################################
 
 # Get the environment as needed. We can't export it because it includes arrays.
@@ -88,12 +84,6 @@ CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--with-tls=openssl")
 CONFIG_OPTS+=("--enable-cxx")
-
-if [ "$IS_NETBSD" -eq 0 ]
-then
-    CONFIG_OPTS+=("--disable-ldap")
-    CONFIG_OPTS+=("--disable-ldaps")
-fi
 
     # Add --with-tls=openssl back in the future
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \

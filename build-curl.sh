@@ -18,10 +18,6 @@ trap finish EXIT
 # Sets the number of make jobs if not set in environment
 : "${INSTX_JOBS:=4}"
 
-# OpenLDAP cannot build on NetBSD ???
-IS_NETBSD=$(uname -s 2>/dev/null | grep -i -c NetBSD)
-IS_NETBSD=0
-
 ###############################################################################
 
 # Get the environment as needed. We can't export it because it includes arrays.
@@ -110,14 +106,10 @@ fi
 
 ###############################################################################
 
-# OpenLDAP cannot build on NetBSD ???
-if [ "$IS_NETBSD" -eq 0 ]
+if ! ./build-openldap.sh
 then
-    if ! ./build-openldap.sh
-    then
-        echo "Failed to build OpenLDAP"
-        exit 1
-    fi
+    echo "Failed to build OpenLDAP"
+    exit 1
 fi
 
 ###############################################################################
@@ -156,6 +148,8 @@ CONFIG_OPTS+=("--enable-symbol-hiding")
 CONFIG_OPTS+=("--enable-http")
 CONFIG_OPTS+=("--enable-ftp")
 CONFIG_OPTS+=("--enable-file")
+CONFIG_OPTS+=("--enable-ldap")
+CONFIG_OPTS+=("--enable-ldaps")
 CONFIG_OPTS+=("--enable-rtsp")
 CONFIG_OPTS+=("--enable-proxy")
 CONFIG_OPTS+=("--enable-dict")
@@ -179,13 +173,6 @@ CONFIG_OPTS+=("--without-cyassl")
 CONFIG_OPTS+=("--without-nss")
 CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
-
-# OpenLDAP cannot build on NetBSD ???
-if [ "$IS_NETBSD" -eq 0 ]
-then
-    CONFIG_OPTS+=("--enable-ldap")
-    CONFIG_OPTS+=("--enable-ldaps")
-fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
