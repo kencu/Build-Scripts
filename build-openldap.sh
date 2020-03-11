@@ -92,8 +92,7 @@ cp -p ../fix-config.sh .; ./fix-config.sh
 # Fix Berkeley DB version test
 cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
-mv configure.new configure
-chmod +x configure
+mv configure.new configure; chmod a+x configure
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
