@@ -111,7 +111,7 @@ fi
 ###############################################################################
 
 # OpenLDAP cannot build on NetBSD ???
-if [ "$IS_NETBSD" -eq 0 ]]
+if [ "$IS_NETBSD" -eq 0 ]
 then
     if ! ./build-openldap.sh
     then
@@ -181,7 +181,7 @@ CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
 
 # OpenLDAP cannot build on NetBSD ???
-if [ "$IS_NETBSD" -eq 0 ]]
+if [ "$IS_NETBSD" -eq 0 ]
 then
     CONFIG_OPTS+=("--enable-ldap")
     CONFIG_OPTS+=("--enable-ldaps")
