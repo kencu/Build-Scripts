@@ -90,7 +90,7 @@ echo ""
 cp -p ../fix-config.sh .; ./fix-config.sh
 
 # Fix Berkeley DB version test
-configure -p configure.new
+cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure
 chmod +x configure
