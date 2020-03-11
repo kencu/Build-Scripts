@@ -95,7 +95,6 @@ mv configure.new configure; chmod a+x configure
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--host=$AUTOCONF_BUILD")
 CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--with-tls=openssl")
