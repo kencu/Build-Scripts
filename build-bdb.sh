@@ -23,6 +23,9 @@ trap finish EXIT
 # Sets the number of make jobs if not set in environment
 : "${INSTX_JOBS:=4}"
 
+# OpenLDAP cannot build on NetBSD ???
+IS_NETBSD=$(uname -s 2>/dev/null | grep -i -c NetBSD)
+
 ###############################################################################
 
 # Get the environment as needed. We can't export it because it includes arrays.
@@ -78,6 +81,18 @@ cp -p ../fix-config.sh .; ./fix-config.sh
 cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR" || exit 1
 
+CONFIG_OPTS=()
+CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
+CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-tls=openssl")
+CONFIG_OPTS+=("--enable-cxx")
+
+if [ "$IS_NETBSD" -eq 0 ]]
+then
+    CONFIG_OPTS+=("--disable-ldap")
+fi
+
     # Add --with-tls=openssl back in the future
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -85,10 +100,8 @@ cd "$BDB_DIR" || exit 1
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./dist/configure \
-    --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
-    --with-tls=openssl \
-    --enable-cxx
+    "${CONFIG_OPTS[@]}"
+    
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Berkeley DB"
