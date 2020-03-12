@@ -92,11 +92,11 @@ cp -p ../fix-config.sh .; ./fix-config.sh
 ./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --with-drill \
     --with-ssl="$INSTX_PREFIX" \
     --with-ca-file="$SH_UNBOUND_CACERT_FILE" \
     --with-ca-path="$SH_UNBOUND_CACERT_PATH" \
     --with-trust-anchor="$SH_UNBOUND_ROOTKEY_FILE" \
-    --disable-dane-ta-usage
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure LDNS"
