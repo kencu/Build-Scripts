@@ -111,7 +111,9 @@ cp -p ../fix-config.sh .; ./fix-config.sh
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure --enable-shared \
-    --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --enable-static-exe \
     --with-ssl="$INSTX_PREFIX" \
     --with-libexpat="$INSTX_PREFIX" \
