@@ -552,6 +552,16 @@ if [[ -z "$PRINT_ONCE" ]]; then
         echo "     sed: $(command -v sed)"
         echo "     awk: $(command -v awk)"
         echo "    grep: $(command -v grep)"
+        if [[ -n "$LEX" ]]; then
+            echo "     lex: $LEX"
+        else
+            echo "     lex: $(command -v lex)"
+        fi
+        if [[ -n "$YACC" ]]; then
+            echo "     lex: $YACC"
+        else
+            echo "    yacc: $(command -v yacc)"
+        fi
     fi
 
     echo ""
