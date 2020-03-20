@@ -58,7 +58,7 @@ echo
 echo "********** Bison **********"
 echo
 
-if ! "$WGET" -O "$BISON_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+if ! "$WGET" -O "$BISON_XZ" --ca-certificate="$CA_ZOO" \
      "https://ftp.gnu.org/gnu/bison/$BISON_XZ"
 then
     echo "Failed to download Bison"
