@@ -73,6 +73,10 @@ echo
 echo "********** LDNS **********"
 echo
 
+echo "**********************"
+echo "Cloning package"
+echo "**********************"
+
 rm -rf "$LDNS_DIR" &>/dev/null
 
 if ! git clone https://github.com/NLnetLabs/ldns.git "$LDNS_DIR"

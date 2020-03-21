@@ -81,7 +81,11 @@ echo
 echo "********** libpsl **********"
 echo
 
-if ! "$WGET" -O "$PSL_TAR" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$PSL_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/rockdaboot/libpsl/releases/download/$PSL_DIR/$PSL_TAR"
 then
     echo "Failed to download libpsl"
@@ -135,7 +139,7 @@ echo "**********************"
 echo "Updating Public Suffix List (PSL) data file"
 mkdir -p list
 
-if ! "$WGET" -O "list/public_suffix_list.dat" --ca-certificate="$CA_ZOO" \
+if ! "$WGET" -q -O "list/public_suffix_list.dat" --ca-certificate="$CA_ZOO" \
      "https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat"
 then
     echo "Failed to update Public Suffix List (PSL)"

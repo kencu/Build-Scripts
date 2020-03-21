@@ -73,7 +73,11 @@ echo
 echo "********** IDN2 **********"
 echo
 
-if ! "$WGET" -O "$IDN2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$IDN2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/libidn/$IDN2_TAR"
 then
     echo "Failed to download IDN2"

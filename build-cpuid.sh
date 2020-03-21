@@ -57,7 +57,11 @@ echo
 echo "********** Cpuid **********"
 echo
 
-if ! "$WGET" -O "$CPUID_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$CPUID_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "http://www.etallen.com/cpuid/$CPUID_TAR"
 then
     echo "Failed to download Cpuid"

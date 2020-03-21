@@ -58,7 +58,11 @@ echo
 echo "********** libicu **********"
 echo
 
-if ! "$WGET" -O "$ICU_TAR" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$ICU_TAR" \
      "http://download.icu-project.org/files/icu4c/60.2/$ICU_TAR"
 then
     echo "Failed to download libicu"

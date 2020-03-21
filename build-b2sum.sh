@@ -49,8 +49,11 @@ echo
 echo "********** b2sum **********"
 echo
 
-# Redirect to Sourceforge.
-if ! "$WGET" -O "$B2SUM_TAR" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$B2SUM_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/BLAKE2/BLAKE2/archive/$B2SUM_TAR"
 then
     echo "Failed to download b2sum"

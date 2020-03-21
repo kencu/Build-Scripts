@@ -66,7 +66,11 @@ echo
 echo "********** GDB **********"
 echo
 
-if ! "$WGET" -O "$GDB_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GDB_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/gdb/$GDB_XZ"
 then
     echo "Failed to download GDB"

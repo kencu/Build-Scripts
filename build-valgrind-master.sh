@@ -58,6 +58,10 @@ echo
 
 rm -rf "$VALGRIND_DIR" 2>/dev/null
 
+echo "**********************"
+echo "Cloning package"
+echo "**********************"
+
 if ! git clone --depth=3 git://sourceware.org/git/valgrind.git "$VALGRIND_DIR";
 then
     echo "Failed to checkout Valgrind"

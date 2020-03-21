@@ -69,7 +69,11 @@ echo
 echo "********** Bzip **********"
 echo
 
-if ! "$WGET" -O "$BZIP2_TAR" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$BZIP2_TAR" \
      "ftp://sourceware.org/pub/bzip2/$BZIP2_TAR"
 then
     echo "Failed to download Bzip"

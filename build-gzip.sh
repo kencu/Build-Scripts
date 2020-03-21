@@ -57,7 +57,11 @@ echo
 echo "********** Gzip **********"
 echo
 
-if ! "$WGET" -O "$GZIP_TAR" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GZIP_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://ftp.gnu.org/gnu/gzip/$GZIP_TAR"
 then
     echo "Failed to download Gzip"

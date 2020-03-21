@@ -57,7 +57,11 @@ echo
 echo "********** libgpg-error **********"
 echo
 
-if ! "$WGET" -O "$LIBERR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$LIBERR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/libgpg-error/$LIBERR_TAR"
 then
     echo "Failed to download libgpg-error"

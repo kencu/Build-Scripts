@@ -58,7 +58,11 @@ echo
 echo "********** Make **********"
 echo
 
-if ! "$WGET" -O "$MAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$MAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/make/$MAKE_TAR"
 then
     echo "Failed to download Make"

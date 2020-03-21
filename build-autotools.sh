@@ -60,7 +60,11 @@ echo
 echo "********** M4 **********"
 echo
 
-if ! "$WGET" -O "$M4_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$M4_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/m4/$M4_TAR"
 then
     echo "Failed to download M4"
@@ -125,7 +129,11 @@ echo
 echo "********** Autoconf **********"
 echo
 
-if ! "$WGET" -O "$AUTOCONF_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$AUTOCONF_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/autoconf/$AUTOCONF_TAR"
 then
     echo "Failed to download libtool"
@@ -190,7 +198,11 @@ echo
 echo "********** Automake **********"
 echo
 
-if ! "$WGET" -O "$AUTOMAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$AUTOMAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/automake/$AUTOMAKE_TAR"
 then
     echo "Failed to download Automake"

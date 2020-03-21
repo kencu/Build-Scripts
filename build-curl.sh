@@ -121,7 +121,11 @@ echo
 echo "********** cURL **********"
 echo
 
-if ! "$WGET" -O "$CURL_TAR" --ca-certificate="$CA_ZOO" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$CURL_TAR" --ca-certificate="$CA_ZOO" \
      "https://curl.haxx.se/download/$CURL_TAR"
 then
     echo "Failed to download cURL"

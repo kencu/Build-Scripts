@@ -62,7 +62,11 @@ echo
 echo "********** Berkely DB **********"
 echo
 
-cp "bootstrap/$BDB_TAR" .
+echo "**********************"
+echo "Copying package"
+echo "**********************"
+
+cp "bootstrap/$BDB_TAR" "$PWD"
 rm -rf "$BDB_DIR" &>/dev/null
 gzip -d < "$BDB_TAR" | tar xf -
 

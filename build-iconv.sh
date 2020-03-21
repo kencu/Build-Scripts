@@ -64,7 +64,11 @@ echo
 echo "********** iConv **********"
 echo
 
-if ! "$WGET" -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
 then
     echo "Failed to download iConv"

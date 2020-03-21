@@ -65,7 +65,11 @@ echo
 echo "********** ncurses **********"
 echo
 
-if ! "$WGET" -O "$NCURSES_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$NCURSES_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/pub/gnu/ncurses/$NCURSES_TAR"
 then
     echo "Failed to download Ncurses"

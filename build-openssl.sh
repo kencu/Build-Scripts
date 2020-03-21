@@ -120,7 +120,11 @@ echo
 echo "********** OpenSSL **********"
 echo
 
-if ! "$WGET" -O "$OPENSSL_TAR" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$OPENSSL_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://www.openssl.org/source/$OPENSSL_TAR"
 then
     echo "Failed to download OpenSSL"

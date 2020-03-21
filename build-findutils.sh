@@ -58,7 +58,11 @@ echo
 echo "********** Find Utilities **********"
 echo
 
-if ! "$WGET" -O "$FIND_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$FIND_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/findutils/$FIND_TAR"
 then
     echo "Failed to download Find Utilities"

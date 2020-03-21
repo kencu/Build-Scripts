@@ -74,7 +74,11 @@ echo
 echo "********** Perl **********"
 echo
 
-if ! "$WGET" -O "$PERL_TAR" --ca-certificate="$GLOBALSIGN_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$PERL_TAR" --ca-certificate="$GLOBALSIGN_ROOT" \
      "https://www.cpan.org/src/5.0/$PERL_TAR"
 then
     echo "Failed to download Perl"

@@ -131,7 +131,11 @@ echo
 echo "********** GnuPG **********"
 echo
 
-if ! "$WGET" -O "$GNUPG_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GNUPG_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/gnupg/$GNUPG_TAR"
 then
     echo "Failed to download GnuPG"

@@ -66,7 +66,11 @@ echo
 echo "********** Grep **********"
 echo
 
-if ! "$WGET" -O "$GREP_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GREP_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/grep/$GREP_XZ"
 then
     echo "Failed to download Grep"

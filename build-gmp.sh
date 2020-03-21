@@ -57,7 +57,11 @@ echo
 echo "********** GMP **********"
 echo
 
-if ! "$WGET" -O "$GMP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GMP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/gmp/$GMP_TAR"
 then
     echo "Failed to download GMP"

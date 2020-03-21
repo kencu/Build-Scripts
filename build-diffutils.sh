@@ -58,7 +58,11 @@ echo
 echo "********** GNU Diffutils **********"
 echo
 
-if ! "$WGET" -O "$DIFFUTILS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$DIFFUTILS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/diffutils/$DIFFUTILS_XZ"
 then
     echo "Failed to download GNU Diffutils"

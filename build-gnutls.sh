@@ -126,7 +126,7 @@ fi
 
 ###############################################################################
 
-if [[ -z $(command -v datefudge 2>/dev/null) ]]
+if [[ -z "$(command -v datefudge 2>/dev/null)" ]]
 then
     echo ""
     echo "datefudge not found. Some tests will be skipped."
@@ -139,7 +139,11 @@ echo
 echo "********** GnuTLS **********"
 echo
 
-if ! "$WGET" -O "$GNUTLS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GNUTLS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.6/$GNUTLS_XZ"
 then
     echo "Failed to download GnuTLS"

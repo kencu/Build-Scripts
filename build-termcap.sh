@@ -58,7 +58,11 @@ echo
 echo "********** Termcap **********"
 echo
 
-if ! "$WGET" -O "$TERMCAP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$TERMCAP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/termcap/$TERMCAP_TAR"
 then
     echo "Failed to download Termcap"

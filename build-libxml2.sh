@@ -49,7 +49,11 @@ echo
 echo "********** libxml2 **********"
 echo
 
-if ! "$WGET" -O "$XML2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$XML2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "ftp://xmlsoft.org/libxml2/$XML2_TAR"
 then
     echo "Failed to download libxml2"

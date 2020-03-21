@@ -58,7 +58,11 @@ echo
 echo "********** PC/SC-Lite **********"
 echo
 
-if ! "$WGET" -O "$PCSC_TAR" --ca-certificate="$CA_ZOO" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$PCSC_TAR" --ca-certificate="$CA_ZOO" \
      "https://pcsclite.apdu.fr/files/$PCSC_TAR"
 then
     echo "Failed to download PC/SC-Lite"

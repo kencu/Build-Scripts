@@ -124,7 +124,11 @@ echo
 echo "********** Git **********"
 echo
 
-if ! "$WGET" -O "$GIT_TAR" --ca-certificate="$CA_ZOO" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GIT_TAR" --ca-certificate="$CA_ZOO" \
      "https://mirrors.edge.kernel.org/pub/software/scm/git/$GIT_TAR"
 then
     echo "Failed to download Git."

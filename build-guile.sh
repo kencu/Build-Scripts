@@ -116,7 +116,11 @@ echo
 echo "********** Guile **********"
 echo
 
-if ! "$WGET" -O "$GUILE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GUILE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/guile/$GUILE_TAR"
 then
     echo "Failed to download Guile"

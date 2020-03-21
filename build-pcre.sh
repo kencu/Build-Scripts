@@ -65,7 +65,11 @@ echo
 echo "********** PCRE **********"
 echo
 
-if ! "$WGET" -O "$PCRE_TAR" --ca-certificate="$IDENTRUST_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$PCRE_TAR" --ca-certificate="$IDENTRUST_ROOT" \
      "https://ftp.pcre.org/pub/pcre/$PCRE_TAR"
 then
     echo "Failed to download PCRE"

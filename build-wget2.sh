@@ -99,7 +99,7 @@ fi
 
 # PSL may be skipped if Python is too old. libpsl requires Python 2.7
 # Also see https://stackoverflow.com/a/40950971/608639
-if [[ -n $(command -v python 2>/dev/null) ]]
+if [[ -n "$(command -v python 2>/dev/null)" ]]
 then
     ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
     if [ "$ver" -ge 27 ]
@@ -142,7 +142,7 @@ echo
 echo "********** Wget2 **********"
 echo
 
-#if ! "$WGET" -O "$WGET_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+#if ! "$WGET" -q -O "$WGET_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
 #     "https://ftp.gnu.org/pub/gnu/wget/$WGET_TAR"
 #then
 #    echo "Failed to download Wget2"
@@ -154,6 +154,10 @@ echo
 #cd "$WGET_DIR" || exit 1
 
 rm -rf "$WGET_DIR" &>/dev/null
+
+echo "**********************"
+echo "Cloning package"
+echo "**********************"
 
 if ! git clone https://gitlab.com/gnuwget/wget2.git;
 then

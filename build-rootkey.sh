@@ -101,7 +101,11 @@ echo
 echo "********** ICANN Root Certs **********"
 echo
 
-if ! "$WGET" -O "$ICANN_BUNDLE" --ca-certificate="$CA_ZOO" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$ICANN_BUNDLE" --ca-certificate="$CA_ZOO" \
      "https://data.iana.org/root-anchors/icannbundle.pem"
 then
     echo "Failed to download icannbundle.pem"

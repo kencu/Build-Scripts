@@ -51,7 +51,11 @@ echo
 echo "********** Datefudge **********"
 echo
 
-if ! "$WGET" -O "$DATEFUDGE_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$DATEFUDGE_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "http://deb.debian.org/debian/pool/main/d/datefudge/$DATEFUDGE_XZ"
 then
     echo "Failed to download Datefudge"

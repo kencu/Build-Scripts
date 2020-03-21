@@ -57,7 +57,11 @@ echo
 echo "********** TinyXML2 **********"
 echo
 
-if ! "$WGET" -O "$TXML2_TAR" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$TXML2_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/leethomason/tinyxml2/archive/$TXML2_TAR"
 then
     echo "Failed to download tinyxml2"

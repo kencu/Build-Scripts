@@ -65,7 +65,11 @@ echo
 echo "********** libassuan **********"
 echo
 
-if ! "$WGET" -O "$LIBASSUAN_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$LIBASSUAN_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/libassuan/$LIBASSUAN_TAR"
 then
     echo "Failed to download libassuan"

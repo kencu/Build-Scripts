@@ -66,6 +66,10 @@ echo
 # Cleanup old artifacts in case of early out
 rm -rf "$GNULIB_DIR" "$GNULIB_TEST_DIR" 2>/dev/null
 
+echo "**********************"
+echo "Cloning package"
+echo "**********************"
+
 if ! git clone --depth=3 git://git.savannah.gnu.org/gnulib.git "$GNULIB_DIR"
 then
     echo "Failed to clone Gnulib"

@@ -73,6 +73,10 @@ echo
 echo "********** OpenLDAP **********"
 echo
 
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
 if ! "$WGET" --ca-certificate="$GO_DADDY_ROOT" -O "$LDAP_TAR" \
      "https://gpl.savoirfairelinux.net/pub/mirrors/openldap/openldap-release/$LDAP_TAR"
 then

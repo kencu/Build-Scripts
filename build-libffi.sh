@@ -53,19 +53,15 @@ fi
 
 ###############################################################################
 
-#if ! ./build-dejagnu.sh
-#then
-#    echo "Failed to install DejaGNU"
-#    exit 1
-#fi
-
-###############################################################################
-
 echo
 echo "********** libffi **********"
 echo
 
-if ! "$WGET" -O "$LIBFFI_TAR" --ca-certificate="$DIGICERT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$LIBFFI_TAR" --ca-certificate="$DIGICERT_ROOT" \
      "ftp://sourceware.org/pub/libffi/$LIBFFI_TAR"
 then
     echo "Failed to download libffi"

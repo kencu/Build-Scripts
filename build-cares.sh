@@ -57,7 +57,11 @@ echo
 echo "********** c-ares **********"
 echo
 
-if ! "$WGET" -O "$CARES_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$CARES_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://c-ares.haxx.se/download/$CARES_TAR"
 then
     echo "Failed to download c-ares"

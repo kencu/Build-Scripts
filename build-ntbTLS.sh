@@ -89,7 +89,11 @@ echo
 echo "********** ntbtls **********"
 echo
 
-if ! "$WGET" -O "$NTBTLS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$NTBTLS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/ntbtls/$NTBTLS_TAR"
 then
     echo "Failed to download ntbtls"

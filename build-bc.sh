@@ -45,19 +45,15 @@ fi
 
 ###############################################################################
 
-#if ! ./build-readline.sh
-#then
-#    echo "Failed to build Readline"
-#    exit 1
-#fi
-
-###############################################################################
-
 echo
 echo "********** BC **********"
 echo
 
-if ! "$WGET" -O "$BC_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$BC_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/bc/$BC_TAR"
 then
     echo "Failed to download BC"

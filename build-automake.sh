@@ -50,7 +50,11 @@ echo
 echo "********** Automake **********"
 echo
 
-if ! "$WGET" -O "$AUTOMAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$AUTOMAKE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/automake/$AUTOMAKE_TAR"
 then
     echo "Failed to download Automake"

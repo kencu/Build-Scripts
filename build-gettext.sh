@@ -60,23 +60,15 @@ fi
 
 ###############################################################################
 
-if [[ "$IS_LINUX" -eq 0 ]]
-then
-    # GetText requires GNU Sed
-    if ! ./build-sed.sh
-    then
-        echo "Failed to build Sed"
-        exit 1
-    fi
-fi
-
-###############################################################################
-
 echo
 echo "********** GetText **********"
 echo
 
-if ! "$WGET" -O "$GETTEXT_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GETTEXT_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/pub/gnu/gettext/$GETTEXT_TAR"
 then
     echo "Failed to download GetText"

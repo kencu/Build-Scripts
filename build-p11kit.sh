@@ -75,7 +75,11 @@ echo
 echo "********** p11-kit **********"
 echo
 
-if ! "$WGET" -O "$P11KIT_XZ" --ca-certificate="$GITHUB_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$P11KIT_XZ" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/p11-glue/p11-kit/releases/download/$P11KIT_VER/$P11KIT_XZ"
 then
     echo "Failed to download p11-kit"

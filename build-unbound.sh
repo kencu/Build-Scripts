@@ -89,7 +89,11 @@ echo
 echo "********** Unbound **********"
 echo
 
-if ! "$WGET" -O "$UNBOUND_TAR" --ca-certificate="$IDENTRUST_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$UNBOUND_TAR" --ca-certificate="$IDENTRUST_ROOT" \
      "https://unbound.net/downloads/$UNBOUND_TAR"
 then
     echo "Failed to download Unbound"

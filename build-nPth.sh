@@ -57,7 +57,11 @@ echo
 echo "********** npth **********"
 echo
 
-if ! "$WGET" -O "$NPTH_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$NPTH_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/npth/$NPTH_TAR"
 then
     echo "Failed to download npth"

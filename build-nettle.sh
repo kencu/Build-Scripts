@@ -73,7 +73,11 @@ echo
 echo "********** Nettle **********"
 echo
 
-if ! "$WGET" -O "$NETTLE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$NETTLE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/nettle/$NETTLE_TAR"
 then
     echo "Failed to download Nettle"

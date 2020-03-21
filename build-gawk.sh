@@ -74,7 +74,11 @@ echo
 echo "********** GNU Awk **********"
 echo
 
-if ! "$WGET" -O "$GAWK_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$GAWK_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/pub/gnu/gawk/$GAWK_XZ"
 then
     echo "Failed to download GNU Awk"

@@ -65,7 +65,11 @@ echo
 echo "********** Zile **********"
 echo
 
-if ! "$WGET" -O "$ZILE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+echo "**********************"
+echo "Downloading package"
+echo "**********************"
+
+if ! "$WGET" -q -O "$ZILE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/zile/$ZILE_TAR"
 then
     echo "Failed to download Zile"

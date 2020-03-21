@@ -58,7 +58,7 @@ CACERT_FILE=$(basename "$SH_CACERT_FILE")
 
 if [[ -n $(command -v "$WGET" 2>/dev/null) ]]
 then
-	if ! "$WGET" -O "$CACERT_FILE" --ca-certificate="$GLOBALSIGN_ROOT" \
+	if ! "$WGET" -q -O "$CACERT_FILE" --ca-certificate="$GLOBALSIGN_ROOT" \
 		 "https://curl.haxx.se/ca/cacert.pem"
 	then
 		echo "Failed to download $CACERT_FILE"
