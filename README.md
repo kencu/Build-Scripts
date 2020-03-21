@@ -133,7 +133,7 @@ AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
 
 ## sysmacros.h
 
-Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The OS is actually OK, the problem is Gnulib. Gnulib sets `__THROW` to C++ `throw` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html).
+Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The OS is actually OK, the problem is Gnulib. Gnulib sets `__THROW` to the unsupported `__attribute__ ((__nothrow__))` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html). (Gnulib did not fix their bug once it was reported).
 
 If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
 
