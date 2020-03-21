@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# This script fixes *.pc files. It removes extra fodder rom Libs and
-# Libs.private. It is needed because some configure scripts cannot
-# handle the extra options in pkg config files. For example, Zile
-# fails to find Ncurses because Ncurses uses the following in its
-# *.pc file:
+# This script fixes *.pc files. It removes extra fodder from Libs
+# and Libs.private. It is needed because some configure scripts
+# cannot handle the extra options in pkg config files. For example,
+# Zile fails to find Ncurses because Ncurses uses the following in
+# its *.pc file:
 #     Libs: -L<path> -Wl,-rpath,<path> -lncurses -ltinfo
 # Zile can find the libraries when using:
 #     Libs: -L<path> -lncurses -ltinfo
