@@ -104,8 +104,8 @@ fi
 # use a modern version throughout these scripts.
 
 if [[ -z "$WGET" ]]; then
-    if [[ -e "$HOME/bootstrap/bin/wget" ]]; then
-        WGET="$HOME/bootstrap/bin/wget"
+    if [[ -e "$HOME/.buildscripts/wget/bin/wget" ]]; then
+        WGET="$HOME/.buildscripts/wget/bin/wget"
     elif [[ -e "/usr/local/bin/wget" ]]; then
         WGET="/usr/local/bin/wget"
     elif [[ -n $(command -v wget) ]]; then

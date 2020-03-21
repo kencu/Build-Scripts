@@ -16,4 +16,7 @@ if ! ./bootstrap-wget.sh; then
     exit 1
 fi
 
+# Remove old boostrap dir
+rm -rf "$HOME/bootstrap"
+
 exit 0

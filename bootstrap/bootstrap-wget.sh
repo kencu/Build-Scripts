@@ -16,7 +16,7 @@ UNISTR_DIR=libunistring-0.9.10
 SSL_DIR=openssl-1.0.2u
 
 # Install location
-PREFIX="$HOME/bootstrap"
+PREFIX="$HOME/.buildscripts/wget"
 LIBDIR="$PREFIX/lib"
 
 ###############################################################################
@@ -91,7 +91,7 @@ IS_AMD64=$(echo -n "$(uname -m 2>&1)" | grep -i -c -E 'x86_64|amd64')
 # only available on x64 machines with uint128 available.
 INT128_OPT=$("$CC" -dM -E - </dev/null | grep -i -c "__SIZEOF_INT128__")
 
-if [[ "$IS_AMD64" -ne "0" && "$INT128_OPT" -eq 1 ]]; then
+if [[ "$IS_AMD64" -ne 0 && "$INT128_OPT" -ne 0 ]]; then
     AMD64_OPT="enable-ec_nistp_64_gcc_128"
 fi
 

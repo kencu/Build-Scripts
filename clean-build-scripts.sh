@@ -11,7 +11,7 @@
 
 rm -rf "$HOME/.cacert"
 rm -rf "$HOME/.build-scripts"
-rm -rf "$HOME/bootstrap"
+rm -rf "$HOME/.buildscripts/wget"
 
 if [[ -n "$INSTX_PREFIX" ]]; then
     rm -rf "$INSTX_PREFIX"
