@@ -123,8 +123,10 @@ echo "**********************"
  MAKE_FLAGS=("check")
  if ! "$MAKE" "${MAKE_FLAGS[@]}"
  then
+    echo "**********************"
     echo "Failed to test libicu"
-    exit 1
+    echo "**********************"
+    # exit 1
  fi
 
  echo "Searching for errors hidden in log files"
