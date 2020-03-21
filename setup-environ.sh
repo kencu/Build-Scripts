@@ -101,7 +101,9 @@ fi
 ###############################################################################
 
 # Wget is special. We have to be able to bootstrap it and
-# use a modern version throughout these scripts.
+# use a modern version throughout these scripts. The Wget
+# we provide in $HOME is modern but crippled. However, it
+# is enough to download all the packages we need.
 
 if [[ -z "$WGET" ]]; then
     if [[ -e "$HOME/.buildscripts/wget/bin/wget" ]]; then
