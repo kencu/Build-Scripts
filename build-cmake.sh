@@ -112,7 +112,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ ! ("$SUDO_PASSWORD_SET" != "yes") ]]; then
-    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi

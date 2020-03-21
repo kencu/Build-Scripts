@@ -14,26 +14,26 @@ then
     echo "To avoid sudo and the password, just press ENTER and it won't be used."
     IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
 
-    # I would like to avoid exporting this, but SUDO_PASSWORD is
-    # _not_ available to subshells even after source'ing.
-    export SUDO_PASSWORD
-
-    # Don't prompt for future passwords
-    export SUDO_PASSWORD_SET=yes
-
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
     then
         if printf "%s\n" "$SUDO_PASSWORD" | sudo -kS ls >/dev/null 2>&1;
         then
             echo ""
-            echo "It appears the sudo password is correct"
+            echo "The sudo password appears correct"
         else
             echo ""
-            echo "It appears the sudo password is incorrect"
+            echo "The sudo password appears incorrect"
             [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
         fi
     fi
+
+    # I would like to avoid exporting this, but SUDO_PASSWORD is
+    # _not_ available to subshells even after source'ing.
+    export SUDO_PASSWORD
+
+    # Don't prompt for future passwords
+    export SUDO_PASSWORD_SET=yes
 
     # Formatting
     echo ""

@@ -163,10 +163,10 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
-    echo "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -kS cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
     mkdir -p "$INSTX_LIBDIR/pkgconfig"

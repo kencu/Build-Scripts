@@ -139,8 +139,8 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -kS rm -f "$INSTX_LIBDIR/libreadline*.*"
-    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS rm -f "$INSTX_LIBDIR/libreadline*.*"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 else
     rm -rf "$INSTX_LIBDIR/libreadline*.*"
     "$MAKE" "${MAKE_FLAGS[@]}"

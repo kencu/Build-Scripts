@@ -149,11 +149,11 @@ echo "**********************"
 
 MAKE_FLAGS=("install" "libdir=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 
-    echo "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -kS cp termcap.pc "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/termcap.pc"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp termcap.pc "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/termcap.pc"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 

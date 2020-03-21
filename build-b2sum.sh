@@ -151,7 +151,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -kS "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
 fi
