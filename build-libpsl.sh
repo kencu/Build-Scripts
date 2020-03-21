@@ -81,7 +81,7 @@ echo
 echo "********** libpsl **********"
 echo
 
-if ! "$WGET" -O "$PSL_TAR" --ca-certificate="$CA_ZOO" \
+if ! "$WGET" -O "$PSL_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/rockdaboot/libpsl/releases/download/$PSL_DIR/$PSL_TAR"
 then
     echo "Failed to download libpsl"

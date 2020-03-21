@@ -90,7 +90,7 @@ echo
 echo "********** OpenSC **********"
 echo
 
-if ! "$WGET" -O "$OPENSC_TAR" --ca-certificate="$CA_ZOO" \
+if ! "$WGET" -O "$OPENSC_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/OpenSC/OpenSC/releases/download/$OPENSC_VER/$OPENSC_TAR"
 then
     echo "Failed to download OpenSC"

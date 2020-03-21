@@ -3,7 +3,6 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds b2sum from sources.
 
-# https://github.com/BLAKE2/BLAKE2/archive/20160619.tar.gz
 B2SUM_TAR=20160619.tar.gz
 B2SUM_DIR=BLAKE2-20160619
 
@@ -51,7 +50,7 @@ echo "********** b2sum **********"
 echo
 
 # Redirect to Sourceforge.
-if ! "$WGET" -O "$B2SUM_TAR" --ca-certificate="$DIGICERT_ROOT" \
+if ! "$WGET" -O "$B2SUM_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/BLAKE2/BLAKE2/archive/$B2SUM_TAR"
 then
     echo "Failed to download b2sum"
@@ -65,7 +64,8 @@ cd "$B2SUM_DIR"
 # cp sse/blake2s-load-sse2.h sse/blake2s-load-sse2.h.orig
 # cp sse/blake2b-load-sse2.h sse/blake2b-load-sse2.h.orig
 
-if [[ -e ../patch/b2sum.patch ]] then
+if [[ -e ../patch/b2sum.patch ]]
+then
     cp ../patch/b2sum.patch .
     patch -u -p0 < b2sum.patch
     echo ""
@@ -123,7 +123,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pc.sh .; ./fix-pc.sh
+cp -p ../../fix-pc.sh .; ./fix-pc.sh
 
 #echo "**********************"
 #echo "Testing package"
@@ -149,11 +149,11 @@ echo "**********************"
 echo "Installing package"
 echo "**********************"
 
-MAKE_FLAGS=("install")
+MAKE_FLAGS=("install" "PREFIX=$INSTX_PREFIX")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 else
-    "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
+    "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR"

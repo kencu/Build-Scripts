@@ -57,7 +57,7 @@ echo
 echo "********** Flex **********"
 echo
 
-if ! "$WGET" -O "$FLEX_TAR" --ca-certificate="$CA_ZOO" \
+if ! "$WGET" -O "$FLEX_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/westes/flex/releases/download/v2.6.4/$FLEX_TAR"
 then
     echo "Failed to download Flex"

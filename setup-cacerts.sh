@@ -123,7 +123,7 @@ PfZ+G6Z6h7mjem0Y+iWlkYcV4PIWL1iwBi8saCbGS5jN2p8M+X+Q7UNKEkROb3N6
 KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==
 -----END CERTIFICATE-----" > lets-encrypt-root-x3.pem
 
-# This is "Let’s Encrypt Authority X3 (IdenTrust cross-signed)"
+# This is "Let's Encrypt Authority X3 (IdenTrust cross-signed)"
 echo "Wrote $HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
 
 ###############################################################################
@@ -362,6 +362,16 @@ jjxDah2nGN59PRbxYvnKkKj9
 -----END CERTIFICATE-----" > usertrust-root-ca.pem
 
 echo "Wrote $HOME/.build-scripts/cacert/usertrust-root-ca.pem"
+
+###############################################################################
+
+# GitHub takes folks to Amazon. We need two authorities to make it work.
+
+{
+    cat "$HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
+    cat "$HOME/.build-scripts/cacert/digicert-root-ca.pem"
+
+} > "$HOME/.build-scripts/cacert/github-ca-zoo.pem"
 
 ###############################################################################
 
