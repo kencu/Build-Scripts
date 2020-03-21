@@ -12,9 +12,9 @@ function finish {
 }
 trap finish EXIT
 
-mkdir -p "$HOME/.buildscripts/cacert"
-cp ./bootstrap/cacert.pem "$HOME/.buildscripts/cacert"
-cd "$HOME/.buildscripts/cacert/"
+mkdir -p "$HOME/.build-scripts/cacert"
+cp ./bootstrap/cacert.pem "$HOME/.build-scripts/cacert"
+cd "$HOME/.build-scripts/cacert/"
 
 ###############################################################################
 
@@ -57,7 +57,7 @@ QOhTsiedSrnAdyGN/4fy3ryM7xfft0kL0fJuMAsaDk527RH89elWsn2/x20Kk4yl
 NVOFBkpdn627G190
 -----END CERTIFICATE-----" > comodo-rsa-root.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/comodo-rsa-root.pem"
+echo "Wrote $HOME/.build-scripts/cacert/comodo-rsa-root.pem"
 
 ###############################################################################
 
@@ -87,7 +87,7 @@ DKqC5JlR3XC321Y9YeRq4VzW9v493kHMB65jUr9TU/Qr6cf9tveCX4XSQRjbgbME
 HMUfpIBvFSDJ3gyICh3WZlXi/EjJKSZp4A==
 -----END CERTIFICATE-----" > globalsign-root-r1.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/globalsign-root-r1.pem"
+echo "Wrote $HOME/.build-scripts/cacert/globalsign-root-r1.pem"
 
 ###############################################################################
 
@@ -124,7 +124,7 @@ KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==
 -----END CERTIFICATE-----" > lets-encrypt-root-x3.pem
 
 # This is "Let’s Encrypt Authority X3 (IdenTrust cross-signed)"
-echo "Wrote $HOME/.buildscripts/cacert/lets-encrypt-root-x3.pem"
+echo "Wrote $HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
 
 ###############################################################################
 
@@ -153,7 +153,7 @@ JDGFoqgCWjBH4d1QB7wCCZAA62RjYJsWvIjJEubSfZGL+T0yjWW06XyxV3bqxbYo
 Ob8VZRzI9neWagqNdwvYkQsEjgfbKbYK7p2CNTUQ
 -----END CERTIFICATE-----" > identrust-root-x3.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/identrust-root-x3.pem"
+echo "Wrote $HOME/.build-scripts/cacert/identrust-root-x3.pem"
 
 ###############################################################################
 
@@ -186,7 +186,7 @@ jxQUezKcxwCmXMS1oVWNWlZopCJwqjyBcdmdqEU79OX2olHdx3ti6G8MdOu42vi/hw15UJGQmxg7
 kVkn8TUoE6smftX3eg==
 -----END CERTIFICATE-----" > digitrust-root-ca.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/digitrust-root-ca.pem"
+echo "Wrote $HOME/.build-scripts/cacert/digitrust-root-ca.pem"
 
 ###############################################################################
 
@@ -251,7 +251,7 @@ vEsXCS+0yx5DaMkHJ8HSXPfqIbloEpw8nL+e/IBcm2PN7EeqJSdnoDfzAIJ9VNep
 +OkuE6N36B9K
 -----END CERTIFICATE-----" > digicert-root-ca.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/digicert-root-ca.pem"
+echo "Wrote $HOME/.build-scripts/cacert/digicert-root-ca.pem"
 
 ###############################################################################
 
@@ -285,7 +285,7 @@ c4g/VhsxOBi0cQ+azcgOno4uG+GMmIPLHzHxREzGBHNJdmAPx/i9F4BrLunMTA5a
 mnkPIAou1Z5jJh5VkpTYghdae9C8x49OhgQ=
 -----END CERTIFICATE-----" > addtrust-root-ca.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/addtrust-root-ca.pem"
+echo "Wrote $HOME/.build-scripts/cacert/addtrust-root-ca.pem"
 
 ###############################################################################
 
@@ -318,7 +318,7 @@ dEr/VxqHD3VILs9RaRegAhJhldXRQLIQTO7ErBBDpqWeCtWVYpoNz4iCxTIM5Cuf
 ReYNnyicsbkqWletNw+vHX/bvZ8=
 -----END CERTIFICATE-----" > godaddy-root-ca.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/godaddy-root-ca.pem"
+echo "Wrote $HOME/.build-scripts/cacert/godaddy-root-ca.pem"
 
 ###############################################################################
 
@@ -361,7 +361,7 @@ L6KCq9NjRHDEjf8tM7qtj3u1cIiuPhnPQCjY/MiQu12ZIvVS5ljFH4gxQ+6IHdfG
 jjxDah2nGN59PRbxYvnKkKj9
 -----END CERTIFICATE-----" > usertrust-root-ca.pem
 
-echo "Wrote $HOME/.buildscripts/cacert/usertrust-root-ca.pem"
+echo "Wrote $HOME/.build-scripts/cacert/usertrust-root-ca.pem"
 
 ###############################################################################
 

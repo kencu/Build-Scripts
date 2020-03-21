@@ -16,7 +16,7 @@ UNISTR_DIR=libunistring-0.9.10
 SSL_DIR=openssl-1.0.2u
 
 # Install location
-PREFIX="$HOME/.buildscripts/wget"
+PREFIX="$HOME/.build-scripts/wget"
 LIBDIR="$PREFIX/lib"
 
 ###############################################################################

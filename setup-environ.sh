@@ -44,16 +44,16 @@ fi
 
 ###############################################################################
 
-LETS_ENCRYPT_ROOT="$HOME/.buildscripts/cacert/lets-encrypt-root-x3.pem"
-IDENTRUST_ROOT="$HOME/.buildscripts/cacert/identrust-root-x3.pem"
-GO_DADDY_ROOT="$HOME/.buildscripts/cacert/godaddy-root-ca.pem"
-DIGICERT_ROOT="$HOME/.buildscripts/cacert/digicert-root-ca.pem"
-DIGITRUST_ROOT="$HOME/.buildscripts/cacert/digitrust-root-ca.pem"
-GLOBALSIGN_ROOT="$HOME/.buildscripts/cacert/globalsign-root-r1.pem"
-USERTRUST_ROOT="$HOME/.buildscripts/cacert/usertrust-root-ca.pem"
+LETS_ENCRYPT_ROOT="$HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
+IDENTRUST_ROOT="$HOME/.build-scripts/cacert/identrust-root-x3.pem"
+GO_DADDY_ROOT="$HOME/.build-scripts/cacert/godaddy-root-ca.pem"
+DIGICERT_ROOT="$HOME/.build-scripts/cacert/digicert-root-ca.pem"
+DIGITRUST_ROOT="$HOME/.build-scripts/cacert/digitrust-root-ca.pem"
+GLOBALSIGN_ROOT="$HOME/.build-scripts/cacert/globalsign-root-r1.pem"
+USERTRUST_ROOT="$HOME/.build-scripts/cacert/usertrust-root-ca.pem"
 
 # Some downloads need the CA Zoo due to multiple redirects
-CA_ZOO="$HOME/.buildscripts/cacert/cacert.pem"
+CA_ZOO="$HOME/.build-scripts/cacert/cacert.pem"
 
 ###############################################################################
 
@@ -106,8 +106,8 @@ fi
 # is enough to download all the packages we need.
 
 if [[ -z "$WGET" ]]; then
-    if [[ -e "$HOME/.buildscripts/wget/bin/wget" ]]; then
-        WGET="$HOME/.buildscripts/wget/bin/wget"
+    if [[ -e "$HOME/.build-scripts/wget/bin/wget" ]]; then
+        WGET="$HOME/.build-scripts/wget/bin/wget"
     elif [[ -e "/usr/local/bin/wget" ]]; then
         WGET="/usr/local/bin/wget"
     elif [[ -n $(command -v wget) ]]; then

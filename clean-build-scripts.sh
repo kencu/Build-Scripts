@@ -9,9 +9,9 @@
 #
 #    sudo ./clean-build-scripts.sh
 
-rm -rf "$HOME/.buildscripts/cacert"
+rm -rf "$HOME/.build-scripts/cacert"
 rm -rf "$HOME/.build-scripts"
-rm -rf "$HOME/.buildscripts/wget"
+rm -rf "$HOME/.build-scripts/wget"
 
 if [[ -n "$INSTX_PREFIX" ]]; then
     rm -rf "$INSTX_PREFIX"
