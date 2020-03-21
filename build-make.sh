@@ -139,7 +139,7 @@ fi
 cd "$CURR_DIR"
 
 # Set package status to installed. Delete the file to rebuild the package.
-touch "$INSTX_CACHE/$PKG_NAME"
+touch "$INSTX_PACKAGE_CACHE/$PKG_NAME"
 
 ###############################################################################
 

@@ -33,7 +33,7 @@ if [[ ! -f "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
     ./setup-cacerts.sh &>/dev/null
 fi
 
-if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
+if [[ -e "$INSTX_PACKAGE_CACHE/$PKG_NAME" ]]; then
     # Already installed, return success
     #echo ""
     #echo "$PKG_NAME is already installed."
@@ -145,6 +145,6 @@ if [[ "$ANY_FAIL" -ne 0 ]]; then
 fi
 
 # Set package status to installed. Delete the file to rebuild the package.
-touch "$INSTX_CACHE/$PKG_NAME"
+touch "$INSTX_PACKAGE_CACHE/$PKG_NAME"
 
 exit 0

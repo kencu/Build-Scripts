@@ -36,7 +36,7 @@ then
     exit 1
 fi
 
-if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
+if [[ -e "$INSTX_PACKAGE_CACHE/$PKG_NAME" ]]; then
     # Already installed, return success
     echo ""
     echo "$PKG_NAME is already installed."
@@ -218,7 +218,7 @@ fi
 cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
-touch "$INSTX_CACHE/$PKG_NAME"
+touch "$INSTX_PACKAGE_CACHE/$PKG_NAME"
 
 ###############################################################################
 

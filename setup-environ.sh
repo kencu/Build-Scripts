@@ -520,11 +520,11 @@ fi
 # we added INSTX_PREFIX so we could build packages in multiple
 # locations. For example, /usr/local for updated packages, and
 # /var/sanitize for testing packages.
-if [[ -z "$INSTX_CACHE" ]]; then
+if [[ -z "$INSTX_PACKAGE_CACHE" ]]; then
     # Change / to - for CACHE_DIR
     CACHE_DIR=$(echo "$INSTX_PREFIX" | cut -c 2- | sed 's/\//-/g')
-    INSTX_CACHE="$HOME/.build-scripts/$CACHE_DIR"
-    mkdir -p "$INSTX_CACHE"
+    INSTX_PACKAGE_CACHE="$HOME/.build-scripts/$CACHE_DIR"
+    mkdir -p "$INSTX_PACKAGE_CACHE"
 fi
 
 ###############################################################################
@@ -545,7 +545,7 @@ fi
 # problem of continually rebuilding the same package when installing a
 # program like Git and SSH. It also avoids version tracking by automatically
 # building a package after 7 days (even if it is the same version).
-for pkg in $(find "$INSTX_CACHE" -type f -mtime +7 2>/dev/null);
+for pkg in $(find "$INSTX_PACKAGE_CACHE" -type f -mtime +7 2>/dev/null);
 do
     # echo "Setting $pkg for rebuild"
     rm -f "$pkg" 2>/dev/null
