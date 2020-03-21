@@ -44,6 +44,8 @@ fi
 
 ###############################################################################
 
+# setup-cacerts.sh does not source the environment, so we can't use the variables
+
 LETS_ENCRYPT_ROOT="$HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
 IDENTRUST_ROOT="$HOME/.build-scripts/cacert/identrust-root-x3.pem"
 GO_DADDY_ROOT="$HOME/.build-scripts/cacert/godaddy-root-ca.pem"

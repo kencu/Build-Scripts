@@ -12,6 +12,7 @@ function finish {
 }
 trap finish EXIT
 
+# setup-cacerts.sh does not source the environment, so we can't use the variables
 mkdir -p "$HOME/.build-scripts/cacert"
 cp ./bootstrap/cacert.pem "$HOME/.build-scripts/cacert"
 cd "$HOME/.build-scripts/cacert/"
