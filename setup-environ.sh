@@ -44,16 +44,16 @@ fi
 
 ###############################################################################
 
-LETS_ENCRYPT_ROOT="$HOME/.cacert/lets-encrypt-root-x3.pem"
-IDENTRUST_ROOT="$HOME/.cacert/identrust-root-x3.pem"
-GO_DADDY_ROOT="$HOME/.cacert/godaddy-root-ca.pem"
-DIGICERT_ROOT="$HOME/.cacert/digicert-root-ca.pem"
-DIGITRUST_ROOT="$HOME/.cacert/digitrust-root-ca.pem"
-GLOBALSIGN_ROOT="$HOME/.cacert/globalsign-root-r1.pem"
-USERTRUST_ROOT="$HOME/.cacert/usertrust-root-ca.pem"
+LETS_ENCRYPT_ROOT="$HOME/.buildscripts/cacert/lets-encrypt-root-x3.pem"
+IDENTRUST_ROOT="$HOME/.buildscripts/cacert/identrust-root-x3.pem"
+GO_DADDY_ROOT="$HOME/.buildscripts/cacert/godaddy-root-ca.pem"
+DIGICERT_ROOT="$HOME/.buildscripts/cacert/digicert-root-ca.pem"
+DIGITRUST_ROOT="$HOME/.buildscripts/cacert/digitrust-root-ca.pem"
+GLOBALSIGN_ROOT="$HOME/.buildscripts/cacert/globalsign-root-r1.pem"
+USERTRUST_ROOT="$HOME/.buildscripts/cacert/usertrust-root-ca.pem"
 
 # Some downloads need the CA Zoo due to multiple redirects
-CA_ZOO="$HOME/.cacert/cacert.pem"
+CA_ZOO="$HOME/.buildscripts/cacert/cacert.pem"
 
 ###############################################################################
 

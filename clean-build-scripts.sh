@@ -9,7 +9,7 @@
 #
 #    sudo ./clean-build-scripts.sh
 
-rm -rf "$HOME/.cacert"
+rm -rf "$HOME/.buildscripts/cacert"
 rm -rf "$HOME/.build-scripts"
 rm -rf "$HOME/.buildscripts/wget"
 
