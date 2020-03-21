@@ -6,7 +6,7 @@ The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`
 
 ## Setup
 
-Once you clone the repo you need to perform a one-time setup. The setup installs updated CA certificates and build a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/bootstrap`. It is a reduced-functionality version of Wget designed to download packages over HTTPS.
+Once you clone the repo you need to perform a one-time setup. The setup installs updated CA certificates and build a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/wget`. It is a reduced-functionality version of Wget built to download packages over HTTPS.
 
 ```
 $ ./setup-cacerts.sh
