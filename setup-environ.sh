@@ -310,7 +310,7 @@ if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_OPATH="-Wl,-R,$INSTX_RPATH"
 fi
 
-# See if -Wl,-rpath,/usr/loca/lib works
+# See if -Wl,-rpath,/usr/local/lib works
 SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
@@ -527,7 +527,7 @@ fi
 ###############################################################################
 
 # NetBSD only puts /usr/lib on path. NetBSD does not use ldconf.
-# Many build systems assume can get past configure.
+# Many build systems can't get past configure.
 # NetBSD ELF FAQ, https://www.netbsd.org/docs/elf.html
 if [[ "$IS_NETBSD" -ne 0 ]]
 then
