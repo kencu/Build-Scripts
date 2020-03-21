@@ -55,6 +55,23 @@ The scripts do not check signatures on tarballs with GnuPG. Its non-trivial to b
 
 It is unfortunate GNU does not run their own PKI and have their own CA. More risk could be eliminated if we only needed to trust the GNU organization and their root certificate.
 
+## Sudo
+
+If you want to install into a location like `/usr/local`, then you will need to provide your password. If you want to install into a location like `$HOME`, then you do not need to provide your password. Just press `ENTER` at the password prompt.
+
+If you don't trust the code with your password then audit `setup-password.sh` and the use of `SUDO_PASSWORD`.
+
+One thing the code does is the following, which could make the password available to programs like `ps`. The pattern is needed because `sudo -S` reads from `stdin` and requires a newline, but `echo` does not provide a newline on all platforms. Getting the newline with `printf` is the standard workaround on platforms like Solaris.
+
+```
+MAKE_FLAGS=("install")
+if [[ -n "$SUDO_PASSWORD" ]]; then
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+else
+    "$MAKE" "${MAKE_FLAGS[@]}"
+fi
+```
+
 ## Boehm GC
 
 If you are building a program that requires Boehm GC then you need to install it from the distribution. Boehm GC is trickier than other packages because the correct version of the package for a particular distro must be downloaded. C++11 and libatomics further complicates the selection process. And an additional complication is alternate stacks and signals.
