@@ -207,7 +207,13 @@ fi
 
 # Don't override a user choice of INSTX_PREFIX
 if [[ -z "$INSTX_PREFIX" ]]; then
-    INSTX_PREFIX="/usr/local"
+    # Some of the BSDs install user software into /usr/local.
+    # We don't want to overwrite the system installed software.
+    if [[ "$IS_BSD_FAMILY" -ne 0 ]]; then
+        INSTX_PREFIX="/opt/local"
+    else
+        INSTX_PREFIX="/usr/local"
+    fi
 fi
 
 # Don't override a user choice of INSTX_LIBDIR. Also see
