@@ -71,10 +71,18 @@ fi
 
 rm -rf "$ICU_DIR" &>/dev/null
 gzip -d < "$ICU_TAR" | tar xf -
-cd "$ICU_DIR/source"
+cd "$ICU_DIR"
+
+if [[ -e ../patch/icu.patch ]]; then
+    cp ../patch/icu.patch .
+    patch -u -p0 < icu.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../../fix-config.sh .; ./fix-config.sh
+cp -p ../fix-config.sh .; ./fix-config.sh
+
+cd "source"
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
