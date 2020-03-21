@@ -160,8 +160,8 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS rm -rf "$INSTX_PREFIX/share/doc/gettext"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S rm -rf "$INSTX_PREFIX/share/doc/gettext"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
     rm -rf "$INSTX_PREFIX/share/doc/gettext"

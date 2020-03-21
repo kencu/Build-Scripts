@@ -286,7 +286,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
@@ -304,8 +304,8 @@ cp "./doc/sample.wgetrc" "./wgetrc"
 } > "./wgetrc"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_PREFIX/etc"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp "./wgetrc" "$INSTX_PREFIX/etc/"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_PREFIX/etc"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S cp "./wgetrc" "$INSTX_PREFIX/etc/"
 else
     mkdir -p "$INSTX_PREFIX/etc"
     cp "./wgetrc" "$INSTX_PREFIX/etc/"

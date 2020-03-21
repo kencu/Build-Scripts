@@ -116,7 +116,7 @@ echo "**********************"
 cd ../src/
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp *.h "$INSTX_PREFIX/include/"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S cp *.h "$INSTX_PREFIX/include/"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi

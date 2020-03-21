@@ -279,8 +279,8 @@ MAKE_FLAGS=("install")
 # The chmod allows us to remove them at cleanup. Can't use octal
 # due to OS X 10.5 on PowerMac.
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod -R a+rwx
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod -R a+rwx
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi

@@ -17,7 +17,12 @@ then
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        if printf "%s\n" "$SUDO_PASSWORD" | sudo -kS ls >/dev/null 2>&1;
+        # Drop the cached authentication, if present.
+        # The -k option is not ubiquitous
+        echo "" | sudo -kS &>/dev/null
+
+        # Now, test the password
+        if printf "%s\n" "$SUDO_PASSWORD" | sudo -S ls >/dev/null 2>&1;
         then
             echo ""
             echo "The sudo password appears correct"

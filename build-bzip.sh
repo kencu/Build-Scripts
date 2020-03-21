@@ -161,12 +161,12 @@ if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
@@ -212,12 +212,12 @@ if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")

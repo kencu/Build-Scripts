@@ -80,11 +80,11 @@ then
     echo "Installing $SH_UNBOUND_ROOTKEY_FILE"
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$SH_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mv "$ROOT_KEY" "$SH_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$SH_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$SH_UNBOUND_ROOTKEY_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mv "$ROOT_KEY" "$SH_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod 644 "$SH_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_FILE"
     else
         mkdir -p "$SH_UNBOUND_ROOTKEY_PATH"
         cp "$ROOT_KEY" "$SH_UNBOUND_ROOTKEY_FILE"
@@ -118,11 +118,11 @@ then
     echo "Installing $SH_UNBOUND_CACERT_FILE"
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$SH_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mv "$ICANN_BUNDLE" "$SH_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$SH_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$SH_UNBOUND_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mv "$ICANN_BUNDLE" "$SH_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod 644 "$SH_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_FILE"
     else
         mkdir -p "$SH_UNBOUND_CACERT_PATH"
         cp "$ICANN_BUNDLE" "$SH_UNBOUND_CACERT_FILE"

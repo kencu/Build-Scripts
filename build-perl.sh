@@ -205,7 +205,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
@@ -216,7 +216,7 @@ then
     echo "Fixing permissions"
     echo "**********************"
 
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown -R "$SUDO_USER:$SUDO_USER" "$HOME/.cpan"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown -R "$SUDO_USER:$SUDO_USER" "$HOME/.cpan"
 fi
 
 cd "$CURR_DIR" || exit 1

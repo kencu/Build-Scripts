@@ -85,11 +85,11 @@ fi
 if [[ -s "$CACERT_FILE" ]]
 then
     if [[ -n "$SUDO_PASSWORD" ]]; then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mkdir -p "$SH_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS mv cacert.pem "$SH_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chmod 644 "$SH_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mkdir -p "$SH_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S mv cacert.pem "$SH_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chmod 644 "$SH_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
     else
         mkdir -p "$SH_CACERT_PATH"
         cp "$CACERT_FILE" "$SH_CACERT_FILE"
