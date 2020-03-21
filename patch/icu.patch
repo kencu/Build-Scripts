@@ -22,6 +22,15 @@
          TEST_CHECK_STATUS;
 --- source/i18n/numparse_symbols.h
 +++ source/i18n/numparse_symbols.h
+@@ -79,7 +79,7 @@
+ // Exported as U_I18N_API for tests
+ class U_I18N_API MinusSignMatcher : public SymbolMatcher {
+   public:
+-    MinusSignMatcher() = default;  // WARNING: Leaves the object in an unusable state
++    MinusSignMatcher() : fAllowTrailing(false) { }
+ 
+     MinusSignMatcher(const DecimalFormatSymbols& dfs, bool allowTrailing);
+ 
 @@ -151,7 +151,7 @@
  // Exported as U_I18N_API for tests
  class U_I18N_API PlusSignMatcher : public SymbolMatcher {
@@ -31,17 +40,6 @@
  
      PlusSignMatcher(const DecimalFormatSymbols& dfs, bool allowTrailing);
  
---- source/i18n/numparse_symbols.h
-+++ source/i18n/numparse_symbols.h
-@@ -79,7 +79,7 @@
- // Exported as U_I18N_API for tests
- class U_I18N_API MinusSignMatcher : public SymbolMatcher {
-   public:
--    MinusSignMatcher() = default;  // WARNING: Leaves the object in an unusable state
-+    MinusSignMatcher() : fAllowTrailing(false) { }
- 
-     MinusSignMatcher(const DecimalFormatSymbols& dfs, bool allowTrailing);
-
 --- source/i18n/numparse_currency.h
 +++ source/i18n/numparse_currency.h
 @@ -32,7 +32,7 @@
@@ -77,8 +75,6 @@
  }
  
  /**
---- source/common/ucnvbocu.cpp
-+++ source/common/ucnvbocu.cpp
 @@ -1356,7 +1356,7 @@
      } else {
          /* set the converter state back into UConverter */
@@ -99,30 +95,6 @@
                          currDate64 |= ((int64_t)fromArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
                          fromDate = (UDate)currDate64;
                      }
---- source/common/ucurr.cpp
-+++ source/common/ucurr.cpp
-@@ -2296,7 +2296,7 @@
-                 UResourceBundle *fromRes = ures_getByKey(currencyRes, "from", NULL, &localStatus);
-                 const int32_t *fromArray = ures_getIntVector(fromRes, &fromLength, &localStatus);
- 
--                int64_t currDate64 = (int64_t)fromArray[0] << 32;
-+                int64_t currDate64 = (int64_t)((uint64_t)fromArray[0] << 32);
-                 currDate64 |= ((int64_t)fromArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
-                 UDate fromDate = (UDate)currDate64;
- 
---- source/common/ucurr.cpp
-+++ source/common/ucurr.cpp
-@@ -2420,7 +2420,7 @@
-                     UResourceBundle *fromRes = ures_getByKey(currencyRes, "from", NULL, &localStatus);
-                     const int32_t *fromArray = ures_getIntVector(fromRes, &fromLength, &localStatus);
- 
--                    int64_t currDate64 = (int64_t)fromArray[0] << 32;
-+                    int64_t currDate64 = (int64_t)((uint64_t)fromArray[0] << 32);
-                     currDate64 |= ((int64_t)fromArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
-                     UDate fromDate = (UDate)currDate64;
- 
---- source/common/ucurr.cpp
-+++ source/common/ucurr.cpp
 @@ -2101,7 +2101,7 @@
                      if (U_SUCCESS(localStatus)) {
                          int32_t toLength = 0;
@@ -132,6 +104,15 @@
                          currDate64 |= ((int64_t)toArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
                          toDate = (UDate)currDate64;
                      }
+@@ -2296,7 +2296,7 @@
+                 UResourceBundle *fromRes = ures_getByKey(currencyRes, "from", NULL, &localStatus);
+                 const int32_t *fromArray = ures_getIntVector(fromRes, &fromLength, &localStatus);
+ 
+-                int64_t currDate64 = (int64_t)fromArray[0] << 32;
++                int64_t currDate64 = (int64_t)((uint64_t)fromArray[0] << 32);
+                 currDate64 |= ((int64_t)fromArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
+                 UDate fromDate = (UDate)currDate64;
+ 
 @@ -2306,7 +2306,7 @@
                      UResourceBundle *toRes = ures_getByKey(currencyRes, "to", NULL, &localStatus);
                      const int32_t *toArray = ures_getIntVector(toRes, &toLength, &localStatus);
@@ -140,6 +121,15 @@
 +                    currDate64 = (int64_t)((uint64_t)toArray[0] << 32);
                      currDate64 |= ((int64_t)toArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
                      UDate toDate = (UDate)currDate64;
+ 
+@@ -2420,7 +2420,7 @@
+                     UResourceBundle *fromRes = ures_getByKey(currencyRes, "from", NULL, &localStatus);
+                     const int32_t *fromArray = ures_getIntVector(fromRes, &fromLength, &localStatus);
+ 
+-                    int64_t currDate64 = (int64_t)fromArray[0] << 32;
++                    int64_t currDate64 = (int64_t)((uint64_t)fromArray[0] << 32);
+                     currDate64 |= ((int64_t)fromArray[1] & (int64_t)INT64_C(0x00000000FFFFFFFF));
+                     UDate fromDate = (UDate)currDate64;
  
 @@ -2430,7 +2430,7 @@
                          UResourceBundle *toRes = ures_getByKey(currencyRes, "to", NULL, &localStatus);
