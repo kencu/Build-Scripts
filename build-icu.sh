@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds ICU from sources.
 
-# ICU 60.2
-ICU_TAR=icu4c-60_2-src.tgz
+# ICU 66.1 (formerly 60.2)
+ICU_TAR=icu4c-66_1-src.tgz
 ICU_DIR=icu
 PKG_NAME=icu
 
@@ -62,8 +62,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$ICU_TAR" \
-     "http://download.icu-project.org/files/icu4c/60.2/$ICU_TAR"
+if ! "$WGET" -q -O "$ICU_TAR" --ca-certificate="$GITHUB_ROOT" \
+     "https://github.com/unicode-org/icu/releases/download/release-66-1/$ICU_TAR"
 then
     echo "Failed to download libicu"
     exit 1
@@ -74,7 +74,7 @@ gzip -d < "$ICU_TAR" | tar xf -
 cd "$ICU_DIR/source"
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+cp -p ../../fix-config.sh .; ./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -82,8 +82,10 @@ cp -p ../fix-config.sh .; ./fix-config.sh
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --enable-shared --enable-static \
-    --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
+./configure \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared --enable-static \
     --with-library-bits="$INSTX_BITNESS" \
     --with-data-packaging=auto
 
