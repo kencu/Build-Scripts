@@ -18,8 +18,8 @@ then
     if [[ -n "$SUDO_PASSWORD" ]]
     then
         # Drop the cached authentication, if present.
-        # The -k option is not ubiquitous
-        echo "" | sudo -kS &>/dev/null
+        # The -k option is not ubiquitous.
+        echo "" | sudo -kS >/dev/null 2>&1
 
         # Now, test the password
         if printf "%s\n" "$SUDO_PASSWORD" | sudo -S ls >/dev/null 2>&1;
