@@ -256,7 +256,7 @@ fi
 
 # Solaris Fixup
 if [[ "$IS_SOLARIS" -eq 1 && "$IS_AMD64" -eq 1 ]]; then
-    AUTOCONF_BUILD="amd64-sun-solaris"
+    AUTOCONF_BUILD="x86_64-sun-solaris"
 fi
 
 ###############################################################################
