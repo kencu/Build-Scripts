@@ -75,22 +75,6 @@ Fourth, and most importantly, the documentation complicates package building. Ma
 
 Some documentation is built and installed. You can run `clean-docs` to remove most of it. Use `sudo` if you installed into a privileged location.
 
-## Autotools
-
-Autotools is its own special kind of hell. Autotools is a place where progammers get sent when they have behaved badly.
-
-On new distros you should install Autotools from the distribution. The packages in the Autotools collection which should be installed through the distribution include:
-
-* Aclocal
-* Autoconf
-* Automake
-* Autopoint
-* Libtool
-
-The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of tangential incompatibility problems (which is kind of sad given they have had 25 years or so to get it right).
-
-If you install Autotools using `build-autotools.sh` and it causes more problems then it is worth, then run `clean-autotools.sh`. `clean-autotools.sh` removes all the Autotools artifacts it can find from `/usr/local`. `clean-autotools.sh` does not remove Libtool, so you may need to remove it by hand or reinstall it to ensure it is using the distro's Autotools.
-
 ## Sanitizers
 
 One of the benefits of using the build scripts is, you can somewhat easily build programs and dependent libraries using tools like Address Sanitizer (Asan) or Undefined Behavior Sanitizer (UBsan). Only minor modifications are necessary.
@@ -117,6 +101,22 @@ Many programs and libraries feel it is OK to leak resources, and it screws up a 
 
 Once finished with testing perform `rm -rf /var/sanitize` so everything is deleted.
 
+## Autotools
+
+Autotools is its own special kind of hell. Autotools is a place where progammers get sent when they have behaved badly.
+
+On new distros you should install Autotools from the distribution. The packages in the Autotools collection which should be installed through the distribution include:
+
+* Aclocal
+* Autoconf
+* Automake
+* Autopoint
+* Libtool
+
+The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of tangential incompatibility problems (which is kind of sad given they have had 25 years or so to get it right).
+
+If you install Autotools using `build-autotools.sh` and it causes more problems then it is worth, then run `clean-autotools.sh`. `clean-autotools.sh` removes all the Autotools artifacts it can find from `/usr/local`. `clean-autotools.sh` does not remove Libtool, so you may need to remove it by hand or reinstall it to ensure it is using the distro's Autotools.
+
 ## OpenBSD
 
 OpenBSD has an annoyance:
@@ -133,7 +133,7 @@ AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
 
 ## sysmacros.h
 
-Some older versions of `sysmacros.h` have a bug related to the `__THROW`. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html).
+Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The OS is actually OK, the problem is Gnulib. Gnulib sets `__THROW` to C++ `throw` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html).
 
 If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
 
@@ -150,30 +150,7 @@ If you encounter a build error *"error: parse error before '{' token"*, then ope
 
 ## Self Tests
 
-The scripts attempt to run the program's or library's self tests. Usually the recipe is `make check`, but it is `make test` on occassion.
-
-If the self tests are run and fails, then the script stops before installation. An example for GNU's Gzip is shown below.
-
-```
-==========================================
-Testsuite summary for gzip 1.8
-==========================================
-# TOTAL: 18
-# PASS:  16
-# SKIP:  0
-# XFAIL: 0
-# FAIL:  2
-# XPASS: 0
-# ERROR: 0
-==========================================
-See tests/test-suite.log
-Please report to bug-gzip@gnu.org
-==========================================
-make[4]: *** [test-suite.log] Error 1
-make[4]: Leaving directory `/Users/scripts/gzip-1.8/tests'
-...
-Failed to test Gzip
-```
+The scripts attempt to run the program's or library's self tests. Usually the recipe is `make check`, but it is `make test` on occassion. If the self tests are run and fails, then the script stops before installation.
 
 You have three choices on self-test failure. First, you can ignore the failure, `cd` into the program's directory, and then run `sudo make install`. Second, you can fix the failure, `cd` into the program's directory, run `make`, run `make check`, and then run `sudo make install`.
 
@@ -198,7 +175,7 @@ If you encounter it, then perform the following.
 
 ```
 $ git fetch
-$ git reset origin/master --hard
+$ git reset --hard origin/master
 HEAD is now at 9a50195 Reset repository after OpenSSL 1.1.1d bump
 ```
 
