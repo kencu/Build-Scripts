@@ -17,7 +17,7 @@ function finish {
 trap finish EXIT
 
 # Sets the number of opensc jobs if not set in environment
-: "${INSTX_JOBS:=4}"
+: "${INSTX_JOBS:=2}"
 
 ###############################################################################
 
