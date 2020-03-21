@@ -132,7 +132,7 @@ fi
 } > termcap.pc
 
 # Fix flags in *.pc files
-cp -p ../fix-pc.sh .; ./fix-pc.sh
+cp -p ../fix-pkgconfig.sh .; ./fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"

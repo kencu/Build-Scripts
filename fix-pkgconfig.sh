@@ -21,9 +21,9 @@ elif [[ -d "../../../programs" ]]; then
     PROG_PATH="../../../programs"
 fi
 
-if ! "${CXX}" "$PROG_PATH/fix-pc.cpp" -o fix-pc.exe;
+if ! "${CXX}" "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
 then
-    echo "Failed to build fix-pc"
+    echo "Failed to build fix-pkgconfig"
     exit 1
 fi
 
@@ -31,7 +31,7 @@ fi
 do
     echo "Fixing $file..."
     cp -p "$file" "$file.fixed"
-    ./fix-pc.exe "$file" > "$file.fixed"
+    ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 done)
 
