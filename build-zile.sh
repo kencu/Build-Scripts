@@ -113,7 +113,7 @@ if [[ "$?" -ne "0" ]]; then
 fi
 
 echo "Patching Makefiles..."
-(IFS="\r\n" find "$PWD" -name 'Makefile' -print | while read -r file
+(IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     sed 's|-lncurses|-lncurses -ltinfo|g' "$file" > "$file.fixed"

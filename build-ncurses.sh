@@ -129,7 +129,7 @@ fi
 
 # Remove unneeded warning
 echo "Patching Makefiles..."
-(IFS="\r\n" find "$PWD" -name 'Makefile' -print | while read -r file
+(IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     sed 's| --param max-inline-insns-single=1200||g' "$file" > "$file.fixed"

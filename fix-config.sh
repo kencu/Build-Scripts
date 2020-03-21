@@ -23,7 +23,7 @@ echo "patching sys_lib_dlsearch_path_spec..."
 if [[ $(uname -s 2>&1 | grep -i -c 'darwin') -ne 0 ]]
 then
     # Keep configure in the future
-    (IFS="\r\n" find "$PWD" -iname 'configure' -print | while read -r file
+    (IFS="" find "$PWD" -iname 'configure' -print | while read -r file
     do
         cp -p "$file" "$file.fixed"
         chmod +w "$file" && chmod +w "$file.fixed"
@@ -34,7 +34,7 @@ then
 fi
 
 # Keep configure in the future
-(IFS="\r\n" find "$PWD" -iname 'configure' -print | while read -r file
+(IFS="" find "$PWD" -iname 'configure' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     chmod +w "$file" && chmod +w "$file.fixed"
@@ -44,7 +44,7 @@ do
 done)
 
 # And keep configure.ac in the past
-(IFS="\r\n" find "$PWD" -iname 'configure.ac' -print | while read -r file
+(IFS="" find "$PWD" -iname 'configure.ac' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
     chmod +w "$file" && chmod +w "$file.fixed"
@@ -67,7 +67,7 @@ elif [[ -d "../../../patch" ]]; then
 fi
 
 echo "patching config.sub..."
-(IFS="\r\n" find "$PWD" -name 'config.sub' -print | while read -r file
+(IFS="" find "$PWD" -name 'config.sub' -print | while read -r file
 do
     chmod +w "$file"
     cp "$PROG_PATH/config.sub" "$file"
@@ -75,7 +75,7 @@ do
 done)
 
 echo "patching config.guess..."
-(IFS="\r\n" find "$PWD" -name 'config.guess' -print | while read -r file
+(IFS="" find "$PWD" -name 'config.guess' -print | while read -r file
 do
     chmod +w "$file"
     cp "$PROG_PATH/config.guess" "$file"

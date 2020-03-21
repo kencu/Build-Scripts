@@ -27,7 +27,7 @@ then
     exit 1
 fi
 
-(IFS="\r\n" find "$PWD" -iname '*.pc' -print | while read -r file
+(IFS="" find "$PWD" -iname '*.pc' -print | while read -r file
 do
     echo "Fixing $file..."
     cp -p "$file" "$file.fixed"

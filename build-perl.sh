@@ -137,7 +137,7 @@ fi
 
 # Fix -Wl,-R,'$$ORIGIN/../lib'
 echo "Patching Makefiles..."
-(IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read -r file
+(IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
 do
     chmod +w "$file"
     cp -p "$file" "$file.fixed"
