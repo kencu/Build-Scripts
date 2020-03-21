@@ -69,7 +69,7 @@ fi
 
 ###############################################################################
 
-if [[ -n $(command -v perl 2>/dev/null) ]]; then
+if [[ -n "$(command -v perl 2>/dev/null)" ]]; then
     PERL_MAJ=$(perl -V | head -n 1 | awk '{ print $6 }')
     PERL_MIN=$(perl -V | head -n 1 | awk '{ print $8 }')
 else
@@ -142,18 +142,6 @@ fi
 #    patch -u -p0 < openssl-nopreload.patch
 #    echo ""
 #fi
-
-echo "Patching Makefiles..."
-(IFS="\r\n" find "$PWD" -iname 'Makefile' -print | while read file
-do
-    cp -p "$file" "$file.fixed"
-    sed 's|$(INSTALL_PREFIX)||g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    sed 's|$(INSTALLTOP)/$(LIBDIR)|$(LIBDIR)|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    sed 's|libdir=$${exec_prefix}/$(LIBDIR)|libdir=$(LIBDIR)|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-done)
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
