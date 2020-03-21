@@ -14,6 +14,9 @@ then
     echo "To avoid sudo and the password, just press ENTER and it won't be used."
     IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
 
+    # Formatting
+    echo ""
+
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
     then
@@ -39,9 +42,6 @@ then
 
     # Don't prompt for future passwords
     export SUDO_PASSWORD_SET=yes
-
-    # Formatting
-    echo ""
 fi
 
 [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 0 || return 0
