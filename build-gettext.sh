@@ -45,7 +45,7 @@ fi
 if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
     if ! source ./setup-password.sh
     then
-        echo "Failed to test password"
+        echo "Failed to process password"
         exit 1
     fi
 fi
