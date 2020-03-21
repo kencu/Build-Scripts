@@ -2,11 +2,11 @@
 
 This GitHub is a collection of build scripts useful for building and testing programs and libraries on downlevel clients and clients where program updates are not freely available. It should result in working SSH, Wget, cURL and Git clients on systems like PowerMac G5, Fedora 1, CentOS 5 and Solaris 11.
 
-The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`, `./build-git.sh` or some other program build script to get a fresh tool. The script for the program will download and build the dependent libraries for the program. When the script completes you have a working tool in `/usr/local`.
+The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`, `./build-git.sh` or some other script to get a fresh tool. The script for the program will download and build the dependent libraries for the program. When the script completes you have a working tool in `/usr/local` or `/opt/local` on the BSDs.
 
 ## Setup
 
-Once you clone the repo you need to perform a one-time setup. The setup installs updated CA certificates and build a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.cacerts`. They are used to download programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/bootstrap`. It is a reduced-functionality version of Wget designed to download packages over HTTPS.
+Once you clone the repo you need to perform a one-time setup. The setup installs updated CA certificates and build a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/bootstrap`. It is a reduced-functionality version of Wget designed to download packages over HTTPS.
 
 ```
 $ ./setup-cacerts.sh
@@ -18,7 +18,7 @@ $ ./setup-wget.sh
 
 ## Output Artifacts
 
-All artifacts are placed in `/usr/local` by default with runtime paths and dtags set to the proper library location. The library location on 32-bit machines is `/usr/local/lib`; while 64-bit systems use `/usr/local/lib` (Debian and derivatives) or `/usr/local/lib64` (Red Hat and derivatives).
+All artifacts are placed in `/usr/local` by default with runtime paths and dtags set to the proper library location. The library location on 32-bit machines is `/usr/local/lib`; while 64-bit systems use `/usr/local/lib` (Debian and derivatives) or `/usr/local/lib64` (Red Hat and derivatives). The BSDs use `/opt/local` by default to avoid mixing libraries with system libraries in `/usr/local`.
 
 You can override the install locations with `INSTX_PREFIX` and `INSTX_LIBDIR`. `INSTX_PREFIX` is passed as `--prefix` to Autotools projects, and `INSTX_LIBDIR` is passed as `--libdir` to Autotools projects. Non-Autotools projects get patched after unpacking (see `build-bzip.sh` for an example).
 
