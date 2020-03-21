@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds Unbound from sources.
+# This script builds libxml2 from sources.
 
-UNBOUND_TAR=unbound-1.10.0.tar.gz
-UNBOUND_DIR=unbound-1.10.0
-PKG_NAME=unbound
+XML2_TAR=libxml2-2.9.10.tar.gz
+XML2_DIR=libxml2-2.9.10
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -25,13 +24,6 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
-fi
-
-if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
-    # Already installed, return success
-    echo ""
-    echo "$PKG_NAME is already installed."
-    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -53,56 +45,27 @@ fi
 
 ###############################################################################
 
-if ! ./build-libexpat.sh
-then
-    echo "Failed to build Expat"
-    exit 1
-fi
-
-###############################################################################
-
-if ! ./build-nettle.sh
-then
-    echo "Failed to build Nettle"
-    exit 1
-fi
-
-###############################################################################
-
-if ! ./build-hiredis.sh
-then
-    echo "Failed to build Hiredis"
-    exit 1
-fi
-
-###############################################################################
-
-if ! ./build-openssl.sh
-then
-    echo "Failed to build OpenSSL"
-    exit 1
-fi
-
-###############################################################################
-
 echo
-echo "********** Unbound **********"
+echo "********** libxml2 **********"
 echo
 
-if ! "$WGET" -O "$UNBOUND_TAR" --ca-certificate="$IDENTRUST_ROOT" \
-     "https://unbound.net/downloads/$UNBOUND_TAR"
+if ! "$WGET" -O "$XML2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "ftp://xmlsoft.org/libxml2/$XML2_TAR"
 then
-    echo "Failed to download Unbound"
+    echo "Failed to download libxml2"
     exit 1
 fi
 
-rm -rf "$UNBOUND_DIR" &>/dev/null
-gzip -d < "$UNBOUND_TAR" | tar xf -
-cd "$UNBOUND_DIR"
+rm -rf "$XML2_DIR" &>/dev/null
+gzip -d < "$XML2_TAR" | tar xf -
+cd "$XML2_DIR" || exit 1
 
-cp ../patch/unbound.patch .
-patch -u -p0 < unbound.patch
-echo ""
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/libxml2.patch ]]; then
+    cp ../patch/libxml2.patch .
+    patch -u -p0 < libxml2.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 cp -p ../fix-config.sh .; ./fix-config.sh
@@ -113,17 +76,16 @@ cp -p ../fix-config.sh .; ./fix-config.sh
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --enable-shared \
-    --build="$AUTOCONF_BUILD" \
+./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-static-exe \
-    --with-ssl="$INSTX_PREFIX" \
-    --with-libexpat="$INSTX_PREFIX" \
-    --with-libhiredis="$INSTX_PREFIX"
+    --with-fexceptions \
+    --without-legacy \
+    --without-python \
+    --with-zlib="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure Unbound"
+    echo "Failed to configure libxml2"
     exit 1
 fi
 
@@ -131,10 +93,10 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build Unbound"
+    echo "Failed to build libxml2"
     exit 1
 fi
 
@@ -148,7 +110,9 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test Unbound"
+    echo "**********************"
+    echo "Failed to test libxml2"
+    echo "**********************"
     exit 1
 fi
 
@@ -156,7 +120,9 @@ echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
 if [[ "${COUNT}" -ne 0 ]];
 then
-    echo "Failed to test Unbound"
+    echo "**********************"
+    echo "Failed to test libxml2"
+    echo "**********************"
     exit 1
 fi
 
@@ -171,37 +137,29 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
-# Set package status to installed. Delete the file to rebuild the package.
-touch "$INSTX_CACHE/$PKG_NAME"
+###############################################################################
+
+echo ""
+echo "*****************************************************************************"
+echo "Please run Bash's 'hash -r' to update program cache in the current shell"
+echo "*****************************************************************************"
 
 ###############################################################################
 
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$UNBOUND_TAR" "$UNBOUND_DIR")
+    ARTIFACTS=("$XML2_TAR" "$XML2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
 
-    # ./build-unbound.sh 2>&1 | tee build-unbound.log
-    if [[ -e build-unbound.log ]]; then
-        rm -f build-unbound.log
+    # ./build-libxml2.sh 2>&1 | tee build-libxml2.log
+    if [[ -e build-libxml2.log ]]; then
+        rm -f build-libxml2.log
     fi
 fi
-
-###############################################################################
-
-# Now that Unbound is built and unbound-anchor is available
-# we can update the ICANN bundle and root key
-if ! ./build-rootkey.sh
-then
-    echo "Failed to update Unbound Root Key"
-    #exit 1
-fi
-
-###############################################################################
 
 exit 0

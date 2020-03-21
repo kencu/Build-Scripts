@@ -154,7 +154,7 @@ if true; then
         rm -rf "$artifact"
     done
 
-    # ./build-expat.sh 2>&1 | tee build-expat.log
+    # ./build-libexpat.sh 2>&1 | tee build-expat.log
     if [[ -e build-expat.log ]]; then
         rm -f build-expat.log
     fi

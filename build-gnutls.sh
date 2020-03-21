@@ -94,7 +94,7 @@ fi
 
 ###############################################################################
 
-if ! ./build-expat.sh
+if ! ./build-libexpat.sh
 then
     echo "Failed to build Expat"
     exit 1
