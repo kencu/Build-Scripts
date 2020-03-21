@@ -42,10 +42,13 @@ fi
 
 ###############################################################################
 
-# Get a sudo password as needed. The password should die when this
-# subshell goes out of scope.
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+# The password should die when this subshell goes out of scope
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -82,11 +85,11 @@ fi
 if [[ -s "$CACERT_FILE" ]]
 then
     if [[ -n "$SUDO_PASSWORD" ]]; then
-        echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$SH_CACERT_PATH"
-        echo "$SUDO_PASSWORD" | sudo -S mv cacert.pem "$SH_CACERT_FILE"
-        echo "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
-        echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$SH_CACERT_FILE"
-        echo "$SUDO_PASSWORD" | sudo -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
+        echo "$SUDO_PASSWORD" | sudo -kS mkdir -p "$SH_CACERT_PATH"
+        echo "$SUDO_PASSWORD" | sudo -kS mv cacert.pem "$SH_CACERT_FILE"
+        echo "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
+        echo "$SUDO_PASSWORD" | sudo -kS chmod 644 "$SH_CACERT_FILE"
+        echo "$SUDO_PASSWORD" | sudo -kS chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
     else
         mkdir -p "$SH_CACERT_PATH"
         cp "$CACERT_FILE" "$SH_CACERT_FILE"

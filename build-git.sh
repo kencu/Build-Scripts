@@ -26,10 +26,13 @@ then
     exit 1
 fi
 
-# Get a sudo password as needed. The password should die when this
-# subshell goes out of scope.
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+# The password should die when this subshell goes out of scope
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -272,8 +275,8 @@ MAKE_FLAGS=("install")
 # The chmod allows us to remove them at cleanup. Can't use octal
 # due to OS X 10.5 on PowerMac.
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
-    echo "$SUDO_PASSWORD" | sudo -S chmod -R a+rwx
+    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    echo "$SUDO_PASSWORD" | sudo -kS chmod -R a+rwx
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi

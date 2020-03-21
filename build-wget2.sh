@@ -30,10 +30,13 @@ then
     exit 1
 fi
 
-# Get a sudo password as needed. The password should die when this
-# subshell goes out of scope.
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+# The password should die when this subshell goes out of scope
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -251,7 +254,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
@@ -268,8 +271,8 @@ fi
 } > "./wget2rc"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_PREFIX/etc"
-    echo "$SUDO_PASSWORD" | sudo -S cp "./wget2rc" "$INSTX_PREFIX/etc/"
+    echo "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_PREFIX/etc"
+    echo "$SUDO_PASSWORD" | sudo -kS cp "./wget2rc" "$INSTX_PREFIX/etc/"
 else
     mkdir -p "$INSTX_PREFIX/etc"
     cp "./wget2rc" "$INSTX_PREFIX/etc/"

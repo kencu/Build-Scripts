@@ -28,8 +28,12 @@ then
 fi
 
 # The password should die when this subshell goes out of scope
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -147,7 +151,7 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
+    echo "$SUDO_PASSWORD" | sudo -kS "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "PREFIX=$INSTX_PREFIX" "$MAKE" "${MAKE_FLAGS[@]}"
 fi

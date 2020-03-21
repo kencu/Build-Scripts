@@ -35,8 +35,12 @@ if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
 fi
 
 # The password should die when this subshell goes out of scope
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -153,7 +157,7 @@ mv libidn2.pc.new libidn2.pc
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
+    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi

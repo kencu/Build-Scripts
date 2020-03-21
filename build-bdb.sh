@@ -39,10 +39,13 @@ if [[ -e "$INSTX_CACHE/$PKG_NAME" ]]; then
     exit 0
 fi
 
-# Get a sudo password as needed. The password should die when this
-# subshell goes out of scope.
-if [[ -z "$SUDO_PASSWORD" ]]; then
-    source ./setup-password.sh
+# The password should die when this subshell goes out of scope
+if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+    if ! source ./setup-password.sh
+    then
+        echo "Failed to test password"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -93,7 +96,7 @@ CONFIG_OPTS+=("--enable-cxx")
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./dist/configure \
     "${CONFIG_OPTS[@]}"
-    
+
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Berkeley DB"
@@ -160,10 +163,10 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    echo "$SUDO_PASSWORD" | sudo -S "$MAKE" "${MAKE_FLAGS[@]}"
-    echo "$SUDO_PASSWORD" | sudo -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -S cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
-    echo "$SUDO_PASSWORD" | sudo -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"
+    echo "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    echo "$SUDO_PASSWORD" | sudo -kS mkdir -p "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -kS cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
+    echo "$SUDO_PASSWORD" | sudo -kS chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
     mkdir -p "$INSTX_LIBDIR/pkgconfig"
