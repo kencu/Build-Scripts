@@ -28,18 +28,18 @@ if [[ "$INSTX_DISABLE_PKGCONFIG_CHECK" -ne 1 ]]
 then
     if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
         echo "Some packages require Package-Config. Please install pkg-config."
-        [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+        [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
     fi
 fi
 
 if [[ -z $(command -v gzip 2>/dev/null) ]]; then
     echo "Some packages require Gzip. Please install Gzip."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+    [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
 fi
 
 if [[ -z $(command -v tar 2>/dev/null) ]]; then
     echo "Some packages require Tar. Please install Tar."
-    [[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+    [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
 fi
 
 ###############################################################################
@@ -600,4 +600,4 @@ if [[ -z "$PRINT_ONCE" ]]; then
     export PRINT_ONCE="TRUE"
 fi
 
-[[ "$0" = "${BASH_SOURCE[0]}" ]] && exit 0 || return 0
+[[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 0 || return 0
