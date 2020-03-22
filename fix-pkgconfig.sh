@@ -21,7 +21,7 @@ elif [[ -d "../../../programs" ]]; then
     PROG_PATH="../../../programs"
 fi
 
-: "${CXX:=CC}"
+CXX="${CXX:-CC}"
 if ! "${CXX}" "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe 2>/dev/null;
 then
     if ! g++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe 2>/dev/null;
@@ -38,6 +38,7 @@ fi
 do
     echo "Patching $file..."
     cp -p "$file" "$file.fixed"
+    echo "touched" > "file.timestamp"
     touch -r "$file" "file.timestamp"
     ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
