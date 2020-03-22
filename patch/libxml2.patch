@@ -1,11 +1,11 @@
---- tree.c
-+++ tree.c
-@@ -1276,7 +1276,7 @@
-     xmlNodePtr ret = NULL, last = NULL;
-     xmlNodePtr node;
-     xmlChar *val;
--    const xmlChar *cur = value, *end = cur + len;
-+    const xmlChar *cur = value, *end = cur ? cur + len : cur;
-     const xmlChar *q;
-     xmlEntityPtr ent;
+--- tree.c.orig	2020-03-22 03:56:28.875376528 -0400
++++ tree.c	2020-03-22 03:58:05.398146378 -0400
+@@ -1282,7 +1282,7 @@
      xmlBufPtr buf;
+ 
+     if (value == NULL) return(NULL);
+-    cur = value; end = cur + len;
++    cur = value; end = len > 0 ? cur + len : cur + 0;
+ 
+     buf = xmlBufCreateSize(0);
+     if (buf == NULL) return(NULL);
