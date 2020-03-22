@@ -166,7 +166,7 @@ if [[ -z "$MAKE" ]]; then
     fi
 fi
 
-# Fix "don't know how to make w"
+# Fix "don't know how to make w" on the BSDs
 if [[ "$MAKE" == "make" ]]; then
     export MAKEOPTS=
 fi
