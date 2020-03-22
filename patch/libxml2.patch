@@ -1,0 +1,11 @@
+--- tree.c
++++ tree.c
+@@ -1276,7 +1276,7 @@
+     xmlNodePtr ret = NULL, last = NULL;
+     xmlNodePtr node;
+     xmlChar *val;
+-    const xmlChar *cur = value, *end = cur + len;
++    const xmlChar *cur = value, *end = cur ? cur + len : cur;
+     const xmlChar *q;
+     xmlEntityPtr ent;
+     xmlBufPtr buf;
