@@ -64,14 +64,12 @@
  #if defined (U_DEBUG_CAL)
 --- source/common/ucnvscsu.cpp
 +++ source/common/ucnvscsu.cpp
-@@ -1923,7 +1923,9 @@
+@@ -1923,7 +1923,7 @@
          cnv->charErrorBufferLength=(int8_t)length;
  
          /* now output what fits into the regular target */
 -        c>>=8*length; /* length was reduced by targetCapacity */
-+        uint64_t t = (uint64_t)c;
-+        c = (uint32_t)(t>>8*length); /* length was reduced by targetCapacity */
-+
++        c = (int32_t)((uint64_t)c>>8*length); /* length was reduced by targetCapacity */
          switch(targetCapacity) {
              /* each branch falls through to the next one */
          case 3:
