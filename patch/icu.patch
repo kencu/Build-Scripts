@@ -76,7 +76,7 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
-+    if (dynamic_cast<GregorianCalendar*>(format))
++    if(dynamic_cast<GregorianCalendar*>(format))
 +        delete dynamic_cast<GregorianCalendar*>(format);
 +    else
          delete (DateFormat*)format;
