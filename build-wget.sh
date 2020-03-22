@@ -194,14 +194,14 @@ do
 done
 
 # https://lists.gnu.org/archive/html/bug-wget/2019-05/msg00064.html
-for file in $(find "$PWD" -name '*.px')
+(IFS="" find "$PWD" -name '*.px' -print | while read -r file)
 do
+    chmod a+w "$file"
+    cp -p "$file" "$file.fixed"
     sed -e 's|env -S perl -I .|env perl|g' "$file" > "$file.fixed"
-    chmod +w "$file"
     mv "$file.fixed" "$file"
-    chmod +x "$file"
-    chmod -w "$file"
-done
+    chmod a+x "$file" && chmod a-w "$file"
+done)
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

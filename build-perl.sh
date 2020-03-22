@@ -91,15 +91,15 @@ cd "$PERL_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/perl.patch ]]; then
-    chmod +w op.c
-    chmod +w pp.c
-    chmod +w regcomp.c
-    chmod +w vms/vms.c
-    chmod +w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
+    chmod a+w op.c pp.c regcomp.c vms/vms.c
+    chmod a+w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 
     cp ../patch/perl.patch .
     patch -u -p0 < perl.patch
     echo ""
+
+    chmod a-w op.c pp.c regcomp.c vms/vms.c
+    chmod a-w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 fi
 
 # Perl creates files in the user's home directory, but owned by root:root.
@@ -143,11 +143,11 @@ fi
 echo "Patching Makefiles..."
 (IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
 do
-    chmod +w "$file"
+    chmod a+w "$file"
     cp -p "$file" "$file.fixed"
     sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    chmod -w "$file"
+    chmod a-w "$file"
 done)
 
 echo "**********************"
