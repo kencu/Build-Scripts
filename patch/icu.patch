@@ -72,16 +72,19 @@
  #include "unicode/numfmt.h"
  #include "unicode/dtfmtsym.h"
  #include "unicode/ustring.h"
-@@ -193,6 +194,9 @@
+@@ -196,7 +197,10 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
-+    if(dynamic_cast<GregorianCalendar*>(format))
+-    delete (DateFormat*)format;
++    if (dynamic_cast<GregorianCalendar*>(format))
 +        delete dynamic_cast<GregorianCalendar*>(format);
 +    else
-         delete (DateFormat*)format;
++        delete (DateFormat*)format;
  }
  
+ U_CAPI UDateFormat* U_EXPORT2
+
 --- source/common/ucnvscsu.cpp
 +++ source/common/ucnvscsu.cpp
 @@ -1923,7 +1923,7 @@
