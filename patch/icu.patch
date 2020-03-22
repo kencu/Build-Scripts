@@ -51,6 +51,17 @@
  
      CombinedCurrencyMatcher(const CurrencySymbols& currencySymbols, const DecimalFormatSymbols& dfs,
                              parse_flags_t parseFlags, UErrorCode& status);
+--- source/i18n/calendar.cpp
++++ source/i18n/calendar.cpp
+@@ -2350,7 +2350,7 @@
+                 break;
+             } else {
+                 min = max;
+-                max <<= 1;
++                max = (int32_t)((uint32_t)max << 1);
+                 if (max == 0) {
+                     // Field difference too large to fit into int32_t
+ #if defined (U_DEBUG_CAL)
 --- source/common/ucnvscsu.cpp
 +++ source/common/ucnvscsu.cpp
 @@ -1923,7 +1923,9 @@
