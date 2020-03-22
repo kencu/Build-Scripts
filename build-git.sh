@@ -61,17 +61,17 @@ fi
 
 ###############################################################################
 
-if ! ./build-unistr.sh
+if ! ./build-iconv-gettext.sh
 then
-    echo "Failed to build Unistring"
+    echo "Failed to build iConv and GetText"
     exit 1
 fi
 
 ###############################################################################
 
-if ! ./build-iconv-gettext.sh
+if ! ./build-unistr.sh
 then
-    echo "Failed to build iConv and GetText"
+    echo "Failed to build Unistring"
     exit 1
 fi
 
