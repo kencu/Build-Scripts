@@ -72,13 +72,14 @@
  #include "unicode/numfmt.h"
  #include "unicode/dtfmtsym.h"
  #include "unicode/ustring.h"
-@@ -193,7 +194,13 @@
+@@ -193,7 +194,14 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
 -    delete (DateFormat*)format;
++    // UDateFormat is a void* typedef, so format is void**.
 +    DateFormat* pFormat = *reinterpret_cast<DateFormat**>(format);
-+    if (pFormat && dynamic_cast<GregorianCalendar*>(pFormat))
++    if (dynamic_cast<GregorianCalendar*>(pFormat))
 +        delete dynamic_cast<GregorianCalendar*>(pFormat);
 +    else if(pFormat)
 +        delete pFormat;
