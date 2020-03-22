@@ -45,6 +45,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-iconv-gettext.sh
+then
+    echo "Failed to build iConv and GetText"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** libxml2 **********"
 echo
@@ -83,10 +91,12 @@ cp -p ../fix-config.sh .; ./fix-config.sh
 ./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --enable-static --enable-shared \
     --with-fexceptions \
+    --with-iconv="$INSTX_PREFIX" \
     --without-legacy \
     --without-python \
-    --with-zlib="$INSTX_LIBDIR"
+    --with-zlib="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libxml2"
