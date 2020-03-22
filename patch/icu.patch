@@ -72,7 +72,7 @@
  #include "unicode/numfmt.h"
  #include "unicode/dtfmtsym.h"
  #include "unicode/ustring.h"
-@@ -194,7 +195,10 @@
+@@ -193,7 +194,10 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
