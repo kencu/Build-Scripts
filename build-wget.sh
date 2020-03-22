@@ -169,9 +169,6 @@ rm -rf "$WGET_DIR" &>/dev/null
 gzip -d < "$WGET_TAR" | tar xf -
 cd "$WGET_DIR" || exit 1
 
-echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
-echo ""
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/wget.patch ]]; then
     cp ../patch/wget.patch .
