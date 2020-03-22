@@ -36,7 +36,7 @@ fi
 
 (IFS="" find . -name 'configure.ac' -print | while read -r file
 do
-    echo "Patching $file..."
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     echo "touched" > "file.timestamp"
     touch -r "$file" "file.timestamp"
@@ -49,7 +49,7 @@ done)
 
 (IFS="" find . -name 'configure' -print | while read -r file
 do
-    echo "Patching $file..."
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     echo "touched" > "file.timestamp"
     touch -r "$file" "file.timestamp"

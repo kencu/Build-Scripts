@@ -117,7 +117,7 @@ if [[ "$?" -ne "0" ]]; then
     exit 1
 fi
 
-echo "Patching Makefiles..."
+echo "patching Makefiles..."
 (IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"

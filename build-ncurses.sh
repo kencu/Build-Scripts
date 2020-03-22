@@ -133,7 +133,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Remove unneeded warning
-echo "Patching Makefiles..."
+echo "patching Makefiles..."
 (IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"

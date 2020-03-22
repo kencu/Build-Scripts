@@ -214,7 +214,7 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-echo "Patching Makefiles"
+echo "patching Makefiles"
 for file in $(find "$PWD" -iname 'Makefile')
 do
     # Make console output more readable...
@@ -226,7 +226,7 @@ do
     mv "$file.fixed" "$file"
 done
 
-echo "Patching test Makefiles"
+echo "patching test Makefiles"
 for file in $(find "$PWD/tests" -iname 'Makefile')
 do
     # Test suite does not compile with NDEBUG defined.
@@ -235,7 +235,7 @@ do
     mv "$file.fixed" "$file"
 done
 
-echo "Patching La files"
+echo "patching La files"
 for file in $(find "$PWD" -iname '*.la')
 do
     # Make console output more readable...
@@ -247,7 +247,7 @@ do
     mv "$file.fixed" "$file"
 done
 
-echo "Patching Shell Scripts"
+echo "patching Shell Scripts"
 for file in $(find "$PWD" -name '*.sh')
 do
     # Fix shell
@@ -259,7 +259,7 @@ done
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
     # Solaris netstat is different then GNU netstat
-    echo "Patching common.sh"
+    echo "patching common.sh"
     file=tests/scripts/common.sh
     cp -p "$file" "$file.fixed"
     sed -e 's|PFCMD -anl|PFCMD -an|g' "$file" > "$file.fixed"

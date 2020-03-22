@@ -140,7 +140,7 @@ then
 fi
 
 # Fix -Wl,-R,'$$ORIGIN/../lib'
-echo "Patching Makefiles..."
+echo "patching Makefiles..."
 (IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
 do
     chmod a+w "$file"
