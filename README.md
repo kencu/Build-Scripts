@@ -26,9 +26,9 @@ $ $HOME/.build-scripts/wget/bin/wget --version
 GNU Wget 1.20.3 built on solaris2.11.
 ```
 
-On ancient systems, like Fedora 1 and Ubuntu 4, you will need to build Bash immediately. Ancient Bash does not work well with these scripts. Nearly all other systems have a new enough version of Bash.
+The bootstrap version of Wget uses OpenSSL 1.0.2. OpenSSL 1.0.2 is now end-of-life and will accumulate unfixed bugs. We cannot upgrade to OpenSSL 1.1.x because of a Perl dependency. OpenSSL 1.1.x requires Perl 5.24, and Perl 5.24 is too new for some of the older systems.
 
-The bootstrap version of Wget located at `$HOME/.build-scripts/wget` uses OpenSSL 1.0.2. OpenSSL 1.0.2 is now end-of-life and will accumulate unfixed bugs. We cannot upgrade to OpenSSL 1.1.x because of a Perl dependency. OpenSSL 1.1.x requires Perl 5.24, and Perl 5.24 is too new for some of the older systems.
+On ancient systems, like Fedora 1 and Ubuntu 4, you will need to build Bash immediately. Ancient Bash does not work well with these scripts. Nearly all other systems have a new enough version of Bash.
 
 ## Output Artifacts
 
