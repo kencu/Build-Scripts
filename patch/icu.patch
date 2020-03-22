@@ -62,6 +62,18 @@
                  if (max == 0) {
                      // Field difference too large to fit into int32_t
  #if defined (U_DEBUG_CAL)
+--- source/i18n/udat.cpp
++++ source/i18n/udat.cpp
+@@ -193,6 +193,9 @@
+ U_CAPI void U_EXPORT2
+ udat_close(UDateFormat* format)
+ {
++  if (dynamic_cast<GregorianCalendar*>(format))
++    delete dynamic_cast<GregorianCalendar*>(format);
++  else
+     delete (DateFormat*)format;
+ }
+ 
 --- source/common/ucnvscsu.cpp
 +++ source/common/ucnvscsu.cpp
 @@ -1923,7 +1923,7 @@
