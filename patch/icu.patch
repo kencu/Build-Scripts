@@ -40,8 +40,8 @@
  
      PlusSignMatcher(const DecimalFormatSymbols& dfs, bool allowTrailing);
  
---- source/i18n/numparse_currency.h.
-+++ source/i18n/numparse_currency.h	2020-03-21 20:45:45.578260212 -0400
+--- source/i18n/numparse_currency.h
++++ source/i18n/numparse_currency.h
 @@ -32,7 +32,7 @@
  // Exported as U_I18N_API for tests
  class U_I18N_API CombinedCurrencyMatcher : public NumberParseMatcher, public UMemory {
@@ -62,8 +62,8 @@
                  if (max == 0) {
                      // Field difference too large to fit into int32_t
  #if defined (U_DEBUG_CAL)
---- source/i18n/udat.cpp
-+++ source/i18n/udat.cpp
+--- source/i18n/udat.cpp.orig	2020-03-21 22:52:40.431712676 -0400
++++ source/i18n/udat.cpp	2020-03-21 23:10:05.088399110 -0400
 @@ -20,6 +20,7 @@
  #include "unicode/fieldpos.h"
  #include "unicode/parsepos.h"
@@ -72,23 +72,20 @@
  #include "unicode/numfmt.h"
  #include "unicode/dtfmtsym.h"
  #include "unicode/ustring.h"
-@@ -193,7 +194,14 @@
+@@ -193,7 +194,12 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
 -    delete (DateFormat*)format;
 +    // UDateFormat is a void* typedef, so format is void**.
-+    DateFormat* pFormat = *reinterpret_cast<DateFormat**>(format);
-+    if (dynamic_cast<GregorianCalendar*>(pFormat))
++    DateFormat* pFormat = static_cast<DateFormat*>(*format);
++    if(dynamic_cast<GregorianCalendar*>(pFormat))
 +        delete dynamic_cast<GregorianCalendar*>(pFormat);
-+    else if(pFormat)
-+        delete pFormat;
 +    else
-+        delete (DateFormat*)format;
++        delete pFormat;
  }
  
  U_CAPI UDateFormat* U_EXPORT2
-
 --- source/common/ucnvscsu.cpp
 +++ source/common/ucnvscsu.cpp
 @@ -1923,7 +1923,7 @@
