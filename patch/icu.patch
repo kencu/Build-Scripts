@@ -79,7 +79,7 @@
 -    delete (DateFormat*)format;
 +    DateFormat* pFormat = (DateFormat*)format;
 +    if (dynamic_cast<GregorianCalendar*>(pFormat))
-+        delete dynamic_cast<GregorianCalendar*>(pFformat);
++        delete dynamic_cast<GregorianCalendar*>(pFormat);
 +    else
 +        delete pFormat;
  }
