@@ -92,8 +92,9 @@ cp ../patch/openldap.patch .
 patch -u -p0 < openldap.patch
 echo ""
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 # Fix Berkeley DB version test
 cp -p configure configure.new

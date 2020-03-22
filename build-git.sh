@@ -145,8 +145,9 @@ if [[ -e ../patch/git.patch ]]; then
     echo ""
 fi
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 # Command line tools, like sed and awk, need this on OS X.
 if [[ "$IS_DARWIN" -ne 0 ]]

@@ -72,8 +72,9 @@ rm -rf "$CARES_DIR" &>/dev/null
 gzip -d < "$CARES_TAR" | tar xf -
 cd "$CARES_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

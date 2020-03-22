@@ -77,8 +77,9 @@ rm -rf "$PKGCONFIG_DIR" &>/dev/null
 gzip -d < "$PKGCONFIG_TAR" | tar xf -
 cd "$PKGCONFIG_DIR"
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")

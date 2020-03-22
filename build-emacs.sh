@@ -96,8 +96,9 @@ rm -rf "$EMACS_DIR" &>/dev/null
 gzip -d < "$EMACS_TAR" | tar xf -
 cd "$EMACS_DIR"
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 CONFIG_OPTS=('--with-xml2' '--without-x' '--without-sound' '--without-xpm'
     '--without-jpeg' '--without-tiff' '--without-gif' '--without-png'

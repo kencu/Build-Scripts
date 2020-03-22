@@ -74,8 +74,9 @@ rm -rf "$GC_DIR" &>/dev/null
 gzip -d < "$GC_TAR" | tar xf -
 cd "$GC_DIR"
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")

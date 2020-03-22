@@ -75,8 +75,9 @@ rm -rf "$M4_DIR" &>/dev/null
 gzip -d < "$M4_TAR" | tar xf -
 cd "$M4_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -145,8 +146,9 @@ rm -rf "$AUTOCONF_DIR" &>/dev/null
 gzip -d < "$AUTOCONF_TAR" | tar xf -
 cd "$AUTOCONF_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -215,8 +217,9 @@ rm -rf "$AUTOMAKE_DIR" &>/dev/null
 gzip -d < "$AUTOMAKE_TAR" | tar xf -
 cd "$AUTOMAKE_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

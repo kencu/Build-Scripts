@@ -73,8 +73,9 @@ rm -rf "$DIFFUTILS_TAR" "$DIFFUTILS_DIR" &>/dev/null
 unxz "$DIFFUTILS_XZ" && tar -xf "$DIFFUTILS_TAR"
 cd "$DIFFUTILS_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

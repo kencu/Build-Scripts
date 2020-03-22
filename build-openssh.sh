@@ -93,8 +93,9 @@ rm -rf "$OPENSSH_DIR" &>/dev/null
 gzip -d < "$OPENSSH_TAR" | tar xf -
 cd "$OPENSSH_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"

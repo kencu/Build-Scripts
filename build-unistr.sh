@@ -84,8 +84,9 @@ cp ../patch/unistring.patch .
 patch -u -p0 < unistring.patch
 echo ""
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 # https://bugs.launchpad.net/ubuntu/+source/binutils/+bug/1340250
 if [[ -n "$SH_NO_AS_NEEDED" ]]; then

@@ -73,8 +73,9 @@ rm -rf "$EXPECT_DIR" &>/dev/null
 gzip -d < "$EXPECT_TAR" | tar xf -
 cd "$EXPECT_DIR"
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

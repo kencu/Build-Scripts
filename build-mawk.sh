@@ -65,8 +65,9 @@ rm -rf "$MAWK_DIR" &>/dev/null
 gzip -d < "$MAWK_TAR" | tar xf -
 cd "$MAWK_DIR" || exit 1
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.s
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-config.s
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

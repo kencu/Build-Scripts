@@ -176,8 +176,9 @@ if [[ -e ../patch/wget.patch ]]; then
     echo ""
 fi
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 for file in $(find "$PWD" -name '*.h')

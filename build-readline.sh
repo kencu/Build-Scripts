@@ -81,8 +81,9 @@ rm -rf "$READLN_DIR" &>/dev/null
 gzip -d < "$READLN_TAR" | tar xf -
 cd "$READLN_DIR"
 
-# Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+# Fix sys_lib_dlsearch_path_spec
+cp -p ../fix-configure.sh .
+./fix-configure.sh
 
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     BUILD_CPPFLAGS+=("-DNEED_EXTERN_PC")
