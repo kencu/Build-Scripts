@@ -184,7 +184,7 @@ TEST_CC="$CC"
 
 # Where the package will run. We need to override for 64-bit Solaris.
 # On Solaris some Autotools packages use 32-bit instead of 64-bit build.
-AUTOCONF_BUILD=$(bash patch/config.guess 2>/dev/null)
+AUTOCONF_BUILD=$(bash programs/config.guess 2>/dev/null)
 
 ###############################################################################
 
