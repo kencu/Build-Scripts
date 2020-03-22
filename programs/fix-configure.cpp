@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cstdlib>
 
 void usage_exit();
 void process_stream(std::istream&);
@@ -83,5 +84,5 @@ void usage_exit()
 {
     std::cerr << "Usage: fix-configure <pc_file>" << std::endl;
     std::cerr << "   or: cat <configure_file> | fix-configure" << std::endl;
-    exit(1);
+    std::exit(1);
 }
