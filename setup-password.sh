@@ -34,6 +34,9 @@ then
             echo "The sudo password appears incorrect"
             [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
         fi
+    else
+        echo ""
+        echo "The sudo password was not provided"
     fi
 
     # I would like to avoid exporting this, but SUDO_PASSWORD is
@@ -42,12 +45,6 @@ then
 
     # Don't prompt for future passwords
     export SUDO_PASSWORD_SET=yes
-
-else
-
-    echo ""
-    echo "The sudo password was not provided"
-
 fi
 
 [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 0 || return 0
