@@ -20,8 +20,8 @@ then
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        # Drop the cached authentication, if present.
-        # The -k option is not ubiquitous.
+        # Attempt to drop the cached authentication, if present.
+        # The -k option is not ubiquitous. It may fail.
         echo "" | sudo -kS >/dev/null 2>&1
 
         # Now, test the password
