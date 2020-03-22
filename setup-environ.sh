@@ -160,10 +160,15 @@ IS_MIPS=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'mips')
 # The BSDs and Solaris should have GMake installed if its needed
 if [[ -z "$MAKE" ]]; then
     if [[ $(command -v gmake 2>/dev/null) ]]; then
-        MAKE="gmake"
+        export MAKE="gmake"
     else
-        MAKE="make"
+        export MAKE="make"
     fi
+fi
+
+# Fix "don't know how to make w"
+if [[ "$MAKE" == "make" ]]; then
+    export MAKEOPTS=
 fi
 
 # If CC and CXX are not set, then use default or assume GCC
