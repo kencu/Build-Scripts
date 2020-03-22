@@ -85,7 +85,8 @@ if [[ -e ../patch/bison.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+cp -p ../fix-config.sh .
+./fix-config.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
