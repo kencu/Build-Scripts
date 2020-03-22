@@ -114,7 +114,8 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .; ./fix-pkgconfig.sh
+cp -p ../fix-pkgconfig.sh .
+./fix-pkgconfig.sh
 
 # build-iconv-gettext has a circular dependency.
 # The first build of iConv does not need 'make check'.

@@ -128,7 +128,8 @@ fi
 } > libbz2.pc
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .; ./fix-pkgconfig.sh
+cp -p ../fix-pkgconfig.sh .
+./fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"

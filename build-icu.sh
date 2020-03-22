@@ -80,7 +80,8 @@ if [[ -e ../patch/icu.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
-cp -p ../fix-config.sh .; ./fix-config.sh
+cp -p ../fix-config.sh .
+./fix-config.sh
 
 cd "source"
 
@@ -114,7 +115,8 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .; ./fix-pkgconfig.sh
+cp -p ../fix-pkgconfig.sh .
+./fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
