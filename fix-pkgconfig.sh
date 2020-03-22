@@ -21,11 +21,12 @@ elif [[ -d "../../../programs" ]]; then
     PROG_PATH="../../../programs"
 fi
 
-if ! "${CXX}" "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
+: "${CXX:=CC}"
+if ! "${CXX}" "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe 2>/dev/null;
 then
-    if ! g++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
+    if ! g++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe 2>/dev/null;
     then
-        if ! clang++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
+        if ! clang++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe 2>/dev/null;
         then
             echo "Failed to build fix-pkgconfig"
             exit 1
@@ -33,12 +34,14 @@ then
     fi
 fi
 
-(IFS="" find "$PWD" -iname '*.pc' -print | while read -r file
+(IFS="" find . -iname '*.pc' -print | while read -r file
 do
-    echo "Fixing $file..."
+    echo "Patching $file..."
     cp -p "$file" "$file.fixed"
+    touch -r "$file" "file.timestamp"
     ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
+    touch -r "file.timestamp" "$file"
 done)
 
 exit 0
