@@ -72,16 +72,12 @@ rm -rf "$XML2_DIR" &>/dev/null
 gzip -d < "$XML2_TAR" | tar xf -
 cd "$XML2_DIR" || exit 1
 
-cp tree.c tree.orig
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/libxml2.patch ]]; then
     cp ../patch/libxml2.patch .
     patch -u -p0 < libxml2.patch
     echo ""
 fi
-
-exit 0
 
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 cp -p ../fix-config.sh .; ./fix-config.sh
