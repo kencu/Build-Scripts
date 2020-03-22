@@ -77,7 +77,7 @@
  udat_close(UDateFormat* format)
  {
 -    delete (DateFormat*)format;
-+    DateFormat* pFormat = dynamic_cast<DateFormat*>(format);
++    DateFormat* pFormat = static_cast<DateFormat*>(format);
 +    if (dynamic_cast<GregorianCalendar*>(pFormat))
 +        delete dynamic_cast<GregorianCalendar*>(pFormat);
 +    else
