@@ -40,8 +40,8 @@
  
      PlusSignMatcher(const DecimalFormatSymbols& dfs, bool allowTrailing);
  
---- source/i18n/numparse_currency.h
-+++ source/i18n/numparse_currency.h
+--- source/i18n/numparse_currency.h.
++++ source/i18n/numparse_currency.h	2020-03-21 20:45:45.578260212 -0400
 @@ -32,7 +32,7 @@
  // Exported as U_I18N_API for tests
  class U_I18N_API CombinedCurrencyMatcher : public NumberParseMatcher, public UMemory {
@@ -64,14 +64,22 @@
  #if defined (U_DEBUG_CAL)
 --- source/i18n/udat.cpp
 +++ source/i18n/udat.cpp
-@@ -193,6 +193,9 @@
+@@ -20,6 +20,7 @@
+ #include "unicode/fieldpos.h"
+ #include "unicode/parsepos.h"
+ #include "unicode/calendar.h"
++#include "unicode/gregocal.h"
+ #include "unicode/numfmt.h"
+ #include "unicode/dtfmtsym.h"
+ #include "unicode/ustring.h"
+@@ -193,6 +194,9 @@
  U_CAPI void U_EXPORT2
  udat_close(UDateFormat* format)
  {
-+  if (dynamic_cast<GregorianCalendar*>(format))
-+    delete dynamic_cast<GregorianCalendar*>(format);
-+  else
-     delete (DateFormat*)format;
++    if (dynamic_cast<GregorianCalendar*>(format))
++        delete dynamic_cast<GregorianCalendar*>(format);
++    else
+         delete (DateFormat*)format;
  }
  
 --- source/common/ucnvscsu.cpp
