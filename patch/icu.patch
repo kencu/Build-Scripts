@@ -62,8 +62,8 @@
                  if (max == 0) {
                      // Field difference too large to fit into int32_t
  #if defined (U_DEBUG_CAL)
---- source/i18n/udat.cpp.orig	2020-03-21 22:52:40.431712676 -0400
-+++ source/i18n/udat.cpp	2020-03-21 23:10:05.088399110 -0400
+--- source/i18n/udat.cpp
++++ source/i18n/udat.cpp
 @@ -20,6 +20,7 @@
  #include "unicode/fieldpos.h"
  #include "unicode/parsepos.h"
@@ -175,11 +175,12 @@
  
 --- source/common/uloc_tag.cpp
 +++ source/common/uloc_tag.cpp
-@@ -2042,7 +2042,8 @@
+@@ -2042,7 +2042,9 @@
          *status = U_MEMORY_ALLOCATION_ERROR;
          return NULL;
      }
 -    uprv_memcpy(tagBuf, tag, tagLen);
++    // src and dest cannot be NULL
 +    if (tagBuf && tag)
 +      uprv_memcpy(tagBuf, tag, tagLen);
      *(tagBuf + tagLen) = 0;
