@@ -23,8 +23,14 @@ fi
 
 if ! "${CXX}" "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
 then
-    echo "Failed to build fix-pkgconfig"
-    exit 1
+    if ! g++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
+    then
+        if ! clang++ "$PROG_PATH/fix-pkgconfig.cpp" -o fix-pkgconfig.exe;
+        then
+            echo "Failed to build fix-pkgconfig"
+            exit 1
+        fi
+    fi
 fi
 
 (IFS="" find "$PWD" -iname '*.pc' -print | while read -r file

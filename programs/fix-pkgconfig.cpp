@@ -5,7 +5,7 @@
 
 void usage_exit();
 void process_stream(std::istream&);
-std::string fix_lib(const std::string&);
+std::string fix_options(const std::string&);
 
 int main(int argc, char* argv[])
 {
@@ -30,11 +30,11 @@ void process_stream(std::istream& stream)
     std::string line;
     while (std::getline(stream, line))
     {
-        std::cout << fix_lib(line) << std::endl;
+        std::cout << fix_options(line) << std::endl;
     }
 }
 
-std::string fix_lib(const std::string& line)
+std::string fix_options(const std::string& line)
 {
     std::string new_line;
 
@@ -64,7 +64,7 @@ std::string fix_lib(const std::string& line)
 
 void usage_exit()
 {
-    std::cerr << "Usage: fix_pc <pc_file>" << std::endl;
-    std::cerr << "   or: cat <pc_file> | fix_pc" << std::endl;
+    std::cerr << "Usage: fix-pkgconfig <pc_file>" << std::endl;
+    std::cerr << "   or: cat <pc_file> | fix-pkgconfig" << std::endl;
     exit(1);
 }
