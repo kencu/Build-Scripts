@@ -1,6 +1,6 @@
 # Build-Scripts
 
-This GitHub is a collection of build scripts useful for building and testing programs and libraries on downlevel clients and clients where program updates are not freely available. It should result in working SSH, Wget, cURL and Git clients on systems like PowerMac G5, Fedora 1, CentOS 5 and Solaris 11.
+This GitHub is a collection of build scripts useful for building and testing programs and libraries on downlevel clients and clients where program updates are not freely available. It should result in working SSH, Wget, cURL and Git clients on systems like PowerMac G5, Fedora 1, Ubuntu 4, CentOS 5 and Solaris 11.
 
 The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`, `./build-git.sh` or some other script to get a fresh tool. The script for the program will download and build the dependent libraries for the program. When the script completes you have a working tool in `/usr/local` or `/opt/local` on the BSDs.
 
@@ -92,7 +92,7 @@ If you are building a program that requires Boehm GC then you need to install it
 
 On Red Hat based systems you should install `gc-devel`. On Debian based systems you should install `libgc-dev`. If a package is not available then you should manually build the garbage collector.
 
-If you attempt a manual build then `build-boehm-gc.sh` may work for you. But the script is pinned at Boehm-GC 7.2k due to C++11 dependencies. And the manual build may not integrate well if a program uses alternate stacks and signals.
+If you attempt a manual build then `build-boehm-gc.sh` may work for you. But the script is pinned at Boehm-GC 7.2k to avoid C++11 dependencies. And the manual build may not integrate well if a program uses alternate stacks and signals.
 
 ## Documentation
 
