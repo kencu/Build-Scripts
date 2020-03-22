@@ -16,8 +16,6 @@ trap finish EXIT
 # Autoconf lib paths are wrong for Fedora and Solaris. Thanks NM.
 # http://pkgs.fedoraproject.org/cgit/rpms/gnutls.git/tree/gnutls.spec;
 
-echo "patching sys_lib_dlsearch_path_spec..."
-
 # Fix "rm: conftest.dSYM: is a directory" on Darwin
 # https://lists.gnu.org/archive/html/bug-autoconf/2007-11/msg00032.html
 if [[ $(uname -s 2>&1 | grep -i -c 'darwin') -ne 0 ]]
@@ -32,6 +30,8 @@ then
         chmod a+x "$file" && chmod a-w "$file"
     done)
 fi
+
+echo "patching sys_lib_dlsearch_path_spec..."
 
 # Keep configure in the future
 (IFS="" find "$PWD" -iname 'configure' -print | while read -r file

@@ -194,7 +194,7 @@ do
 done
 
 # https://lists.gnu.org/archive/html/bug-wget/2019-05/msg00064.html
-(IFS="" find "$PWD" -name '*.px' -print | while read -r file)
+(IFS="" find "$PWD" -name '*.px' -print | while read -r file
 do
     chmod a+w "$file"
     cp -p "$file" "$file.fixed"
