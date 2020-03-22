@@ -18,6 +18,7 @@ SSL_DIR=openssl-1.0.2u
 # Install location
 PREFIX="$HOME/.build-scripts/wget"
 LIBDIR="$PREFIX/lib"
+CACERTDIR="$PREFIX/cacert"
 
 ###############################################################################
 
@@ -85,7 +86,7 @@ fi
 IS_DARWIN=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'darwin')
 IS_LINUX=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'linux')
 IS_AMD64=$(echo -n "$(uname -m 2>&1)" | grep -i -c -E 'x86_64|amd64')
-#IS_SOLARIS=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'sunos')f
+#IS_SOLARIS=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'sunos')
 
 # DH is 2x to 4x faster with ec_nistp_64_gcc_128, but it is
 # only available on x64 machines with uint128 available.
@@ -104,10 +105,10 @@ echo "*************************************************"
 echo
 
 # Copy our copy of cacerts to bootstrap
-mkdir -p "$PREFIX/cacert/"
-cp cacert.pem "$PREFIX/cacert/cacert.pem"
+mkdir -p "$CACERTDIR"
+cp cacert.pem "$CACERTDIR/cacert.pem"
 
-echo "Copy cacert.pem $PREFIX/cacert/cacert.pem"
+echo "Copy cacert.pem to $CACERTDIR/cacert.pem"
 echo "Done."
 
 ############################## OpenSSL ##############################
@@ -145,8 +146,12 @@ if ! make install_sw; then
     exit 1
 fi
 
-sed 's|$dir/certs|$dir/cacert|g' "$PREFIX/openssl.cnf" > "$PREFIX/openssl.cnf.new"
-mv "$PREFIX/openssl.cnf.new" "$PREFIX/openssl.cnf"
+# Write essential values
+{
+    echo "RANDFILE = \$ENV::HOME/.rand"
+    echo "certificate = $CACERTDIR/cacert.pem"
+
+} > "$PREFIX/openssl.cnf"
 
 ############################ OpenSSL libs #############################
 
@@ -233,7 +238,7 @@ if [[ "$?" -ne "0" ]]; then
 fi
 
 # Fix makefiles. No shared objects.
-for file in $(find . -iname Makefile)
+(IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
 do
     sed "s|-lssl|$LIBDIR/libssl.a|g" "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
@@ -241,7 +246,7 @@ do
     mv "$file.fixed" "$file"
     sed "s|-lunistring|$LIBDIR/libunistring.a|g" "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
 if ! make -j "$INSTX_JOBS" V=1; then
     echo "Failed to build Wget"

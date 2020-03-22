@@ -182,10 +182,6 @@ fi
 # Fix sys_lib_dlsearch_path_spec and keep the file time in the past
 cp -p ../fix-config.sh .; ./fix-config.sh
 
-#sed -e 's|$(LTLIBICONV)|$(LIBICONV)|g' fuzz/Makefile.am > fuzz/Makefile.am.fixed
-#mv fuzz/Makefile.am.fixed fuzz/Makefile.am
-#touch -t 197001010000 fuzz/Makefile.am
-
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 for file in $(find "$PWD" -name '*.h')
 do
@@ -217,7 +213,8 @@ done
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --sysconfdir="$INSTX_PREFIX/etc" \
-    --with-ssl=openssl --with-libssl-prefix="$INSTX_PREFIX" \
+    --with-ssl=openssl \
+    --with-libssl-prefix="$INSTX_PREFIX" \
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
     --with-cares

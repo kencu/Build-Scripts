@@ -25,31 +25,31 @@ then
     # Keep configure in the future
     (IFS="" find "$PWD" -iname 'configure' -print | while read -r file
     do
+        chmod a+w "$file"
         cp -p "$file" "$file.fixed"
-        chmod +w "$file" && chmod +w "$file.fixed"
         sed 's/rm -f core/rm -rf core/g' "$file" > "$file.fixed"
-        mv "$file.fixed" "$file" && chmod +x "$file"
-        touch "$file"
+        mv "$file.fixed" "$file"
+        chmod a+x "$file" && chmod a-w "$file"
     done)
 fi
 
 # Keep configure in the future
 (IFS="" find "$PWD" -iname 'configure' -print | while read -r file
 do
+    chmod a+w "$file"
     cp -p "$file" "$file.fixed"
-    chmod +w "$file" && chmod +w "$file.fixed"
     sed -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spec="/lib %{_libdir} /usr/lib|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file" && chmod +x "$file"
-    touch "$file"
+    mv "$file.fixed" "$file"
+    chmod a+x "$file" && chmod a-w "$file"
 done)
 
 # And keep configure.ac in the past
 (IFS="" find "$PWD" -iname 'configure.ac' -print | while read -r file
 do
+    chmod a+w "$file"
     cp -p "$file" "$file.fixed"
-    chmod +w "$file" && chmod +w "$file.fixed"
     sed -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib|sys_lib_dlsearch_path_spec="/lib %{_libdir} /usr/lib|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file" && chmod +x "$file"
+    mv "$file.fixed" "$file"
     touch -t 197001010000 "$file"
 done)
 
@@ -69,17 +69,17 @@ fi
 echo "patching config.sub..."
 (IFS="" find "$PWD" -name 'config.sub' -print | while read -r file
 do
-    chmod +w "$file"
+    chmod a+w "$file"
     cp "$PROG_PATH/config.sub" "$file"
-    chmod -w "$file"; chmod +x "$file"
+    chmod a-w "$file"; chmod a+x "$file"
 done)
 
 echo "patching config.guess..."
 (IFS="" find "$PWD" -name 'config.guess' -print | while read -r file
 do
-    chmod +w "$file"
+    chmod a+w "$file"
     cp "$PROG_PATH/config.guess" "$file"
-    chmod -w "$file"; chmod +x "$file"
+    chmod a-w "$file"; chmod a+x "$file"
 done)
 
 echo ""
