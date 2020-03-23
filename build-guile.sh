@@ -6,8 +6,8 @@
 #
 # Requires libtool-ltdl-devel on Fedora.
 
-GUILE_TAR=guile-2.2.4.tar.xz
-GUILE_DIR=guile-2.2.4
+GUILE_TAR=guile-2.2.7.tar.xz
+GUILE_DIR=guile-2.2.7
 PKG_NAME=guile
 
 ###############################################################################
