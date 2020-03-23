@@ -92,7 +92,6 @@ cp -p ../fix-configure.sh .
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
     --enable-shared \
     --enable-install-termcap \
     --with-termcap="$INSTX_PREFIX/etc"
