@@ -38,11 +38,10 @@ fi
 do
     echo "patching $file..."
     cp -p "$file" "$file.fixed"
-    echo "touched" > "file.timestamp"
-    touch -r "$file" "file.timestamp"
+    touch -a -m -r "$file" "file.timestamp"
     ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    touch -r "file.timestamp" "$file"
+    touch -a -m -r "file.timestamp" "$file"
 done)
 
 exit 0

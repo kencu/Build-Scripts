@@ -172,9 +172,9 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./config \
-    --prefix="$INSTX_PREFIX"
-    --libdir="$INSTX_LIBDIR"
-    --openssldir="$INSTX_LIBDIR"
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --openssldir="$INSTX_PREFIX" \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
