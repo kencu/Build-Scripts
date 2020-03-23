@@ -27,6 +27,13 @@ then
     exit 1
 fi
 
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    # Already installed, return success
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
+fi
+
 # The password should die when this subshell goes out of scope
 if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
     if ! source ./setup-password.sh
