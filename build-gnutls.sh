@@ -214,52 +214,52 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-echo "patching Makefiles"
-for file in $(find "$PWD" -iname 'Makefile')
+(IFS="" find . -name 'Makefile' -print | while read -r file
 do
     # Make console output more readable...
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     sed -e 's|-Wtype-limits .*|-fno-common -Wall |g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     cp -p "$file" "$file.fixed"
     sed -e 's|-fno-common .*|-fno-common -Wall |g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
-echo "patching test Makefiles"
-for file in $(find "$PWD/tests" -iname 'Makefile')
+(IFS="" find ./tests -name 'Makefile' -print | while read -r file
 do
     # Test suite does not compile with NDEBUG defined.
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     sed -e 's| -DNDEBUG||g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
-echo "patching La files"
-for file in $(find "$PWD" -iname '*.la')
+(IFS="" find . -name '*.la' -print | while read -r file
 do
     # Make console output more readable...
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     sed -e 's|-Wtype-limits .*|-fno-common -Wall |g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     cp -p "$file" "$file.fixed"
     sed -e 's|-fno-common .*|-fno-common -Wall |g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
-echo "patching Shell Scripts"
-for file in $(find "$PWD" -name '*.sh')
+(IFS="" find . -name '*.sh' -print | while read -r file
 do
     # Fix shell
+    echo "patching $file..."
     cp -p "$file" "$file.fixed"
     sed -e 's|#!/bin/sh|#!/usr/bin/env bash|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
     # Solaris netstat is different then GNU netstat
-    echo "patching common.sh"
+    echo "patching common.sh..."
     file=tests/scripts/common.sh
     cp -p "$file" "$file.fixed"
     sed -e 's|PFCMD -anl|PFCMD -an|g' "$file" > "$file.fixed"
