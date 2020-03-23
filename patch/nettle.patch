@@ -49,8 +49,8 @@
  # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
  check: $(TS_ALL)
 -	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
-+	LD_LIBRARY_PATH="$$PWD/.lib:$$LD_LIBRARY_PATH" \
-+	  DYLD_LIBRARY_PATH="$$PWD/.lib:$$DYLD_LIBRARY_PATH" \
++	LD_LIBRARY_PATH="$$PWD/../.lib:$$LD_LIBRARY_PATH" \
++	  DYLD_LIBRARY_PATH="$$PWD/../.lib:$$DYLD_LIBRARY_PATH" \
  	  srcdir="$(srcdir)" \
  	  EMULATOR="$(EMULATOR)" NM="$(NM)" EXEEXT="$(EXEEXT)" \
            $(top_srcdir)/run-tests $(TS_ALL)
