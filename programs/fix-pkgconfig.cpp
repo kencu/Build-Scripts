@@ -18,6 +18,9 @@ std::string fix_options(std::string);
 std::string trim_trailing(std::string);
 std::string fold_path(std::string);
 
+std::string get_prefix(const std::vector<std::string>&);
+void fold_prefix(const std::string&, std::vector<std::string>&);
+
 inline char last_char(const std::string& str)
 {
     if (str.empty()) {
@@ -40,21 +43,25 @@ inline std::string rm_last(const std::string& str)
 // are links to an arch, like i386, amd64 and sparcv9.
 inline std::string fold_path(std::string str)
 {
-    std::string::size_type pos;
-
-    while ((pos = str.find("lib/../lib")) != std::string::npos)
+    std::string::size_type pos = 0;
+    while ((pos = str.find("lib/../lib", pos)) != std::string::npos)
     {
         str.replace(pos, 10, "lib");
+        pos += 3;
     }
 
-    while ((pos = str.find("lib32/../lib32")) != std::string::npos)
+    pos = 0;
+    while ((pos = str.find("lib32/../lib32", pos)) != std::string::npos)
     {
         str.replace(pos, 14, "lib32");
+        pos += 5;
     }
 
-    while ((pos = str.find("lib64/../lib64")) != std::string::npos)
+    pos = 0;
+    while ((pos = str.find("lib64/../lib64", pos)) != std::string::npos)
     {
         str.replace(pos, 14, "lib64");
+        pos += 5;
     }
 
     return str;
@@ -80,7 +87,7 @@ int main(int argc, char* argv[])
 
 void process_stream(std::istream& stream)
 {
-    std::string line;
+    std::string line, prefix;
     std::vector<std::string> accum;
     size_t last_i=0;
 
@@ -89,6 +96,9 @@ void process_stream(std::istream& stream)
         line = trim_trailing(line);
         accum.push_back(line);
     }
+
+    // Later we will replace an unrolled prefix with ${prefix}.
+    prefix = get_prefix(accum);
 
 restart:
     for (size_t i=last_i; i<accum.size(); ++i)
@@ -115,6 +125,9 @@ restart:
         }
     }
 
+    // fold use of expanded ${prefix}
+    fold_prefix(prefix, accum);
+
     // now fix the options
     for (size_t i=0; i<accum.size(); ++i)
     {
@@ -126,6 +139,38 @@ restart:
     for (size_t i=0; i<accum.size(); ++i)
         std::cout << accum[i] << std::endl;
     std::cout << std::endl;
+}
+
+std::string get_prefix(const std::vector<std::string>& accum)
+{
+    for (size_t i=0; i<accum.size(); ++i)
+    {
+        if (accum[i].substr(0, 7) == "prefix=")
+        {
+            return accum[i].substr(7);
+        }
+    }
+
+    return "";
+}
+
+void fold_prefix(const std::string& prefix, std::vector<std::string>& accum)
+{
+    if (prefix.empty())
+        return;
+
+    for (size_t i=0; i<accum.size(); ++i)
+    {
+        if (accum[i].substr(0, 7) == "prefix=")
+            continue;
+
+        std::string::size_type pos = 0;
+        while ((pos = accum[i].find(prefix, pos)) != std::string::npos)
+        {
+            accum[i].replace(pos, prefix.length(), "${prefix}");
+            pos += 9;
+        }
+    }
 }
 
 std::string fix_options(std::string line)
