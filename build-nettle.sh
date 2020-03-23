@@ -172,7 +172,9 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build Nettle"
+    echo "**********************"
     exit 1
 fi
 
@@ -184,12 +186,21 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
+# Run in a subshell to isolate changes
+(
+# Add .libs/ to LD_LIBRARY_PATH and DYLD_LIBRARY_PATH.
+# This is needed for some packages on some BSDs.
+source ./fix-runtime-path.sh
+
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test Nettle"
+    echo "**********************"
     exit 1
 fi
+)
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)

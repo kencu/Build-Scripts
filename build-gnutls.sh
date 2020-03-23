@@ -286,11 +286,11 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Run in a subshell to isolate LD_LIBRARY_PATH changes
+# Run in a subshell to isolate changes
 (
-LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH"
-LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | sed 's|:$||')
-export LD_LIBRARY_PATH
+# Add .libs/ to LD_LIBRARY_PATH and DYLD_LIBRARY_PATH.
+# This is needed for some packages on some BSDs.
+source ./fix-runtime-path.sh
 
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
