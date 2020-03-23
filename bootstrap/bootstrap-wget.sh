@@ -127,7 +127,7 @@ cd "$BOOTSTRAP_DIR/$SSL_DIR" || exit 1
 ./config \
     --prefix="$PREFIX" \
     --openssldir="$PREFIX" \
-    "$AMD64_OPT" -fPIC \
+    "$AMD64_OPT" -fPIC -DPEDANTIC \
     no-ssl2 no-ssl3 no-comp no-zlib no-zlib-dynamic no-asm no-threads no-shared no-dso no-engine
 
 # This will need to be fixed for BSDs and PowerMac
