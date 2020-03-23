@@ -5,10 +5,14 @@
 # It is needed by some packages on some of the BSDs to put the
 # libraries on-path during testing.
 
+LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | sed 's|:$||')
 LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH"
 LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | sed 's|:$||')
 export LD_LIBRARY_PATH
 
+DYLD_LIBRARY_PATH="$INSTX_LIBDIR:$DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH=$(echo "$DYLD_LIBRARY_PATH" | sed 's|:$||')
 DYLD_LIBRARY_PATH="$PWD/.libs:$DYLD_LIBRARY_PATH"
 DYLD_LIBRARY_PATH=$(echo "$DYLD_LIBRARY_PATH" | sed 's|:$||')
 export DYLD_LIBRARY_PATH
