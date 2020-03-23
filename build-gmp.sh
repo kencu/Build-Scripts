@@ -11,7 +11,7 @@ PKG_NAME=gmp
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -70,7 +70,7 @@ fi
 
 rm -rf "$GMP_DIR" &>/dev/null
 bzip2 -d < "$GMP_TAR" | tar xf -
-cd "$GMP_DIR"
+cd "$GMP_DIR" || exit 1
 
 # Fix decades old compile and link errors on early Darwin.
 # https://gmplib.org/list-archives/gmp-bugs/2009-May/001423.html
@@ -127,12 +127,21 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
+# Run in a subshell to isolate LD_LIBRARY_PATH changes
+(
+LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH=$(echo "$LD_LIBRARY_PATH" | sed 's|:$||')
+export LD_LIBRARY_PATH
+
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test GMP"
+    echo "**********************"
     exit 1
 fi
+)
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
@@ -153,7 +162,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
