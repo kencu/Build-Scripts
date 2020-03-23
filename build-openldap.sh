@@ -69,6 +69,20 @@ fi
 
 ###############################################################################
 
+# OpenLDAP does not respect paths
+
+OLD_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
+LD_LIBRARY_PATH=$(printf "$LD_LIBRARY_PATH" | sed 's|:$||')
+export LD_LIBRARY_PATH
+
+OLD_DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH="$INSTX_LIBDIR:$DYLD_LIBRARY_PATH"
+DYLD_LIBRARY_PATH=$(printf "$DYLD_LIBRARY_PATH" | sed 's|:$||')
+export DYLD_LIBRARY_PATH
+
+###############################################################################
+
 echo
 echo "********** OpenLDAP **********"
 echo
@@ -88,9 +102,11 @@ rm -rf "$LDAP_DIR" &>/dev/null
 gzip -d < "$LDAP_TAR" | tar xf -
 cd "$LDAP_DIR"
 
-cp ../patch/openldap.patch .
-patch -u -p0 < openldap.patch
-echo ""
+if [[ -e ../patch/openldap.patch ]]; then
+    cp ../patch/openldap.patch .
+    patch -u -p0 < openldap.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 cp -p ../fix-configure.sh .
@@ -183,6 +199,9 @@ cd "$CURR_DIR"
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
+
+OLD_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+OLD_DYLD_LIBRARY_PATH="$OLD_DYLD_LIBRARY_PATH"
 
 # Set to false to retain artifacts
 if true; then
