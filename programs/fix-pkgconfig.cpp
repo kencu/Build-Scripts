@@ -97,7 +97,7 @@ void process_stream(std::istream& stream)
         accum.push_back(line);
     }
 
-    // Later we will replace an unrolled prefix with ${prefix}.
+    // Later we will replace an expanded prefix with ${prefix}.
     prefix = get_prefix(accum);
 
 restart:
