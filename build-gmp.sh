@@ -136,12 +136,17 @@ source ./fix-runtime-path.sh
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    exit 1
+fi
+)
+
+# Get subshell result
+if [ "$?" = "1" ]; then
     echo "**********************"
     echo "Failed to test GMP"
     echo "**********************"
     exit 1
 fi
-)
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
