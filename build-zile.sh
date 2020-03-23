@@ -91,9 +91,6 @@ cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-debug=no")
 CONFIG_OPTS+=("HELP2MAN=true")
 
@@ -110,6 +107,9 @@ fi
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne "0" ]]; then

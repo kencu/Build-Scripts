@@ -108,6 +108,7 @@ CONFIG_OPTS+=("--with-gmp=$INSTX_PREFIX")
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ../configure \
+    --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     "${CONFIG_OPTS[@]}"

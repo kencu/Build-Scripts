@@ -81,12 +81,6 @@ cd "$PKGCONFIG_DIR"
 cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
-CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
-CONFIG_OPTS+=("--with-internal-glib")
-
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
@@ -94,7 +88,10 @@ CONFIG_OPTS+=("--with-internal-glib")
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    "${CONFIG_OPTS[@]}"
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --with-internal-glib
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure pkg-config"

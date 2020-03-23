@@ -136,9 +136,6 @@ cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--enable-static")
 CONFIG_OPTS+=("--with-pic")
@@ -159,6 +156,9 @@ CONFIG_OPTS+=("--with-libintl-prefix=$INSTX_PREFIX")
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then

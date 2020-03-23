@@ -201,6 +201,7 @@ fi
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     --with-lib="$(basename "$INSTX_LIBDIR")" \
     --with-sane-tool-path="$INSTX_PREFIX/bin" \
     --enable-pthreads \

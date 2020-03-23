@@ -102,9 +102,6 @@ sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure; chmod a+x configure
 
 CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--with-tls=openssl")
 
 # Should this be used everywhere? MDB is dirty and cannot
@@ -121,6 +118,9 @@ fi
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then

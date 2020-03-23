@@ -165,11 +165,6 @@ if [[ "$IS_OPENBSD" -eq 1 ]]; then
     SKIP_OPENSSL_TESTS=1
 fi
 
-# Configure the library
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
-
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]} -DPEDANTIC" \
@@ -177,6 +172,9 @@ CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--openssldir=$INSTX_LIBDIR"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./config \
+    --prefix="$INSTX_PREFIX"
+    --libdir="$INSTX_LIBDIR"
+    --openssldir="$INSTX_LIBDIR"
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then

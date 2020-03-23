@@ -87,7 +87,10 @@ cp -p ../fix-configure.sh .
     CXXFLAGS="-g2 -O3" \
     LDFLAGS="" \
     LIBS="" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR"
+./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Valgrind"

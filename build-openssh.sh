@@ -98,8 +98,6 @@ cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--prefix=$INSTX_PREFIX"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--libdir=$INSTX_LIBDIR"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${BUILD_CPPFLAGS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cflags=${BUILD_CFLAGS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldflags=${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}"
@@ -121,6 +119,9 @@ fi
     LDFLAGS="${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then

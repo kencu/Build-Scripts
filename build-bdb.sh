@@ -86,13 +86,6 @@ cp -p ../fix-configure.sh .
 cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR" || exit 1
 
-CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
-CONFIG_OPTS+=("--with-tls=openssl")
-CONFIG_OPTS+=("--enable-cxx")
-
     # Add --with-tls=openssl back in the future
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -100,8 +93,11 @@ CONFIG_OPTS+=("--enable-cxx")
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./dist/configure \
-    "${CONFIG_OPTS[@]}"
-
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --with-tls=openssl \
+    --enable-cxx
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Berkeley DB"

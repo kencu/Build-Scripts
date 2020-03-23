@@ -78,12 +78,6 @@ cd "$GC_DIR"
 cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
-CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
-CONFIG_OPTS+=("--enable-shared")
-
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
@@ -91,7 +85,10 @@ CONFIG_OPTS+=("--enable-shared")
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
-    "${CONFIG_OPTS[@]}"
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Boehm GC"

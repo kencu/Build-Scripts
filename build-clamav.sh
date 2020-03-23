@@ -107,8 +107,12 @@ cp -p ../fix-configure.sh .
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
-    --with-openssl-dir="$INSTX_PREFIX" --with-zlib="$INSTX_PREFIX"
+./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --with-openssl-dir="$INSTX_PREFIX" \
+    --with-zlib="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure ClamAV"

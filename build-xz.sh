@@ -87,8 +87,12 @@ cp -p ../fix-configure.sh .
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
-    --enable-shared --disable-doc
+./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --enable-shared \
+    --disable-doc
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure xz"
