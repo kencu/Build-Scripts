@@ -1,3 +1,10 @@
+// Written and placed in public domain by Jeffrey Walton
+
+// This program cleans up fodder in configure and
+// configure.ac files. It attempts to place our $libdir
+// first in the linker search path. It also understands
+// Red Hat based systems, which use /lib64 and /usr/lib64.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>

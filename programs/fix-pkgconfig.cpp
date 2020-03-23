@@ -1,3 +1,9 @@
+// Written and placed in public domain by Jeffrey Walton
+
+// This program cleans up fodder in *.pc files. After
+// cleaning Libs: and Libs.private: will only have
+// libraries, and not runpaths and shared objects.
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,15 +27,17 @@ inline char last_char(const std::string& str)
     return *(str.end()-1);
 }
 
-inline std::string rm_last(std::string& str)
+inline std::string rm_last(const std::string& str)
 {
     if (str.empty())
         return str;
 
-    str.erase(str.end()-1);
-    return str;
+    return std::string(str.begin(), str.end()-1);
 }
 
+// do we want to handle Solaris here? Solaris uses
+// /usr/local/lib/32 and /usr/local/lib/64. The 32 and 64
+// are links to an arch, like i386, amd64 and sparcv9.
 inline std::string fold_path(std::string str)
 {
     std::string::size_type pos;
@@ -37,6 +45,11 @@ inline std::string fold_path(std::string str)
     while ((pos = str.find("lib/../lib")) != std::string::npos)
     {
         str.replace(pos, 10, "lib");
+    }
+
+    while ((pos = str.find("lib32/../lib32")) != std::string::npos)
+    {
+        str.replace(pos, 14, "lib32");
     }
 
     while ((pos = str.find("lib64/../lib64")) != std::string::npos)
@@ -74,7 +87,6 @@ void process_stream(std::istream& stream)
     while (std::getline(stream, line))
     {
         line = trim_trailing(line);
-        line = fold_path(line);
         accum.push_back(line);
     }
 
@@ -105,7 +117,10 @@ restart:
 
     // now fix the options
     for (size_t i=0; i<accum.size(); ++i)
+    {
+        accum[i] = fold_path(accum[i]);
         accum[i] = fix_options(accum[i]);
+    }
 
     // output the stream
     for (size_t i=0; i<accum.size(); ++i)
