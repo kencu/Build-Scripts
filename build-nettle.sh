@@ -88,6 +88,11 @@ rm -rf "$NETTLE_DIR" &>/dev/null
 gzip -d < "$NETTLE_TAR" | tar xf -
 cd "$NETTLE_DIR" || exit 1
 
+#cp ctr.c ctr.c.orig
+#cp xts.c xts.c.orig
+#cp testsuite/Makefile.in testsuite/Makefile.in.orig
+#cp examples/Makefile.in examples/Makefile.in.orig
+
 if [[ -e ../patch/nettle.patch ]]; then
     cp ../patch/nettle.patch .
     patch -u -p0 < nettle.patch
@@ -195,12 +200,17 @@ source ./fix-runtime-path.sh
 MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
+    exit 1
+fi
+)
+
+# Get subshell result
+if [ "$?" = "1" ]; then
     echo "**********************"
     echo "Failed to test Nettle"
     echo "**********************"
     exit 1
 fi
-)
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
