@@ -51,11 +51,11 @@ Sixth, in the `start` command, have the scripts call `/opt/ssh/sbin/sshd` instea
 
 Finally, reboot the machine with the `reboot` command.
 
+Note: if you see two Message of the Day messages with the new OpenSSH, then add `PrintMotd no` to `/opt/ssh/etc/sshd_config`.
+
 ## /lib/svc/method/sshd
 
 After the changes your modified `/lib/svc/method/sshd` should look similar to below.
-
-Note: if you see two Message of the Day messages with the new OpenSSH, then add `PrintMotd no` to `/opt/ssh/etc/sshd_config`.
 
 ```
 # cat /lib/svc/method/sshd
