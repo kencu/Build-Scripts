@@ -64,6 +64,8 @@ rm -rf "$AUTOGEN_DIR" &>/dev/null
 gzip -d < "$AUTOGEN_TAR" | tar xf -
 cd "$AUTOGEN_DIR" || exit 1
 
+# cp config/guile.m4 config/guile.m4.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/autogen.patch ]]; then
     cp ../patch/autogen.patch .
