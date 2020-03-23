@@ -55,6 +55,22 @@ fi
 
 ###############################################################################
 
+if ! ./build-jansson.sh
+then
+    echo "Failed to install Jansson"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-cares.sh
+then
+    echo "Failed to install c-ares"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** NGHTTP2 **********"
 echo
@@ -97,7 +113,9 @@ cp -p ../fix-configure.sh .
     --libdir="$INSTX_LIBDIR" \
     --disable-assert \
     --with-libxml2 \
-    --enable-lib-only
+    --enable-app \
+    --enable-hpack-tools
+    # --enable-lib-only
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure NGHTTP2"
