@@ -298,6 +298,7 @@ then
     # Still can't pass all the self-tests, even after OpenSSL 1.1.1 cutover.
     # There will be one failure due to test-ciphers-api.
     # exit 1
+    :
 fi
 )
 
