@@ -191,7 +191,7 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Run in a subshell to isolate changes
+# Run in a subshell to isolate path changes
 (
 # Add .libs/ to LD_LIBRARY_PATH and DYLD_LIBRARY_PATH.
 # This is needed for some packages on some BSDs.
