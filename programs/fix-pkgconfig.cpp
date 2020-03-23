@@ -103,6 +103,10 @@ restart:
         }
     }
 
+    // now fix the options
+    for (size_t i=0; i<accum.size(); ++i)
+        accum[i] = fix_options(accum[i]);
+
     // output the stream
     for (size_t i=0; i<accum.size(); ++i)
         std::cout << accum[i] << std::endl;
