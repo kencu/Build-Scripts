@@ -296,13 +296,18 @@ MAKE_FLAGS=("check" "V=1")
 if ! "$MAKE" "${MAKE_FLAGS[@]}"
 then
     # Still can't pass all the self-tests, even after OpenSSL 1.1.1 cutover.
-    # Below, we expect 1 failure due to test-ciphers-api.
-    echo "**********************"
-    echo "Failed to test GnuTLS"
-    echo "**********************"
+    # There will be one failure due to test-ciphers-api.
     # exit 1
 fi
 )
+
+# Get subshell result
+if [ "$?" = "1" ]; then
+    echo "**********************"
+    echo "Failed to test GnuTLS"
+    echo "**********************"
+    exit 1
+fi
 
 echo "Searching for errors hidden in log files"
 COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
