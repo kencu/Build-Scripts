@@ -538,11 +538,11 @@ fi
 # problem of continually rebuilding the same package when installing a
 # program like Git and SSH. It also avoids version tracking by automatically
 # building a package after 7 days (even if it is the same version).
-for pkg in $(find "$INSTX_PKG_CACHE" -type f -mtime +7 2>/dev/null);
+(IFS="" find "$INSTX_PKG_CACHE" -type f -mtime +7 -print | while read -r pkg
 do
     # echo "Setting $pkg for rebuild"
     rm -f "$pkg" 2>/dev/null
-done
+done)
 
 ###############################################################################
 
