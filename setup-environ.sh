@@ -27,18 +27,18 @@
 if [[ "$INSTX_DISABLE_PKGCONFIG_CHECK" -ne 1 ]]
 then
     if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
-        echo "Some packages require Package-Config. Please install pkg-config."
+        printf "%s\n" "Some packages require Package-Config. Please install pkg-config."
         [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
     fi
 fi
 
 if [[ -z $(command -v gzip 2>/dev/null) ]]; then
-    echo "Some packages require Gzip. Please install Gzip."
+    printf "%s\n" "Some packages require Gzip. Please install Gzip."
     [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
 fi
 
 if [[ -z $(command -v tar 2>/dev/null) ]]; then
-    echo "Some packages require Tar. Please install Tar."
+    printf "%s\n" "Some packages require Tar. Please install Tar."
     [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
 fi
 
@@ -67,16 +67,14 @@ CURR_DIR=$(pwd)
 # `mktemp` is not available on AIX or Git Windows shell...
 infile="in.$RANDOM$RANDOM.c"
 outfile="out.$RANDOM$RANDOM"
-echo 'int main(int argc, char* argv[]) {return 0;}' > "$infile"
-echo "" >> "$infile"
+cp programs/test-stdc.c "$infile"
 
 function finish {
-  rm -f "$CURR_DIR/$infile" 2>/dev/null
-  rm -f "$CURR_DIR/$outfile" 2>/dev/null
+  rm  -f "$CURR_DIR/$infile" 2>/dev/null
+  rm  -f "$CURR_DIR/$outfile" 2>/dev/null
   rm -rf "$CURR_DIR/$outfile.dSYM" 2>/dev/null
-    cd "$CURR_DIR" || exit 1
 }
-trap finish EXIT
+trap finish EXIT INT
 
 ###############################################################################
 
@@ -85,8 +83,7 @@ trap finish EXIT
 # /usr/gnu/bin gets added second, and /usr/gnu/bin is at head of PATH.
 if [[ -d "/usr/sfw/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/sfw/bin"*) ]]; then
-        echo
-        echo "Adding /usr/sfw/bin to PATH for Solaris"
+        printf "\n%s\n" "Adding /usr/sfw/bin to PATH for Solaris"
         export PATH="/usr/sfw/bin:$PATH"
     fi
 fi
@@ -95,12 +92,12 @@ fi
 # Also see https://blogs.oracle.com/partnertech/entry/preparing_for_the_upcoming_removal.
 if [[ -d "/usr/gnu/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/gnu/bin"*) ]]; then
-        echo "Adding /usr/gnu/bin to PATH for Solaris"
+        printf "%s\n" "Adding /usr/gnu/bin to PATH for Solaris"
         export PATH="/usr/gnu/bin:$PATH"
     fi
 elif [[ -d "/usr/ucb/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/ucb/bin"*) ]]; then
-        echo "Adding /usr/ucb/bin to PATH for Solaris"
+        printf "%s\n" "Adding /usr/ucb/bin to PATH for Solaris"
         export PATH="/usr/ucb/bin:$PATH"
     fi
 fi
@@ -127,15 +124,15 @@ fi
 ###############################################################################
 
 THIS_SYSTEM=$(uname -s 2>&1)
-IS_LINUX=$(echo -n "$THIS_SYSTEM" | grep -i -c 'linux')
-IS_SOLARIS=$(echo -n "$THIS_SYSTEM" | grep -i -c 'sunos')
-IS_DARWIN=$(echo -n "$THIS_SYSTEM" | grep -i -c 'darwin')
-IS_AIX=$(echo -n "$THIS_SYSTEM" | grep -i -c 'aix')
-IS_CYGWIN=$(echo -n "$THIS_SYSTEM" | grep -i -c 'cygwin')
-IS_OPENBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'openbsd')
-IS_FREEBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'freebsd')
-IS_NETBSD=$(echo -n "$THIS_SYSTEM" | grep -i -c 'netbsd')
-IS_BSD_FAMILY=$(echo -n "$THIS_SYSTEM" | grep -i -c -E 'dragonfly|freebsd|netbsd|openbsd')
+IS_LINUX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'linux')
+IS_SOLARIS=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'sunos')
+IS_DARWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'darwin')
+IS_AIX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'aix')
+IS_CYGWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'cygwin')
+IS_OPENBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'openbsd')
+IS_FREEBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'freebsd')
+IS_NETBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'netbsd')
+IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | grep -i -c -E 'dragonfly|freebsd|netbsd|openbsd')
 
 # Red Hat and derivatives use /lib64, not /lib.
 IS_REDHAT=$(grep -i -c 'redhat' /etc/redhat-release 2>/dev/null)
@@ -143,7 +140,7 @@ IS_CENTOS=$(grep -i -c 'centos' /etc/centos-release 2>/dev/null)
 IS_FEDORA=$(grep -i -c 'fedora' /etc/fedora-release 2>/dev/null)
 
 OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | grep 'System Version:' | awk '{print $6}')
-OSX_1010_OR_ABOVE=$(echo -n "$OSX_VERSION" | grep -i -c -E "(^10.10|^1[1-9].|^[2-9][0-9])")
+OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | grep -i -c -E "(^10.10|^1[1-9].|^[2-9][0-9])")
 
 if [[ "$IS_REDHAT" -ne 0 ]] || [[ "$IS_CENTOS" -ne 0 ]] || [[ "$IS_FEDORA" -ne 0 ]]
 then
@@ -157,9 +154,9 @@ fi
 IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | grep -i -c -E "OS X 10\.[0-5]")
 
 THIS_MACHINE=$(uname -m 2>&1)
-IS_IA32=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'i86pc|i.86|amd64|x86_64')
-IS_AMD64=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'amd64|x86_64')
-IS_MIPS=$(echo -n "$THIS_MACHINE" | grep -E -i -c 'mips')
+IS_IA32=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'i86pc|i.86|amd64|x86_64')
+IS_AMD64=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'amd64|x86_64')
+IS_MIPS=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'mips')
 
 # The BSDs and Solaris should have GMake installed if its needed
 if [[ -z "$MAKE" ]]; then
@@ -181,9 +178,10 @@ if [[ -z "$CC" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
 
-IS_GCC=$("$CC" --version 2>&1 | grep -i -c 'gcc')
-IS_CLANG=$("$CC" --version 2>&1 | grep -i -c -E 'clang|llvm')
-IS_SUNC=$("$CC" -V 2>&1 | grep -i -c -E 'sun|studio')
+IS_GCC=$($CC --version 2>&1 | grep -i -c 'gcc')
+IS_CLANG=$($CC --version 2>&1 | grep -i -c -E 'clang|llvm')
+IS_SUNC=$($CC -V 2>&1 | grep -i -c -E 'sun|studio')
+
 TEST_CC="$CC"
 TEST_CXX="$CXX"
 
@@ -200,9 +198,21 @@ if [[ "$IS_SOLARIS" -ne 0 ]]
 then
     if [[ $(isainfo -b 2>/dev/null) = 64 ]]; then
         CFLAGS64=-m64
+        CXXFLAGS64=-m64
         TEST_CC="$TEST_CC -m64"
         TEST_CXX="$TEST_CXX -m64"
     fi
+fi
+
+IS_SUN_AMD64=$(isainfo -v 2>/dev/null | grep -i -c -E 'amd64')
+IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | grep -i -c -E 'sparcv9')
+
+# Solaris Fixup
+if [[ "$IS_SUN_AMD64" -eq 1 ]]; then
+    IS_AMD64=1
+    AUTOCONF_BUILD="x86_64-sun-solaris"
+elif [[ "$IS_SUN_SPARCv9" -eq 1 ]]; then
+    AUTOCONF_BUILD="sparcv9-sun-solaris"
 fi
 
 ###############################################################################
@@ -210,7 +220,7 @@ fi
 # Try to determine 32 vs 64-bit, /usr/local/lib, /usr/local/lib32,
 # /usr/local/lib64 and /usr/local/lib/64. We drive a test compile
 # using the supplied compiler and flags.
-if $TEST_CC $CFLAGS bootstrap/bitness.c -o /dev/null &>/dev/null
+if $TEST_CC $CFLAGS programs/test-64bit.c -o "$outfile" &>/dev/null
 then
     IS_64BIT=1
     IS_32BIT=0
@@ -238,39 +248,29 @@ if [[ -z "$INSTX_LIBDIR" ]]
 then
     #if [[ "$IS_64BIT" -ne 0 ]] && [[ "$IS_SOLARIS" -ne 0 ]]; then
     #    INSTX_LIBDIR="$INSTX_PREFIX/lib/64"
-    #    INSTX_RPATH="'""\$\$ORIGIN/../lib/64""'"
+    #    INSTX_OPATH="'""\$\$ORIGIN/../lib/64""'"
     #elif [[ "$IS_SOLARIS" -ne 0 ]]; then
     #    INSTX_LIBDIR="$INSTX_PREFIX/lib/32"
-    #    INSTX_RPATH="'""\$\$ORIGIN/../lib/32""'"
+    #    INSTX_OPATH="'""\$\$ORIGIN/../lib/32""'"
 
     if [[ "$IS_SOLARIS" -ne 0 ]]; then
         INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_RPATH="'""\$\$ORIGIN/../lib""'"
+        INSTX_OPATH="'""\$\$ORIGIN/../lib""'"
     elif [[ "$IS_DARWIN" -ne 0 ]]; then
         INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_RPATH="@loader_path/../lib"
+        INSTX_OPATH="@loader_path/../lib"
     elif [[ "$IS_RH_FAMILY" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
         INSTX_LIBDIR="$INSTX_PREFIX/lib64"
-        INSTX_RPATH="'""\$\$ORIGIN/../lib64""'"
+        INSTX_OPATH="'""\$\$ORIGIN/../lib64""'"
     else
         INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_RPATH="'""\$\$ORIGIN/../lib""'"
+        INSTX_OPATH="'""\$\$ORIGIN/../lib""'"
     fi
 fi
 
 # Use a sane default
-if [[ -z "$INSTX_RPATH" ]]; then
-    INSTX_RPATH="$INSTX_LIBDIR"
-fi
-
-# Solaris Fixup
-if [[ "$IS_IA32" -eq 1 ]] && [[ "$IS_64BIT" -eq 1 ]]; then
-    IS_AMD64=1
-fi
-
-# Solaris Fixup
-if [[ "$IS_SOLARIS" -eq 1 && "$IS_AMD64" -eq 1 ]]; then
-    AUTOCONF_BUILD="x86_64-sun-solaris"
+if [[ -z "$INSTX_OPATH" ]]; then
+    INSTX_OPATH="$INSTX_LIBDIR"
 fi
 
 ###############################################################################
@@ -333,16 +333,16 @@ if [[ $(uname -m 2>&1 | grep -i -c -E 'aarch32|aarch64') -ne 0 ]]; then
 fi
 
 # See if -Wl,-rpath,$ORIGIN/../lib works
-SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_OPATH="-Wl,-rpath,$INSTX_RPATH"
+    SH_OPATH="-Wl,-rpath,$INSTX_OPATH"
 fi
-SH_ERROR=$($TEST_CC -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$($TEST_CC -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_OPATH="-Wl,-R,$INSTX_RPATH"
+    SH_OPATH="-Wl,-R,$INSTX_OPATH"
 fi
 
-# See if -Wl,-rpath,/usr/local/lib works
+# See if -Wl,-rpath,${libdir} works. This is a RPATH.
 SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
@@ -352,7 +352,7 @@ if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_RPATH="-Wl,-R,$INSTX_LIBDIR"
 fi
 
-# See if RUNPATHs are available
+# See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
 SH_ERROR=$($TEST_CC -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_DTAGS="-Wl,--enable-new-dtags"
@@ -412,17 +412,6 @@ if [[ -z "$SH_LIBPTHREAD" ]]; then
     SH_ERROR=$($TEST_CC -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_LIBPTHREAD="-lpthread"
-    fi
-fi
-
-# C++11 for Guile
-SH_ERROR=$($TEST_CC -std=gnu11 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_C11=1
-else
-    SH_ERROR=$($TEST_CC -std=c11 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_C11=1
     fi
 fi
 
@@ -551,7 +540,7 @@ fi
 # /var/sanitize for testing packages.
 if [[ -z "$INSTX_PKG_CACHE" ]]; then
     # Change / to - for CACHE_DIR
-    CACHE_DIR=$(echo "$INSTX_PREFIX" | cut -c 2- | sed 's/\//-/g')
+    CACHE_DIR=$(printf "%s" "$INSTX_PREFIX" | cut -c 2- | sed 's/\//-/g')
     INSTX_PKG_CACHE="$HOME/.build-scripts/$CACHE_DIR"
     mkdir -p "$INSTX_PKG_CACHE"
 fi
@@ -564,7 +553,7 @@ fi
 # building a package after 7 days (even if it is the same version).
 (IFS="" find "$INSTX_PKG_CACHE" -type f -mtime +7 -print | while read -r pkg
 do
-    # echo "Setting $pkg for rebuild"
+    # printf "%s\n" "Setting $pkg for rebuild"
     rm -f "$pkg" 2>/dev/null
 done)
 
@@ -574,47 +563,47 @@ done)
 if [[ -z "$PRINT_ONCE" ]]; then
 
     if [[ "$IS_SOLARIS" -ne 0 ]]; then
-        echo ""
-        echo "Solaris tools:"
-        echo ""
-        echo "     sed: $(command -v sed)"
-        echo "     awk: $(command -v awk)"
-        echo "    grep: $(command -v grep)"
+        printf "%s\n" ""
+        printf "%s\n" "Solaris tools:"
+        printf "%s\n" ""
+        printf "%s\n" "     sed: $(command -v sed)"
+        printf "%s\n" "     awk: $(command -v awk)"
+        printf "%s\n" "    grep: $(command -v grep)"
         if [[ -n "$LEX" ]]; then
-            echo "     lex: $LEX"
+            printf "%s\n" "     lex: $LEX"
         else
-            echo "     lex: $(command -v lex)"
+            printf "%s\n" "     lex: $(command -v lex)"
         fi
         if [[ -n "$YACC" ]]; then
-            echo "     lex: $YACC"
+            printf "%s\n" "     lex: $YACC"
         else
-            echo "    yacc: $(command -v yacc)"
+            printf "%s\n" "    yacc: $(command -v yacc)"
         fi
     fi
 
-    echo ""
-    echo "Common flags and options:"
-    echo ""
-    echo "  INSTX_BITNESS: $INSTX_BITNESS-bits"
-    echo "   INSTX_PREFIX: $INSTX_PREFIX"
-    echo "   INSTX_LIBDIR: $INSTX_LIBDIR"
-    echo "    INSTX_RPATH: $INSTX_RPATH"
-    echo ""
-    echo " AUTOCONF_BUILD: $AUTOCONF_BUILD"
-    echo "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
-    echo "       CPPFLAGS: ${BUILD_CPPFLAGS[*]}"
-    echo "         CFLAGS: ${BUILD_CFLAGS[*]}"
-    echo "       CXXFLAGS: ${BUILD_CXXFLAGS[*]}"
-    echo "        LDFLAGS: ${BUILD_LDFLAGS[*]}"
-    echo "         LDLIBS: ${BUILD_LIBS[*]}"
-    echo ""
+    printf "%s\n" ""
+    printf "%s\n" "Common flags and options:"
+    printf "%s\n" ""
+    printf "%s\n" "  INSTX_BITNESS: $INSTX_BITNESS-bits"
+    printf "%s\n" "   INSTX_PREFIX: $INSTX_PREFIX"
+    printf "%s\n" "   INSTX_LIBDIR: $INSTX_LIBDIR"
+    printf "%s\n" "    INSTX_OPATH: $INSTX_OPATH"
+    printf "%s\n" ""
+    printf "%s\n" " AUTOCONF_BUILD: $AUTOCONF_BUILD"
+    printf "%s\n" "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
+    printf "%s\n" "       CPPFLAGS: ${BUILD_CPPFLAGS[*]}"
+    printf "%s\n" "         CFLAGS: ${BUILD_CFLAGS[*]}"
+    printf "%s\n" "       CXXFLAGS: ${BUILD_CXXFLAGS[*]}"
+    printf "%s\n" "        LDFLAGS: ${BUILD_LDFLAGS[*]}"
+    printf "%s\n" "         LDLIBS: ${BUILD_LIBS[*]}"
+    printf "%s\n" ""
 
-    echo " WGET: $WGET"
+    printf "%s\n" " WGET: $WGET"
     if [[ -n "$SH_CACERT_PATH" ]]; then
-        echo " SH_CACERT_PATH: $SH_CACERT_PATH"
+        printf "%s\n" " SH_CACERT_PATH: $SH_CACERT_PATH"
     fi
     if [[ -n "$SH_CACERT_FILE" ]]; then
-        echo " SH_CACERT_FILE: $SH_CACERT_FILE"
+        printf "%s\n" " SH_CACERT_FILE: $SH_CACERT_FILE"
     fi
 
     export PRINT_ONCE="TRUE"
