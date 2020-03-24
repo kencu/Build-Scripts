@@ -95,13 +95,11 @@ fi
 # Also see https://blogs.oracle.com/partnertech/entry/preparing_for_the_upcoming_removal.
 if [[ -d "/usr/gnu/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/gnu/bin"*) ]]; then
-        echo
         echo "Adding /usr/gnu/bin to PATH for Solaris"
         export PATH="/usr/gnu/bin:$PATH"
     fi
 elif [[ -d "/usr/ucb/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/ucb/bin"*) ]]; then
-        echo
         echo "Adding /usr/ucb/bin to PATH for Solaris"
         export PATH="/usr/ucb/bin:$PATH"
     fi
