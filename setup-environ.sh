@@ -44,7 +44,8 @@ fi
 
 ###############################################################################
 
-# setup-cacerts.sh does not source the environment, so we can't use the variables
+# setup-cacerts.sh does not source the environment, so we can't use the
+# variables in the setup-cacerts.sh script. Other scripts can use them.
 
 LETS_ENCRYPT_ROOT="$HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
 IDENTRUST_ROOT="$HOME/.build-scripts/cacert/identrust-root-x3.pem"
