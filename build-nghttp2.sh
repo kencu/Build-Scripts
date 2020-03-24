@@ -86,7 +86,7 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$NGHTTP2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+if ! "$WGET" -q -O "$NGHTTP2_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/nghttp2/nghttp2/releases/download/v$NGHTTP2_VER/$NGHTTP2_TAR"
 then
     echo "Failed to download NGHTTP2"
