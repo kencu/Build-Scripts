@@ -55,6 +55,9 @@ do
     touch -a -m -r "file.timestamp" "$file"
 done)
 
+# Cleanup artifacts.
+rm -f file.timestamp 2>/dev/null
+
 echo "patching config.sub..."
 (IFS="" find . -name 'config.sub' -print | while read -r file
 do
