@@ -190,7 +190,8 @@ CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
 
 # OpenSSL 1.1.1e does not have RAND_egd, but curl lacks --without-egd
-# Hack it by providing ac_cv_func_RAND_egd=no to Autotools
+# We also want to disable the SSLv2 code paths. Hack it by providing
+# ac_cv_func_RAND_egd=no and ac_cv_func_SSLv2_client_method=no.
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -200,6 +201,7 @@ CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
     ac_cv_func_RAND_egd=no \
+    ac_cv_func_SSLv2_client_method=no \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
