@@ -181,6 +181,7 @@ IS_GCC=$("$CC" --version 2>&1 | grep -i -c 'gcc')
 IS_CLANG=$("$CC" --version 2>&1 | grep -i -c -E 'clang|llvm')
 IS_SUNC=$("$CC" -V 2>&1 | grep -i -c -E 'sun|studio')
 TEST_CC="$CC"
+TEST_CXX="$CXX"
 
 # Where the package will run. We need to override for 64-bit Solaris.
 # On Solaris some Autotools packages use 32-bit instead of 64-bit build.
@@ -196,6 +197,7 @@ then
     if [[ $(isainfo -b 2>/dev/null) = 64 ]]; then
         CFLAGS64=-m64
         TEST_CC="$TEST_CC -m64"
+        TEST_CXX="$TEST_CXX -m64"
     fi
 fi
 
@@ -272,6 +274,20 @@ fi
 SH_ERROR=$($TEST_CC -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_PIC="-fPIC"
+fi
+
+# Ugh... C++11 support as required. Things may still break.
+SH_ERROR=$($TEST_CXX -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$SH_ERROR" -ne 0 ]]; then
+    SH_ERROR=$($TEST_CXX -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$SH_ERROR" -eq 0 ]]; then
+        SH_CXX11="-std=gnu++11"
+    else
+        SH_ERROR=$($TEST_CXX -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$SH_ERROR" -eq 0 ]]; then
+            SH_CXX11="-std=c++11"
+        fi
+    fi
 fi
 
 # For the benefit of the programs and libraries. Make them run faster.
