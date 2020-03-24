@@ -69,7 +69,7 @@ fi
 
 ###############################################################################
 
-# OpenLDAP does not respect paths
+# Problem with paths on NetBSD???
 
 OLD_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
 LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
@@ -117,16 +117,12 @@ cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure; chmod a+x configure
 
+# mdb is too dirty and cannot build on OS X
+# It is also full of undefined behavior
+# Just disable mdb on all platforms
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--with-tls=openssl")
-
-# Should this be used everywhere? MDB is dirty and cannot
-# pass acceptance testing due to undefined behavior.
-# https://trac.macports.org/ticket/46236
-if [[ "$IS_OLD_DARWIN" -ne 0 ]]
-then
-    CONFIG_OPTS+=("--enable-mdb=no")
-fi
+CONFIG_OPTS+=("--enable-mdb=no")
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

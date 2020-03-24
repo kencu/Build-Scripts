@@ -11,7 +11,7 @@ PKG_NAME=curl
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -109,6 +109,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-nghttp2.sh
+then
+    echo "Failed to build NGHTTP2"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-openldap.sh
 then
     echo "Failed to build OpenLDAP"
@@ -134,7 +142,7 @@ fi
 
 rm -rf "$CURL_DIR" &>/dev/null
 gzip -d < "$CURL_TAR" | tar xf -
-cd "$CURL_DIR"
+cd "$CURL_DIR" || exit 1
 
 cp ../patch/curl.patch .
 patch -u -p0 < curl.patch
@@ -181,13 +189,17 @@ CONFIG_OPTS+=("--without-nss")
 CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
 
+# OpenSSL 1.1.1e does not have RAND_egd, but curl lacks --without-egd
+# Hack it by providing ac_cv_func_RAND_egd=no to Autotools
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="-lidn2 -lssl -lcrypto -lz ${BUILD_LIBS[*]}" \
+    LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    ac_cv_func_RAND_egd=no \
     "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
@@ -244,7 +256,7 @@ else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"

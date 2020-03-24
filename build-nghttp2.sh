@@ -28,6 +28,13 @@ then
     exit 1
 fi
 
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    # Already installed, return success
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
+fi
+
 # The password should die when this subshell goes out of scope
 if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
     if ! source ./setup-password.sh
@@ -113,8 +120,8 @@ cp -p ../fix-configure.sh .
     --libdir="$INSTX_LIBDIR" \
     --disable-assert \
     --with-libxml2 \
-    --enable-app \
     --enable-hpack-tools
+    # --enable-app \
     # --enable-lib-only
 
 if [[ "$?" -ne 0 ]]; then
