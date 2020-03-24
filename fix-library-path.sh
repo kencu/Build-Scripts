@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script fixes LD_LIBRARY_PATH => DYLD_LIBRARY_PATH on OS X
+# This script converts LD_LIBRARY_PATH to DYLD_LIBRARY_PATH
+# for OS X. Autotools authors don't need to worry about it.
 
 if [[ "$IS_DARWIN" -ne 0 ]]
 then
