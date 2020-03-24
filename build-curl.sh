@@ -157,9 +157,6 @@ cp -p ../fix-configure.sh .
 ./fix-configure.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS+=("--build=$AUTOCONF_BUILD")
-CONFIG_OPTS+=("--prefix=$INSTX_PREFIX")
-CONFIG_OPTS+=("--libdir=$INSTX_LIBDIR")
 CONFIG_OPTS+=("--enable-shared")
 CONFIG_OPTS+=("--enable-static")
 CONFIG_OPTS+=("--enable-optimize")
@@ -209,6 +206,9 @@ fi
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
 ./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
     ac_cv_func_RAND_egd=no \
     ac_cv_func_SSLv2_client_method=no \
     "${CONFIG_OPTS[@]}"
