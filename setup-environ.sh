@@ -79,6 +79,17 @@ trap finish EXIT
 
 ###############################################################################
 
+# 'pkg install flex bison' installs the updated tools in /usr/sfw/bin,
+# and not the /usr/gnu/bin directory. Add /usr/sfw/bin first so
+# /usr/gnu/bin gets added second, and /usr/gnu/bin is at head of PATH.
+if [[ -d "/usr/sfw/bin" ]]; then
+    if [[ ! ("$PATH" == *"/usr/sfw/bin"*) ]]; then
+        echo
+        echo "Adding /usr/sfw/bin to PATH for Solaris"
+        export PATH="/usr/sfw/bin:$PATH"
+    fi
+fi
+
 # Autotools on Solaris has an implied requirement for GNU gear. Things fall apart without it.
 # Also see https://blogs.oracle.com/partnertech/entry/preparing_for_the_upcoming_removal.
 if [[ -d "/usr/gnu/bin" ]]; then
@@ -86,12 +97,6 @@ if [[ -d "/usr/gnu/bin" ]]; then
         echo
         echo "Adding /usr/gnu/bin to PATH for Solaris"
         export PATH="/usr/gnu/bin:$PATH"
-    fi
-elif [[ -d "/usr/swf/bin" ]]; then
-    if [[ ! ("$PATH" == *"/usr/sfw/bin"*) ]]; then
-        echo
-        echo "Adding /usr/sfw/bin to PATH for Solaris"
-        export PATH="/usr/sfw/bin:$PATH"
     fi
 elif [[ -d "/usr/ucb/bin" ]]; then
     if [[ ! ("$PATH" == *"/usr/ucb/bin"*) ]]; then
