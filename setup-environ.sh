@@ -573,11 +573,13 @@ if [[ -z "$PRINT_ONCE" ]]; then
             printf "%s\n" "     lex: $LEX"
         else
             printf "%s\n" "     lex: $(command -v lex)"
+            printf "%s\n" "    flex: $(command -v flex)"
         fi
         if [[ -n "$YACC" ]]; then
             printf "%s\n" "     lex: $YACC"
         else
             printf "%s\n" "    yacc: $(command -v yacc)"
+            printf "%s\n" "   bison: $(command -v bison)"
         fi
     fi
 
