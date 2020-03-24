@@ -7,13 +7,13 @@
 # https://www.netbsd.org/docs/elf.html
 
 LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
-LD_LIBRARY_PATH=$(printf "$LD_LIBRARY_PATH" | sed 's|:$||')
+LD_LIBRARY_PATH=$(printf "%s" "$LD_LIBRARY_PATH" | sed 's|:$||')
 LD_LIBRARY_PATH="$PWD/.libs:$LD_LIBRARY_PATH"
-LD_LIBRARY_PATH=$(printf "$LD_LIBRARY_PATH" | sed 's|:$||')
+LD_LIBRARY_PATH=$(printf "%s" "$LD_LIBRARY_PATH" | sed 's|:$||')
 export LD_LIBRARY_PATH
 
 DYLD_LIBRARY_PATH="$INSTX_LIBDIR:$DYLD_LIBRARY_PATH"
-DYLD_LIBRARY_PATH=$(printf "$DYLD_LIBRARY_PATH" | sed 's|:$||')
+DYLD_LIBRARY_PATH=$(printf "%s" "$DYLD_LIBRARY_PATH" | sed 's|:$||')
 DYLD_LIBRARY_PATH="$PWD/.libs:$DYLD_LIBRARY_PATH"
-DYLD_LIBRARY_PATH=$(printf "$DYLD_LIBRARY_PATH" | sed 's|:$||')
+DYLD_LIBRARY_PATH=$(printf "%s" "$DYLD_LIBRARY_PATH" | sed 's|:$||')
 export DYLD_LIBRARY_PATH
