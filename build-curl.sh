@@ -109,10 +109,14 @@ fi
 
 ###############################################################################
 
-if ! ./build-nghttp2.sh
+# Needs real C++11 support
+if [[ "$HAS_CXX11" -eq 1 ]]
 then
-    echo "Failed to build NGHTTP2"
-    exit 1
+    if ! ./build-nghttp2.sh
+    then
+        echo "Failed to build NGHTTP2"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -177,7 +181,6 @@ CONFIG_OPTS+=("--enable-smtp")
 CONFIG_OPTS+=("--enable-gopher")
 CONFIG_OPTS+=("--enable-cookies")
 CONFIG_OPTS+=("--enable-ipv6")
-CONFIG_OPTS+=("--with-nghttp2")
 CONFIG_OPTS+=("--with-zlib=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-ssl=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-libidn2=$INSTX_PREFIX")
@@ -188,6 +191,12 @@ CONFIG_OPTS+=("--without-cyassl")
 CONFIG_OPTS+=("--without-nss")
 CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
+
+if [[ "$HAS_CXX11" -eq 1 ]]; then
+    CONFIG_OPTS+=("--with-nghttp2")
+else
+    CONFIG_OPTS+=("--without-nghttp2")
+fi
 
 # OpenSSL 1.1.1e does not have RAND_egd, but curl lacks --without-egd
 # We also want to disable the SSLv2 code paths. Hack it by providing

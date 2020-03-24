@@ -278,14 +278,18 @@ fi
 
 # Ugh... C++11 support as required. Things may still break.
 SH_ERROR=$($TEST_CXX -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -ne 0 ]]; then
+if [[ "$SH_ERROR" -eq 0 ]]; then
+    HAS_CXX11=1
+else
     SH_ERROR=$($TEST_CXX -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_CXX11="-std=gnu++11"
+        HAS_CXX11=1
     else
         SH_ERROR=$($TEST_CXX -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
         if [[ "$SH_ERROR" -eq 0 ]]; then
             SH_CXX11="-std=c++11"
+            HAS_CXX11=1
         fi
     fi
 fi
