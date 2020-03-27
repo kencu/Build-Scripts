@@ -78,28 +78,38 @@ trap finish EXIT INT
 
 ###############################################################################
 
-# 'pkg install flex bison' installs the updated tools in /usr/sfw/bin,
-# and not the /usr/gnu/bin directory. Add /usr/sfw/bin first so
-# /usr/gnu/bin gets added second, and /usr/gnu/bin is at head of PATH.
-if [[ -d "/usr/sfw/bin" ]]; then
-    if [[ ! ("$PATH" == *"/usr/sfw/bin"*) ]]; then
-        printf "\n%s\n" "Adding /usr/sfw/bin to PATH for Solaris"
-        export PATH="/usr/sfw/bin:$PATH"
-    fi
-fi
+THIS_SYSTEM=$(uname -s 2>&1)
+IS_LINUX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'linux')
+IS_SOLARIS=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'sunos')
+IS_DARWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'darwin')
+IS_AIX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'aix')
+IS_CYGWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'cygwin')
+IS_OPENBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'openbsd')
+IS_FREEBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'freebsd')
+IS_NETBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'netbsd')
 
-# Autotools on Solaris has an implied requirement for GNU gear. Things fall apart without it.
-# Also see https://blogs.oracle.com/partnertech/entry/preparing_for_the_upcoming_removal.
-if [[ -d "/usr/gnu/bin" ]]; then
-    if [[ ! ("$PATH" == *"/usr/gnu/bin"*) ]]; then
-        printf "%s\n" "Adding /usr/gnu/bin to PATH for Solaris"
-        export PATH="/usr/gnu/bin:$PATH"
-    fi
-elif [[ -d "/usr/ucb/bin" ]]; then
-    if [[ ! ("$PATH" == *"/usr/ucb/bin"*) ]]; then
-        printf "%s\n" "Adding /usr/ucb/bin to PATH for Solaris"
-        export PATH="/usr/ucb/bin:$PATH"
-    fi
+###############################################################################
+
+# Paths are awful on Solaris. An unmodified environment only
+# has /usr/bin and /usr/sbin. Worse, the tools in $PATH are
+# anemic. And even worse, some tools are installed in SFW
+# and GNU, but paths are missing from $PATH.
+# And to add insult to injusry, Autotools on Solaris has an
+# implied requirement for GNU. Things fall apart without it.
+if [ "$IS_SOLARIS" -ne 0 ]
+then
+    for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
+    do
+        if [ -d "$path" ]; then
+            SOLARIS_PATH="$SOLARIS_PATH:$path"
+        fi
+    done
+
+    # Remove the leading ':'
+    PATH=$(echo "$SOLARIS_PATH" | sed 's/^:\(.*\)/\1/')
+    export PATH
+
+	# echo "New PATH: $PATH"
 fi
 
 ###############################################################################
@@ -114,33 +124,43 @@ if [[ -z "$WGET" ]]; then
         WGET="$HOME/.build-scripts/wget/bin/wget"
     elif [[ -e "/usr/local/bin/wget" ]]; then
         WGET="/usr/local/bin/wget"
-    elif [[ -n $(command -v wget) ]]; then
-        WGET=$(command -v wget)
+    elif [[ -n "$(command -v wget)" ]]; then
+        WGET="$(command -v wget)"
     else
         WGET=wget
     fi
 fi
 
+if [[ -z "$GREP" ]]; then
+    if [[ -n "$(command -v grep)" ]]; then
+        GREP="$(command -v grep)"
+    else
+        GREP=grep
+    fi
+fi
+
+if [[ -z "$EGREP" ]]; then
+    if [[ -n "$(command -v egrep)" ]]; then
+        EGREP="$(command -v egrep)"
+    elif [[ -n "$(command -v grep)" ]]; then
+        EGREP="grep -E"
+    else
+        EGREP=egrep
+    fi
+fi
+
 ###############################################################################
 
-THIS_SYSTEM=$(uname -s 2>&1)
-IS_LINUX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'linux')
-IS_SOLARIS=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'sunos')
-IS_DARWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'darwin')
-IS_AIX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'aix')
-IS_CYGWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'cygwin')
-IS_OPENBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'openbsd')
-IS_FREEBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'freebsd')
-IS_NETBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'netbsd')
-IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | grep -i -c -E 'dragonfly|freebsd|netbsd|openbsd')
+# Check for the BSD family members
+IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | $EGREP -i -c 'dragonfly|freebsd|netbsd|openbsd')
 
 # Red Hat and derivatives use /lib64, not /lib.
-IS_REDHAT=$(grep -i -c 'redhat' /etc/redhat-release 2>/dev/null)
-IS_CENTOS=$(grep -i -c 'centos' /etc/centos-release 2>/dev/null)
-IS_FEDORA=$(grep -i -c 'fedora' /etc/fedora-release 2>/dev/null)
+IS_REDHAT=$($GREP -i -c 'redhat' /etc/redhat-release 2>/dev/null)
+IS_CENTOS=$($GREP -i -c 'centos' /etc/centos-release 2>/dev/null)
+IS_FEDORA=$($GREP -i -c 'fedora' /etc/fedora-release 2>/dev/null)
 
-OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | grep 'System Version:' | awk '{print $6}')
-OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | grep -i -c -E "(^10.10|^1[1-9].|^[2-9][0-9])")
+OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | $GREP 'System Version:' | awk '{print $6}')
+OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | $EGREP -i -c "(^10.10|^1[1-9].|^[2-9][0-9])")
 
 if [[ "$IS_REDHAT" -ne 0 ]] || [[ "$IS_CENTOS" -ne 0 ]] || [[ "$IS_FEDORA" -ne 0 ]]
 then
@@ -151,12 +171,12 @@ fi
 
 # Fix decades old compile and link errors on early Darwin.
 # https://gmplib.org/list-archives/gmp-bugs/2009-May/001423.html
-IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | grep -i -c -E "OS X 10\.[0-5]")
+IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | $EGREP -i -c "OS X 10\.[0-5]")
 
 THIS_MACHINE=$(uname -m 2>&1)
-IS_IA32=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'i86pc|i.86|amd64|x86_64')
-IS_AMD64=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'amd64|x86_64')
-IS_MIPS=$(printf "%s" "$THIS_MACHINE" | grep -i -c -E 'mips')
+IS_IA32=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'i86pc|i.86|amd64|x86_64')
+IS_AMD64=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'amd64|x86_64')
+IS_MIPS=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'mips')
 
 # The BSDs and Solaris should have GMake installed if its needed
 if [[ -z "$MAKE" ]]; then
@@ -178,9 +198,9 @@ if [[ -z "$CC" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
 if [[ -z "$CXX" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
 
-IS_GCC=$($CC --version 2>&1 | grep -i -c 'gcc')
-IS_CLANG=$($CC --version 2>&1 | grep -i -c -E 'clang|llvm')
-IS_SUNC=$($CC -V 2>&1 | grep -i -c -E 'sun|studio')
+IS_GCC=$($CC --version 2>&1 | $GREP -i -c 'gcc')
+IS_CLANG=$($CC --version 2>&1 | $EGREP -i -c 'clang|llvm')
+IS_SUNC=$($CC -V 2>&1 | $EGREP -i -c 'sun|studio')
 
 TEST_CC="$CC"
 TEST_CXX="$CXX"
@@ -204,8 +224,8 @@ then
     fi
 fi
 
-IS_SUN_AMD64=$(isainfo -v 2>/dev/null | grep -i -c -E 'amd64')
-IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | grep -i -c -E 'sparcv9')
+IS_SUN_AMD64=$(isainfo -v 2>/dev/null | $EGREP -i -c 'amd64')
+IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | $EGREP -i -c 'sparcv9')
 
 # Solaris Fixup
 if [[ "$IS_SUN_AMD64" -eq 1 ]]; then
@@ -310,14 +330,14 @@ if [[ "$SH_ERROR" -eq 0 ]]; then
 fi
 
 # Switch from -march=native to something more appropriate
-if [[ $(grep -i -c -E 'armv7' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
+if [[ $($EGREP -i -c 'armv7' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
     SH_ERROR=$($TEST_CC -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_ARMV7="-march=armv7-a"
     fi
 fi
 # See if we can upgrade to ARMv7+NEON
-if [[ $(grep -i -c -E 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
+if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
     SH_ERROR=$($TEST_CC -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         IS_ARM_NEON=1
@@ -325,7 +345,7 @@ if [[ $(grep -i -c -E 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
     fi
 fi
 # See if we can upgrade to ARMv8
-if [[ $(uname -m 2>&1 | grep -i -c -E 'aarch32|aarch64') -ne 0 ]]; then
+if [[ $(uname -m 2>&1 | $EGREP -i -c 'aarch32|aarch64') -ne 0 ]]; then
     SH_ERROR=$($TEST_CC -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_ARMV8="-march=armv8-a"
