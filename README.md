@@ -80,11 +80,13 @@ One thing the code does is the following, which could make the password availabl
 ```
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -kS "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
 else
     "$MAKE" "${MAKE_FLAGS[@]}"
 fi
 ```
+
+If the version of `sudo` is too old then you will encounter complaints about `sudo -E`.  You can use the script `fix-sudo.sh` to remove the option from the scripts. Sudo programs which are too old include the one distributed with PowerMac running OS X 10.5, which is sudo version 1.6.8.
 
 ## Boehm GC
 
