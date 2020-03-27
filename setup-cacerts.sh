@@ -404,7 +404,9 @@ echo "Wrote $HOME/.build-scripts/cacert/baltimore-root-ca.pem"
 
 ###############################################################################
 
-# GitHub takes folks to Amazon. We need two authorities to make it work.
+# GitHub takes folks to Amazon on occassion using a HTTP 301 or 302
+# redirect. It seems to happen when a tarball is an archive versus
+# a release. We need three authorities to make it work.
 
 {
     cat "$HOME/.build-scripts/cacert/lets-encrypt-root-x3.pem"
