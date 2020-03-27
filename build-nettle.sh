@@ -88,14 +88,18 @@ rm -rf "$NETTLE_DIR" &>/dev/null
 gzip -d < "$NETTLE_TAR" | tar xf -
 cd "$NETTLE_DIR" || exit 1
 
-#cp ctr.c ctr.c.orig
-#cp xts.c xts.c.orig
-#cp testsuite/Makefile.in testsuite/Makefile.in.orig
-#cp examples/Makefile.in examples/Makefile.in.orig
+cp getopt.h getopt.h.orig
+cp getopt.c getopt.c.orig
+
+cp ctr.c ctr.c.orig
+cp xts.c xts.c.orig
+cp testsuite/Makefile.in testsuite/Makefile.in.orig
+cp examples/Makefile.in examples/Makefile.in.orig
 
 if [[ -e ../patch/nettle.patch ]]; then
-    cp ../patch/nettle.patch .
-    patch -u -p0 < nettle.patch
+    #cp ../patch/nettle.patch .
+    #patch -u -p0 < nettle.patch
+	patch -u -p0 < ../patch/nettle.patch
     echo ""
 fi
 
