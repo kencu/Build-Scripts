@@ -93,9 +93,9 @@ IS_NETBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'netbsd')
 # Paths are awful on Solaris. An unmodified environment only
 # has /usr/bin and /usr/sbin. Worse, the tools in $PATH are
 # anemic. And even worse, some tools are installed in SFW
-# and GNU, but paths are missing from $PATH.
-# And to add insult to injusry, Autotools on Solaris has an
-# implied requirement for GNU. Things fall apart without it.
+# and GNU, but paths are missing from $PATH. And to add insult
+# to injury, Autotools on Solaris has an implied requirement
+# for GNU. Things fall apart without GNU on path.
 if [ "$IS_SOLARIS" -ne 0 ]
 then
     for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
@@ -109,7 +109,7 @@ then
     PATH=$(echo "$SOLARIS_PATH" | sed 's/^:\(.*\)/\1/')
     export PATH
 
-	# echo "New PATH: $PATH"
+    # echo "New PATH: $PATH"
 fi
 
 ###############################################################################
