@@ -84,6 +84,343 @@
  dnl Prepares the libtool configuration for languages used by the tests.
  LT_LANG([C++])
  
+--- gettext-tools/src/Makefile.in
++++ gettext-tools/src/Makefile.in
+@@ -564,7 +564,7 @@
+ 	$(CFLAGS) $(cldr_plurals_LDFLAGS) $(LDFLAGS) -o $@
+ am_hostname_OBJECTS = hostname-hostname.$(OBJEXT)
+ hostname_OBJECTS = $(am_hostname_OBJECTS)
+-hostname_LDADD = $(LDADD)
++hostname_LDADD = $(LDADD) $(LTLIBICONV)
+ hostname_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(hostname_LDFLAGS) $(LDFLAGS) -o $@
+@@ -666,14 +666,14 @@
+ 	recode_sr_latin-recode-sr-latin.$(OBJEXT) \
+ 	recode_sr_latin-filter-sr-latin.$(OBJEXT)
+ recode_sr_latin_OBJECTS = $(am_recode_sr_latin_OBJECTS)
+-recode_sr_latin_LDADD = $(LDADD)
++recode_sr_latin_LDADD = $(LDADD) $(LTLIBICONV)
+ recode_sr_latin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+ 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+ 	$(AM_CFLAGS) $(CFLAGS) $(recode_sr_latin_LDFLAGS) $(LDFLAGS) \
+ 	-o $@
+ am_urlget_OBJECTS = urlget-urlget.$(OBJEXT)
+ urlget_OBJECTS = $(am_urlget_OBJECTS)
+-urlget_LDADD = $(LDADD)
++urlget_LDADD = $(LDADD) $(LTLIBICONV)
+ urlget_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(urlget_LDFLAGS) $(LDFLAGS) -o $@
+@@ -1830,7 +1830,7 @@
+ LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
+ LOCALE_ZH_CN = @LOCALE_ZH_CN@
+ LOG10_LIBM = @LOG10_LIBM@
+-LTLIBICONV = @LTLIBICONV@
++LTLIBICONV = -liconv
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
+ LTLIBOBJS = @LTLIBOBJS@
+@@ -2508,7 +2508,7 @@
+ urlget_SOURCES = urlget.c
+ cldr_plurals_SOURCES = cldr-plural.y cldr-plural-exp.c cldr-plurals.c
+ cldr_plurals_CFLAGS = $(AM_CFLAGS) $(INCXML)
+-cldr_plurals_LDADD = libgettextsrc.la $(LDADD)
++cldr_plurals_LDADD = libgettextsrc.la $(LDADD) $(LTLIBICONV)
+ 
+ # How to build libgettextsrc.la.
+ # Need ../gnulib-lib/libgettextlib.la.
+@@ -2533,21 +2533,21 @@
+ # INTL_MACOSX_LIBS is needed because the programs depend on libintl.la
+ # but libtool doesn't put -Wl,-framework options into .la files.
+ # For msginit, it is also needed because of localename.c.
+-msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD)
+-msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD) $(OPENMP_CFLAGS)
+-msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @LTLIBICONV@ $(WOE32_LDADD)
+-msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
+-msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
++msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD)
++msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD) $(OPENMP_CFLAGS)
++msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
++msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
+ 
+ # Specify when to relink the programs.
+ msgcmp_DEPENDENCIES = libgettextsrc.la ../gnulib-lib/libgettextlib.la $(WOE32_LDADD)
+--- gettext-tools/gnulib-tests/Makefile.in
++++ gettext-tools/gnulib-tests/Makefile.in
+@@ -954,7 +954,7 @@
+ test_iconv_DEPENDENCIES = $(am__DEPENDENCIES_2)
+ test_iconv_h_SOURCES = test-iconv-h.c
+ test_iconv_h_OBJECTS = test-iconv-h.$(OBJEXT)
+-test_iconv_h_LDADD = $(LDADD)
++test_iconv_h_LDADD = $(LDADD) $(LTLIBICONV)
+ test_iconv_h_DEPENDENCIES = libtests.a ../gnulib-lib/libgettextlib.la \
+ 	libtests.a $(am__DEPENDENCIES_1)
+ test_ignore_value_SOURCES = test-ignore-value.c
+@@ -1039,13 +1039,13 @@
+ test_listen_DEPENDENCIES = $(am__DEPENDENCIES_2)
+ test_localcharset_SOURCES = test-localcharset.c
+ test_localcharset_OBJECTS = test-localcharset.$(OBJEXT)
+-test_localcharset_LDADD = $(LDADD)
++test_localcharset_LDADD = $(LDADD) $(LTLIBICONV)
+ test_localcharset_DEPENDENCIES = libtests.a \
+ 	../gnulib-lib/libgettextlib.la libtests.a \
+ 	$(am__DEPENDENCIES_1)
+ test_locale_SOURCES = test-locale.c
+ test_locale_OBJECTS = test-locale.$(OBJEXT)
+-test_locale_LDADD = $(LDADD)
++test_locale_LDADD = $(LDADD) $(LTLIBICONV)
+ test_locale_DEPENDENCIES = libtests.a ../gnulib-lib/libgettextlib.la \
+ 	libtests.a $(am__DEPENDENCIES_1)
+ test_localename_SOURCES = test-localename.c
+@@ -3208,7 +3208,7 @@
+ LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
+ LOCALE_ZH_CN = @LOCALE_ZH_CN@
+ LOG10_LIBM = @LOG10_LIBM@
+-LTLIBICONV = @LTLIBICONV@
++LTLIBICONV = -liconv
+ LTLIBINTL = @LTLIBINTL@
+ LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
+ LTLIBOBJS = @LTLIBOBJS@
+@@ -3923,26 +3923,26 @@
+ 	wcrtomb.c wctob.c wctomb.c
+ AM_LIBTOOLFLAGS = --preserve-dup-deps
+ test_accept_LDADD = $(LDADD) @LIBSOCKET@
+-test_set_mode_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
+-test_copy_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
+-test_sameacls_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
+-test_argmatch_LDADD = $(LDADD) @LIBINTL@
++test_set_mode_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
++test_copy_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
++test_sameacls_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
++test_argmatch_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ test_bind_LDADD = $(LDADD) @LIBSOCKET@ $(INET_PTON_LIB)
+ test_connect_LDADD = $(LDADD) @LIBSOCKET@ $(INET_PTON_LIB)
+-test_copy_file_LDADD = $(LDADD) $(LIB_ACL) $(LIB_CLOCK_GETTIME) @LIBINTL@
++test_copy_file_LDADD = $(LDADD) $(LIB_ACL) $(LIB_CLOCK_GETTIME) @LIBINTL@ $(LTLIBICONV)
+ test_fabs_SOURCES = test-fabs.c randomd.c
+ test_fabs_LDADD = $(LDADD) @FABS_LIBM@
+ test_file_has_acl_LDADD = $(LDADD) $(LIB_HAS_ACL)
+ test_fstrcmp_LDADD = $(LDADD) @LIBINTL@ $(LIBTHREAD)
+-test_getcwd_lgpl_LDADD = $(LDADD) $(LIBINTL)
+-test_getopt_gnu_LDADD = $(LDADD) $(LIBINTL)
+-test_getopt_posix_LDADD = $(LDADD) $(LIBINTL)
++test_getcwd_lgpl_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
++test_getopt_gnu_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
++test_getopt_posix_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
+ test_getprogname_LDADD = $(LDADD)
+ GPERF = gperf
+ V_GPERF = $(V_GPERF_@AM_V@)
+ V_GPERF_ = $(V_GPERF_@AM_DEFAULT_V@)
+ V_GPERF_0 = @echo "  GPERF   " $@;
+-test_iconv_LDADD = $(LDADD) @LIBICONV@
++test_iconv_LDADD = $(LDADD) $(LTLIBICONV) 
+ test_inet_pton_LDADD = $(LDADD) @INET_PTON_LIB@
+ test_isinf_LDADD = $(LDADD) @ISINF_LIBM@
+ test_isnan_LDADD = $(LDADD) @ISNAN_LIBM@
+@@ -3960,18 +3960,18 @@
+ test_log10_SOURCES = test-log10.c randomd.c
+ test_log10_LDADD = $(LDADD) @LOG10_LIBM@
+ test_nanosleep_LDADD = $(LDADD) $(LIB_NANOSLEEP)
+-test_pipe_filter_ii1_LDADD = $(LDADD) @LIBINTL@
+-test_pipe_filter_ii2_main_LDADD = $(LDADD) @LIBINTL@
++test_pipe_filter_ii1_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
++test_pipe_filter_ii2_main_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ test_pipe2_LDADD = $(LDADD) $(LIBSOCKET)
+ test_pow_LDADD = $(LDADD) @POW_LIBM@
+ test_pthread_sigmask1_LDADD = $(LDADD) @LIB_PTHREAD_SIGMASK@
+ test_pthread_sigmask2_LDADD = $(LDADD) @LIB_PTHREAD_SIGMASK@ @LIBMULTITHREAD@
+-test_quotearg_simple_LDADD = $(LDADD) @LIBINTL@
++test_quotearg_simple_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ test_select_LDADD = $(LDADD) @LIB_SELECT@ @LIBSOCKET@ $(INET_PTON_LIB)
+ test_select_fd_LDADD = $(LDADD) @LIB_SELECT@
+ test_select_stdin_LDADD = $(LDADD) @LIB_SELECT@
+ test_setsockopt_LDADD = $(LDADD) @LIBSOCKET@
+-test_sh_quote_LDADD = $(LDADD) @LIBINTL@
++test_sh_quote_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ 
+ # Because this Makefile snippet defines a variable used by other
+ # gnulib Makefile snippets, it must be present in all makefiles that
+@@ -3998,48 +3998,48 @@
+ # need it. This is ensured by the applicability 'all' defined above.
+ WARN_ON_USE_H = $(srcdir)/warn-on-use.h
+ test_sockets_LDADD = $(LDADD) @LIBSOCKET@
+-test_spawn_pipe_main_LDADD = $(LDADD) @LIBINTL@
++test_spawn_pipe_main_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ # The test-spawn-pipe-child program must be a real executable, not a libtool
+ # wrapper script, and should link against as few libraries as possible.
+ # Therefore don't link it against any libraries other than -lc.
+ test_spawn_pipe_child_LDADD = 
+-test_stat_LDADD = $(LDADD) $(LIBINTL)
++test_stat_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
+ test_stat_time_LDADD = $(LDADD) $(LIB_NANOSLEEP)
+-test_striconv_LDADD = $(LDADD) @LIBICONV@
+-test_striconveh_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
++test_striconv_LDADD = $(LDADD) $(LTLIBICONV)
++test_striconveh_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_striconveha_SOURCES = test-striconveha.c iconvsupport.c
+-test_striconveha_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
++test_striconveha_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_thread_self_LDADD = $(LDADD) @LIBTHREAD@
+ test_thread_create_LDADD = $(LDADD) @LIBMULTITHREAD@
+ test_tls_LDADD = $(LDADD) @LIBMULTITHREAD@ @YIELD_LIB@
+ test_u8_conv_from_enc_SOURCES = uniconv/test-u8-conv-from-enc.c iconvsupport.c
+-test_u8_conv_from_enc_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
++test_u8_conv_from_enc_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_ctype_space_SOURCES = unictype/test-ctype_space.c
+-test_ctype_space_LDADD = $(LDADD) $(LIBUNISTRING)
++test_ctype_space_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_width_linebreaks_SOURCES = unilbrk/test-u8-width-linebreaks.c
+-test_u8_width_linebreaks_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_width_linebreaks_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ @LIBUNISTRING_COMPILE_UNINAME_UNINAME_TRUE@test_uninames_SOURCES = uniname/test-uninames.c
+ @LIBUNISTRING_COMPILE_UNINAME_UNINAME_TRUE@test_uninames_LDADD = $(LDADD) @LIBINTL@
+ test_u16_mbtouc_SOURCES = unistr/test-u16-mbtouc.c
+-test_u16_mbtouc_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u16_mbtouc_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_check_SOURCES = unistr/test-u8-check.c
+-test_u8_check_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_check_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_cmp_SOURCES = unistr/test-u8-cmp.c
+-test_u8_cmp_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_cmp_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_mblen_SOURCES = unistr/test-u8-mblen.c
+-test_u8_mblen_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_mblen_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_mbtoucr_SOURCES = unistr/test-u8-mbtoucr.c
+-test_u8_mbtoucr_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_mbtoucr_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_prev_SOURCES = unistr/test-u8-prev.c
+-test_u8_prev_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_prev_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_strlen_SOURCES = unistr/test-u8-strlen.c
+-test_u8_strlen_LDADD = $(LDADD) $(LIBUNISTRING)
++test_u8_strlen_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
+ test_u8_uctomb_SOURCES = unistr/test-u8-uctomb.c
+-test_u8_uctomb_LDADD = $(LDADD) $(LIBUNISTRING)
+-test_wcwidth_LDADD = $(LDADD) $(LIBUNISTRING)
+-test_xalloc_die_LDADD = $(LDADD) @LIBINTL@
+-test_xmemdup0_LDADD = $(LDADD) @LIBINTL@
+-test_xvasprintf_LDADD = $(LDADD) @LIBINTL@
++test_u8_uctomb_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
++test_wcwidth_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
++test_xalloc_die_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
++test_xmemdup0_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
++test_xvasprintf_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
+ all: $(BUILT_SOURCES)
+ 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
+ 
+--- gettext-runtime/gnulib-lib/xalloc-oversized.h
++++ gettext-runtime/gnulib-lib/xalloc-oversized.h
+@@ -27,6 +27,7 @@
+    By gnulib convention, SIZE_MAX represents overflow in size
+    calculations, so the conservative size_t-based dividend to use here
+    is SIZE_MAX - 1.  */
++#undef xalloc_oversized
+ #define __xalloc_oversized(n, s) \
+   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
+ 
+@@ -42,9 +43,11 @@
+    function, so that it works correctly even when SIZE_MAX < N.  */
+ 
+ #if 7 <= __GNUC__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
+ #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    (__builtin_constant_p (n) && __builtin_constant_p (s) \
+     ? __xalloc_oversized (n, s) \
+@@ -54,6 +57,7 @@
+ /* Other compilers use integer division; this may be slower but is
+    more portable.  */
+ #else
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
+ #endif
+ 
+--- gettext-tools/libgettextpo/xalloc-oversized.h
++++ gettext-tools/libgettextpo/xalloc-oversized.h
+@@ -27,6 +27,7 @@
+    By gnulib convention, SIZE_MAX represents overflow in size
+    calculations, so the conservative size_t-based dividend to use here
+    is SIZE_MAX - 1.  */
++#undef xalloc_oversized
+ #define __xalloc_oversized(n, s) \
+   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
+ 
+@@ -42,9 +43,11 @@
+    function, so that it works correctly even when SIZE_MAX < N.  */
+ 
+ #if 7 <= __GNUC__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
+ #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    (__builtin_constant_p (n) && __builtin_constant_p (s) \
+     ? __xalloc_oversized (n, s) \
+@@ -54,6 +57,7 @@
+ /* Other compilers use integer division; this may be slower but is
+    more portable.  */
+ #else
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
+ #endif
+ 
+--- gettext-tools/gnulib-lib/xalloc-oversized.h
++++ gettext-tools/gnulib-lib/xalloc-oversized.h
+@@ -27,6 +27,7 @@
+    By gnulib convention, SIZE_MAX represents overflow in size
+    calculations, so the conservative size_t-based dividend to use here
+    is SIZE_MAX - 1.  */
++#undef xalloc_oversized
+ #define __xalloc_oversized(n, s) \
+   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
+ 
+@@ -42,9 +43,11 @@
+    function, so that it works correctly even when SIZE_MAX < N.  */
+ 
+ #if 7 <= __GNUC__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
+ #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) \
+    (__builtin_constant_p (n) && __builtin_constant_p (s) \
+     ? __xalloc_oversized (n, s) \
+@@ -54,6 +57,7 @@
+ /* Other compilers use integer division; this may be slower but is
+    more portable.  */
+ #else
++# undef xalloc_oversized
+ # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
+ #endif
+ 
 --- libtextstyle/m4/ax_gcc_builtin.m4
 +++ libtextstyle/m4/ax_gcc_builtin.m4
 @@ -0,0 +1,170 @@
@@ -430,340 +767,3 @@
 +
 +    AS_VAR_POPDEF([ac_var])
 +])
---- gettext-tools/src/Makefile.in
-+++ gettext-tools/src/Makefile.in
-@@ -564,7 +564,7 @@
- 	$(CFLAGS) $(cldr_plurals_LDFLAGS) $(LDFLAGS) -o $@
- am_hostname_OBJECTS = hostname-hostname.$(OBJEXT)
- hostname_OBJECTS = $(am_hostname_OBJECTS)
--hostname_LDADD = $(LDADD)
-+hostname_LDADD = $(LDADD) $(LTLIBICONV)
- hostname_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
- 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
- 	$(hostname_LDFLAGS) $(LDFLAGS) -o $@
-@@ -666,14 +666,14 @@
- 	recode_sr_latin-recode-sr-latin.$(OBJEXT) \
- 	recode_sr_latin-filter-sr-latin.$(OBJEXT)
- recode_sr_latin_OBJECTS = $(am_recode_sr_latin_OBJECTS)
--recode_sr_latin_LDADD = $(LDADD)
-+recode_sr_latin_LDADD = $(LDADD) $(LTLIBICONV)
- recode_sr_latin_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
- 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
- 	$(AM_CFLAGS) $(CFLAGS) $(recode_sr_latin_LDFLAGS) $(LDFLAGS) \
- 	-o $@
- am_urlget_OBJECTS = urlget-urlget.$(OBJEXT)
- urlget_OBJECTS = $(am_urlget_OBJECTS)
--urlget_LDADD = $(LDADD)
-+urlget_LDADD = $(LDADD) $(LTLIBICONV)
- urlget_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
- 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
- 	$(urlget_LDFLAGS) $(LDFLAGS) -o $@
-@@ -1830,7 +1830,7 @@
- LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
- LOCALE_ZH_CN = @LOCALE_ZH_CN@
- LOG10_LIBM = @LOG10_LIBM@
--LTLIBICONV = @LTLIBICONV@
-+LTLIBICONV = -liconv
- LTLIBINTL = @LTLIBINTL@
- LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
- LTLIBOBJS = @LTLIBOBJS@
-@@ -2508,7 +2508,7 @@
- urlget_SOURCES = urlget.c
- cldr_plurals_SOURCES = cldr-plural.y cldr-plural-exp.c cldr-plurals.c
- cldr_plurals_CFLAGS = $(AM_CFLAGS) $(INCXML)
--cldr_plurals_LDADD = libgettextsrc.la $(LDADD)
-+cldr_plurals_LDADD = libgettextsrc.la $(LDADD) $(LTLIBICONV)
- 
- # How to build libgettextsrc.la.
- # Need ../gnulib-lib/libgettextlib.la.
-@@ -2533,21 +2533,21 @@
- # INTL_MACOSX_LIBS is needed because the programs depend on libintl.la
- # but libtool doesn't put -Wl,-framework options into .la files.
- # For msginit, it is also needed because of localename.c.
--msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD)
--msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(WOE32_LDADD) $(OPENMP_CFLAGS)
--msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @LTLIBICONV@ $(WOE32_LDADD)
--msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
--msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(WOE32_LDADD)
-+msgcmp_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgmerge_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ @MSGMERGE_LIBM@ $(LTLIBICONV) $(WOE32_LDADD) $(OPENMP_CFLAGS)
-+msgunfmt_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+xgettext_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgattrib_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgcat_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgcomm_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgconv_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgen_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgexec_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msgfilter_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msggrep_LDADD = $(LIBGREP) libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msginit_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
-+msguniq_LDADD = libgettextsrc.la @INTL_MACOSX_LIBS@ $(LTLIBICONV) $(WOE32_LDADD)
- 
- # Specify when to relink the programs.
- msgcmp_DEPENDENCIES = libgettextsrc.la ../gnulib-lib/libgettextlib.la $(WOE32_LDADD)
---- gettext-tools/gnulib-tests/Makefile.in
-+++ gettext-tools/gnulib-tests/Makefile.in
-@@ -954,7 +954,7 @@
- test_iconv_DEPENDENCIES = $(am__DEPENDENCIES_2)
- test_iconv_h_SOURCES = test-iconv-h.c
- test_iconv_h_OBJECTS = test-iconv-h.$(OBJEXT)
--test_iconv_h_LDADD = $(LDADD)
-+test_iconv_h_LDADD = $(LDADD) $(LTLIBICONV)
- test_iconv_h_DEPENDENCIES = libtests.a ../gnulib-lib/libgettextlib.la \
- 	libtests.a $(am__DEPENDENCIES_1)
- test_ignore_value_SOURCES = test-ignore-value.c
-@@ -1039,13 +1039,13 @@
- test_listen_DEPENDENCIES = $(am__DEPENDENCIES_2)
- test_localcharset_SOURCES = test-localcharset.c
- test_localcharset_OBJECTS = test-localcharset.$(OBJEXT)
--test_localcharset_LDADD = $(LDADD)
-+test_localcharset_LDADD = $(LDADD) $(LTLIBICONV)
- test_localcharset_DEPENDENCIES = libtests.a \
- 	../gnulib-lib/libgettextlib.la libtests.a \
- 	$(am__DEPENDENCIES_1)
- test_locale_SOURCES = test-locale.c
- test_locale_OBJECTS = test-locale.$(OBJEXT)
--test_locale_LDADD = $(LDADD)
-+test_locale_LDADD = $(LDADD) $(LTLIBICONV)
- test_locale_DEPENDENCIES = libtests.a ../gnulib-lib/libgettextlib.la \
- 	libtests.a $(am__DEPENDENCIES_1)
- test_localename_SOURCES = test-localename.c
-@@ -3208,7 +3208,7 @@
- LOCALE_TR_UTF8 = @LOCALE_TR_UTF8@
- LOCALE_ZH_CN = @LOCALE_ZH_CN@
- LOG10_LIBM = @LOG10_LIBM@
--LTLIBICONV = @LTLIBICONV@
-+LTLIBICONV = -liconv
- LTLIBINTL = @LTLIBINTL@
- LTLIBMULTITHREAD = @LTLIBMULTITHREAD@
- LTLIBOBJS = @LTLIBOBJS@
-@@ -3923,26 +3923,26 @@
- 	wcrtomb.c wctob.c wctomb.c
- AM_LIBTOOLFLAGS = --preserve-dup-deps
- test_accept_LDADD = $(LDADD) @LIBSOCKET@
--test_set_mode_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
--test_copy_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
--test_sameacls_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@
--test_argmatch_LDADD = $(LDADD) @LIBINTL@
-+test_set_mode_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
-+test_copy_acl_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
-+test_sameacls_LDADD = $(LDADD) $(LIB_ACL) @LIBINTL@ $(LTLIBICONV)
-+test_argmatch_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- test_bind_LDADD = $(LDADD) @LIBSOCKET@ $(INET_PTON_LIB)
- test_connect_LDADD = $(LDADD) @LIBSOCKET@ $(INET_PTON_LIB)
--test_copy_file_LDADD = $(LDADD) $(LIB_ACL) $(LIB_CLOCK_GETTIME) @LIBINTL@
-+test_copy_file_LDADD = $(LDADD) $(LIB_ACL) $(LIB_CLOCK_GETTIME) @LIBINTL@ $(LTLIBICONV)
- test_fabs_SOURCES = test-fabs.c randomd.c
- test_fabs_LDADD = $(LDADD) @FABS_LIBM@
- test_file_has_acl_LDADD = $(LDADD) $(LIB_HAS_ACL)
- test_fstrcmp_LDADD = $(LDADD) @LIBINTL@ $(LIBTHREAD)
--test_getcwd_lgpl_LDADD = $(LDADD) $(LIBINTL)
--test_getopt_gnu_LDADD = $(LDADD) $(LIBINTL)
--test_getopt_posix_LDADD = $(LDADD) $(LIBINTL)
-+test_getcwd_lgpl_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
-+test_getopt_gnu_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
-+test_getopt_posix_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
- test_getprogname_LDADD = $(LDADD)
- GPERF = gperf
- V_GPERF = $(V_GPERF_@AM_V@)
- V_GPERF_ = $(V_GPERF_@AM_DEFAULT_V@)
- V_GPERF_0 = @echo "  GPERF   " $@;
--test_iconv_LDADD = $(LDADD) @LIBICONV@
-+test_iconv_LDADD = $(LDADD) $(LTLIBICONV) 
- test_inet_pton_LDADD = $(LDADD) @INET_PTON_LIB@
- test_isinf_LDADD = $(LDADD) @ISINF_LIBM@
- test_isnan_LDADD = $(LDADD) @ISNAN_LIBM@
-@@ -3960,18 +3960,18 @@
- test_log10_SOURCES = test-log10.c randomd.c
- test_log10_LDADD = $(LDADD) @LOG10_LIBM@
- test_nanosleep_LDADD = $(LDADD) $(LIB_NANOSLEEP)
--test_pipe_filter_ii1_LDADD = $(LDADD) @LIBINTL@
--test_pipe_filter_ii2_main_LDADD = $(LDADD) @LIBINTL@
-+test_pipe_filter_ii1_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
-+test_pipe_filter_ii2_main_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- test_pipe2_LDADD = $(LDADD) $(LIBSOCKET)
- test_pow_LDADD = $(LDADD) @POW_LIBM@
- test_pthread_sigmask1_LDADD = $(LDADD) @LIB_PTHREAD_SIGMASK@
- test_pthread_sigmask2_LDADD = $(LDADD) @LIB_PTHREAD_SIGMASK@ @LIBMULTITHREAD@
--test_quotearg_simple_LDADD = $(LDADD) @LIBINTL@
-+test_quotearg_simple_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- test_select_LDADD = $(LDADD) @LIB_SELECT@ @LIBSOCKET@ $(INET_PTON_LIB)
- test_select_fd_LDADD = $(LDADD) @LIB_SELECT@
- test_select_stdin_LDADD = $(LDADD) @LIB_SELECT@
- test_setsockopt_LDADD = $(LDADD) @LIBSOCKET@
--test_sh_quote_LDADD = $(LDADD) @LIBINTL@
-+test_sh_quote_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- 
- # Because this Makefile snippet defines a variable used by other
- # gnulib Makefile snippets, it must be present in all makefiles that
-@@ -3998,48 +3998,48 @@
- # need it. This is ensured by the applicability 'all' defined above.
- WARN_ON_USE_H = $(srcdir)/warn-on-use.h
- test_sockets_LDADD = $(LDADD) @LIBSOCKET@
--test_spawn_pipe_main_LDADD = $(LDADD) @LIBINTL@
-+test_spawn_pipe_main_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- # The test-spawn-pipe-child program must be a real executable, not a libtool
- # wrapper script, and should link against as few libraries as possible.
- # Therefore don't link it against any libraries other than -lc.
- test_spawn_pipe_child_LDADD = 
--test_stat_LDADD = $(LDADD) $(LIBINTL)
-+test_stat_LDADD = $(LDADD) $(LIBINTL) $(LTLIBICONV)
- test_stat_time_LDADD = $(LDADD) $(LIB_NANOSLEEP)
--test_striconv_LDADD = $(LDADD) @LIBICONV@
--test_striconveh_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
-+test_striconv_LDADD = $(LDADD) $(LTLIBICONV)
-+test_striconveh_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_striconveha_SOURCES = test-striconveha.c iconvsupport.c
--test_striconveha_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
-+test_striconveha_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_thread_self_LDADD = $(LDADD) @LIBTHREAD@
- test_thread_create_LDADD = $(LDADD) @LIBMULTITHREAD@
- test_tls_LDADD = $(LDADD) @LIBMULTITHREAD@ @YIELD_LIB@
- test_u8_conv_from_enc_SOURCES = uniconv/test-u8-conv-from-enc.c iconvsupport.c
--test_u8_conv_from_enc_LDADD = $(LDADD) $(LIBUNISTRING) @LIBICONV@
-+test_u8_conv_from_enc_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_ctype_space_SOURCES = unictype/test-ctype_space.c
--test_ctype_space_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_ctype_space_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_width_linebreaks_SOURCES = unilbrk/test-u8-width-linebreaks.c
--test_u8_width_linebreaks_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_width_linebreaks_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- @LIBUNISTRING_COMPILE_UNINAME_UNINAME_TRUE@test_uninames_SOURCES = uniname/test-uninames.c
- @LIBUNISTRING_COMPILE_UNINAME_UNINAME_TRUE@test_uninames_LDADD = $(LDADD) @LIBINTL@
- test_u16_mbtouc_SOURCES = unistr/test-u16-mbtouc.c
--test_u16_mbtouc_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u16_mbtouc_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_check_SOURCES = unistr/test-u8-check.c
--test_u8_check_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_check_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_cmp_SOURCES = unistr/test-u8-cmp.c
--test_u8_cmp_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_cmp_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_mblen_SOURCES = unistr/test-u8-mblen.c
--test_u8_mblen_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_mblen_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_mbtoucr_SOURCES = unistr/test-u8-mbtoucr.c
--test_u8_mbtoucr_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_mbtoucr_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_prev_SOURCES = unistr/test-u8-prev.c
--test_u8_prev_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_prev_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_strlen_SOURCES = unistr/test-u8-strlen.c
--test_u8_strlen_LDADD = $(LDADD) $(LIBUNISTRING)
-+test_u8_strlen_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
- test_u8_uctomb_SOURCES = unistr/test-u8-uctomb.c
--test_u8_uctomb_LDADD = $(LDADD) $(LIBUNISTRING)
--test_wcwidth_LDADD = $(LDADD) $(LIBUNISTRING)
--test_xalloc_die_LDADD = $(LDADD) @LIBINTL@
--test_xmemdup0_LDADD = $(LDADD) @LIBINTL@
--test_xvasprintf_LDADD = $(LDADD) @LIBINTL@
-+test_u8_uctomb_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
-+test_wcwidth_LDADD = $(LDADD) $(LIBUNISTRING) $(LTLIBICONV)
-+test_xalloc_die_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
-+test_xmemdup0_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
-+test_xvasprintf_LDADD = $(LDADD) @LIBINTL@ $(LTLIBICONV)
- all: $(BUILT_SOURCES)
- 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
- 
---- gettext-runtime/gnulib-lib/xalloc-oversized.h
-+++ gettext-runtime/gnulib-lib/xalloc-oversized.h
-@@ -27,6 +27,7 @@
-    By gnulib convention, SIZE_MAX represents overflow in size
-    calculations, so the conservative size_t-based dividend to use here
-    is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
- #define __xalloc_oversized(n, s) \
-   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
- 
-@@ -42,9 +43,11 @@
-    function, so that it works correctly even when SIZE_MAX < N.  */
- 
- #if 7 <= __GNUC__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
- #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    (__builtin_constant_p (n) && __builtin_constant_p (s) \
-     ? __xalloc_oversized (n, s) \
-@@ -54,6 +57,7 @@
- /* Other compilers use integer division; this may be slower but is
-    more portable.  */
- #else
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
- #endif
- 
---- gettext-tools/libgettextpo/xalloc-oversized.h
-+++ gettext-tools/libgettextpo/xalloc-oversized.h
-@@ -27,6 +27,7 @@
-    By gnulib convention, SIZE_MAX represents overflow in size
-    calculations, so the conservative size_t-based dividend to use here
-    is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
- #define __xalloc_oversized(n, s) \
-   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
- 
-@@ -42,9 +43,11 @@
-    function, so that it works correctly even when SIZE_MAX < N.  */
- 
- #if 7 <= __GNUC__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
- #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    (__builtin_constant_p (n) && __builtin_constant_p (s) \
-     ? __xalloc_oversized (n, s) \
-@@ -54,6 +57,7 @@
- /* Other compilers use integer division; this may be slower but is
-    more portable.  */
- #else
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
- #endif
- 
---- gettext-tools/gnulib-lib/xalloc-oversized.h
-+++ gettext-tools/gnulib-lib/xalloc-oversized.h
-@@ -27,6 +27,7 @@
-    By gnulib convention, SIZE_MAX represents overflow in size
-    calculations, so the conservative size_t-based dividend to use here
-    is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
- #define __xalloc_oversized(n, s) \
-   ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
- 
-@@ -42,9 +43,11 @@
-    function, so that it works correctly even when SIZE_MAX < N.  */
- 
- #if 7 <= __GNUC__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
- #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) \
-    (__builtin_constant_p (n) && __builtin_constant_p (s) \
-     ? __xalloc_oversized (n, s) \
-@@ -54,6 +57,7 @@
- /* Other compilers use integer division; this may be slower but is
-    more portable.  */
- #else
-+# undef xalloc_oversized
- # define xalloc_oversized(n, s) __xalloc_oversized (n, s)
- #endif
- 
