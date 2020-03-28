@@ -60,6 +60,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-ncurses.sh
+then
+    echo "Failed to build Ncurses"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** GetText **********"
 echo
@@ -81,14 +89,12 @@ cd "$GETTEXT_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/gettext.patch ]]; then
-    cp ../patch/gettext.patch .
-    patch -u -p0 < gettext.patch
+    patch -u -p0 < ../patch/gettext.patch
     echo ""
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+../fix-configure.sh
 
 if [[ -e "$INSTX_PREFIX/bin/sed" ]]; then
     export SED="$INSTX_PREFIX/bin/sed"
@@ -106,11 +112,12 @@ fi
     --libdir="$INSTX_LIBDIR" \
     --enable-static \
     --enable-shared \
-    --enable-relocatable \
     --with-pic \
+    --with-included-gettext \
     --with-included-libxml \
-    --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libunistring-prefix="$INSTX_PREFIX"
+    --with-included-libunistring \
+    --with-libncurses-prefix="$INSTX_PREFIX" \
+    --with-libiconv-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GetText"
@@ -129,8 +136,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
