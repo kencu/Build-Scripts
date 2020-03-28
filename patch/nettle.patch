@@ -42,26 +42,6 @@
  static size_t
  ctr_fill (size_t block_size, uint8_t *ctr, size_t length, uint8_t *buffer)
  {
---- testsuite/Makefile.in
-+++ testsuite/Makefile.in
-@@ -138,7 +138,6 @@
- 
- # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
- check: $(TS_ALL)
--	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
- 	  srcdir="$(srcdir)" \
- 	  EMULATOR="$(EMULATOR)" NM="$(NM)" EXEEXT="$(EXEEXT)" \
-           $(top_srcdir)/run-tests $(TS_ALL)
---- examples/Makefile.in
-+++ examples/Makefile.in
-@@ -115,7 +115,6 @@
- 
- # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
- check: $(TS_ALL)
--	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
- 	  srcdir="$(srcdir)" EMULATOR="$(EMULATOR)" EXEEXT="$(EXEEXT)" \
-           "$(top_srcdir)"/run-tests $(TS_ALL)
- 
 --- run-tests
 +++ run-tests
 @@ -28,6 +28,13 @@
@@ -78,6 +58,26 @@
  # When used in make rules, we sometimes get the filenames VPATH
  # expanded, but usually not.
  find_program () {
+--- examples/Makefile.in
++++ examples/Makefile.in
+@@ -115,7 +115,6 @@
+ 
+ # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
+ check: $(TS_ALL)
+-	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
+ 	  srcdir="$(srcdir)" EMULATOR="$(EMULATOR)" EXEEXT="$(EXEEXT)" \
+           "$(top_srcdir)"/run-tests $(TS_ALL)
+ 
+--- testsuite/Makefile.in
++++ testsuite/Makefile.in
+@@ -138,7 +138,6 @@
+ 
+ # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
+ check: $(TS_ALL)
+-	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
+ 	  srcdir="$(srcdir)" \
+ 	  EMULATOR="$(EMULATOR)" NM="$(NM)" EXEEXT="$(EXEEXT)" \
+           $(top_srcdir)/run-tests $(TS_ALL)
 --- testsuite/nettle-pbkdf2-test
 +++ testsuite/nettle-pbkdf2-test
 @@ -4,6 +4,13 @@
