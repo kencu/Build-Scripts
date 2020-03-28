@@ -44,25 +44,37 @@
  {
 --- testsuite/Makefile.in
 +++ testsuite/Makefile.in
-@@ -138,7 +138,8 @@
+@@ -138,7 +138,6 @@
  
  # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
  check: $(TS_ALL)
 -	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
-+	LD_LIBRARY_PATH="$$PWD/../.lib:$$LD_LIBRARY_PATH" \
-+	  DYLD_LIBRARY_PATH="$$PWD/../.lib:$$DYLD_LIBRARY_PATH" \
  	  srcdir="$(srcdir)" \
  	  EMULATOR="$(EMULATOR)" NM="$(NM)" EXEEXT="$(EXEEXT)" \
            $(top_srcdir)/run-tests $(TS_ALL)
 --- examples/Makefile.in
 +++ examples/Makefile.in
-@@ -115,7 +115,8 @@
+@@ -115,7 +115,6 @@
  
  # The PATH update is for windows dlls, DYLD_LIBRARY_PATH is for OSX.
  check: $(TS_ALL)
 -	LD_LIBRARY_PATH=../.lib PATH="../.lib:$$PATH" DYLD_LIBRARY_PATH=../.lib \
-+	LD_LIBRARY_PATH="$$PWD/../.lib:$$LD_LIBRARY_PATH" \
-+	  DYLD_LIBRARY_PATH="$$PWD/../.lib:$$DYLD_LIBRARY_PATH" \
  	  srcdir="$(srcdir)" EMULATOR="$(EMULATOR)" EXEEXT="$(EXEEXT)" \
            "$(top_srcdir)"/run-tests $(TS_ALL)
  
+--- run-tests
++++ run-tests
+@@ -28,6 +28,13 @@
+ 
+ export srcdir
+ 
++nettle_lib_dir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_lib_dir
++DYLD_LIBRARY_PATH=$nettle_lib_dir
++
++export LD_LIBRARY_PATH
++export DYLD_LIBRARY_PATH
++
+ # When used in make rules, we sometimes get the filenames VPATH
+ # expanded, but usually not.
+ find_program () {
