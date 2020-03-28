@@ -1,25 +1,3 @@
---- getopt.h
-+++ getopt.h
-@@ -166,7 +166,7 @@
- #  endif
- # endif
- #else /* not __GNU_LIBRARY__ */
--extern int getopt ();
-+extern int getopt (void);
- #endif /* __GNU_LIBRARY__ */
- 
- #ifndef __need_getopt
---- getopt.c
-+++ getopt.c
-@@ -143,7 +143,7 @@
-    whose names are inconsistent.  */
- 
- #ifndef getenv
--extern char *getenv ();
-+extern char *getenv (void);
- #endif
- 
- #endif /* not __GNU_LIBRARY__ */
 --- xts.c
 +++ xts.c
 @@ -49,15 +49,28 @@
