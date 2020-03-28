@@ -125,18 +125,17 @@ then
     AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
     SHANI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
 
-    if [[ "$AESNI_OPT" -ne 0 ]]; then
+    if [[ "$AESNI_OPT" -ne 0 && "$SHANI_OPT" -ne 0 ]]
+    then
         echo "Compiler supports AES-NI. Adding --enable-x86-aesni"
         CONFIG_OPTS+=("--enable-x86-aesni")
-    fi
 
-    if [[ "$SHANI_OPT" -ne 0 ]]; then
         echo "Compiler supports SHA-NI. Adding --enable-x86-sha-ni"
         CONFIG_OPTS+=("--enable-x86-sha-ni")
-    fi
 
-    echo "Using runtime algorithm selection. Adding --enable-fat"; echo ""
-    CONFIG_OPTS+=("--enable-fat")
+        echo "Using runtime algorithm selection. Adding --enable-fat"; echo ""
+        CONFIG_OPTS+=("--enable-fat")
+    fi
 fi
 
 if [[ "$IS_ARM_NEON" -eq 1 ]]
@@ -144,13 +143,14 @@ then
 
     NEON_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E - </dev/null 2>&1 | grep -i -c "__NEON__")
 
-    if [[ "$NEON_OPT" -ne 0 ]]; then
+    if [[ "$NEON_OPT" -ne 0 ]]
+    then
         echo "Compiler supports ARM NEON. Adding --enable-arm-neon"
         CONFIG_OPTS+=("--enable-arm-neon")
-    fi
 
-    echo "Using runtime algorithm selection. Adding --enable-fat"; echo ""
-    CONFIG_OPTS+=("--enable-fat")
+        echo "Using runtime algorithm selection. Adding --enable-fat"; echo ""
+        CONFIG_OPTS+=("--enable-fat")
+    fi
 fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
