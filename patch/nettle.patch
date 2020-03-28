@@ -94,6 +94,22 @@
  test_pbkdf2 () {
      password="$1"
      salt="$2"
+--- testsuite/sexp-conv-test
++++ testsuite/sexp-conv-test
+@@ -4,6 +4,13 @@
+   srcdir=`pwd`
+ fi
+ 
++nettle_lib_dir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_lib_dir
++DYLD_LIBRARY_PATH=$nettle_lib_dir
++
++export LD_LIBRARY_PATH
++export DYLD_LIBRARY_PATH
++
+ print_raw () {
+     printf "%s" "$1" > "$2"
+ }
 --- testsuite/dlopen-test.c
 +++ testsuite/dlopen-test.c
 @@ -9,7 +9,11 @@
