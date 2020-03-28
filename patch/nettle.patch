@@ -188,3 +188,35 @@
  data="$srcdir/nettle-benchmark.c"
  
  if [ -x rsa-sign$EXEEXT ] ; then
+--- examples/setup-env
++++ examples/setup-env
+@@ -2,6 +2,13 @@
+ 
+ set -e
+ 
++nettle_lib_dir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_lib_dir
++DYLD_LIBRARY_PATH=$nettle_lib_dir
++
++export LD_LIBRARY_PATH
++export DYLD_LIBRARY_PATH
++
+ # Workaround, it seems difficult to convince wine to put ../lib into PATH.
+ case "$EMULATOR" in
+     wine*)
+--- testsuite/setup-env
++++ testsuite/setup-env
+@@ -2,6 +2,13 @@
+ 
+ set -e
+ 
++nettle_lib_dir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_lib_dir
++DYLD_LIBRARY_PATH=$nettle_lib_dir
++
++export LD_LIBRARY_PATH
++export DYLD_LIBRARY_PATH
++
+ # Workaround, it seems difficult to convince wine to put ../lib into PATH.
+ case "$EMULATOR" in
+     wine*)
