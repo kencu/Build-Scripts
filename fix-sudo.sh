@@ -3,4 +3,11 @@
 # Older sudo programs, like on OS X 10.5, lack -E option
 # This script will remove the option for old systems.
 
-sed -i 's/sudo -E/sudo/g' *.sh
+(IFS="" find "$PWD" -name '*.sh' -print | while read -r file
+do
+    chmod a+w "$file"
+    cp -p "$file" "$file.fixed"
+    sed 's/sudo -E/sudo/g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+    chmod a+x "$file" && chmod o-w "$file"
+done)
