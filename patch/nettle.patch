@@ -42,6 +42,20 @@
  static size_t
  ctr_fill (size_t block_size, uint8_t *ctr, size_t length, uint8_t *buffer)
  {
+--- testsuite/dlopen-test.c
++++ testsuite/dlopen-test.c
+@@ -9,7 +9,11 @@
+ main (int argc UNUSED, char **argv UNUSED)
+ {
+ #if HAVE_LIBDL
++#ifdef __APPLE__
++  void *handle = dlopen ("../libnettle.dylib", RTLD_NOW);
++#else
+   void *handle = dlopen ("../libnettle.so", RTLD_NOW);
++#endif
+   int (*get_version)(void);
+   if (!handle)
+     {
 --- testsuite/Makefile.in
 +++ testsuite/Makefile.in
 @@ -138,7 +138,6 @@
@@ -78,17 +92,3 @@
  # When used in make rules, we sometimes get the filenames VPATH
  # expanded, but usually not.
  find_program () {
---- testsuite/dlopen-test.c
-+++ testsuite/dlopen-test.c
-@@ -9,7 +9,11 @@
- main (int argc UNUSED, char **argv UNUSED)
- {
- #if HAVE_LIBDL
-+#ifdef __APPLE__
-+  void *handle = dlopen ("../libnettle.dylib", RTLD_NOW);
-+#else
-   void *handle = dlopen ("../libnettle.so", RTLD_NOW);
-+#endif
-   int (*get_version)(void);
-   if (!handle)
-     {
