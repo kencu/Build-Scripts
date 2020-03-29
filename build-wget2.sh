@@ -174,18 +174,16 @@ then
 fi
 
 # Patches are created with 'diff -u' from the pkg root directory.
-#if [[ -e ../patch/wget2.patch ]]; then
-#    cp ../patch/wget2.patch .
-#    patch -u -p0 < wget2.patch
-#    echo ""
-#fi
+if [[ -e ../patch/wget2.patch ]]; then
+    patch -u -p0 < ../patch/wget2.patch
+    echo ""
+fi
 
 echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -222,8 +220,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
