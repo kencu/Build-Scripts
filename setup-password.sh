@@ -8,6 +8,21 @@
 if [[ $(command -v sudo 2>/dev/null) ]] && [[ -z "${SUDO_PASSWORD_SET+x}" ]]
 then
 
+    # Some sudo are too old and can't handle -E option. Check for it now.
+    # https://www.sudo.ws/pipermail/sudo-users/2020-March/006327.html
+    count=$(sudo -E -h 2>&1 | grep -i -c illegal)
+    if [ "$count" -ne 0 ]
+    then
+        # sudo does not accept -E
+        count=$(grep -i -c 'sudo -E' build-bc.sh)
+        if [ "$count" -ne 0 ]
+        then
+            echo ""
+            echo "Sudo is too old. Please run fix-sudo.sh"
+            [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
+        fi
+    fi
+
     echo ""
     echo "If you enter a sudo password, then it will be used for installation."
     echo "If you don't enter a password, then ensure INSTX_PREFIX is writable."
