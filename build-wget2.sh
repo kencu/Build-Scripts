@@ -3,10 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Wget2 and its dependencies from sources.
 
-# Per TR, the tarballs are pre-release. We should use Master.
-
-# WGET_TAR=wget2-1.99.2.tar.gz
-# WGET_DIR=wget2-1.99.2
+# Per TR, the tarballs are pre-release. We should clone Master.
 
 WGET_DIR=wget2
 
