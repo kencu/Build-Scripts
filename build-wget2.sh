@@ -179,9 +179,6 @@ if [[ -e ../patch/wget2.patch ]]; then
     echo ""
 fi
 
-echo "SKIP_WGET_TESTS: ${SKIP_WGET_TESTS}"
-echo ""
-
 # Fix sys_lib_dlsearch_path_spec
 ../fix-configure.sh
 
