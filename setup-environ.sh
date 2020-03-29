@@ -149,18 +149,34 @@ if [[ -z "$EGREP" ]]; then
     fi
 fi
 
+if [[ -z "$SED" ]]; then
+    if [[ -n "$(command -v sed)" ]]; then
+        SED="$(command -v sed)"
+    else
+        SED=sed
+    fi
+fi
+
+if [[ -z "$AWK" ]]; then
+    if [[ -n "$(command -v awk)" ]]; then
+        AWK="$(command -v awk)"
+    else
+        AWK=awk
+    fi
+fi
+
 ###############################################################################
 
 # Check for the BSD family members
-IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | $EGREP -i -c 'dragonfly|freebsd|netbsd|openbsd')
+IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | ${EGREP} -i -c 'dragonfly|freebsd|netbsd|openbsd')
 
 # Red Hat and derivatives use /lib64, not /lib.
 IS_REDHAT=$($GREP -i -c 'redhat' /etc/redhat-release 2>/dev/null)
 IS_CENTOS=$($GREP -i -c 'centos' /etc/centos-release 2>/dev/null)
 IS_FEDORA=$($GREP -i -c 'fedora' /etc/fedora-release 2>/dev/null)
 
-OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | $GREP 'System Version:' | awk '{print $6}')
-OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | $EGREP -i -c "(^10.10|^1[1-9].|^[2-9][0-9])")
+OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | ${GREP} 'System Version:' | ${AWK} '{print $6}')
+OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | ${EGREP} -i -c "(^10.10|^1[1-9].|^[2-9][0-9])")
 
 if [[ "$IS_REDHAT" -ne 0 ]] || [[ "$IS_CENTOS" -ne 0 ]] || [[ "$IS_FEDORA" -ne 0 ]]
 then
@@ -171,12 +187,12 @@ fi
 
 # Fix decades old compile and link errors on early Darwin.
 # https://gmplib.org/list-archives/gmp-bugs/2009-May/001423.html
-IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | $EGREP -i -c "OS X 10\.[0-5]")
+IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | ${EGREP} -i -c "OS X 10\.[0-5]")
 
 THIS_MACHINE=$(uname -m 2>&1)
-IS_IA32=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'i86pc|i.86|amd64|x86_64')
-IS_AMD64=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'amd64|x86_64')
-IS_MIPS=$(printf "%s" "$THIS_MACHINE" | $EGREP -i -c 'mips')
+IS_IA32=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'i86pc|i.86|amd64|x86_64')
+IS_AMD64=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'amd64|x86_64')
+IS_MIPS=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'mips')
 
 # The BSDs and Solaris should have GMake installed if its needed
 if [[ -z "$MAKE" ]]; then
@@ -193,17 +209,17 @@ if [[ "$MAKE" == "make" ]]; then
 fi
 
 # If CC and CXX are not set, then use default or assume GCC
-if [[ -z "$CC" ]] && [[ -n "$(command -v gcc)" ]]; then export CC='gcc'; fi
-if [[ -z "$CC" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
-if [[ -z "$CXX" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
-if [[ -z "$CXX" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
+if [[ -z "${CC}" ]] && [[ -n "$(command -v gcc)" ]]; then export CC='gcc'; fi
+if [[ -z "${CC}" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
+if [[ -z "${CXX}" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
+if [[ -z "${CXX}" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
 
-IS_GCC=$($CC --version 2>&1 | $GREP -i -c 'gcc')
-IS_CLANG=$($CC --version 2>&1 | $EGREP -i -c 'clang|llvm')
-IS_SUNC=$($CC -V 2>&1 | $EGREP -i -c 'sun|studio')
+IS_GCC=$(${CC} --version 2>&1 | ${GREP} -i -c 'gcc')
+IS_CLANG=$(${CC} --version 2>&1 | ${EGREP} -i -c 'clang|llvm')
+IS_SUNC=$(${CC} -V 2>&1 | ${EGREP} -i -c 'sun|studio')
 
-TEST_CC="$CC"
-TEST_CXX="$CXX"
+TEST_CC="${CC}"
+TEST_CXX="${CXX}"
 
 # Where the package will run. We need to override for 64-bit Solaris.
 # On Solaris some Autotools packages use 32-bit instead of 64-bit build.
@@ -224,8 +240,8 @@ then
     fi
 fi
 
-IS_SUN_AMD64=$(isainfo -v 2>/dev/null | $EGREP -i -c 'amd64')
-IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | $EGREP -i -c 'sparcv9')
+IS_SUN_AMD64=$(isainfo -v 2>/dev/null | ${EGREP} -i -c 'amd64')
+IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | ${EGREP} -i -c 'sparcv9')
 
 # Solaris Fixup
 if [[ "$IS_SUN_AMD64" -eq 1 ]]; then
@@ -345,7 +361,7 @@ if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
     fi
 fi
 # See if we can upgrade to ARMv8
-if [[ $(uname -m 2>&1 | $EGREP -i -c 'aarch32|aarch64') -ne 0 ]]; then
+if [[ $(uname -m 2>&1 | ${EGREP} -i -c 'aarch32|aarch64') -ne 0 ]]; then
     SH_ERROR=$($TEST_CC -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_ARMV8="-march=armv8-a"
@@ -560,7 +576,7 @@ fi
 # /var/sanitize for testing packages.
 if [[ -z "$INSTX_PKG_CACHE" ]]; then
     # Change / to - for CACHE_DIR
-    CACHE_DIR=$(printf "%s" "$INSTX_PREFIX" | cut -c 2- | sed 's/\//-/g')
+    CACHE_DIR=$(printf "%s" "$INSTX_PREFIX" | cut -c 2- | ${SED} 's/\//-/g')
     INSTX_PKG_CACHE="$HOME/.build-scripts/$CACHE_DIR"
     mkdir -p "$INSTX_PKG_CACHE"
 fi
