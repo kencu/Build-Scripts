@@ -53,6 +53,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-lzip.sh
+then
+    echo "Failed to build Lzip"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** Flex **********"
 echo
@@ -72,10 +80,12 @@ rm -rf "$FLEX_DIR" &>/dev/null
 gzip -d < "$FLEX_TAR" | tar xf -
 cd "$FLEX_DIR" || exit 1
 
+cp configure configure.orig
+cp configure.ac configure.ac.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/flex.patch ]]; then
-    cp ../patch/flex.patch .
-    patch -u -p0 < flex.patch
+    patch -u -p0 < ../patch/flex.patch
     echo ""
 fi
 
@@ -84,9 +94,10 @@ mv configure.ac.fixed configure.ac; chmod +x configure.ac
 sed -e 's|dist-lzip | |g' configure.ac > configure.ac.fixed
 mv configure.ac.fixed configure.ac; chmod +x configure.ac
 
+exit 0
+
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -116,8 +127,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
