@@ -116,7 +116,7 @@ echo "**********************"
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
     LIBS="${BUILD_LIBS[*]}" \
-"$MAKE" "${MAKE_FLAGS[@]}"
+"${MAKE}" "${MAKE_FLAGS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to build Hiredis"
@@ -137,7 +137,7 @@ echo
 
 # Need redis-server
 #MAKE_FLAGS=("check" "V=1")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #    echo "Failed to test Hidredis"
 #    exit 1
@@ -161,9 +161,9 @@ MAKE_FLAGS+=("LIBDIR=$INSTX_LIBDIR")
 MAKE_FLAGS+=("PKGLIBDIR=${BUILD_PKGCONFIG[*]}")
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR"

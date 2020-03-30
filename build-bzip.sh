@@ -103,7 +103,7 @@ MAKE_FLAGS=("-f" "Makefile" "-j" "$INSTX_JOBS"
             CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Bzip archive"
     exit 1
@@ -140,7 +140,7 @@ MAKE_FLAGS=("-f" "Makefile" "check" "-j" "$INSTX_JOBS"
             CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test Bzip"
     exit 1
@@ -162,7 +162,7 @@ if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
@@ -171,7 +171,7 @@ then
 else
     echo "Installing static archive..."
     MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
     mkdir -p "$INSTX_LIBDIR/pkgconfig"
@@ -180,7 +180,7 @@ else
 fi
 
 # Clean old artifacts
-"$MAKE" clean 2>/dev/null
+"${MAKE}" clean 2>/dev/null
 
 ###############################################################################
 
@@ -199,7 +199,7 @@ MAKE_FLAGS=("-f" "$MAKEFILE" "-j" "$INSTX_JOBS"
             CFLAGS="${BUILD_CFLAGS[*]} -I."
             LDFLAGS="${BUILD_LDFLAGS[*]}")
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Bzip shared object"
     exit 1
@@ -213,7 +213,7 @@ if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
@@ -222,7 +222,7 @@ then
 else
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
     mkdir -p "$INSTX_LIBDIR/pkgconfig"

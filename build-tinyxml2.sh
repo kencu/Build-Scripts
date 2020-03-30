@@ -88,7 +88,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build tinyxml2"
     exit 1
@@ -103,7 +103,7 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("test")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
    echo "Failed to test tinyxml2"
    exit 1

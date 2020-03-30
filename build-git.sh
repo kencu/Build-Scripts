@@ -160,7 +160,7 @@ echo "**********************"
 echo "Building configure"
 echo "**********************"
 
-if ! "$MAKE" configure
+if ! "${MAKE}" configure
 then
     echo "Failed to make configure Git"
     exit 1
@@ -238,7 +238,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Git"
     exit 1
@@ -253,7 +253,7 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("test" "V=1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
     echo "Failed to test Git"
@@ -282,10 +282,10 @@ MAKE_FLAGS=("install")
 # The chmod allows us to remove them at cleanup. Can't use octal
 # due to OS X 10.5 on PowerMac.
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod -R a+rwx
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR"

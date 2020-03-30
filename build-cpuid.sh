@@ -87,7 +87,7 @@ if ! PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
      CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
      LDFLAGS="${BUILD_LDFLAGS[*]}" \
      LIBS="${BUILD_LIBS[*]}" \
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Cpuid"
     exit 1
@@ -99,7 +99,7 @@ fi
 
 # No make check program
 #MAKE_FLAGS=("check")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #    echo "Failed to test Cpuid"
 #    exit 1
@@ -119,9 +119,9 @@ echo "**********************"
 
 MAKE_FLAGS=("install" "PREFIX=$INSTX_PREFIX" "LIBDIR=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR"

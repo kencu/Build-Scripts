@@ -228,7 +228,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Wget"
     exit 1
@@ -253,7 +253,7 @@ then
     # I fail to see the difference in risk. How is
     # Test-https-pfs.px safe, but WgetFeature.pm dangerous?
     MAKE_FLAGS=("check" "V=1")
-    if ! PERL_USE_UNSAFE_INC=1 "$MAKE" "${MAKE_FLAGS[@]}"
+    if ! PERL_USE_UNSAFE_INC=1 "${MAKE}" "${MAKE_FLAGS[@]}"
     then
         echo "**********************"
         echo "Failed to test Wget"
@@ -283,9 +283,9 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 # Wget does not have any CA's configured at the moment. HTTPS downloads

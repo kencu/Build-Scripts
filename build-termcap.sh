@@ -107,7 +107,7 @@ echo "**********************"
 
 ARFLAGS="cr"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
-if ! ARFLAGS="$ARFLAGS" "$MAKE" "${MAKE_FLAGS[@]}"
+if ! ARFLAGS="$ARFLAGS" "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Termcap"
     exit 1
@@ -141,7 +141,7 @@ echo "Testing package"
 echo "**********************"
 
 #MAKE_FLAGS=("check" "V=1")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #    echo "Failed to test Termcap"
 #    exit 1
@@ -155,13 +155,13 @@ echo "**********************"
 
 MAKE_FLAGS=("install" "libdir=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp termcap.pc "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/termcap.pc"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 
     mkdir -p "$INSTX_LIBDIR/pkgconfig"
     cp termcap.pc "$INSTX_LIBDIR/pkgconfig"

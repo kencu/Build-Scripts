@@ -111,7 +111,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Berkeley DB"
     exit 1
@@ -129,7 +129,7 @@ echo "Unable to test Berkeley DB"
 
 # No check or test recipes
 #MAKE_FLAGS=("check" "V=1")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #    echo "Failed to test Berkeley DB"
 #    exit 1
@@ -167,12 +167,12 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
     mkdir -p "$INSTX_LIBDIR/pkgconfig"
     cp libdb.pc "$INSTX_LIBDIR/pkgconfig"
     chmod 644 "$INSTX_LIBDIR/pkgconfig/libdb.pc"

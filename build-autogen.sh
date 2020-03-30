@@ -98,7 +98,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build AutoGen"
     exit 1
@@ -113,7 +113,7 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("check")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
     echo "Failed to test AutoGen"
@@ -137,9 +137,9 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR" || exit 1

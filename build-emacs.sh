@@ -134,7 +134,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("V=1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
    echo "Failed to test Emacs"
    exit 1
@@ -149,7 +149,7 @@ cp -p ../fix-pkgconfig.sh .
 #echo "**********************"
 
 #MAKE_FLAGS=("check" "V=1")
-#if ! "$MAKE" "${MAKE_FLAGS[@]}"
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #   echo "Failed to test Emacs"
 #   exit 1
@@ -169,9 +169,9 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 cd "$CURR_DIR"

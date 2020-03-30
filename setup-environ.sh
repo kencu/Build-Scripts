@@ -195,7 +195,7 @@ IS_AMD64=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'amd64|x86_64')
 IS_MIPS=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'mips')
 
 # The BSDs and Solaris should have GMake installed if its needed
-if [[ -z "$MAKE" ]]; then
+if [[ -z "${MAKE}" ]]; then
     if [[ $(command -v gmake 2>/dev/null) ]]; then
         export MAKE="gmake"
     else
@@ -204,7 +204,7 @@ if [[ -z "$MAKE" ]]; then
 fi
 
 # Fix "don't know how to make w" on the BSDs
-if [[ "$MAKE" == "make" ]]; then
+if [[ "${MAKE}" == "make" ]]; then
     export MAKEOPTS=
 fi
 

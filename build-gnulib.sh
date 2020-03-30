@@ -113,7 +113,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Gnulib"
     exit 1
@@ -128,7 +128,7 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("check")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
     echo "Failed to test Gnulib"

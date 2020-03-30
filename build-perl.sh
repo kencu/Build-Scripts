@@ -164,7 +164,7 @@ else
     MAKE_FLAGS=("-j" "$INSTX_JOBS")
 fi
 
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Perl"
     exit 1
@@ -182,7 +182,7 @@ echo "**********************"
 export PERL5LIB="$PWD/lib"
 
 MAKE_FLAGS=("check" "-j" "1")
-if ! "$MAKE" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
     echo "Failed to test Perl"
@@ -206,9 +206,9 @@ echo "**********************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "$MAKE" "${MAKE_FLAGS[@]}"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
-    "$MAKE" "${MAKE_FLAGS[@]}"
+    "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
 if [[ -n "$SUDO_PASSWORD" ]]
