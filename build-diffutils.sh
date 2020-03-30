@@ -159,9 +159,9 @@ if true; then
         rm -rf "$artifact"
     done
 
-    # ./build-awk.sh 2>&1 | tee build-awk.log
-    if [[ -e build-awk.log ]]; then
-        rm -f build-awk.log
+    # ./build-diffutils.sh 2>&1 | tee build-diffutils.log
+    if [[ -e build-diffutils.log ]]; then
+        rm -f build-diffutils.log
     fi
 fi
 
