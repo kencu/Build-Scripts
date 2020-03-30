@@ -180,7 +180,7 @@ fi
 
 cd "$WGET_DIR" || exit 1
 
-if ! ./bootstrap;
+if ! ./bootstrap "MAKEINFO=true";
 then
     echo "Failed to bootstrap Wget2"
     exit 1
@@ -222,7 +222,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Wget2"
