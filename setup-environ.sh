@@ -100,10 +100,13 @@ if [ "$IS_SOLARIS" -ne 0 ]
 then
     for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
     do
-        if [ -d "$path" ]; then
+        if [ -d "$path" ]; then     
             SOLARIS_PATH="$SOLARIS_PATH:$path"
         fi
     done
+
+    # Add user's path in case a binary is in a non-standard location, like /opt/local
+    SOLARIS_PATH="$SOLARIS_PATH:$PATH"
 
     # Remove the leading ':'
     PATH=$(echo "$SOLARIS_PATH" | sed 's/^:\(.*\)/\1/')
