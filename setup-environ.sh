@@ -106,14 +106,16 @@ then
     done
 
     # Add user's path in case a binary is in a non-standard location, like /opt/local
-    SOLARIS_PATH="$INSTX_PREFIX/bin:$SOLARIS_PATH:$PATH"
+    SOLARIS_PATH="$SOLARIS_PATH:$PATH"
 
-    # Remove the leading ':'
-    PATH=$(echo "$SOLARIS_PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
-    export PATH
-
-    # echo "New PATH: $PATH"
+    PATH="$SOLARIS_PATH"
 fi
+
+# Add our path since we know we are using the latest binaries.
+PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
+export PATH
+
+# echo "New PATH: $PATH"
 
 ###############################################################################
 
