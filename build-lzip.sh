@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds Lzip from sources.
+# This script builds Lzip from sources. Lzip is treated
+# like a library rather then a program to avoid rebuilding
+# it in other recipes like Curl and Wget.
 
 LZIP_TAR=lzip-1.21.tar.gz
 LZIP_DIR=lzip-1.21
+PKG_NAME=lzip
 
 ###############################################################################
 
@@ -24,6 +27,13 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
+fi
+
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    # Already installed, return success
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -140,6 +150,9 @@ else
 fi
 
 cd "$CURR_DIR" || exit 1
+
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
