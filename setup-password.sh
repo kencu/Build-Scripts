@@ -28,7 +28,9 @@ then
     echo "If you don't enter a password, then ensure INSTX_PREFIX is writable."
     echo "To avoid sudo and the password, just press ENTER and it won't be used."
     echo ""
+
     IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
+    echo ""
 
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
