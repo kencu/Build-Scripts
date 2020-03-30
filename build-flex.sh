@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds Flex from sources.
+# This script builds Flex from sources. Flex is treated
+# like a library rather then a program to avoid rebuilding
+# it in other recipes like Curl and Wget.
 
 FLEX_TAR=flex-2.6.4.tar.gz
 FLEX_DIR=flex-2.6.4
+PKG_NAME=flex
 
 ###############################################################################
 
@@ -24,6 +27,13 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
+fi
+
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    # Already installed, return success
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -150,6 +160,9 @@ else
 fi
 
 cd "$CURR_DIR" || exit 1
+
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
