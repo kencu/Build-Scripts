@@ -80,21 +80,11 @@ rm -rf "$FLEX_DIR" &>/dev/null
 gzip -d < "$FLEX_TAR" | tar xf -
 cd "$FLEX_DIR" || exit 1
 
-cp configure configure.orig
-cp configure.ac configure.ac.orig
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/flex.patch ]]; then
     patch -u -p0 < ../patch/flex.patch
     echo ""
 fi
-
-sed -e 's|1\.11\.3|1\.11\.2|g' configure.ac > configure.ac.fixed
-mv configure.ac.fixed configure.ac; chmod +x configure.ac
-sed -e 's|dist-lzip | |g' configure.ac > configure.ac.fixed
-mv configure.ac.fixed configure.ac; chmod +x configure.ac
-
-exit 0
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
