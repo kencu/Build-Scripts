@@ -94,6 +94,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-lzip.sh
+then
+    echo "Failed to build Lzip"
+    exit 1
+fi
+
+###############################################################################
+
 # PSL may be skipped if Python is too old. libpsl requires Python 2.7
 # Also see https://stackoverflow.com/a/40950971/608639
 if [[ -n "$(command -v python 2>/dev/null)" ]]
