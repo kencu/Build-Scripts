@@ -53,7 +53,9 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$LZIP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+# Savannah uses mirrors.sarata.com as a storage backend. Sometimes mirrors.sarata.com
+# uses a Let's Encrypt certificate, other times the mirror use Go Daddy a certificate.
+if ! "$WGET" -q -O "$LZIP_TAR" --ca-certificate="$CA_ZOO" \
      "https://download.savannah.gnu.org/releases/lzip/$LZIP_TAR"
 then
     echo "Failed to download Lzip"
