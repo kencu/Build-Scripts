@@ -27,10 +27,8 @@ then
     echo "If you enter a sudo password, then it will be used for installation."
     echo "If you don't enter a password, then ensure INSTX_PREFIX is writable."
     echo "To avoid sudo and the password, just press ENTER and it won't be used."
-    IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
-
-    # Formatting
     echo ""
+    IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
 
     # Smoke test the password
     if [[ -n "$SUDO_PASSWORD" ]]
@@ -42,15 +40,12 @@ then
         # Now, test the password
         if printf "%s\n" "$SUDO_PASSWORD" | sudo -S ls >/dev/null 2>&1;
         then
-            echo ""
             echo "The sudo password appears correct"
         else
-            echo ""
             echo "The sudo password appears incorrect"
             [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
         fi
     else
-        echo ""
         echo "The sudo password was not provided"
     fi
 
