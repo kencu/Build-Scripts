@@ -180,7 +180,7 @@ fi
 
 cd "$WGET_DIR" || exit 1
 
-if ! ./bootstrap "MAKEINFO=true";
+if ! ./bootstrap;
 then
     echo "Failed to bootstrap Wget2"
     exit 1
