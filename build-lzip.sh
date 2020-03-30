@@ -53,8 +53,9 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-# Savannah uses mirrors.sarata.com as a storage backend. Sometimes mirrors.sarata.com
-# uses a Let's Encrypt certificate, other times the mirror use Go Daddy a certificate.
+# Savannah uses a Let's Encrypt certificate. Savannah uses mirrors.sarata.com as a
+# storage backend. Sometimes mirrors.sarata.com uses a Let's Encrypt certificate,
+# other times the mirror use a Go Daddy certificate. Throw the CA Zoo at it...
 if ! "$WGET" -q -O "$LZIP_TAR" --ca-certificate="$CA_ZOO" \
      "https://download.savannah.gnu.org/releases/lzip/$LZIP_TAR"
 then
