@@ -17,17 +17,17 @@ then
         count=$(grep -i -c 'sudo -E' build-bc.sh)
         if [ "$count" -ne 0 ]
         then
-            printf ""
-            printf "Sudo is too old. Please run fix-sudo.sh"
+            printf "\n"
+            printf "Sudo is too old. Please run fix-sudo.sh\n"
             [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
         fi
     fi
 
-    printf ""
-    printf "If you enter a sudo password, then it will be used for installation."
-    printf "If you don't enter a password, then ensure INSTX_PREFIX is writable."
-    printf "To avoid sudo and the password, just press ENTER and it won't be used."
-    printf ""
+    printf "\n"
+    printf "If you enter a sudo password, then it will be used for installation.\n"
+    printf "If you don't enter a password, then ensure INSTX_PREFIX is writable.\n"
+    printf "To avoid sudo and the password, just press ENTER and it won't be used.\n"
+    printf "\n"
 
     IFS="" read -r -s -p "Please enter password for sudo: " SUDO_PASSWORD
     printf "\n"
@@ -37,18 +37,18 @@ then
     then
         # Attempt to drop the cached authentication, if present.
         # The -k option is not ubiquitous. It may fail.
-        printf "" | sudo -kS >/dev/null 2>&1
+        printf "\n" | sudo -kS >/dev/null 2>&1
 
         # Now, test the password
         if printf "%s\n" "$SUDO_PASSWORD" | sudo -S ls >/dev/null 2>&1;
         then
-            printf "The sudo password appears correct"
+            printf "The sudo password appears correct\n"
         else
-            printf "The sudo password appears incorrect"
+            printf "The sudo password appears incorrect\n"
             [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
         fi
     else
-        printf "The sudo password was not provided"
+        printf "The sudo password was not provided\n"
     fi
 
     # I would like to avoid exporting this...
