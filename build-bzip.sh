@@ -90,8 +90,7 @@ unzip -oq bzip-makefiles.zip
 
 # Now, patch them for this script.
 if [[ -e ../patch/bzip.patch ]]; then
-    cp ../patch/bzip.patch .
-    patch -u -p0 < bzip.patch
+    patch -u -p0 < ../patch/bzip.patch
     echo ""
 fi
 
@@ -128,8 +127,7 @@ fi
 } > libbz2.pc
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
@@ -161,7 +159,8 @@ echo "**********************"
 if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing static archive..."
-    MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
+    MAKE_FLAGS=("-f" "Makefile" install
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
@@ -170,7 +169,8 @@ then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing static archive..."
-    MAKE_FLAGS=("-f" "Makefile" install PREFIX="$INSTX_PREFIX")
+    MAKE_FLAGS=("-f" "Makefile" install
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
@@ -212,7 +212,8 @@ echo "**********************"
 if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing shared object..."
-    MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
+    MAKE_FLAGS=("-f" "$MAKEFILE" install
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
@@ -221,7 +222,8 @@ then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing shared object..."
-    MAKE_FLAGS=("-f" "$MAKEFILE" install PREFIX="$INSTX_PREFIX")
+    MAKE_FLAGS=("-f" "$MAKEFILE" install
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
