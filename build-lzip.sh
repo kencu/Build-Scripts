@@ -53,8 +53,6 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-set -x
-
 if ! "$WGET" -q -O "$LZIP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://download.savannah.gnu.org/releases/lzip/$LZIP_TAR"
 then
