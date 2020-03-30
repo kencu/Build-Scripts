@@ -94,6 +94,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-flex.sh
+then
+    echo "Failed to build Flex"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-lzip.sh
 then
     echo "Failed to build Lzip"
@@ -214,7 +222,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
+MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Wget2"
