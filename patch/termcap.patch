@@ -12,7 +12,7 @@
    -host=* | --host=* | --hos=* | --ho=*)
      host="$ac_optarg" ;;
  
-+  -libdir=*)
++  -libdir=* | --libdir=*)
 +    libdir="$ac_optarg" ;;
 +
    -nfp | --nfp | --nf)
