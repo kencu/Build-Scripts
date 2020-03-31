@@ -86,21 +86,6 @@ fi
 
 cd "$NETTLE_DIR" || exit 1
 
-#cp ctr.c ctr.c.orig
-#cp xts.c xts.c.orig
-#cp run-tests run-tests.orig
-#cp testsuite/dlopen-test.c testsuite/dlopen-test.c.orig
-#cp testsuite/Makefile.in testsuite/Makefile.in.orig
-#cp testsuite/nettle-pbkdf2-test testsuite/nettle-pbkdf2-test.orig
-#cp testsuite/sexp-conv-test testsuite/sexp-conv-test.orig
-#cp testsuite/pkcs1-conv-test testsuite/pkcs1-conv-test.orig
-#cp examples/Makefile.in examples/Makefile.in.orig
-
-#if [[ -e ../patch/nettle.patch ]]; then
-#    patch -u -p0 < ../patch/nettle.patch
-#    echo ""
-#fi
-
 git checkout test-shlib-dir
 
 if ! ./.bootstrap; then
