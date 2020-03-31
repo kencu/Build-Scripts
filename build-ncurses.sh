@@ -81,8 +81,7 @@ gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-leaks")
@@ -100,6 +99,7 @@ CONFIG_OPTS+=("--with-build-cxxflags=${BUILD_CXXFLAGS[*]}")
 CONFIG_OPTS+=("--with-build-ldflags=${BUILD_LDFLAGS[*]}")
 CONFIG_OPTS+=("--with-build-libs=${BUILD_LIBS[*]}")
 CONFIG_OPTS+=("--with-pkg-config-libdir=${BUILD_PKGCONFIG[*]}")
+CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
 
 # Ncurses can be built narrow or wide. There's no real way to
 # know for sure, so we attempt to see what the distro is doing.
@@ -155,8 +155,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
