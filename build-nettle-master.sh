@@ -76,13 +76,14 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
+rm -rf "$NETTLE_DIR" &>/dev/null
+
 if ! git clone https://git.lysator.liu.se/nettle/nettle.git "$NETTLE_DIR"
 then
     echo "Failed to clone Nettle"
     exit 1
 fi
 
-rm -rf "$NETTLE_DIR" &>/dev/null
 cd "$NETTLE_DIR" || exit 1
 
 #cp ctr.c ctr.c.orig
@@ -100,7 +101,9 @@ cd "$NETTLE_DIR" || exit 1
 #    echo ""
 #fi
 
-if ! bootstrap; then
+git checkout test-shlib-dir
+
+if ! ./.bootstrap; then
     echo "Failed to bootstrap Nettle"
     exit 1
 fi
@@ -195,7 +198,7 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-export PATH=/bin:/usr/bin:/sbin:/usr/sbin"
+export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
 
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -235,7 +238,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$NETTLE_TAR" "$NETTLE_DIR")
+    ARTIFACTS=("$NETTLE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
