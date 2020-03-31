@@ -58,4 +58,7 @@ then
     export SUDO_PASSWORD_SET=yes
 fi
 
+# Sneak this in here
+bash ./setup-directories.sh
+
 [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 0 || return 0
