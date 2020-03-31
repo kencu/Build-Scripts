@@ -73,10 +73,22 @@ rm -rf "$TERMCAP_DIR" &>/dev/null
 gzip -d < "$TERMCAP_TAR" | tar xf -
 cd "$TERMCAP_DIR" || exit 1
 
+#cp configure configure.orig
+#cp Makefile.in Makefile.in.orig
+#cp termcap.c termcap.c.orig
+#cp tparam.c tparam.c.orig
+#cp version.c version.c.orig
+
 if [[ -e ../patch/termcap.patch ]]; then
     patch -u -p0 < ../patch/termcap.patch
     echo ""
 fi
+
+#diff -u configure.orig configure > ../patch/termcap.patch
+#diff -u Makefile.in.orig Makefile.in >> ../patch/termcap.patch
+#diff -u termcap.c.orig termcap.c >> ../patch/termcap.patch
+#diff -u tparam.c.orig tparam.c >> ../patch/termcap.patch
+#diff -u version.c.orig version.c >> ../patch/termcap.patch
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
