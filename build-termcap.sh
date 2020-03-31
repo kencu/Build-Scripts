@@ -74,14 +74,12 @@ gzip -d < "$TERMCAP_TAR" | tar xf -
 cd "$TERMCAP_DIR" || exit 1
 
 if [[ -e ../patch/termcap.patch ]]; then
-    cp ../patch/termcap.patch .
-    patch -u -p0 < termcap.patch
+    patch -u -p0 < ../patch/termcap.patch
     echo ""
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
@@ -133,8 +131,7 @@ fi
 } > termcap.pc
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
