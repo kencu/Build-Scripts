@@ -3,6 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script verifies most prerequisites and creates
 # an environment for other scripts to execute in.
+# This script is executed multiple times during a build.
+# Nearly every other script has to execute this script
+# because Bash does not allow us to export arrays.
 
 ###############################################################################
 
@@ -79,14 +82,14 @@ trap finish EXIT INT
 ###############################################################################
 
 THIS_SYSTEM=$(uname -s 2>&1)
-IS_LINUX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'linux')
-IS_SOLARIS=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'sunos')
-IS_DARWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'darwin')
-IS_AIX=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'aix')
-IS_CYGWIN=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'cygwin')
-IS_OPENBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'openbsd')
-IS_FREEBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'freebsd')
-IS_NETBSD=$(printf "%s" "$THIS_SYSTEM" | grep -i -c 'netbsd')
+IS_LINUX=$(grep -i -c 'linux' <<< "$THIS_SYSTEM")
+IS_SOLARIS=$(grep -i -c 'sunos' <<< "$THIS_SYSTEM")
+IS_DARWIN=$(grep -i -c 'darwin' <<< "$THIS_SYSTEM")
+IS_AIX=$(grep -i -c 'aix' <<< "$THIS_SYSTEM")
+IS_CYGWIN=$(grep -i -c 'cygwin' <<< "$THIS_SYSTEM")
+IS_OPENBSD=$(grep -i -c 'openbsd' <<< "$THIS_SYSTEM")
+IS_FREEBSD=$(grep -i -c 'freebsd' <<< "$THIS_SYSTEM")
+IS_NETBSD=$(grep -i -c 'netbsd' <<< "$THIS_SYSTEM")
 
 ###############################################################################
 
@@ -100,7 +103,7 @@ if [ "$IS_SOLARIS" -ne 0 ]
 then
     for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
     do
-        if [ -d "$path" ]; then     
+        if [ -d "$path" ]; then
             SOLARIS_PATH="$SOLARIS_PATH:$path"
         fi
     done
@@ -173,7 +176,7 @@ fi
 ###############################################################################
 
 # Check for the BSD family members
-IS_BSD_FAMILY=$(printf "%s" "$THIS_SYSTEM" | ${EGREP} -i -c 'dragonfly|freebsd|netbsd|openbsd')
+IS_BSD_FAMILY=$(${EGREP} -i -c 'dragonfly|freebsd|netbsd|openbsd' <<< "$THIS_SYSTEM")
 
 # Red Hat and derivatives use /lib64, not /lib.
 IS_REDHAT=$($GREP -i -c 'redhat' /etc/redhat-release 2>/dev/null)
@@ -195,23 +198,26 @@ fi
 IS_OLD_DARWIN=$(system_profiler SPSoftwareDataType 2>/dev/null | ${EGREP} -i -c "OS X 10\.[0-5]")
 
 THIS_MACHINE=$(uname -m 2>&1)
-IS_IA32=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'i86pc|i.86|amd64|x86_64')
-IS_AMD64=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'amd64|x86_64')
-IS_MIPS=$(printf "%s" "$THIS_MACHINE" | ${EGREP} -i -c 'mips')
+IS_IA32=$(${EGREP} -i -c 'i86pc|i.86|amd64|x86_64' <<< "$THIS_MACHINE")
+IS_AMD64=$(${EGREP} -i -c 'amd64|x86_64' <<< "$THIS_MACHINE")
+IS_MIPS=$(${EGREP} -i -c 'mips' <<< "$THIS_MACHINE")
 
 # The BSDs and Solaris should have GMake installed if its needed
 if [[ -z "${MAKE}" ]]; then
     if [[ $(command -v gmake 2>/dev/null) ]]; then
-        export MAKE="gmake"
+        MAKE="gmake"
     else
-        export MAKE="make"
+        MAKE="make"
     fi
 fi
 
 # Fix "don't know how to make w" on the BSDs
 if [[ "${MAKE}" == "make" ]]; then
-    export MAKEOPTS=
+    MAKEOPTS=
 fi
+
+export MAKE
+export MAKEOPTS
 
 # If CC and CXX are not set, then use default or assume GCC
 if [[ -z "${CC}" ]] && [[ -n "$(command -v gcc)" ]]; then export CC='gcc'; fi
@@ -240,8 +246,8 @@ then
     if [[ $(isainfo -b 2>/dev/null) = 64 ]]; then
         CFLAGS64=-m64
         CXXFLAGS64=-m64
-        TEST_CC="$TEST_CC -m64"
-        TEST_CXX="$TEST_CXX -m64"
+        TEST_CC="${TEST_CC} -m64"
+        TEST_CXX="${TEST_CXX} -m64"
     fi
 fi
 
@@ -261,7 +267,7 @@ fi
 # Try to determine 32 vs 64-bit, /usr/local/lib, /usr/local/lib32,
 # /usr/local/lib64 and /usr/local/lib/64. We drive a test compile
 # using the supplied compiler and flags.
-if $TEST_CC $CFLAGS programs/test-64bit.c -o "$outfile" &>/dev/null
+if ${TEST_CC} ${CFLAGS} programs/test-64bit.c -o "$outfile" &>/dev/null
 then
     IS_64BIT=1
     IS_32BIT=0
@@ -314,24 +320,27 @@ if [[ -z "$INSTX_OPATH" ]]; then
     INSTX_OPATH="$INSTX_LIBDIR"
 fi
 
+export INSTX_PREFIX
+export INSTX_LIBDIR
+
 ###############################################################################
 
-SH_ERROR=$($TEST_CC -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_PIC="-fPIC"
 fi
 
 # Ugh... C++11 support as required. Things may still break.
-SH_ERROR=$($TEST_CXX -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     HAS_CXX11=1
 else
-    SH_ERROR=$($TEST_CXX -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_CXX11="-std=gnu++11"
         HAS_CXX11=1
     else
-        SH_ERROR=$($TEST_CXX -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+        SH_ERROR=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
         if [[ "$SH_ERROR" -eq 0 ]]; then
             SH_CXX11="-std=c++11"
             HAS_CXX11=1
@@ -340,26 +349,26 @@ else
 fi
 
 # For the benefit of the programs and libraries. Make them run faster.
-SH_ERROR=$($TEST_CC -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_NATIVE="-march=native"
 fi
 
-SH_ERROR=$($TEST_CC -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_PTHREAD="-pthread"
 fi
 
 # Switch from -march=native to something more appropriate
 if [[ $($EGREP -i -c 'armv7' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    SH_ERROR=$($TEST_CC -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_ARMV7="-march=armv7-a"
     fi
 fi
 # See if we can upgrade to ARMv7+NEON
 if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    SH_ERROR=$($TEST_CC -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         IS_ARM_NEON=1
         SH_ARMV7="-march=armv7-a -mfpu=neon"
@@ -367,61 +376,61 @@ if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
 fi
 # See if we can upgrade to ARMv8
 if [[ $(uname -m 2>&1 | ${EGREP} -i -c 'aarch32|aarch64') -ne 0 ]]; then
-    SH_ERROR=$($TEST_CC -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_ARMV8="-march=armv8-a"
     fi
 fi
 
 # See if -Wl,-rpath,$ORIGIN/../lib works
-SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_OPATH="-Wl,-rpath,$INSTX_OPATH"
 fi
-SH_ERROR=$($TEST_CC -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_OPATH="-Wl,-R,$INSTX_OPATH"
 fi
 
 # See if -Wl,-rpath,${libdir} works. This is a RPATH.
-SH_ERROR=$($TEST_CC -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
 fi
-SH_ERROR=$($TEST_CC -Wl,-R,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_RPATH="-Wl,-R,$INSTX_LIBDIR"
 fi
 
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
-SH_ERROR=$($TEST_CC -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_DTAGS="-Wl,--enable-new-dtags"
 fi
 
-SH_ERROR=$($TEST_CC -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_OPENMP="-fopenmp"
 fi
 
-SH_ERROR=$($TEST_CC -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_NO_AS_NEEDED="-Wl,--no-as-needed"
 fi
 
 # OS X linker and install names
-SH_ERROR=$($TEST_CC -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_INSTNAME="-headerpad_max_install_names"
 fi
 
 # Debug symbols
 if [[ -z "$SH_SYM" ]]; then
-    SH_ERROR=$($TEST_CC -g2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -g2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_SYM="-g2"
     else
-        SH_ERROR=$($TEST_CC -g -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        SH_ERROR=$(${TEST_CC} -g -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
         if [[ "$SH_ERROR" -eq 0 ]]; then
             SH_SYM="-g"
         fi
@@ -430,11 +439,11 @@ fi
 
 # Optimizations symbols
 if [[ -z "$SH_OPT" ]]; then
-    SH_ERROR=$($TEST_CC -O2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -O2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_OPT="-O2"
     else
-        SH_ERROR=$($TEST_CC -O -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        SH_ERROR=$(${TEST_CC} -O -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
         if [[ "$SH_ERROR" -eq 0 ]]; then
             SH_OPT="-O"
         fi
@@ -443,14 +452,14 @@ fi
 
 # OpenBSD does not have -ldl
 if [[ -z "$SH_DL" ]]; then
-    SH_ERROR=$($TEST_CC -o "$outfile" "$infile" -ldl 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -ldl 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_DL="-ldl"
     fi
 fi
 
 if [[ -z "$SH_LIBPTHREAD" ]]; then
-    SH_ERROR=$($TEST_CC -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_LIBPTHREAD="-lpthread"
     fi
@@ -458,7 +467,7 @@ fi
 
 # Msan option
 if [[ -z "$SH_MSAN_ORIGIN" ]]; then
-    SH_ERROR=$($TEST_CC -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
+    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$SH_ERROR" -eq 0 ]]; then
         SH_MSAN_ORIGIN=1
     fi
@@ -581,7 +590,7 @@ fi
 # /var/sanitize for testing packages.
 if [[ -z "$INSTX_PKG_CACHE" ]]; then
     # Change / to - for CACHE_DIR
-    CACHE_DIR=$(printf "%s" "$INSTX_PREFIX" | cut -c 2- | ${SED} 's/\//-/g')
+    CACHE_DIR=$(cut -c 2- <<< "$INSTX_PREFIX" | ${SED} 's/\//-/g')
     INSTX_PKG_CACHE="$HOME/.build-scripts/$CACHE_DIR"
     mkdir -p "$INSTX_PKG_CACHE"
 fi
@@ -594,7 +603,7 @@ fi
 # building a package after 7 days (even if it is the same version).
 (IFS="" find "$INSTX_PKG_CACHE" -type f -mtime +7 -print | while read -r pkg
 do
-    # printf "%s\n" "Setting $pkg for rebuild"
+    # printf "Setting %s for rebuild\n" "$pkg"
     rm -f "$pkg" 2>/dev/null
 done)
 
