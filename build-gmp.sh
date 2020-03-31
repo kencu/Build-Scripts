@@ -76,14 +76,12 @@ cd "$GMP_DIR" || exit 1
 # https://gmplib.org/list-archives/gmp-bugs/2009-May/001423.html
 if [[ "$IS_OLD_DARWIN" -ne 0 ]]
 then
-    cp ../patch/gmp-darwin.patch .
-    patch -u -p0 < gmp-darwin.patch
+    patch -u -p0 < ../patch/gmp-darwin.patch
     echo ""
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--enable-static")
@@ -120,8 +118,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"

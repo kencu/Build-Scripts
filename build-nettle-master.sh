@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Nettle from sources.
 
-NETTLE_TAR=nettle-3.5.1.tar.gz
-NETTLE_DIR=nettle-3.5.1
+NETTLE_DIR=nettle-master
 PKG_NAME=nettle
 
 ###############################################################################
@@ -77,15 +76,13 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$NETTLE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/nettle/$NETTLE_TAR"
+if ! git clone https://git.lysator.liu.se/nettle/nettle.git "$NETTLE_DIR"
 then
-    echo "Failed to download Nettle"
+    echo "Failed to clone Nettle"
     exit 1
 fi
 
 rm -rf "$NETTLE_DIR" &>/dev/null
-gzip -d < "$NETTLE_TAR" | tar xf -
 cd "$NETTLE_DIR" || exit 1
 
 #cp ctr.c ctr.c.orig
@@ -98,9 +95,14 @@ cd "$NETTLE_DIR" || exit 1
 #cp testsuite/pkcs1-conv-test testsuite/pkcs1-conv-test.orig
 #cp examples/Makefile.in examples/Makefile.in.orig
 
-if [[ -e ../patch/nettle.patch ]]; then
-    patch -u -p0 < ../patch/nettle.patch
-    echo ""
+#if [[ -e ../patch/nettle.patch ]]; then
+#    patch -u -p0 < ../patch/nettle.patch
+#    echo ""
+#fi
+
+if ! bootstrap; then
+    echo "Failed to bootstrap Nettle"
+    exit 1
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -192,6 +194,8 @@ fi
 echo "**********************"
 echo "Testing package"
 echo "**********************"
+
+export PATH=/bin:/usr/bin:/sbin:/usr/sbin"
 
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"

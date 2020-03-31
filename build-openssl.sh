@@ -136,8 +136,7 @@ gzip -d < "$OPENSSL_TAR" | tar xf -
 cd "$OPENSSL_DIR" || exit 1
 
 if [[ -e ../patch/openssl.patch ]]; then
-    cp ../patch/openssl.patch .
-    patch -u -p0 < openssl.patch
+    patch -u -p0 < ../patch/openssl.patch
     echo ""
 fi
 
@@ -201,8 +200,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"

@@ -80,13 +80,13 @@ rm -rf "$UNISTR_DIR" &>/dev/null
 gzip -d < "$UNISTR_TAR" | tar xf -
 cd "$UNISTR_DIR"
 
-cp ../patch/unistring.patch .
-patch -u -p0 < unistring.patch
-echo ""
+if [[ -e ../patch/unistring.patch ]]; then
+    patch -u -p0 < ../patch/unistring.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 # https://bugs.launchpad.net/ubuntu/+source/binutils/+bug/1340250
 if [[ -n "$SH_NO_AS_NEEDED" ]]; then
@@ -122,8 +122,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "************************"
 echo "Testing package"
