@@ -94,7 +94,7 @@ if ! ./.bootstrap; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-../fix-configure.sh
+bash ../fix-configure.sh
 
 # Awful Solaris 64-bit hack. Use -G for SunC, and -shared for GCC
 if [[ "$IS_SOLARIS" -ne 0 && "$IS_SUNC" -eq 0 ]]; then
@@ -161,7 +161,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
-../fix-library-path.sh
+bash ../fix-library-path.sh
 
 echo "**********************"
 echo "Building package"
@@ -177,7 +177,7 @@ then
 fi
 
 # Fix flags in *.pc files
-../fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
