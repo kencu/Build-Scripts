@@ -1,6 +1,6 @@
 --- cachedb/cachedb.c
 +++ cachedb/cachedb.c
-@@ -85,6 +85,14 @@
+@@ -85,6 +85,16 @@
  #endif
  #endif /* be64toh */
  
@@ -8,8 +8,10 @@
 +#  define OUR_BE64TOH(n) (n)
 +#  define OUR_HTOBE64(n) (n)
 +# else
-+#  define OUR_BE64TOH(n) (((uint64_t)htonl((n) & 0xFFFFFFFF) << 32) | htonl((n) >> 32))
-+#  define OUR_HTOBE64(n) (((uint64_t)htonl((n) & 0xFFFFFFFF) << 32) | htonl((n) >> 32))
++#  define OUR_HI32(n)  ((uint32_t)(((uint64_t)(n)) >> 32))
++#  define OUR_LO32(n)  ((uint32_t)(n))
++#  define OUR_BE64TOH(n) ((((uint64_t)htonl(OUR_LO32(n)) << 32)) | htonl(OUR_HI32(n)))
++#  define OUR_HTOBE64(n) ((((uint64_t)htonl(OUR_LO32(n)) << 32)) | htonl(OUR_HI32(n)))
 +# endif
 +
  /** the unit test testframe for cachedb, its module state contains
