@@ -1,9 +1,7 @@
-# This patch is for Nettle 3.5.1 release tarball.
-# It may (or may not) work against Master. Niels
-# has a better fix for HAVE_BUILTIN_BSWAP64, but
-# it was not cut-in due to expediency. We need
-# something simple that works on most platforms,
-# not something complex that runs fast everywhere.
+# This patch is for Nettle 3.5.1 release tarball. It may (or may not)
+# work against Master. Niels has a better fix for HAVE_BUILTIN_BSWAP64,
+# but it was not cut-in due to expediency. We need something that works
+# on most platforms, not something complex that runs fast everywhere.
 --- xts.c
 +++ xts.c
 @@ -49,15 +49,28 @@
