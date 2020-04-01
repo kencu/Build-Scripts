@@ -78,7 +78,7 @@ rm -rf "$ICONV_DIR" &>/dev/null
 gzip -d < "$ICONV_TAR" | tar xf -
 cd "$ICONV_DIR" || exit 1
 
-if [[ -e ../patch/iconv.patch]]; then
+if [[ -e ../patch/iconv.patch ]]; then
     patch -u -p0 < ../patch/iconv.patch
     echo ""
 fi
