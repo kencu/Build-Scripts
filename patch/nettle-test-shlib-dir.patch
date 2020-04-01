@@ -1,5 +1,16 @@
---- testsuite/nettle-pbkdf2-test.orig	2020-04-01 03:06:12.219810678 -0400
-+++ testsuite/nettle-pbkdf2-test	2020-04-01 03:07:11.912666176 -0400
+--- testsuite/Makefile.in
++++ testsuite/Makefile.in
+@@ -140,7 +140,7 @@
+ VALGRIND = valgrind --error-exitcode=1 --leak-check=full --show-reachable=yes @IF_ASM@ --partial-loads-ok=yes
+ 
+ check: $(TS_ALL)
+-	TEST_SHLIB_DIR="$(TEST_SHLIB_DIR)" \
++	export TEST_SHLIB_DIR="$(TEST_SHLIB_DIR)" && \
+ 	  srcdir="$(srcdir)" \
+ 	  EMULATOR="$(EMULATOR)" NM="$(NM)" EXEEXT="$(EXEEXT)" \
+           $(top_srcdir)/run-tests $(TS_ALL)
+--- testsuite/nettle-pbkdf2-test
++++ testsuite/nettle-pbkdf2-test
 @@ -4,6 +4,18 @@
    srcdir=`pwd`
  fi
@@ -19,8 +30,8 @@
  test_pbkdf2 () {
      password="$1"
      salt="$2"
---- testsuite/sexp-conv-test.orig	2020-04-01 03:06:12.219810678 -0400
-+++ testsuite/sexp-conv-test	2020-04-01 03:07:36.341015931 -0400
+--- testsuite/sexp-conv-test
++++ testsuite/sexp-conv-test
 @@ -4,6 +4,18 @@
    srcdir=`pwd`
  fi
@@ -40,8 +51,8 @@
  print_raw () {
      printf "%s" "$1" > "$2"
  }
---- testsuite/pkcs1-conv-test.orig	2020-04-01 03:06:12.223810735 -0400
-+++ testsuite/pkcs1-conv-test	2020-04-01 03:07:55.617291787 -0400
+--- testsuite/pkcs1-conv-test
++++ testsuite/pkcs1-conv-test
 @@ -4,6 +4,18 @@
    srcdir=`pwd`
  fi
