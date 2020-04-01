@@ -88,8 +88,7 @@ gzip -d < "$IDN_TAR" | tar xf -
 cd "$IDN_DIR" || exit 1
 
 if [[ -e ../patch/idn.patch ]]; then
-    cp ../patch/idn.patch .
-    patch -u -p0 < idn.patch
+    patch -u -p0 < ../patch/idn.patch
     echo ""
 fi
 

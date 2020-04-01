@@ -72,9 +72,10 @@ rm -rf "$UTHASH_DIR" &>/dev/null
 gzip -d < "$UTHASH_TAR" | tar xf -
 cd "$UTHASH_DIR"
 
-cp ../patch/uthash.patch .
-patch -u -p0 < uthash.patch
-echo ""
+if [[ -e ../patch/uthash.patch ]]; then
+    patch -u -p0 < ../patch/uthash.patch
+    echo ""
+fi
 
 # No Autotools or makefile in src/
 cd tests

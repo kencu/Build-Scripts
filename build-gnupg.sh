@@ -146,9 +146,10 @@ rm -rf "$GNUPG_DIR" &>/dev/null
 tar xjf "$GNUPG_TAR"
 cd "$GNUPG_DIR"
 
-cp ../patch/gnupg.patch .
-patch -u -p0 < gnupg.patch
-echo ""
+if [[ -e ../patch/gnupg.patch ]]; then
+    patch -u -p0 < ../patch/gnupg.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

@@ -103,9 +103,10 @@ rm -rf "$UNBOUND_DIR" &>/dev/null
 gzip -d < "$UNBOUND_TAR" | tar xf -
 cd "$UNBOUND_DIR"
 
-cp ../patch/unbound.patch .
-patch -u -p0 < unbound.patch
-echo ""
+if [[ -e ../patch/unbound.patch ]]; then
+    patch -u -p0 < ../patch/unbound.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

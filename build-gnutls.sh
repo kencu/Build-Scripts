@@ -154,8 +154,7 @@ unxz "$GNUTLS_XZ" && tar -xf "$GNUTLS_TAR"
 cd "$GNUTLS_DIR" || exit 1
 
 if [[ -e ../patch/gnutls.patch ]]; then
-    cp ../patch/gnutls.patch .
-    patch -u -p0 < gnutls.patch
+    patch -u -p0 < ../patch/gnutls.patch
     echo ""
 fi
 

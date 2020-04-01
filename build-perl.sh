@@ -93,8 +93,7 @@ if [[ -e ../patch/perl.patch ]]; then
     chmod a+w op.c pp.c regcomp.c vms/vms.c
     chmod a+w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 
-    cp ../patch/perl.patch .
-    patch -u -p0 < perl.patch
+    patch -u -p0 < ../patch/perl.patch
     echo ""
 
     chmod a-w op.c pp.c regcomp.c vms/vms.c

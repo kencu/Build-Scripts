@@ -98,8 +98,7 @@ cd "$NGHTTP2_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/nghttp2.patch ]]; then
-    cp ../patch/nghttp2.patch .
-    patch -u -p0 < nghttp2.patch
+    patch -u -p0 < ../patch/nghttp2.patch
     echo ""
 fi
 

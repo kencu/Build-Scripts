@@ -104,9 +104,10 @@ rm -rf "$OPENSC_DIR" &>/dev/null
 gzip -d < "$OPENSC_TAR" | tar xf -
 cd "$OPENSC_DIR" || exit 1
 
-cp ../patch/opensc.patch .
-patch -u -p0 < opensc.patch
-echo ""
+if [[ -e ../patch/opensc.patch ]]; then
+    patch -u -p0 < ../patch/opensc.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

@@ -68,8 +68,7 @@ cd "$AUTOGEN_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/autogen.patch ]]; then
-    cp ../patch/autogen.patch .
-    patch -u -p0 < autogen.patch
+    patch -u -p0 < ../patch/autogen.patch
     echo ""
 fi
 

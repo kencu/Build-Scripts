@@ -74,8 +74,7 @@ cd "$SED_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/sed.patch ]]; then
-    cp ../patch/sed.patch .
-    patch -u -p0 < sed.patch
+    patch -u -p0 < ../patch/sed.patch
     echo ""
 fi
 

@@ -147,9 +147,10 @@ rm -rf "$CURL_DIR" &>/dev/null
 gzip -d < "$CURL_TAR" | tar xf -
 cd "$CURL_DIR" || exit 1
 
-cp ../patch/curl.patch .
-patch -u -p0 < curl.patch
-echo ""
+if [[ -e ../patch/curl.patch ]]; then
+    patch -u -p0 < ../patch/curl.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

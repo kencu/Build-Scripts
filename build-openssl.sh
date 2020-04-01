@@ -139,12 +139,6 @@ if [[ -e ../patch/openssl.patch ]]; then
     echo ""
 fi
 
-#if [[ -n "$INSTX_ASAN" ]]; then
-#    cp ../patch/openssl-nopreload.patch .
-#    patch -u -p0 < openssl-nopreload.patch
-#    echo ""
-#fi
-
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
 

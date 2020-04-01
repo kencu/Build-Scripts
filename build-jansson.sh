@@ -74,8 +74,7 @@ cd "$JANSSON_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/jansson.patch ]]; then
-    cp ../patch/jansson.patch .
-    patch -u -p0 < jansson.patch
+    patch -u -p0 < ../patch/jansson.patch
     echo ""
 fi
 

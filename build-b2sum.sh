@@ -67,10 +67,8 @@ cd "$B2SUM_DIR"
 # cp sse/blake2s-load-sse2.h sse/blake2s-load-sse2.h.orig
 # cp sse/blake2b-load-sse2.h sse/blake2b-load-sse2.h.orig
 
-if [[ -e ../patch/b2sum.patch ]]
-then
-    cp ../patch/b2sum.patch .
-    patch -u -p0 < b2sum.patch
+if [[ -e ../patch/b2sum.patch ]]; then
+    patch -u -p0 < ../patch/b2sum.patch
     echo ""
 fi
 

@@ -72,9 +72,10 @@ rm -rf "$CPUID_DIR" &>/dev/null
 gzip -d < "$CPUID_TAR" | tar xf -
 cd "$CPUID_DIR"
 
-cp ../patch/cpuid.patch .
-patch -u -p0 < cpuid.patch
-echo ""
+if [[ -e ../patch/cpuid.patch ]]; then
+    patch -u -p0 < ../patch/cpuid.patch
+    echo ""
+fi
 
 echo "**********************"
 echo "Building package"

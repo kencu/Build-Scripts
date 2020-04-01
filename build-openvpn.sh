@@ -154,8 +154,10 @@ rm -rf "$OPENVPN_DIR" &>/dev/null
 gzip -d < "$OPENVPN_TAR" | tar xf -
 cd "$OPENVPN_DIR"
 
-cp ../patch/openvpn.patch .
-patch -u -p0 < openvpn.patch
+if [[ -e ../patch/openvpn.patch ]]; then
+    patch -u -p0 < ../patch/openvpn.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

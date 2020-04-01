@@ -73,9 +73,10 @@ cd "$LIBFFI_DIR"
 
 # cp src/x86/ffi64.c src/x86/ffi64.c.old
 
-cp ../patch/libffi.patch .
-patch -u -p0 < libffi.patch
-echo ""
+if [[ -e ../patch/libffi.patch ]]; then
+    patch -u -p0 < ../patch/libffi.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

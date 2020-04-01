@@ -83,8 +83,7 @@ cd "$GDB_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/gdb.patch ]]; then
-    cp ../patch/gdb.patch .
-    patch -u -p0 < gdb.patch
+    patch -u -p0 < ../patch/gdb.patch
     echo ""
 fi
 

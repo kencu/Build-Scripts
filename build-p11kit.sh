@@ -90,8 +90,7 @@ unxz "$P11KIT_XZ" && tar -xf "$P11KIT_TAR"
 cd "$P11KIT_DIR"
 
 if [[ -e ../patch/p11kit.patch ]]; then
-    cp ../patch/p11kit.patch .
-    patch -u -p0 < p11kit.patch
+    patch -u -p0 < ../patch/p11kit.patch
     echo ""
 fi
 

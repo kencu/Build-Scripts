@@ -81,8 +81,7 @@ gzip -d < "$ZILE_TAR" | tar xf -
 cd "$ZILE_DIR"
 
 if [[ -e ../patch/zile.patch ]]; then
-    cp ../patch/zile.patch .
-    patch -u -p0 < zile.patch
+    patch -u -p0 < ../patch/zile.patch
     echo ""
 fi
 

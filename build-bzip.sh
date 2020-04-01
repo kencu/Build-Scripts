@@ -84,8 +84,10 @@ gzip -d < "$BZIP2_TAR" | tar xf -
 cd "$BZIP2_DIR" || exit 1
 
 # The Makefiles needed so much work it was easier to rewrite them.
-cp ../patch/bzip-makefiles.zip .
-unzip -oq bzip-makefiles.zip
+if [[ -e ../patch/bzip-makefiles.zip ]]; then
+    cp ../patch/bzip-makefiles.zip .
+    unzip -oq bzip-makefiles.zip
+fi
 
 # Now, patch them for this script.
 if [[ -e ../patch/bzip.patch ]]; then

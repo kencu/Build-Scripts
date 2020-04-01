@@ -73,8 +73,7 @@ bzip2 -dk < "$EXPAT_TAR" | tar xf -
 cd "$EXPAT_DIR" || exit 1
 
 if [[ -e ../patch/expat.patch ]]; then
-    cp ../patch/expat.patch .
-    patch -u -p0 < expat.patch
+    patch -u -p0 < ../patch/expat.patch
     echo ""
 fi
 

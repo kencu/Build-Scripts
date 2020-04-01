@@ -71,9 +71,10 @@ rm -rf "$TASN1_DIR" &>/dev/null
 gzip -d < "$TASN1_TAR" | tar xf -
 cd "$TASN1_DIR"
 
-cp ../patch/tasn1.patch .
-patch -u -p0 < tasn1.patch
-echo ""
+if [[ -e ../patch/tasn1.patch ]]; then
+    patch -u -p0 < ../patch/tasn1.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

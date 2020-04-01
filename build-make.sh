@@ -73,9 +73,10 @@ rm -rf "$MAKE_DIR" &>/dev/null
 gzip -d < "$MAKE_TAR" | tar xf -
 cd "$MAKE_DIR"
 
-cp ../patch/make.patch .
-patch -u -p0 < make.patch
-echo ""
+if [[ -e ../patch/make.patch ]]; then
+    patch -u -p0 < ../patch/make.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

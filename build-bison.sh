@@ -79,8 +79,7 @@ cd "$BISON_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/bison.patch ]]; then
-    cp ../patch/bison.patch .
-    patch -u -p0 < bison.patch
+    patch -u -p0 < ../patch/bison.patch
     echo ""
 fi
 

@@ -95,9 +95,10 @@ rm -rf "$PSL_DIR" &>/dev/null
 gzip -d < "$PSL_TAR" | tar xf -
 cd "$PSL_DIR"
 
-cp ../patch/libpsl.patch .
-patch -u -p0 < libpsl.patch
-echo ""
+if [[ -e ../patch/libpsl.patch ]]; then
+    patch -u -p0 < ../patch/libpsl.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

@@ -87,11 +87,11 @@ fi
 cd "$LDNS_DIR"
 git checkout "$LDNS_TAG" &>/dev/null
 
-if [[ "$IS_OLD_DARWIN" -ne 0 ]]
-then
-    cp ../patch/ldns-darwin.patch .
-    patch -u -p0 < ldns-darwin.patch
-    echo ""
+if [[ "$IS_OLD_DARWIN" -ne 0 ]]; then
+    if [[ -e ../patch/ldns-darwin.patch ]]; then
+        patch -u -p0 < ../patch/ldns-darwin.patch
+        echo ""
+    fi
 fi
 
 sed '11iAM_INIT_AUTOMAKE' configure.ac > configure.ac.fixed

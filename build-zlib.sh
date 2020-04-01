@@ -72,8 +72,7 @@ gzip -d < "$ZLIB_TAR" | tar xf -
 cd "$ZLIB_DIR" || exit 1
 
 if [[ -e ../patch/zlib.patch ]]; then
-    cp ../patch/zlib.patch .
-    patch -u -p0 < zlib.patch
+    patch -u -p0 < ../patch/zlib.patch
     echo ""
 fi
 

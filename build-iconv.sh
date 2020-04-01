@@ -78,9 +78,10 @@ rm -rf "$ICONV_DIR" &>/dev/null
 gzip -d < "$ICONV_TAR" | tar xf -
 cd "$ICONV_DIR" || exit 1
 
-cp ../patch/iconv.patch .
-patch -u -p0 < iconv.patch
-echo ""
+if [[ -e ../patch/iconv.patch]]; then
+    patch -u -p0 < ../patch/iconv.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

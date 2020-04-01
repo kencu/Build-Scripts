@@ -73,8 +73,7 @@ gzip -d < "$ICU_TAR" | tar xf -
 cd "$ICU_DIR"
 
 if [[ -e ../patch/icu.patch ]]; then
-    cp ../patch/icu.patch .
-    patch -u -p0 < icu.patch
+    patch -u -p0 < ../patch/icu.patch
     echo ""
 fi
 

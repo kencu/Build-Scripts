@@ -28,7 +28,7 @@ fi
 # we can download cacerts.pem from cURL. build-cacert.sh
 # installs cacerts.pem in ${SH_CACERT_PATH}. Programs like
 # cURL, Git and Wget use cacerts.pem.
-if [[ ! -f "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
+if [[ ! -e "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
     # Hide output to cut down on noise.
     ./setup-cacerts.sh &>/dev/null
 fi

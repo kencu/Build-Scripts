@@ -73,9 +73,10 @@ bash ../fix-configure.sh
 #cp datefudge.c datefudge.c.orig
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
-    cp ../patch/datefudge-solaris.patch .
-    patch -u -p0 < datefudge-solaris.patch
-    echo ""
+    if [[ -e ../patch/datefudge-solaris.patch ]]; then
+        patch -u -p0 < ../patch/datefudge-solaris.patch
+        echo ""
+    fi
 fi
 
 echo "**********************"

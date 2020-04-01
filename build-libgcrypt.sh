@@ -87,9 +87,10 @@ rm -rf "$GCRYPT_DIR" &>/dev/null
 tar xjf "$GCRYPT_TAR"
 cd "$GCRYPT_DIR"
 
-cp ../patch/libgcrypt.patch .
-patch -u -p0 < libgcrypt.patch
-echo ""
+if [[ -e ../patch/libgcrypt.patch ]]; then
+    patch -u -p0 < ../patch/libgcrypt.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

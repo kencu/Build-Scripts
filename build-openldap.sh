@@ -102,8 +102,7 @@ gzip -d < "$LDAP_TAR" | tar xf -
 cd "$LDAP_DIR"
 
 if [[ -e ../patch/openldap.patch ]]; then
-    cp ../patch/openldap.patch .
-    patch -u -p0 < openldap.patch
+    patch -u -p0 < ../patch/openldap.patch
     echo ""
 fi
 

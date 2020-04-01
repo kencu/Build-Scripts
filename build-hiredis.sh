@@ -88,8 +88,7 @@ gzip -d < "$HIREDIS_TAR" | tar xf -
 cd "$HIREDIS_DIR"
 
 if [[ -e ../patch/hiredis.patch ]]; then
-    cp ../patch/hiredis.patch .
-    patch -u -p0 < hiredis.patch
+    patch -u -p0 < ../patch/hiredis.patch
     echo ""
 fi
 

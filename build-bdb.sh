@@ -72,8 +72,7 @@ gzip -d < "$BDB_TAR" | tar xf -
 cd "$BDB_DIR" || exit 1
 
 if [[ -e ../patch/db.patch ]]; then
-    cp ../patch/db.patch .
-    patch -u -p0 < db.patch
+    patch -u -p0 < ../patch/db.patch
     echo ""
 fi
 

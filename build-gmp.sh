@@ -73,10 +73,11 @@ cd "$GMP_DIR" || exit 1
 
 # Fix decades old compile and link errors on early Darwin.
 # https://gmplib.org/list-archives/gmp-bugs/2009-May/001423.html
-if [[ "$IS_OLD_DARWIN" -ne 0 ]]
-then
-    patch -u -p0 < ../patch/gmp-darwin.patch
-    echo ""
+if [[ "$IS_OLD_DARWIN" -ne 0 ]]; then
+    if [[ -e ../patch/gmp-darwin.patch ]]; then
+        patch -u -p0 < ../patch/gmp-darwin.patch
+        echo ""
+    fi
 fi
 
 # Fix sys_lib_dlsearch_path_spec

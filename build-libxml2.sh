@@ -81,8 +81,7 @@ cd "$XML2_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/libxml2.patch ]]; then
-    cp ../patch/libxml2.patch .
-    patch -u -p0 < libxml2.patch
+    patch -u -p0 < ../patch/libxml2.patch
     echo ""
 fi
 

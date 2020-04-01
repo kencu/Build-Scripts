@@ -171,8 +171,7 @@ cd "$WGET_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/wget.patch ]]; then
-    cp ../patch/wget.patch .
-    patch -u -p0 < wget.patch
+    patch -u -p0 < ../patch/wget.patch
     echo ""
 fi
 

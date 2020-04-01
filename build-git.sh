@@ -140,8 +140,7 @@ gzip -d < "$GIT_TAR" | tar xf -
 cd "$GIT_DIR"
 
 if [[ -e ../patch/git.patch ]]; then
-    cp ../patch/git.patch .
-    patch -u -p0 < git.patch
+    patch -u -p0 < ../patch/git.patch
     echo ""
 fi
 
