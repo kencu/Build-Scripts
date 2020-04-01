@@ -10,7 +10,7 @@ PKGCONFIG_DIR=pkg-config-0.29.2
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -75,7 +75,7 @@ fi
 
 rm -rf "$PKGCONFIG_DIR" &>/dev/null
 gzip -d < "$PKGCONFIG_TAR" | tar xf -
-cd "$PKGCONFIG_DIR"
+cd "$PKGCONFIG_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
@@ -101,7 +101,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS" "MAKEINFO=true")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "MAKEINFO=true" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build pkg-config"
@@ -115,17 +115,14 @@ echo "**********************"
 echo "Installing package"
 echo "**********************"
 
-MAKE_FLAGS=("install")
+MAKE_FLAGS=("install" "V=1")
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
-
-# Update program cache
-hash -r &>/dev/null
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
