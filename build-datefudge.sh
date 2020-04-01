@@ -67,8 +67,7 @@ unxz "$DATEFUDGE_XZ" && tar -xf "$DATEFUDGE_TAR"
 cd "$DATEFUDGE_DIR"
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 #cp Makefile Makefile.orig
 #cp datefudge.c datefudge.c.orig

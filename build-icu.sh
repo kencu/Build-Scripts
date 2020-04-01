@@ -79,8 +79,7 @@ if [[ -e ../patch/icu.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 cd "source"
 

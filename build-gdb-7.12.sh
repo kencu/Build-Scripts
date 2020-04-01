@@ -89,8 +89,7 @@ if [[ -e ../patch/gdb.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 # GDB must be built in a directory different from its sources
 mkdir -p build || exit 1

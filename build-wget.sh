@@ -177,8 +177,7 @@ if [[ -e ../patch/wget.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 for file in $(find "$PWD" -name '*.h')

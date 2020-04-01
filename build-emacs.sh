@@ -97,8 +97,7 @@ gzip -d < "$EMACS_TAR" | tar xf -
 cd "$EMACS_DIR"
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 CONFIG_OPTS=('--with-xml2' '--without-x' '--without-sound' '--without-xpm'
     '--without-jpeg' '--without-tiff' '--without-gif' '--without-png'

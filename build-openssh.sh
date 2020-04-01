@@ -94,8 +94,7 @@ gzip -d < "$OPENSSH_TAR" | tar xf -
 cd "$OPENSSH_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${BUILD_CPPFLAGS[*]}"

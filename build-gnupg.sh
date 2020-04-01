@@ -151,8 +151,7 @@ patch -u -p0 < gnupg.patch
 echo ""
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     BUILD_STD="-std=c99"

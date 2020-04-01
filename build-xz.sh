@@ -72,13 +72,13 @@ rm -rf "$XZ_DIR" &>/dev/null
 gzip -d < "$XZ_TAR" | tar xf -
 cd "$XZ_DIR"
 
-cp ../patch/xz.patch .
-patch -u -p0 < xz.patch
-echo ""
+if [[ -e ../patch/xz.patch ]]; then
+    patch -u -p0 < ../patch/xz.patch
+    echo ""
+fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \

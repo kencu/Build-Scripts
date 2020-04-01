@@ -81,8 +81,7 @@ cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR/dist" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR" || exit 1

@@ -131,8 +131,7 @@ xz -d < "$GUILE_TAR" | tar xf -
 cd "$GUILE_DIR"
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--enable-shared")

@@ -146,8 +146,7 @@ if [[ -e ../patch/git.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-configure.sh
+bash ../fix-configure.sh
 
 # Command line tools, like sed and awk, need this on OS X.
 if [[ "$IS_DARWIN" -ne 0 ]]
