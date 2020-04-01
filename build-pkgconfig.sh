@@ -89,8 +89,8 @@ bash ../fix-configure.sh
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
-    --with-internal-glib
+    --libdir="$INSTX_LIBDIR"
+    # --with-internal-glib
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure pkg-config"
