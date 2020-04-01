@@ -71,14 +71,10 @@ rm -rf "$LIBERR_DIR" &>/dev/null
 tar xjf "$LIBERR_TAR"
 cd "$LIBERR_DIR"
 
-cp tests/t-logging.c tests/t-logging.c.error
-
 if [[ -e ../patch/gpgerror.patch ]]; then
     patch -u -p0 < ../patch/gpgerror.patch
     echo ""
 fi
-
-exit 0
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
