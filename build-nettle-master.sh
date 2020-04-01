@@ -77,7 +77,7 @@ echo "**********************"
 
 rm -rf "$NETTLE_DIR" &>/dev/null
 
-if ! git clone https://git.lysator.liu.se/nettle/nettle.git "$NETTLE_DIR"
+if ! git clone --depth=5 https://git.lysator.liu.se/nettle/nettle.git "$NETTLE_DIR"
 then
     echo "Failed to clone Nettle"
     exit 1
@@ -91,8 +91,6 @@ if [[ -e ../patch/nettle-test-shlib-dir.patch ]]; then
     patch -u -p0 < ../patch/nettle-test-shlib-dir.patch
     echo ""
 fi
-
-exit 0
 
 if ! ./.bootstrap; then
     echo "Failed to bootstrap Nettle"
