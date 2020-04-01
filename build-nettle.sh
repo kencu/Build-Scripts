@@ -108,7 +108,7 @@ CONFIG_OPTS+=("--disable-documentation")
 # Work-around Solaris configuration bug. Nettle tries to build SHA,
 # even when the compiler does not support it.
 
-if [[ "$IS_IA32" -eq 1 && "$IS_SOLARIS" -eq 0 ]]
+if [[ "$IS_IA32" -eq 1 ]]
 then
 
     AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")

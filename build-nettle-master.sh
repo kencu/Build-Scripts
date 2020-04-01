@@ -87,6 +87,13 @@ cd "$NETTLE_DIR" || exit 1
 
 git checkout test-shlib-dir
 
+if [[ -e ../patch/nettle-test-shlib-dir.patch ]]; then
+    patch -u -p0 < ../patch/nettle-test-shlib-dir.patch
+    echo ""
+fi
+
+exit 0
+
 if ! ./.bootstrap; then
     echo "Failed to bootstrap Nettle"
     exit 1
@@ -108,7 +115,7 @@ CONFIG_OPTS+=("--disable-documentation")
 # Work-around Solaris configuration bug. Nettle tries to build SHA,
 # even when the compiler does not support it.
 
-if [[ "$IS_IA32" -eq 1 && "$IS_SOLARIS" -eq 0 ]]
+if [[ "$IS_IA32" -eq 1 ]]
 then
 
     AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
