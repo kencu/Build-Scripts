@@ -85,7 +85,7 @@ fi
 
 cd "$NETTLE_DIR" || exit 1
 
-git checkout test-shlib-dir
+# git checkout test-shlib-dir
 
 if [[ -e ../patch/nettle-test-shlib-dir.patch ]]; then
     patch -u -p0 < ../patch/nettle-test-shlib-dir.patch
