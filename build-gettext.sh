@@ -93,7 +93,7 @@ if [[ -e ../patch/gettext.patch ]]; then
 fi
 
 # Fix sys_lib_dlsearch_path_spec
-../fix-configure.sh
+bash ../fix-configure.sh
 
 if [[ -e "$INSTX_PREFIX/bin/sed" ]]; then
     export SED="$INSTX_PREFIX/bin/sed"

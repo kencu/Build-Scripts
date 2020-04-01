@@ -158,7 +158,7 @@ cp ../patch/openvpn.patch .
 patch -u -p0 < openvpn.patch
 
 # Fix sys_lib_dlsearch_path_spec
-../fix-configure.sh
+bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
