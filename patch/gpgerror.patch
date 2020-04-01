@@ -1,5 +1,5 @@
---- tests/t-logging.c
-+++ tests/t-logging.c
+--- tests/t-logging.c.orig	2019-08-22 06:18:30.000000000 -0400
++++ tests/t-logging.c	2020-04-01 01:33:55.404695558 -0400
 @@ -76,15 +76,21 @@
  
        nread = gpgrt_fread (buffer + buflen, 1, NCHUNK, stream);
@@ -59,7 +59,7 @@
                         "and 2\n"
                         "and 3\n")))
 -    fail ("log_info test failed at line %d\n", __LINE__);
-+    {   
++    {
 +      free (logbuf);
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
@@ -89,7 +89,7 @@
    free (logbuf);
  
    /* With arguments and the prefix in a string arg.  */
-@@ -141,16 +162,23 @@
+@@ -141,7 +162,10 @@
    logbuf = log_to_string ();
    if (strcmp (logbuf,
                "t-logging: file '/foo/bar.txt\\nt-logging': not \\x01 found\n"))
@@ -98,25 +98,24 @@
 +      free (logbuf);
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-+  free (logbuf);
+   free (logbuf);
  
    /* With arguments and byte with bit 7 set in a string arg.  */
-   log_info ("file '%s': %s\n", "/foo/bar.txt\n", "not \x81 found");
+@@ -149,9 +173,11 @@
    logbuf = log_to_string ();
    if (strcmp (logbuf,
                "t-logging: file '/foo/bar.txt\\n': not \x81 found\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
--  /* show ("===>%s<===\n", logbuf); */
 +    {
 +      free (logbuf);
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
- 
-+  /* show ("===>%s<===\n", logbuf); */
+   /* show ("===>%s<===\n", logbuf); */
+-
    free (logbuf);
  }
  
-@@ -159,7 +187,7 @@
+@@ -160,7 +186,7 @@
  check_with_pid (void)
  {
    char testbuf[100];
@@ -125,7 +124,7 @@
  
    snprintf (testbuf, sizeof testbuf, "t-logging[%u]: ",
              (unsigned int)getpid ());
-@@ -168,7 +196,10 @@
+@@ -169,7 +195,10 @@
    logbuf = log_to_string ();
    if (strncmp (logbuf, testbuf, strlen (testbuf))
        || strcmp (logbuf+strlen (testbuf), "first log\n"))
@@ -137,13 +136,11 @@
    free (logbuf);
  
    log_info ("This is log line 1\nand 2\nand 3\n");
-@@ -176,8 +207,11 @@
-   if (strncmp (logbuf, testbuf, strlen (testbuf))
+@@ -178,7 +207,10 @@
        || strcmp (logbuf+strlen (testbuf), ("This is log line 1\n"
                                             "and 2\n"
--                                           "and 3\n")))
+                                            "and 3\n")))
 -    fail ("log_with_pid test failed at line %d\n", __LINE__);
-+                                           "and 3\n")))    
 +    {
 +      free (logbuf);
 +      fail ("log_with_pid test failed at line %d\n", __LINE__);
@@ -151,7 +148,7 @@
    free (logbuf);
  }
  
-@@ -185,7 +219,7 @@
+@@ -186,18 +218,29 @@
  static void
  check_log_error (void)
  {
@@ -159,14 +156,23 @@
 +  char *logbuf = NULL;
  
    if (log_get_errorcount (0))
-     fail ("log_get_errorcount() != 0 at line %d\n", __LINE__);
-@@ -194,9 +228,13 @@
+-    fail ("log_get_errorcount() != 0 at line %d\n", __LINE__);
++    {
++      free (logbuf);
++      fail ("log_get_errorcount() != 0 at line %d\n", __LINE__);
++    }
+ 
+   log_error ("Hola, something went wrong\n");
    if (log_get_errorcount (0) != 1)
-     fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
+-    fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
++    {
++      free (logbuf);
++      fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
++    }
++
    logbuf = log_to_string ();
--  if (strcmp (logbuf, "t-logging: Hola, something went wrong\n"))
+   if (strcmp (logbuf, "t-logging: Hola, something went wrong\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
-+  if (strcmp (logbuf, "t-logging: Hola, something went wrong\n"))    
 +    {
 +      free (logbuf);
 +      fail ("log_info test failed at line %d\n", __LINE__);
@@ -176,7 +182,7 @@
    if (log_get_errorcount (0) != 1)
      fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
    if (log_get_errorcount (1) != 1)  /* note: clear returns old value.  */
-@@ -226,7 +264,7 @@
+@@ -227,7 +270,7 @@
          case 'v': verbose++; break;
          case 'd': debug++; break;
          default : pargs.err = ARGPARSE_PRINT_ERROR; break;
