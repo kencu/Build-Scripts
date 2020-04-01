@@ -28,7 +28,6 @@ then
 fi
 
 if [[ -e "$INSTX_PKG_CACHE/iconv" ]] && [[ -e "$INSTX_PKG_CACHE/gettext" ]]; then
-    # Already installed, return success
     echo ""
     echo "iConv and GetText already installed."
     exit 0

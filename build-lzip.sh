@@ -30,7 +30,6 @@ then
 fi
 
 if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
-    # Already installed, return success
     echo ""
     echo "$PKG_NAME is already installed."
     exit 0
