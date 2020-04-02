@@ -6,12 +6,13 @@
 GREP_XZ=grep-3.3.tar.xz
 GREP_TAR=grep-3.3.tar
 GREP_DIR=grep-3.3
+PKG_NAME=grep
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR"|| exit 1
 }
 trap finish EXIT
 
@@ -25,6 +26,12 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
+fi
+
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -79,7 +86,7 @@ fi
 
 rm -rf "$GREP_TAR" "$GREP_DIR" &>/dev/null
 unxz "$GREP_XZ" && tar -xf "$GREP_TAR"
-cd "$GREP_DIR"
+cd "$GREP_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
@@ -146,7 +153,10 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
+
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
