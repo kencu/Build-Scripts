@@ -114,8 +114,7 @@ then
     PATH="$SOLARIS_PATH"
 fi
 
-# Add our path since we know we are using the latest binaries.
-PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
+PATH=$(echo "$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
 export PATH
 
 # echo "New PATH: $PATH"
@@ -322,6 +321,10 @@ fi
 
 export INSTX_PREFIX
 export INSTX_LIBDIR
+
+# Add our path since we know we are using the latest binaries.
+PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
+export PATH
 
 ###############################################################################
 
