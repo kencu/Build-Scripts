@@ -306,10 +306,6 @@ else
     cp "./wget2rc" "$INSTX_PREFIX/etc/"
 fi
 
-cd "$CURR_DIR" || exit 1
-
-###############################################################################
-
 if [[ -n "$(command -v zip)" ]]
 then
     zip -9 "${HOME}/config.log.zip" config.log
@@ -318,6 +314,8 @@ then
         zip -9 "${HOME}/test-suite.log.zip" "$file"
     done)
 fi
+
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
