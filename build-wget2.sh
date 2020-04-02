@@ -308,6 +308,11 @@ fi
 
 if [[ -n "$(command -v zip)" ]]
 then
+    echo "Saving log files"
+
+    rm -f "${HOME}/config.log.zip"
+    rm -f "${HOME}/test-suite.log.zip"
+
     zip -9 "${HOME}/config.log.zip" config.log
     (IFS="" find . -name 'test-suite.log' -print | while read -r file
     do
