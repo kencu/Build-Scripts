@@ -310,6 +310,17 @@ cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
+if [[ -n "$(command -v zip)" ]]
+then
+    zip -9 "${HOME}/config.log.zip" config.log
+    (IFS="" find . -name 'test-suite.log' -print | while read -r file
+    do
+        zip -9 "${HOME}/test-suite.log.zip" "$file"
+    done)
+fi
+
+###############################################################################
+
 echo ""
 echo "*****************************************************************************"
 echo "Please run Bash's 'hash -r' to update program cache in the current shell"
