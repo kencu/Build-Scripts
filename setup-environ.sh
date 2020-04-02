@@ -110,10 +110,10 @@ then
 
     # Add user's path in case a binary is in a non-standard location, like /opt/local
     SOLARIS_PATH="$SOLARIS_PATH:$PATH"
-
     PATH="$SOLARIS_PATH"
 fi
 
+# Strip leading and trailing semi-colons
 PATH=$(echo "$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
 export PATH
 
@@ -323,6 +323,7 @@ export INSTX_PREFIX
 export INSTX_LIBDIR
 
 # Add our path since we know we are using the latest binaries.
+# Strip leading and trailing semi-colons
 PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
 export PATH
 
