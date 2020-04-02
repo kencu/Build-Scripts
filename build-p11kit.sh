@@ -142,6 +142,11 @@ if [[ "$IS_SOLARIS" -ne 0 ]]; then
     done
 fi
 
+# https://github.com/p11-glue/p11-kit/issues/289
+file=p11-kit/test-rpc.c
+sed 's/0xFFFFFFFFFFFFFFFF/0xFFFFFFFFFFFFFFFFull/g' "$file" > "$file.fixed"
+mv "$file.fixed" "$file"
+
 echo "**********************"
 echo "Building package"
 echo "**********************"
