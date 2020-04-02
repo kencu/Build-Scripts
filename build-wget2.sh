@@ -102,6 +102,17 @@ fi
 
 ###############################################################################
 
+if [[ "$IS_SOLARIS" -ne 0 || "$IS_DARWIN" -ne 0 ]]
+then
+    if ! ./build-grep.sh
+    then
+        echo "Failed to build Grep"
+        exit 1
+    fi
+fi
+
+###############################################################################
+
 if ! ./build-lzip.sh
 then
     echo "Failed to build Lzip"
