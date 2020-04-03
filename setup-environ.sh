@@ -469,6 +469,20 @@ if [[ -z "$SH_LIBPTHREAD" ]]; then
     fi
 fi
 
+# -fno-sanitize-recover causes an abort(). Useful for test
+# programs that swallow UBsan output and pretty print "OK"
+if [[ -z "$SH_SAN_NORECOVER" ]]; then
+    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover=all 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$SH_ERROR" -eq 0 ]]; then
+        SH_SAN_NORECOVER="-fno-sanitize-recover=all"
+    else
+        SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$SH_ERROR" -eq 0 ]]; then
+            SH_SAN_NORECOVER="-fno-sanitize-recover"
+        fi
+    fi
+fi
+
 # Msan option
 if [[ -z "$SH_MSAN_ORIGIN" ]]; then
     SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
@@ -505,16 +519,17 @@ then
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$CFLAGS64"
 fi
 
-# -fno-sanitize-recover causes an abort(). Useful for test
-# programs that swallow UBsan output and pretty print "OK"
 if [[ -n "$INSTX_UBSAN" ]]; then
     BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_UBSAN=1"
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=undefined"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-sanitize-recover"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=undefined"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-sanitize-recover"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=undefined"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fno-sanitize-recover"
+
+    if [[ -n "$SH_SAN_NORECOVER" ]]; then
+        BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_SAN_NORECOVER"
+        BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_SAN_NORECOVER"
+        BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_SAN_NORECOVER"
+    fi
 
 elif [[ -n "$INSTX_ASAN" ]]; then
     BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_ASAN=1"
