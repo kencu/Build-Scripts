@@ -121,6 +121,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-microhttpd.sh
+then
+    echo "Failed to build MicroHttpd"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-lzip.sh
 then
     echo "Failed to build Lzip"
@@ -131,6 +139,7 @@ fi
 
 # PSL may be skipped if Python is too old. libpsl requires Python 2.7
 # Also see https://stackoverflow.com/a/40950971/608639
+SKIP_WGET_PSL=1
 if [[ -n "$(command -v python 2>/dev/null)" ]]
 then
     ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
@@ -142,6 +151,8 @@ then
             exit 1
         fi
     fi
+
+    SKIP_WGET_PSL=0
 fi
 
 ###############################################################################
@@ -217,6 +228,21 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+CONFIG_OPTS=()
+CONFIG_OPTS+=("--with-openssl=yes")
+CONFIG_OPTS+=("--with-ssl=openssl")
+CONFIG_OPTS+=("--with-libintl-prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-libiconv-prefix=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-libidn2=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-libpcre2=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-libmicrohttpd=$INSTX_PREFIX")
+CONFIG_OPTS+=("--without-gpgme")
+# CONFIG_OPTS+=("--without-libmicrohttpd")
+
+if [[ "$SKIP_WGET_PSL" -eq 1 ]]; then
+    CONFIG_OPTS+=("--without-libpsl")
+fi
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
@@ -228,12 +254,8 @@ bash ../fix-configure.sh
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --sysconfdir="$INSTX_PREFIX/etc" \
-    --with-openssl=yes \
-    --with-ssl=openssl \
-    --with-libintl-prefix="$INSTX_PREFIX" \
-    --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-libidn2="$INSTX_PREFIX" \
-    --with-libpcre2="$INSTX_PREFIX"
+    "${CONFIG_OPTS[@]}"
+
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Wget2"
