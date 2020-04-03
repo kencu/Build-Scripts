@@ -121,14 +121,6 @@ fi
 
 ###############################################################################
 
-if ! ./build-microhttpd.sh
-then
-    echo "Failed to build MicroHttpd"
-    exit 1
-fi
-
-###############################################################################
-
 if ! ./build-lzip.sh
 then
     echo "Failed to build Lzip"
@@ -237,7 +229,7 @@ CONFIG_OPTS+=("--with-libidn2=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-libpcre2=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-libmicrohttpd=$INSTX_PREFIX")
 CONFIG_OPTS+=("--without-gpgme")
-# CONFIG_OPTS+=("--without-libmicrohttpd")
+CONFIG_OPTS+=("--without-libmicrohttpd")
 
 if [[ "$SKIP_WGET_PSL" -eq 1 ]]; then
     CONFIG_OPTS+=("--without-libpsl")

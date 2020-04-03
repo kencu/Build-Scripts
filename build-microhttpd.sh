@@ -60,6 +60,22 @@ fi
 
 ###############################################################################
 
+if ! ./build-curl.sh
+then
+    echo "Failed to install cURL"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-gnutls.sh
+then
+    echo "Failed to install GnuTLS"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** MicroHttpd **********"
 echo
@@ -102,12 +118,12 @@ bash ../fix-configure.sh
     --libdir="$INSTX_LIBDIR" \
     --enable-shared=yes \
     --enable-static=yes \
+    --enable-https \
+    --with-libgcrypt-prefix="$INSTX_PREFIX" \
+    --with-libgnutls="$INSTX_PREFIX" \
+    --with-libcurl="$INSTX_PREFIX" \
     --disable-doc \
-    --disable-examples \
-    --with-libgcrypt-prefix="$INSTX_PREFIX"
-    # --enable-https
-    # --with-libgnutls="$INSTX_PREFIX"
-    # --with-libcurl="$INSTX_PREFIX"
+    --disable-examples
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure MicroHttpd"
