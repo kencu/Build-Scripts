@@ -4,15 +4,15 @@
 # This script builds xz from sources.
 
 # https://tukaani.org/xz/xz-5.2.3.tar.gz
-XZ_TAR=xz-5.2.4.tar.gz
-XZ_DIR=xz-5.2.4
+XZ_TAR=xz-5.2.5.tar.gz
+XZ_DIR=xz-5.2.5
 PKG_NAME=xz
 
 ###############################################################################
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -70,7 +70,7 @@ fi
 
 rm -rf "$XZ_DIR" &>/dev/null
 gzip -d < "$XZ_TAR" | tar xf -
-cd "$XZ_DIR"
+cd "$XZ_DIR" || exit 1
 
 if [[ -e ../patch/xz.patch ]]; then
     patch -u -p0 < ../patch/xz.patch
@@ -134,7 +134,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
