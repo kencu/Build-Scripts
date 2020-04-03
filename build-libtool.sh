@@ -110,14 +110,6 @@ bash ../fix-pkgconfig.sh
 #     exit 1
 # fi
 
-#echo "Searching for errors hidden in log files"
-#COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-#if [[ "${COUNT}" -ne 0 ]];
-#then
-#    echo "Failed to test libltdl"
-#    exit 1
-#fi
-
 echo "**********************"
 echo "Installing package"
 echo "**********************"

@@ -142,21 +142,13 @@ then
     #exit 1
 fi
 
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
-then
-    echo "Failed to test IDN2"
-    exit 1
-fi
-
 echo "**********************"
 echo "Installing package"
 echo "**********************"
 
 # Delete Libs.private from the *.pc file. Some scripts cannot parse the output.
-sed '/^Libs.private/d' libidn2.pc > libidn2.pc.new
-mv libidn2.pc.new libidn2.pc
+#sed '/^Libs.private/d' libidn2.pc > libidn2.pc.new
+#mv libidn2.pc.new libidn2.pc
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then

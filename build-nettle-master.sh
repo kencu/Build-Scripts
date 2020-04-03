@@ -187,22 +187,12 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-export PATH="/bin:/usr/bin:/sbin:/usr/sbin"
-
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
     echo "Failed to test Nettle"
     echo "**********************"
-    exit 1
-fi
-
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
-then
-    echo "Failed to test Nettle"
     exit 1
 fi
 

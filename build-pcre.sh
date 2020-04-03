@@ -134,15 +134,6 @@ if [[ "$IS_LINUX" -ne 0 ]]; then
     fi
 fi
 
-# https://bugs.exim.org/show_bug.cgi?id=2380
-echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
-then
-    echo "Failed to test PCRE"
-    exit 1
-fi
-
 echo "**********************"
 echo "Installing package"
 echo "**********************"

@@ -1,3 +1,5 @@
+# It does not appear PCRE is going to fix the bugs.
+# https://bugs.exim.org/show_bug.cgi?id=2380
 --- pcretest.c
 +++ pcretest.c
 @@ -500,7 +500,7 @@

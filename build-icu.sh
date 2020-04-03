@@ -119,21 +119,13 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
- MAKE_FLAGS=("check")
- if ! "${MAKE}" "${MAKE_FLAGS[@]}"
- then
-    echo "**********************"
-    echo "Failed to test libicu"
-    echo "**********************"
-    # exit 1
- fi
-
- echo "Searching for errors hidden in log files"
-COUNT=$(find . -name '*.log' ! -name 'config.log' -exec grep -o 'runtime error:' {} \; | wc -l)
-if [[ "${COUNT}" -ne 0 ]];
+MAKE_FLAGS=("check")
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test libicu"
-    exit 1
+   echo "**********************"
+   echo "Failed to test libicu"
+   echo "**********************"
+   # exit 1
 fi
 
 echo "**********************"
