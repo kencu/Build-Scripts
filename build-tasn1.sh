@@ -11,7 +11,7 @@ PKG_NAME=tasn1
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT
 
@@ -69,7 +69,7 @@ fi
 
 rm -rf "$TASN1_DIR" &>/dev/null
 gzip -d < "$TASN1_TAR" | tar xf -
-cd "$TASN1_DIR"
+cd "$TASN1_DIR" || exit 1
 
 if [[ -e ../patch/tasn1.patch ]]; then
     patch -u -p0 < ../patch/tasn1.patch
@@ -137,7 +137,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"

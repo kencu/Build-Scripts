@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GNU Awk from sources.
 
-GAWK_XZ=gawk-5.0.1.tar.xz
-GAWK_TAR=gawk-5.0.1.tar
+GAWK_TAR=gawk-5.0.1.tar.gz
 GAWK_DIR=gawk-5.0.1
 
 ###############################################################################
@@ -85,8 +84,8 @@ then
     exit 1
 fi
 
-rm -rf "$GAWK_TAR" "$GAWK_DIR" &>/dev/null
-unxz "$GAWK_XZ" && tar -xf "$GAWK_TAR"
+rm -rf "$GAWK_DIR" &>/dev/null
+gzip -d < "$GAWK_TAR" | tar xf -
 cd "$GAWK_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
