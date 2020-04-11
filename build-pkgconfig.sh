@@ -80,6 +80,11 @@ cd "$PKGCONFIG_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+CONFIG_OPTS=()
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    CONFIG_OPTS+=("--with-internal-glib")
+fi
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
@@ -89,8 +94,8 @@ bash ../fix-configure.sh
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
-    # --with-internal-glib
+    --libdir="$INSTX_LIBDIR" \
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure pkg-config"
