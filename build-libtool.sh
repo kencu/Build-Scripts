@@ -67,6 +67,13 @@ cd "$LIBTOOL_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+CONFIG_OPTS=()
+CONFIG_OPTS+=("--enable-shared")
+
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    CONFIG_OPTS+=("--program-prefix=g")
+fi
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
@@ -77,7 +84,7 @@ bash ../fix-configure.sh
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libtool and libltdl"
@@ -88,7 +95,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build libtool and libltdl"

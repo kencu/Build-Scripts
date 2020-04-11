@@ -79,6 +79,8 @@ rm -rf "$NCURSES_DIR" &>/dev/null
 gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
+exit 0
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
