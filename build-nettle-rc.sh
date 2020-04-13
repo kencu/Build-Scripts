@@ -5,7 +5,7 @@
 
 NETTLE_TAR=nettle-3.6rc1.tar.gz
 NETTLE_DIR=nettle-3.6
-PKG_NAME=nettle
+PKG_NAME=nettle-rc
 
 ###############################################################################
 
@@ -205,7 +205,7 @@ fi
 cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
-touch "$INSTX_PKG_CACHE/$PKG_NAME"
+# touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
