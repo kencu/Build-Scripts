@@ -4,7 +4,7 @@
 # This script builds Nettle from sources.
 
 NETTLE_TAR=nettle-3.6rc1.tar.gz
-NETTLE_DIR=nettle-3.6
+NETTLE_DIR=nettle-3.6rc1
 PKG_NAME=nettle-rc
 
 ###############################################################################
