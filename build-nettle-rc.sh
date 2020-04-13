@@ -87,8 +87,8 @@ rm -rf "$NETTLE_DIR" &>/dev/null
 gzip -d < "$NETTLE_TAR" | tar xf -
 cd "$NETTLE_DIR" || exit 1
 
-if [[ -e ../patch/nettle.patch ]]; then
-    patch -u -p0 < ../patch/nettle.patch
+if [[ -e ../patch/nettle-rc.patch ]]; then
+    patch -u -p0 < ../patch/nettle-rc.patch
     echo ""
 fi
 
