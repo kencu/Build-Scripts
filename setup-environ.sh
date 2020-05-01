@@ -277,50 +277,60 @@ else
     INSTX_BITNESS=32
 fi
 
+# Some of the BSDs install user software into /usr/local.
+# We don't want to overwrite the system installed software.
+if [[ "$IS_BSD_FAMILY" -ne 0 ]]; then
+    DEF_PREFIX="/opt/local"
+else
+    DEF_PREFIX="/usr/local"
+fi
+
 # Don't override a user choice of INSTX_PREFIX
 if [[ -z "$INSTX_PREFIX" ]]; then
-    # Some of the BSDs install user software into /usr/local.
-    # We don't want to overwrite the system installed software.
-    if [[ "$IS_BSD_FAMILY" -ne 0 ]]; then
-        INSTX_PREFIX="/opt/local"
-    else
-        INSTX_PREFIX="/usr/local"
-    fi
+    INSTX_PREFIX="$DEF_PREFIX"
+fi
+
+#if [[ "$IS_64BIT" -ne 0 ]] && [[ "$IS_SOLARIS" -ne 0 ]]; then
+#    DEF_LIBDIR="$INSTX_PREFIX/lib/64"
+#    DEF_OPATH="'""\$\$ORIGIN/../lib/64""'"
+#elif [[ "$IS_SOLARIS" -ne 0 ]]; then
+#    DEF_LIBDIR="$INSTX_PREFIX/lib/32"
+#    DEF_OPATH="'""\$\$ORIGIN/../lib/32""'"
+
+if [[ "$IS_SOLARIS" -ne 0 ]]; then
+    DEF_LIBDIR="$INSTX_PREFIX/lib"
+    DEF_RPATH="$INSTX_PREFIX/lib"
+    DEF_OPATH="'""\$\$ORIGIN/../lib""'"
+elif [[ "$IS_DARWIN" -ne 0 ]]; then
+    DEF_LIBDIR="$INSTX_PREFIX/lib"
+    DEF_RPATH="$INSTX_PREFIX/lib"
+    DEF_OPATH="@executable_path/../lib"
+elif [[ "$IS_RH_FAMILY" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
+    DEF_LIBDIR="$INSTX_PREFIX/lib64"
+    DEF_RPATH="$INSTX_PREFIX/lib64"
+    DEF_OPATH="'""\$\$ORIGIN/../lib64""'"
+else
+    DEF_LIBDIR="$INSTX_PREFIX/lib"
+    DEF_RPATH="$INSTX_PREFIX/lib"
+    DEF_OPATH="'""\$\$ORIGIN/../lib""'"
 fi
 
 # Don't override a user choice of INSTX_LIBDIR. Also see
 # https://blogs.oracle.com/dipol/dynamic-libraries,-rpath,-and-mac-os
-if [[ -z "$INSTX_LIBDIR" ]]
-then
-    #if [[ "$IS_64BIT" -ne 0 ]] && [[ "$IS_SOLARIS" -ne 0 ]]; then
-    #    INSTX_LIBDIR="$INSTX_PREFIX/lib/64"
-    #    INSTX_OPATH="'""\$\$ORIGIN/../lib/64""'"
-    #elif [[ "$IS_SOLARIS" -ne 0 ]]; then
-    #    INSTX_LIBDIR="$INSTX_PREFIX/lib/32"
-    #    INSTX_OPATH="'""\$\$ORIGIN/../lib/32""'"
-
-    if [[ "$IS_SOLARIS" -ne 0 ]]; then
-        INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_OPATH="'""\$\$ORIGIN/../lib""'"
-    elif [[ "$IS_DARWIN" -ne 0 ]]; then
-        INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_OPATH="@loader_path/../lib"
-    elif [[ "$IS_RH_FAMILY" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
-        INSTX_LIBDIR="$INSTX_PREFIX/lib64"
-        INSTX_OPATH="'""\$\$ORIGIN/../lib64""'"
-    else
-        INSTX_LIBDIR="$INSTX_PREFIX/lib"
-        INSTX_OPATH="'""\$\$ORIGIN/../lib""'"
-    fi
+if [[ -z "$INSTX_LIBDIR" ]]; then
+    INSTX_LIBDIR="$DEF_LIBDIR"
 fi
-
-# Use a sane default
+if [[ -z "$INSTX_RPATH" ]]; then
+    INSTX_RPATH="$DEF_RPATH"
+fi
 if [[ -z "$INSTX_OPATH" ]]; then
-    INSTX_OPATH="$INSTX_LIBDIR"
+    INSTX_OPATH="$DEF_OPATH"
 fi
 
 export INSTX_PREFIX
 export INSTX_LIBDIR
+export INSTX_RPATH
+export INSTX_OPATH
 
 # Add our path since we know we are using the latest binaries.
 # Strip leading and trailing semi-colons
@@ -397,15 +407,13 @@ if [[ "$SH_ERROR" -eq 0 ]]; then
 fi
 
 # See if -Wl,-rpath,${libdir} works. This is a RPATH.
-SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
-    INSTX_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
-    SH_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
+    SH_RPATH="-Wl,-rpath,$INSTX_RPATH"
 fi
-SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
-    INSTX_RPATH="-Wl,-R,$INSTX_LIBDIR"
-    SH_RPATH="-Wl,-R,$INSTX_LIBDIR"
+    SH_RPATH="-Wl,-R,$INSTX_RPATH"
 fi
 
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
