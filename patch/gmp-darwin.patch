@@ -1,6 +1,6 @@
 --- gmp-h.in
 +++ gmp-h.in
-@@ -359,9 +359,9 @@
+@@ -363,9 +363,9 @@
  #ifdef __GNUC__
  #if (defined __GNUC_STDC_INLINE__) || (__GNUC__ == 4 && __GNUC_MINOR__ == 2) \
    || (defined __GNUC_GNU_INLINE__ && defined __cplusplus)
@@ -12,7 +12,7 @@
  #endif
  #define __GMP_INLINE_PROTOTYPES  1
  #endif
-@@ -618,7 +618,7 @@
+@@ -622,7 +622,7 @@
  
  #define mpz_abs __gmpz_abs
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_abs)
@@ -21,7 +21,7 @@
  #endif
  
  #define mpz_add __gmpz_add
-@@ -794,17 +794,17 @@
+@@ -798,17 +798,17 @@
  
  #define mpz_fits_uint_p __gmpz_fits_uint_p
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_fits_uint_p)
@@ -42,7 +42,7 @@
  #endif
  
  #define mpz_gcd __gmpz_gcd
-@@ -830,12 +830,12 @@
+@@ -834,12 +834,12 @@
  
  #define mpz_get_ui __gmpz_get_ui
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_get_ui)
@@ -57,7 +57,7 @@
  #endif
  
  #define mpz_hamdist __gmpz_hamdist
-@@ -937,7 +937,7 @@
+@@ -941,7 +941,7 @@
  
  #define mpz_neg __gmpz_neg
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_neg)
@@ -66,7 +66,7 @@
  #endif
  
  #define mpz_nextprime __gmpz_nextprime
-@@ -958,12 +958,12 @@
+@@ -962,12 +962,12 @@
  
  #define mpz_perfect_square_p __gmpz_perfect_square_p
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_perfect_square_p)
@@ -81,7 +81,7 @@
  #endif
  
  #define mpz_pow_ui __gmpz_pow_ui
-@@ -1019,7 +1019,7 @@
+@@ -1023,7 +1023,7 @@
  
  #define mpz_set_q __gmpz_set_q
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_set_q)
@@ -90,7 +90,7 @@
  #endif
  
  #define mpz_set_si __gmpz_set_si
-@@ -1036,7 +1036,7 @@
+@@ -1040,7 +1040,7 @@
  
  #define mpz_size __gmpz_size
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpz_size)
@@ -99,7 +99,7 @@
  #endif
  
  #define mpz_sizeinbase __gmpz_sizeinbase
-@@ -1130,7 +1130,7 @@
+@@ -1134,7 +1134,7 @@
  
  #define mpq_abs __gmpq_abs
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpq_abs)
@@ -108,7 +108,7 @@
  #endif
  
  #define mpq_add __gmpq_add
-@@ -1200,7 +1200,7 @@
+@@ -1204,7 +1204,7 @@
  
  #define mpq_neg __gmpq_neg
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpq_neg)
@@ -117,7 +117,7 @@
  #endif
  
  #define mpq_out_str __gmpq_out_str
-@@ -1458,12 +1458,12 @@
+@@ -1462,12 +1462,12 @@
  
  #define mpn_add __MPN(add)
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpn_add)
@@ -132,7 +132,7 @@
  #endif
  
  #define mpn_add_n __MPN(add_n)
-@@ -1474,12 +1474,12 @@
+@@ -1478,12 +1478,12 @@
  
  #define mpn_cmp __MPN(cmp)
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpn_cmp)
@@ -147,7 +147,7 @@
  #endif
  
  #define mpn_divexact_1 __MPN(divexact_1)
-@@ -1547,7 +1547,7 @@
+@@ -1554,7 +1554,7 @@
  
  #define mpn_neg __MPN(neg)
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpn_neg)
@@ -156,7 +156,7 @@
  #endif
  
  #define mpn_com __MPN(com)
-@@ -1595,12 +1595,12 @@
+@@ -1602,12 +1602,12 @@
  
  #define mpn_sub __MPN(sub)
  #if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpn_sub)

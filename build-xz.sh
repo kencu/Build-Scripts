@@ -3,7 +3,6 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds xz from sources.
 
-# https://tukaani.org/xz/xz-5.2.3.tar.gz
 XZ_TAR=xz-5.2.5.tar.gz
 XZ_DIR=xz-5.2.5
 PKG_NAME=xz
