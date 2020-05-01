@@ -3,7 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds findutils from sources.
 
-FIND_TAR=findutils-4.7.0.tar.gz
+FIND_XZ=findutils-4.7.0.tar.gz
+FIND_TAR=findutils-4.7.0.tar
 FIND_DIR=findutils-4.7.0
 
 ###############################################################################
@@ -69,8 +70,8 @@ then
     exit 1
 fi
 
-rm -rf "$FIND_DIR" &>/dev/null
-gzip -d < "$FIND_TAR" | tar xf -
+rm -rf "$FIND_TAR" "$FIND_DIR" &>/dev/null
+unxz "$FIND_XZ" && tar -xf "$FIND_TAR"
 cd "$FIND_DIR"
 
 # Fix sys_lib_dlsearch_path_spec
