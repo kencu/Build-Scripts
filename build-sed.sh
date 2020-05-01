@@ -60,8 +60,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$SED_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/sed/$SED_XZ"
+if ! "$WGET" -q -O "$SED_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/sed/$SED_TAR"
 then
     echo "Failed to download Sed"
     exit 1
@@ -155,7 +155,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$SED_XZ" "$SED_TAR" "$SED_DIR")
+    ARTIFACTS=("$SED_TAR" "$SED_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
