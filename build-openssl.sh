@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds OpenSSL from sources.
 
-OPENSSL_TAR=openssl-1.1.1f.tar.gz
-OPENSSL_DIR=openssl-1.1.1f
+OPENSSL_TAR=openssl-1.1.1g.tar.gz
+OPENSSL_DIR=openssl-1.1.1g
 PKG_NAME=openssl
 
 ###############################################################################
