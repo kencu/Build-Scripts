@@ -154,7 +154,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$CORE_TAR" "$CORE_DIR")
+    ARTIFACTS=("$CORE_XZ" "$CORE_TAR" "$CORE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
