@@ -7,8 +7,7 @@
 # The 'make check' recipe tries to build the documentation even when the
 # tools are missing. Derp...
 
-BISON_XZ=bison-3.5.3.tar.xz
-BISON_TAR=bison-3.5.3.tar
+BISON_TAR=bison-3.5.3.tar.gz
 BISON_DIR=bison-3.5.3
 
 ###############################################################################
@@ -73,8 +72,8 @@ then
     exit 1
 fi
 
-rm -rf "$BISON_TAR" "$BISON_DIR" &>/dev/null
-unxz "$BISON_XZ" && tar -xf "$BISON_TAR"
+rm -rf "$BISON_DIR" &>/dev/null
+gzip -d < "$BISON_TAR" | tar xf -
 cd "$BISON_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.

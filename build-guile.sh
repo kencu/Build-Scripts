@@ -6,7 +6,7 @@
 #
 # Requires libtool-ltdl-devel on Fedora.
 
-GUILE_TAR=guile-2.2.7.tar.xz
+GUILE_TAR=guile-2.2.7.tar.gz
 GUILE_DIR=guile-2.2.7
 PKG_NAME=guile
 
@@ -127,8 +127,8 @@ then
 fi
 
 rm -rf "$GUILE_DIR" &>/dev/null
-xz -d < "$GUILE_TAR" | tar xf -
-cd "$GUILE_DIR"
+gzip -d < "$GUILE_TAR" | tar xf -
+cd "$GUILE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Datefudge from sources.
 
-DATEFUDGE_XZ=datefudge_1.22.tar.xz
-DATEFUDGE_TAR=datefudge_1.22.tar
+DATEFUDGE_TAR=datefudge_1.22.tar.gz
 DATEFUDGE_DIR=datefudge-1.22
 PKG_NAME=datefudge
 
@@ -62,9 +61,9 @@ then
     exit 1
 fi
 
-rm -rf "$DATEFUDGE_TAR" "$DATEFUDGE_DIR" &>/dev/null
-unxz "$DATEFUDGE_XZ" && tar -xf "$DATEFUDGE_TAR"
-cd "$DATEFUDGE_DIR"
+rm -rf "$DATEFUDGE_DIR" &>/dev/null
+gzip -d < "$DATEFUDGE_TAR" | tar xf -
+cd "$DATEFUDGE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh

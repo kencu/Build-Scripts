@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds MPFR from sources.
 
-MPFR_XZ=mpfr-4.0.2.tar.xz
-MPFR_TAR=mpfr-4.0.2.tar
+MPFR_TAR=mpfr-4.0.2.tar.gz
 MPFR_DIR=mpfr-4.0.2
 PKG_NAME=mpfr
 
@@ -84,8 +83,8 @@ then
     exit 1
 fi
 
-rm -rf "$MPFR_TAR" "$MPFR_DIR" &>/dev/null
-unxz "$MPFR_XZ" && tar -xf "$MPFR_TAR"
+rm -rf "$MPFR_DIR" &>/dev/null
+gzip -d < "$MPFR_TAR" | tar xf -
 cd "$MPFR_DIR" || exit 1
 
 # Per INSTALL

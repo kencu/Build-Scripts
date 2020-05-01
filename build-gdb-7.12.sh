@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GDB from sources.
 
-GDB_XZ=gdb-7.12.1.tar.xz
-GDB_TAR=gdb-7.12.1.tar
+GDB_TAR=gdb-7.12.1.tar.gz
 GDB_DIR=gdb-7.12.1
 
 ###############################################################################
@@ -77,8 +76,8 @@ then
     exit 1
 fi
 
-rm -rf "$GDB_TAR" "$GDB_DIR" &>/dev/null
-unxz "$GDB_XZ" && tar -xf "$GDB_TAR"
+rm -rf "$GDB_DIR" &>/dev/null
+gzip -d < "$GDB_TAR" | tar xf -
 cd "$GDB_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.

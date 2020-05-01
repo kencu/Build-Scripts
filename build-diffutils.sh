@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GNU Diffutils from sources.
 
-DIFFUTILS_XZ=diffutils-3.7.tar.xz
-DIFFUTILS_TAR=diffutils-3.7.tar
+DIFFUTILS_TAR=diffutils-3.7.tar.gz
 DIFFUTILS_DIR=diffutils-3.7
 
 ###############################################################################
@@ -69,8 +68,8 @@ then
     exit 1
 fi
 
-rm -rf "$DIFFUTILS_TAR" "$DIFFUTILS_DIR" &>/dev/null
-unxz "$DIFFUTILS_XZ" && tar -xf "$DIFFUTILS_TAR"
+rm -rf "$DIFFUTILS_DIR" &>/dev/null
+gzip -d < "$DIFFUTILS_TAR" | tar xf -
 cd "$DIFFUTILS_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec

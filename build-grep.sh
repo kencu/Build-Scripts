@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds grep from sources.
 
-GREP_XZ=grep-3.3.tar.xz
-GREP_TAR=grep-3.3.tar
+GREP_TAR=grep-3.3.tar.gz
 GREP_DIR=grep-3.3
 PKG_NAME=grep
 
@@ -84,8 +83,8 @@ then
     exit 1
 fi
 
-rm -rf "$GREP_TAR" "$GREP_DIR" &>/dev/null
-unxz "$GREP_XZ" && tar -xf "$GREP_TAR"
+rm -rf "$GREP_DIR" &>/dev/null
+gzip -d < "$GREP_TAR" | tar xf -
 cd "$GREP_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec

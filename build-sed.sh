@@ -3,8 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Sed from sources.
 
-SED_XZ=sed-4.8.tar.xz
-SED_TAR=sed-4.8.tar
+SED_TAR=sed-4.8.tar.gz
 SED_DIR=sed-4.8
 PKG_NAME=sed
 
@@ -68,8 +67,8 @@ then
     exit 1
 fi
 
-rm -rf "$SED_TAR" "$SED_DIR" &>/dev/null
-unxz "$SED_XZ" && tar -xf "$SED_TAR"
+rm -rf "$SED_DIR" &>/dev/null
+gzip -d < "$SED_TAR" | tar xf -
 cd "$SED_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
