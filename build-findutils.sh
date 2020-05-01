@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds findutils from sources.
 
-FIND_XZ=findutils-4.7.0.tar.gz
+FIND_XZ=findutils-4.7.0.tar.xz
 FIND_TAR=findutils-4.7.0.tar
 FIND_DIR=findutils-4.7.0
 
@@ -63,7 +63,7 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$FIND_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+if ! "$WGET" -q -O "$FIND_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/findutils/$FIND_XZ"
 then
     echo "Failed to download Find Utilities"
