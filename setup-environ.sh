@@ -659,6 +659,7 @@ if [[ -z "$PRINT_ONCE" ]]; then
     printf "%s\n" "   INSTX_PREFIX: $INSTX_PREFIX"
     printf "%s\n" "   INSTX_LIBDIR: $INSTX_LIBDIR"
     printf "%s\n" "    INSTX_OPATH: $INSTX_OPATH"
+    printf "%s\n" "    INSTX_RPATH: $INSTX_RPATH"
     printf "%s\n" ""
     printf "%s\n" " AUTOCONF_BUILD: $AUTOCONF_BUILD"
     printf "%s\n" "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
