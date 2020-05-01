@@ -17,7 +17,7 @@ do
     mv "$file.fixed" "$file"
 done)
 
-echo "The -E option has been removed from sudo. This may cause some"
-echo "unexpected results, especially for packages that build stuff"
-echo "during 'sudo make install'. For example, Perl will create a"
-echo ".cpan folder in the user's home directory owned by root."
+echo "The -E option has been removed from sudo. This may cause some unexpected"
+echo "results, especially for packages that build stuff during 'sudo make"
+echo "install'. For example, Perl will create a .cpan folder in the user's home"
+echo "directory owned by root."
