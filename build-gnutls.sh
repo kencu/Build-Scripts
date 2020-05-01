@@ -3,7 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GnuTLS and its dependencies from sources.
 
-GNUTLS_TAR=gnutls-3.6.13.tar.gz
+GNUTLS_XZ=gnutls-3.6.13.tar.xz
+GNUTLS_TAR=gnutls-3.6.13.tar
 GNUTLS_DIR=gnutls-3.6.13
 PKG_NAME=gnutls
 
@@ -148,9 +149,9 @@ then
     exit 1
 fi
 
-rm -rf "$GNUTLS_DIR" &>/dev/null
-gzip -d < "$GNUTLS_TAR" | tar xf -
-cd "$GNUTLS_DIR" || exit 1
+rm -rf "$GNUTLS_TAR" "$GNUTLS_DIR" &>/dev/null
+unxz "$GNUTLS_XZ" && tar -xf "$GNUTLS_TAR"
+cd "$GNUTLS_DIR"
 
 if [[ -e ../patch/gnutls.patch ]]; then
     patch -u -p0 < ../patch/gnutls.patch
