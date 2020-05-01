@@ -3,7 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds coreutils from sources.
 
-CORE_TAR=coreutils-8.31.tar.xz
+CORE_XZ=coreutils-8.31.tar.xz
+CORE_TAR=coreutils-8.31.tar
 CORE_DIR=coreutils-8.31
 
 ###############################################################################
@@ -70,15 +71,15 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$CORE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/coreutils/$CORE_TAR"
+if ! "$WGET" -q -O "$CORE_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/coreutils/$CORE_XZ"
 then
     echo "Failed to download Core Utilities"
     exit 1
 fi
 
-rm -rf "$CORE_DIR" &>/dev/null
-tar xJf "$CORE_TAR"
+rm -rf "$CORE_TAR" "$CORE_DIR" &>/dev/null
+unxz "$CORE_XZ" && tar -xf "$CORE_TAR"
 cd "$CORE_DIR"
 
 # Fix sys_lib_dlsearch_path_spec
