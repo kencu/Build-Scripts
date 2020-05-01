@@ -4,7 +4,8 @@
 # This script builds P11-Kit from sources.
 
 P11KIT_VER=0.23.20
-P11KIT_TAR=p11-kit-"$P11KIT_VER".tar.gz
+P11KIT_XZ=p11-kit-"$P11KIT_VER".tar.xz
+P11KIT_TAR=p11-kit-"$P11KIT_VER".tar
 P11KIT_DIR=p11-kit-"$P11KIT_VER"
 PKG_NAME=p11-kit
 
@@ -84,9 +85,9 @@ then
     exit 1
 fi
 
-rm -rf "$P11KIT_DIR" &>/dev/null
-gzip -d < "$P11KIT_TAR" | tar xf -
-cd "$P11KIT_DIR" || exit 1
+rm -rf "$P11KIT_TAR" "$P11KIT_DIR" &>/dev/null
+unxz "$P11KIT_XZ" && tar -xf "$P11KIT_TAR"
+cd "$P11KIT_DIR"
 
 if [[ -e ../patch/p11kit.patch ]]; then
     patch -u -p0 < ../patch/p11kit.patch
@@ -193,7 +194,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$P11KIT_TAR" "$P11KIT_DIR")
+    ARTIFACTS=("$P11KIT_XZ" "$P11KIT_TAR" "$P11KIT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
