@@ -157,6 +157,11 @@ if [[ "$IS_OPENBSD" -eq 1 ]]; then
     SKIP_OPENSSL_TESTS=1
 fi
 
+# Fix the install_name
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="-Wl,-headerpad_max_install_names"
+fi
+
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]} -DPEDANTIC" \
@@ -212,6 +217,33 @@ then
     fi
 else
     echo "OpenSSL is not tested."
+fi
+
+if [[ "$IS_DARWIN" -ne 0 ]]
+then
+    echo "**********************"
+    echo "Fixing install_name"
+    echo "**********************"
+
+    install_name_tool -id "$INSTX_LIBDIR/libcrypto.1.1.dylib" \
+        ./libcrypto.1.1.dylib
+    install_name_tool -id "$INSTX_LIBDIR/libssl.1.1.dylib" \
+        ./libssl.1.1.dylib
+
+    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+        "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./libcrypto.1.1.dylib
+    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+        "$INSTX_LIBDIR/libssl.1.1.dylib" ./libcrypto.1.1.dylib
+
+    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+        "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./libssl.1.1.dylib
+    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+        "$INSTX_LIBDIR/libssl.1.1.dylib" ./libssl.1.1.dylib
+
+    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+        "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./apps/openssl
+    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+        "$INSTX_LIBDIR/libssl.1.1.dylib" ./apps/openssl
 fi
 
 echo "**********************"
