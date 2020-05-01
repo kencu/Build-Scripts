@@ -2,50 +2,6 @@
 # work against Master. Niels has a better fix for HAVE_BUILTIN_BSWAP64,
 # but it was not cut-in due to expediency. We need something that works
 # on most platforms, not something complex that runs fast everywhere.
---- xts.c
-+++ xts.c
-@@ -49,15 +49,28 @@
- /* the algorithm reads this as a 128bit Little Endian number */
- /* src and dest can point to the same buffer for in-place operations */
- #if WORDS_BIGENDIAN
-+
-+#if (_LP64 || __LP64__)
- #define BE_SHIFT(x) ((((x) & 0x7f7f7f7f7f7f7f7f) << 1) | \
-                      (((x) & 0x8080808080808080) >> 15))
-+#else
-+#define BE_SHIFT(x) ((((x) & 0x7f7f7f7f7f7f7f7full) << 1) | \
-+                     (((x) & 0x8080808080808080ull) >> 15))
-+#endif
-+
- static void
- xts_shift(union nettle_block16 *dst,
-           const union nettle_block16 *src)
- {
-+#if (_LP64 || __LP64__)
-   uint64_t carry = (src->u64[1] & 0x80) >> 7;
-   dst->u64[1] = BE_SHIFT(src->u64[1]) | ((src->u64[0] & 0x80) << 49);
-   dst->u64[0] = BE_SHIFT(src->u64[0]) ^ (0x8700000000000000 & -carry);
-+#else
-+  uint64_t carry = (src->u64[1] & 0x80) >> 7;
-+  dst->u64[1] = BE_SHIFT(src->u64[1]) | ((src->u64[0] & 0x80) << 49);
-+  dst->u64[0] = BE_SHIFT(src->u64[0]) ^ (0x8700000000000000ull & -carry);
-+#endif
- }
- #else /* !WORDS_BIGENDIAN */
- static void
---- ctr.c
-+++ ctr.c
-@@ -48,6 +48,10 @@
- 
- #define MIN(a,b) (((a) < (b)) ? (a) : (b))
- 
-+#if 1
-+# undef HAVE_BUILTIN_BSWAP64
-+#endif
-+
- static size_t
- ctr_fill (size_t block_size, uint8_t *ctr, size_t length, uint8_t *buffer)
- {
 --- run-tests
 +++ run-tests
 @@ -28,6 +28,13 @@
