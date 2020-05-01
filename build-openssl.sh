@@ -230,19 +230,19 @@ then
     install_name_tool -id "$INSTX_LIBDIR/libssl.1.1.dylib" \
         ./libssl.1.1.dylib
 
-    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libcrypto.1.1.dylib" \
         "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./libcrypto.1.1.dylib
-    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libssl.1.1.dylib" \
         "$INSTX_LIBDIR/libssl.1.1.dylib" ./libcrypto.1.1.dylib
 
-    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libcrypto.1.1.dylib" \
         "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./libssl.1.1.dylib
-    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libssl.1.1.dylib" \
         "$INSTX_LIBDIR/libssl.1.1.dylib" ./libssl.1.1.dylib
 
-    install_name_tool -change "/opt/ssh//libcrypto.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libcrypto.1.1.dylib" \
         "$INSTX_LIBDIR/libcrypto.1.1.dylib" ./apps/openssl
-    install_name_tool -change "/opt/ssh//libssl.1.1.dylib" \
+    install_name_tool -change "$INSTX_PREFIX//libssl.1.1.dylib" \
         "$INSTX_LIBDIR/libssl.1.1.dylib" ./apps/openssl
 fi
 
