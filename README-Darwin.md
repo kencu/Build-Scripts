@@ -34,7 +34,7 @@ First, generate new keys and/or copy existing keys to `$INSTX_PREFIX/etc`. You p
 
 Second, create or copy an existing `sshd_config` to `$INSTX_PREFIX/etc`.
 
-Third, open `/System/Library/LaunchDaemons/ssh-8.0.plist` in a text editor. Add the following launch configuration.
+Third, open `/System/Library/LaunchDaemons/ssh-8.plist` in a text editor. Add the following launch configuration.
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,7 +42,7 @@ Third, open `/System/Library/LaunchDaemons/ssh-8.0.plist` in a text editor. Add 
 <plist version="1.0">
 <dict>
         <key>Label</key>
-        <string>com.openssh.sshd.8-0</string>
+        <string>com.openssh.sshd.8</string>
         <key>Program</key>
         <string>/opt/ssh/sbin/sshd</string>
         <key>ProgramArguments</key>
@@ -64,7 +64,7 @@ Third, open `/System/Library/LaunchDaemons/ssh-8.0.plist` in a text editor. Add 
                 </dict>
         </dict>
         <key>StandardErrorPath</key>
-        <string>/var/log/sshd.8-0.log</string>
+        <string>/var/log/sshd.8.log</string>
         <key>inetdCompatibility</key>
         <dict>
                 <key>Wait</key>
@@ -74,12 +74,12 @@ Third, open `/System/Library/LaunchDaemons/ssh-8.0.plist` in a text editor. Add 
 </plist>
 ```
 
-Be sure to use a name like `com.openssh.sshd.8-0` to avoid collisions with Apple's SSH service.
+Be sure to use a name like `com.openssh.sshd.8` to avoid collisions with Apple's SSH service.
 
 Finally, load the new configuration.
 
 ```
-sudo launchctl load -w /System/Library/LaunchDaemons/ssh-8.0.plist
+sudo launchctl load -w /System/Library/LaunchDaemons/ssh-8.plist
 ```
 
 If needed, you can disable Apple's SSH daemon with the following.
