@@ -399,10 +399,12 @@ fi
 # See if -Wl,-rpath,${libdir} works. This is a RPATH.
 SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
+	INSTX_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
     SH_RPATH="-Wl,-rpath,$INSTX_LIBDIR"
 fi
 SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_LIBDIR -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
+	INSTX_RPATH="-Wl,-R,$INSTX_LIBDIR"
     SH_RPATH="-Wl,-R,$INSTX_LIBDIR"
 fi
 
