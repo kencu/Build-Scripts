@@ -368,6 +368,14 @@ if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_NATIVE="-march=native"
 fi
 
+# PowerMac's with 128-bit long double. Gnulib and GetText expect 64-bit long double.
+SH_ERROR=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$SH_ERROR" -eq 0 ]]; then
+	if [[ $("./$outfile") == "106" ]]; then
+		SH_64BIT_DOUBLE="-mlong-double-64"
+	fi
+fi
+
 SH_ERROR=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
     SH_PTHREAD="-pthread"
@@ -527,6 +535,12 @@ then
     BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$CFLAGS64"
     BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$CFLAGS64"
     BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$CFLAGS64"
+fi
+
+if [[ -n "$SH_64BIT_DOUBLE" ]]
+then
+    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_64BIT_DOUBLE"
+    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_64BIT_DOUBLE"
 fi
 
 if [[ -n "$INSTX_UBSAN" ]]; then
