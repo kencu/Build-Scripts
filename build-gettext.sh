@@ -149,7 +149,7 @@ then
     echo "**********************"
     echo "Failed to test GetText"
     echo "**********************"
-    # exit 1
+    exit 1
 fi
 
 echo "**********************"
