@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GNU Awk from sources.
 
-GAWK_TAR=gawk-5.0.1.tar.gz
-GAWK_DIR=gawk-5.0.1
+GAWK_TAR=gawk-5.1.0.tar.gz
+GAWK_DIR=gawk-5.1.0
 
 ###############################################################################
 
@@ -77,8 +77,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$GAWK_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/pub/gnu/gawk/$GAWK_XZ"
+if ! "$WGET" -q -O "$GAWK_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/pub/gnu/gawk/$GAWK_TAR"
 then
     echo "Failed to download GNU Awk"
     exit 1
@@ -160,7 +160,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$GAWK_XZ" "$GAWK_TAR" "$GAWK_DIR")
+    ARTIFACTS=("$GAWK_TAR" "$GAWK_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
