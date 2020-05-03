@@ -139,8 +139,13 @@ echo "**********************"
 echo "Updating Public Suffix List (PSL) data file"
 mkdir -p list
 
+# Per the comments at publicsuffix.org/:
+#   Please pull this list from, and only from
+#   https://publicsuffix.org/list/public_suffix_list.dat,
+#   rather than any other VCS sites. Pulling from any other
+#   URL is not guaranteed to be supported.
 if ! "$WGET" -q -O "list/public_suffix_list.dat" --ca-certificate="$CA_ZOO" \
-     "https://raw.githubusercontent.com/publicsuffix/list/master/public_suffix_list.dat"
+     "https://publicsuffix.org/list/public_suffix_list.dat"
 then
     echo "Failed to update Public Suffix List (PSL)"
     exit 1
