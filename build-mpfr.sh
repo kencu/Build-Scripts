@@ -76,8 +76,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$MPFR_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/mpfr/$MPFR_XZ"
+if ! "$WGET" -q -O "$MPFR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/mpfr/$MPFR_TAR"
 then
     echo "Failed to download MPFR"
     exit 1
@@ -166,7 +166,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$MPFR_XZ" "$MPFR_TAR" "$MPFR_DIR")
+    ARTIFACTS=("$MPFR_TAR" "$MPFR_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
