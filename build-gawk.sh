@@ -53,6 +53,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-readline.sh
+then
+    echo "Failed to build Readline"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-mpfr.sh
 then
     echo "Failed to build MPFR"
