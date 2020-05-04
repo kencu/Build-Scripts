@@ -96,7 +96,8 @@ bash ../fix-configure.sh
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared
+    --enable-shared \
+    --with-libintl-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure iConv"
