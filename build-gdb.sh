@@ -69,8 +69,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$GDB_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/gdb/$GDB_XZ"
+if ! "$WGET" -q -O "$GDB_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/gdb/$GDB_TAR"
 then
     echo "Failed to download GDB"
     exit 1
@@ -167,7 +167,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$GDB_XZ" "$GDB_TAR" "$GDB_DIR")
+    ARTIFACTS=("$GDB_TAR" "$GDB_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
