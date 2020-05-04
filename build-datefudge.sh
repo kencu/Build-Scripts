@@ -54,8 +54,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$DATEFUDGE_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "http://deb.debian.org/debian/pool/main/d/datefudge/$DATEFUDGE_XZ"
+if ! "$WGET" -q -O "$DATEFUDGE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "http://deb.debian.org/debian/pool/main/d/datefudge/$DATEFUDGE_TAR"
 then
     echo "Failed to download Datefudge"
     exit 1
@@ -129,7 +129,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$DATEFUDGE_XZ" "$DATEFUDGE_TAR" "$DATEFUDGE_DIR")
+    ARTIFACTS=("$DATEFUDGE_TAR" "$DATEFUDGE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
