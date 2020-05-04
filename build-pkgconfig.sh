@@ -83,6 +83,8 @@ bash ../fix-configure.sh
 CONFIG_OPTS=()
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS+=("--with-internal-glib")
+elif [[ "$IS_SOLARIS" -ne 0 ]]; then
+    CONFIG_OPTS+=("--with-internal-glib")
 fi
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
