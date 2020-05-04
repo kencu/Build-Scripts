@@ -76,8 +76,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$GREP_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/grep/$GREP_XZ"
+if ! "$WGET" -q -O "$GREP_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/grep/$GREP_TAR"
 then
     echo "Failed to download Grep"
     exit 1
@@ -161,7 +161,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$GREP_XZ" "$GREP_TAR" "$GREP_DIR")
+    ARTIFACTS=("$GREP_TAR" "$GREP_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
