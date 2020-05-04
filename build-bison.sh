@@ -65,8 +65,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$BISON_XZ" --ca-certificate="$CA_ZOO" \
-     "https://ftp.gnu.org/gnu/bison/$BISON_XZ"
+if ! "$WGET" -q -O "$BISON_TAR" --ca-certificate="$CA_ZOO" \
+     "https://ftp.gnu.org/gnu/bison/$BISON_TAR"
 then
     echo "Failed to download Bison"
     exit 1
@@ -155,7 +155,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$BISON_XZ" "$BISON_TAR" "$BISON_DIR")
+    ARTIFACTS=("$BISON_TAR" "$BISON_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
