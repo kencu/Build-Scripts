@@ -3,9 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds coreutils from sources.
 
-CORE_XZ=coreutils-8.31.tar.xz
-CORE_TAR=coreutils-8.31.tar
-CORE_DIR=coreutils-8.31
+CORE_TAR=coreutils-8.32.tar
+CORE_DIR=coreutils-8.32
 
 ###############################################################################
 
@@ -71,16 +70,16 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$CORE_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/coreutils/$CORE_XZ"
+if ! "$WGET" -q -O "$CORE_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/coreutils/$CORE_TAR"
 then
     echo "Failed to download Core Utilities"
     exit 1
 fi
 
-rm -rf "$CORE_TAR" "$CORE_DIR" &>/dev/null
-unxz "$CORE_XZ" && tar -xf "$CORE_TAR"
-cd "$CORE_DIR"
+rm -rf "$CORE_DIR" &>/dev/null
+gzip -d < "$CORE_TAR" | tar xf -
+cd "$CORE_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
@@ -154,7 +153,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$CORE_XZ" "$CORE_TAR" "$CORE_DIR")
+    ARTIFACTS=("$CORE_TAR" "$CORE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
