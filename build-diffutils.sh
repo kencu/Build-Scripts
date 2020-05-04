@@ -61,8 +61,8 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$DIFFUTILS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/diffutils/$DIFFUTILS_XZ"
+if ! "$WGET" -q -O "$DIFFUTILS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/diffutils/$DIFFUTILS_TAR"
 then
     echo "Failed to download GNU Diffutils"
     exit 1
@@ -143,7 +143,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$DIFFUTILS_XZ" "$DIFFUTILS_TAR" "$DIFFUTILS_DIR")
+    ARTIFACTS=("$DIFFUTILS_TAR" "$DIFFUTILS_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
