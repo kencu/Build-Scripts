@@ -3,7 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GNU Diffutils from sources.
 
-DIFFUTILS_TAR=diffutils-3.7.tar.gz
+DIFFUTILS_XZ=diffutils-3.7.tar.xz
+DIFFUTILS_TAR=diffutils-3.7.tar
 DIFFUTILS_DIR=diffutils-3.7
 
 ###############################################################################
@@ -61,15 +62,15 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$DIFFUTILS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/diffutils/$DIFFUTILS_TAR"
+if ! "$WGET" -q -O "$DIFFUTILS_XZ" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/diffutils/$DIFFUTILS_XZ"
 then
     echo "Failed to download GNU Diffutils"
     exit 1
 fi
 
-rm -rf "$DIFFUTILS_DIR" &>/dev/null
-gzip -d < "$DIFFUTILS_TAR" | tar xf -
+rm -rf "$DIFFUTILS_TAR" "$DIFFUTILS_DIR" &>/dev/null
+unxz "$DIFFUTILS_XZ" && tar -xf "$DIFFUTILS_TAR"
 cd "$DIFFUTILS_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
@@ -143,7 +144,7 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$DIFFUTILS_TAR" "$DIFFUTILS_DIR")
+    ARTIFACTS=("$DIFFUTILS_XZ" "$DIFFUTILS_TAR" "$DIFFUTILS_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
