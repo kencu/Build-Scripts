@@ -67,20 +67,43 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
+if [[ "$IS_DARWIN" -eq 0 ]]
 then
-    echo "Failed to download iConv"
-    exit 1
-fi
+    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+         "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
+    then
+        echo "Failed to download iConv"
+        exit 1
+    fi
 
-rm -rf "$ICONV_DIR" &>/dev/null
-gzip -d < "$ICONV_TAR" | tar xf -
-cd "$ICONV_DIR" || exit 1
+    rm -rf "$ICONV_DIR" &>/dev/null
+    gzip -d < "$ICONV_TAR" | tar xf -
+    cd "$ICONV_DIR" || exit 1
+
+else
+    if ! git clone https://github.com/fumiyas/libiconv-utf8mac.git
+    then
+        echo "Failed to clone iConv with UTF8-Mac support"
+        exit 1
+    fi
+
+    mv libiconv-utf8mac "$ICONV_DIR" || exit 1
+    cd "$ICONV_DIR" || exit 1
+    git checkout utf-8-mac-51.200.6.libiconv-1.16    
+fi
 
 if [[ -e ../patch/iconv.patch ]]; then
     patch -u -p0 < ../patch/iconv.patch
     echo ""
+fi
+
+if [[ "$IS_DARWIN" -ne 0 ]]
+then
+    if ! make -f Makefile.utf8mac autogen;
+    then
+        echo "Failed to prepare iConv with UTF8-Mac support"
+        exit 1
+    fi
 fi
 
 # Fix sys_lib_dlsearch_path_spec
