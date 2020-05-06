@@ -3,12 +3,21 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds iConv from sources.
 
-# iConvert and GetText are unique among packages. They have circular
+# iConv and GetText are unique among packages. They have circular
 # dependencies on one another. We have to build iConv, then GetText,
 # and iConv again. Also see https://www.gnu.org/software/libiconv/.
 # The script that builds iConvert and GetText in accordance to specs
 # is build-iconv-gettext.sh. You should use build-iconv-gettext.sh
 # instead of build-iconv.sh directly
+
+# iConv has additional hardships. The maintainers don't approve of
+# Apple's UTF-8-Mac so they don't support it. Lack of UTF-8-Mac support
+# on OS X causes other programs to fail, like Git. Also see
+# https://marc.info/?l=git&m=158857581228100. That leaves two choices.
+# First, use a GitHub like https://github.com/fumiyas/libiconv-utf8mac.
+# Second, use Apple's sources at http://opensource.apple.com/tarballs/.
+# Below we use Apple's libiconv-59.tar.gz on OS X. libiconv-59 is really
+# libiconv 1.11 in disguise.
 
 ICONV_TAR=libiconv-1.16.tar.gz
 ICONV_DIR=libiconv-1.16
@@ -69,6 +78,7 @@ echo "**********************"
 
 if [[ "$IS_DARWIN" -eq 0 ]]
 then
+
     if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
          "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
     then
@@ -80,34 +90,34 @@ then
     gzip -d < "$ICONV_TAR" | tar xf -
     cd "$ICONV_DIR" || exit 1
 
+    if [[ -e ../patch/iconv.patch ]]; then
+        patch -u -p0 < ../patch/iconv.patch
+        echo ""
+    fi
+
+    # Fix sys_lib_dlsearch_path_spec
+    bash ../fix-configure.sh
+
 else
-    if ! git clone https://github.com/fumiyas/libiconv-utf8mac.git
+
+    ICONV_TAR=libiconv-59.tar.gz
+    ICONV_DIR=libiconv-59
+
+    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$DIGICERT_ROOT" \
+         "https://opensource.apple.com/tarballs/libiconv/libiconv-59.tar.gz"
     then
-        echo "Failed to clone iConv with UTF8-Mac support"
+        echo echo "Failed to download Apple iConv"
         exit 1
     fi
 
-    mv libiconv-utf8mac "$ICONV_DIR" || exit 1
-    cd "$ICONV_DIR" || exit 1
-    git checkout utf-8-mac-51.200.6.libiconv-1.16
-fi
+    rm -rf "$ICONV_DIR" &>/dev/null
+    gzip -d < "$ICONV_TAR" | tar xf -
+    cd "$ICONV_DIR/libiconv" || exit 1
 
-if [[ -e ../patch/iconv.patch ]]; then
-    patch -u -p0 < ../patch/iconv.patch
-    echo ""
-fi
+    # Fix sys_lib_dlsearch_path_spec
+    bash ../../fix-configure.sh
 
-if [[ "$IS_DARWIN" -ne 0 ]]
-then
-    if ! make -f Makefile.utf8mac autogen;
-    then
-        echo "Failed to prepare iConv with UTF8-Mac support"
-        exit 1
-    fi
 fi
-
-# Fix sys_lib_dlsearch_path_spec
-bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
