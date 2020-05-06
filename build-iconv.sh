@@ -95,16 +95,13 @@ then
         echo ""
     fi
 
-    # Fix sys_lib_dlsearch_path_spec
-    bash ../fix-configure.sh
-
 else
 
     ICONV_TAR=libiconv-59.tar.gz
     ICONV_DIR=libiconv-59
 
     if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$DIGICERT_ROOT" \
-         "https://opensource.apple.com/tarballs/libiconv/libiconv-59.tar.gz"
+         "https://opensource.apple.com/tarballs/libiconv/$ICONV_TAR"
     then
         echo echo "Failed to download Apple iConv"
         exit 1
@@ -112,12 +109,15 @@ else
 
     rm -rf "$ICONV_DIR" &>/dev/null
     gzip -d < "$ICONV_TAR" | tar xf -
-    cd "$ICONV_DIR/libiconv" || exit 1
-
-    # Fix sys_lib_dlsearch_path_spec
-    bash ../../fix-configure.sh
+    mv "$ICONV_DIR/libiconv" "$ICONV_DIR-saved"
+    rm -rf "$ICONV_DIR"
+    mv "$ICONV_DIR-saved" "$ICONV_DIR"
+    cd "$ICONV_DIR" || exit 1
 
 fi
+
+    # Fix sys_lib_dlsearch_path_spec
+    bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
