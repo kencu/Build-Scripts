@@ -23,7 +23,7 @@ CURR_DIR=$(pwd)
 function finish {
     cd "$CURR_DIR" || exit 1
 }
-trap finish EXIT
+trap finish EXIT INT
 
 # Sets the number of make jobs if not set in environment
 : "${INSTX_JOBS:=2}"

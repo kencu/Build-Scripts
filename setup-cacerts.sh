@@ -10,7 +10,7 @@ CURR_DIR=$(pwd)
 function finish {
     cd "$CURR_DIR"
 }
-trap finish EXIT
+trap finish EXIT INT
 
 # setup-cacerts.sh does not source the environment, so we can't use the variables
 mkdir -p "$HOME/.build-scripts/cacert"

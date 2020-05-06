@@ -7,7 +7,7 @@ CURR_DIR=$(pwd)
 function finish {
     cd "$CURR_DIR" || exit 1
 }
-trap finish EXIT
+trap finish EXIT INT
 
 cd "bootstrap" || exit 1
 

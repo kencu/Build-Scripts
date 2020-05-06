@@ -13,7 +13,7 @@ CURR_DIR=$(pwd)
 function finish {
     cd "$CURR_DIR"
 }
-trap finish EXIT
+trap finish EXIT INT
 
 PACKAGES=(
     automake b2sum bzip cacert clamav
