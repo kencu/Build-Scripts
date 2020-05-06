@@ -16,8 +16,9 @@
 # https://marc.info/?l=git&m=158857581228100. That leaves two choices.
 # First, use a GitHub like https://github.com/fumiyas/libiconv-utf8mac.
 # Second, use Apple's sources at http://opensource.apple.com/tarballs/.
-# Below we use Apple's libiconv-59.tar.gz on OS X. libiconv-59 is really
-# libiconv 1.11 in disguise.
+# Apple's libiconv-59 is really libiconv 1.11 in disguise. So we use
+# the first method, clone libiconv-utf8mac, build a release tarball,
+# and then use it in place of the GNU packages.
 
 ###############################################################################
 
@@ -27,17 +28,14 @@ function finish {
 }
 trap finish EXIT INT
 
-# Sets the number of make jobs if not set in environment
-: "${INSTX_JOBS:=2}"
-
 ###############################################################################
 
 rm -rf libiconv-utf8mac libiconv
 
 if ! git clone https://github.com/noloader/libiconv-utf8mac.git
 then
-	echo "Failed to clone libiconv-utf8mac"
-	exit 1
+    echo "Failed to clone libiconv-utf8mac"
+    exit 1
 fi
 
 mv libiconv-utf8mac libiconv || exit 1
@@ -45,14 +43,14 @@ cd libiconv || exit 1
 
 if ! make -f Makefile.utf8mac autogen
 then
-	echo "Failed to update libiconv-utf8mac"
-	exit 1
+    echo "Failed to update libiconv-utf8mac"
+    exit 1
 fi
 
 if ! patch -p0 < ../patch/iconv.patch
 then
-	echo "Failed to patch libiconv-utf8mac"
-	exit 1
+    echo "Failed to patch libiconv-utf8mac"
+    exit 1
 fi
 
 sed 's/^VERSION=.*/VERSION=utf8mac-1.16/g' Makefile.utf8mac > Makefile.utf8mac.fixed
@@ -60,8 +58,8 @@ mv Makefile.utf8mac.fixed Makefile.utf8mac
 
 if ! make -f Makefile.utf8mac dist
 then
-	echo "Failed to create libiconv-utf8mac tarball"
-	exit 1
+    echo "Failed to create libiconv-utf8mac tarball"
+    exit 1
 fi
 
 exit 0
