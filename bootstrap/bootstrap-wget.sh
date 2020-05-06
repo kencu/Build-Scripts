@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Written and placed in public domain by Jeffrey Walton
-# This script builds Wget and OpenSSL from sources. It
-# is useful for bootstrapping a full Wget build.
+# Written and placed in public domain by Jeffrey Walton.
+# This script builds Wget, Unistring and OpenSSL from sources.
+# This Wget is crippled, but allows bootstrapping a full Wget build.
 
 # Binaries
 WGET_TAR=wget-1.20.3.tar.gz
@@ -69,18 +69,19 @@ then
 fi
 
 if $CC $CFLAGS bitness.c -o /dev/null &>/dev/null; then
-    INSTX_BITNESS=64
+    OPT_BITS=64
 else
-    INSTX_BITNESS=32
+    OPT_BITS=32
 fi
 
-HAVE_OPT=0
+if $CC $CFLAGS comptest.c -fPIC -o /dev/null &>/dev/null; then
+    OPT_PIC=-fPIC
+elif $CC $CFLAGS comptest.c -kPIC -o /dev/null &>/dev/null; then
+    OPT_PIC=-kPIC
+fi
+
 if $CC $CFLAGS comptest.c -ldl -o /dev/null &>/dev/null; then
-    HAVE_OPT=1
-fi
-
-if [[ "$HAVE_OPT" -eq 1 ]]; then
-   LDL_OPT=-ldl
+    OPT_LDL=-ldl
 fi
 
 IS_DARWIN=$(echo -n "$(uname -s 2>&1)" | grep -i -c 'darwin')
@@ -90,10 +91,10 @@ IS_AMD64=$(echo -n "$(uname -m 2>&1)" | grep -i -c -E 'x86_64|amd64')
 
 # DH is 2x to 4x faster with ec_nistp_64_gcc_128, but it is
 # only available on x64 machines with uint128 available.
-INT128_OPT=$("$CC" -dM -E - </dev/null | grep -i -c "__SIZEOF_INT128__")
+HAVE_INT128=$($CC $CFLAGS -dM -E - </dev/null | grep -i -c "__SIZEOF_INT128__")
 
-if [[ "$IS_AMD64" -ne 0 && "$INT128_OPT" -ne 0 ]]; then
-    AMD64_OPT="enable-ec_nistp_64_gcc_128"
+if [[ "$IS_AMD64" -ne 0 && "$HAVE_INT128" -ne 0 ]]; then
+    OPT_INT128="enable-ec_nistp_64_gcc_128"
 fi
 
 ############################## CA Certs ##############################
@@ -123,12 +124,13 @@ rm -rf "$SSL_DIR" &>/dev/null
 gzip -d < "$SSL_TAR" | tar xf -
 cd "$BOOTSTRAP_DIR/$SSL_DIR" || exit 1
 
-    KERNEL_BITS="$INSTX_BITNESS" \
+    KERNEL_BITS="$OPT_BITS" \
 ./config \
     --prefix="$PREFIX" \
     --openssldir="$PREFIX" \
-    "$AMD64_OPT" -fPIC -DPEDANTIC \
-    no-ssl2 no-ssl3 no-comp no-zlib no-zlib-dynamic no-asm no-threads no-shared no-dso no-engine
+    "$OPT_INT128" "$OPT_PIC" -DPEDANTIC \
+    no-asm no-ssl2 no-ssl3 no-comp no-zlib no-zlib-dynamic \
+    no-threads no-shared no-dso no-engine
 
 # This will need to be fixed for BSDs and PowerMac
 if ! make depend; then
@@ -156,7 +158,7 @@ fi
 ############################ OpenSSL libs #############################
 
 # OpenSSL does not honor no-dso. Needed by Unistring and Wget.
-OPENSSL_LIBS="$LIBDIR/libssl.a $LIBDIR/libcrypto.a $LDL_OPT"
+OPENSSL_LIBS="$LIBDIR/libssl.a $LIBDIR/libcrypto.a $OPT_LDL"
 
 ############################## Unistring ##############################
 

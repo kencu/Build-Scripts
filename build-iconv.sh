@@ -89,7 +89,7 @@ else
 
     mv libiconv-utf8mac "$ICONV_DIR" || exit 1
     cd "$ICONV_DIR" || exit 1
-    git checkout utf-8-mac-51.200.6.libiconv-1.16    
+    git checkout utf-8-mac-51.200.6.libiconv-1.16
 fi
 
 if [[ -e ../patch/iconv.patch ]]; then
