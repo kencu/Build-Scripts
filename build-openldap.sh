@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds OpenLDAP from sources.
 
-LDAP_TAR=openldap-2.4.47.tgz
-LDAP_DIR=openldap-2.4.47
+LDAP_TAR=openldap-2.4.50.tgz
+LDAP_DIR=openldap-2.4.50
 PKG_NAME=openldap
 
 ###############################################################################
