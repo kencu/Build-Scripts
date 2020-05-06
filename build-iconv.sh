@@ -16,8 +16,9 @@
 # https://marc.info/?l=git&m=158857581228100. That leaves two choices.
 # First, use a GitHub like https://github.com/fumiyas/libiconv-utf8mac.
 # Second, use Apple's sources at http://opensource.apple.com/tarballs/.
-# Below we use Apple's libiconv-59.tar.gz on OS X. libiconv-59 is really
-# libiconv 1.11 in disguise.
+# Apple's libiconv-59 is really libiconv 1.11 in disguise. So we use
+# the first method, clone libiconv-utf8mac, build a release tarball,
+# and then use it in place of the GNU packages.
 
 ICONV_TAR=libiconv-1.16.tar.gz
 ICONV_DIR=libiconv-1.16
@@ -97,21 +98,18 @@ then
 
 else
 
-    ICONV_TAR=libiconv-59.tar.gz
-    ICONV_DIR=libiconv-59
+    ICONV_TAR=libiconv-utf8mac-1.16.tar.gz
+    ICONV_DIR=libiconv-utf8mac-1.16
 
-    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$DIGICERT_ROOT" \
-         "https://opensource.apple.com/tarballs/libiconv/$ICONV_TAR"
+    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$GITHUB_ROOT" \
+         "https://github.com/noloader/libiconv-utf8mac/releases/download/v1_16/$ICONV_TAR"
     then
-        echo echo "Failed to download Apple iConv"
+        echo echo "Failed to download UTF-8-Mac iConv"
         exit 1
     fi
 
     rm -rf "$ICONV_DIR" &>/dev/null
     gzip -d < "$ICONV_TAR" | tar xf -
-    mv "$ICONV_DIR/libiconv" "$ICONV_DIR-saved"
-    rm -rf "$ICONV_DIR"
-    mv "$ICONV_DIR-saved" "$ICONV_DIR"
     cd "$ICONV_DIR" || exit 1
 
 fi
