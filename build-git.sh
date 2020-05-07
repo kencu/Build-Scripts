@@ -270,7 +270,7 @@ MAKE_FLAGS=("install")
 # due to OS X 10.5 on PowerMac.
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod -R a+rwx
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod -R a+rwx ./*
 else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
