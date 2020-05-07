@@ -13,7 +13,7 @@ OPENVPN_DIR=openvpn-2.4.8
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT INT
 
@@ -129,7 +129,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 fi  # Solaris
 
@@ -207,7 +207,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 

@@ -10,7 +10,7 @@ EMACS_DIR=emacs-26.3
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT INT
 
@@ -164,7 +164,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
