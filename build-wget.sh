@@ -179,7 +179,7 @@ fi
 bash ../fix-configure.sh
 
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
-for file in $(find "$PWD" -name '*.h')
+(IFS="" find "$PWD" -name '*.h' -print | while read -r file
 do
     if [[ ! -f "$file" ]]; then
         continue
@@ -187,7 +187,7 @@ do
 
     sed -e 's|__GNUC_PREREQ (3, 3)|__GNUC_PREREQ (4, 0)|g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done
+done)
 
 # https://lists.gnu.org/archive/html/bug-wget/2019-05/msg00064.html
 (IFS="" find "$PWD" -name '*.px' -print | while read -r file
