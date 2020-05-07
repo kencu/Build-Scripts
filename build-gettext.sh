@@ -152,7 +152,7 @@ then
 
     # Solaris and some friends fails lang-gawk
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
-    if [[ "$IS_SOLARIS" -ne 0 ]]; then
+    if [[ "$IS_SOLARIS" -eq 0 ]]; then
     exit 1
     fi
 fi
