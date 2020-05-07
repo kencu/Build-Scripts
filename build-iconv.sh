@@ -20,8 +20,8 @@
 # the first method, clone libiconv-utf8mac, build a release tarball,
 # and then use it in place of the GNU packages.
 
-ICONV_TAR=libiconv-1.16.tar.gz
-ICONV_DIR=libiconv-1.16
+ICONV_TAR=libiconv-utf8mac-1.16.tar.gz
+ICONV_DIR=libiconv-utf8mac-1.16
 PKG_NAME=iconv
 
 ###############################################################################
@@ -77,45 +77,24 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if [[ "$IS_DARWIN" -eq 0 ]]
+if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$GITHUB_ROOT" \
+     "https://github.com/noloader/libiconv-utf8mac/releases/download/v1_16/$ICONV_TAR"
 then
-
-    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-         "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
-    then
-        echo "Failed to download iConv"
-        exit 1
-    fi
-
-    rm -rf "$ICONV_DIR" &>/dev/null
-    gzip -d < "$ICONV_TAR" | tar xf -
-    cd "$ICONV_DIR" || exit 1
-
-    if [[ -e ../patch/iconv.patch ]]; then
-        patch -u -p0 < ../patch/iconv.patch
-        echo ""
-    fi
-
-else
-
-    ICONV_TAR=libiconv-utf8mac-1.16.tar.gz
-    ICONV_DIR=libiconv-utf8mac-1.16
-
-    if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$GITHUB_ROOT" \
-         "https://github.com/noloader/libiconv-utf8mac/releases/download/v1_16/$ICONV_TAR"
-    then
-        echo echo "Failed to download UTF-8-Mac iConv"
-        exit 1
-    fi
-
-    rm -rf "$ICONV_DIR" &>/dev/null
-    gzip -d < "$ICONV_TAR" | tar xf -
-    cd "$ICONV_DIR" || exit 1
-
+    echo echo "Failed to download iConv"
+    exit 1
 fi
 
-    # Fix sys_lib_dlsearch_path_spec
-    bash ../fix-configure.sh
+rm -rf "$ICONV_DIR" &>/dev/null
+gzip -d < "$ICONV_TAR" | tar xf -
+cd "$ICONV_DIR" || exit 1
+
+if [[ -e ../patch/iconv.patch ]]; then
+    patch -u -p0 < ../patch/iconv.patch
+    echo ""
+fi
+
+# Fix sys_lib_dlsearch_path_spec
+bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
