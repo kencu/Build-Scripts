@@ -10,7 +10,7 @@ GIT_DIR=git-2.26.2
 
 CURR_DIR=$(pwd)
 function finish {
-    cd "$CURR_DIR"
+    cd "$CURR_DIR" || exit 1
 }
 trap finish EXIT INT
 
@@ -137,7 +137,7 @@ fi
 
 rm -rf "$GIT_DIR" &>/dev/null
 gzip -d < "$GIT_TAR" | tar xf -
-cd "$GIT_DIR"
+cd "$GIT_DIR" || exit 1
 
 if [[ -e ../patch/git.patch ]]; then
     patch -u -p0 < ../patch/git.patch
@@ -167,7 +167,7 @@ fi
 # Solaris 11.3 no longer has /usr/ucb/install
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
-    for file in $(find "$PWD" -name 'config*')
+    (IFS="" find "$PWD" -name 'config*' -print | while read -r file
     do
         if [[ ! -f "$file" ]]; then
             continue
@@ -175,9 +175,9 @@ then
 
         sed -e 's|/usr/ucb/install|install|g' "$file" > "$file.fixed"
         mv "$file.fixed" "$file"
-        chmod +x "$file"
+        chmod a+x "$file"
         touch -t 197001010000 "$file"
-    done
+    done)
 fi
 
 if [[ -e /usr/local/bin/perl ]]; then
@@ -275,7 +275,7 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
-cd "$CURR_DIR"
+cd "$CURR_DIR" || exit 1
 
 ###############################################################################
 
