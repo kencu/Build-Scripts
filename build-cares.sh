@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds c-ares from sources.
 
-CARES_TAR=c-ares-1.15.0.tar.gz
-CARES_DIR=c-ares-1.15.0
+CARES_TAR=c-ares-1.16.1.tar.gz
+CARES_DIR=c-ares-1.16.1
 PKG_NAME=c-ares
 
 ###############################################################################
