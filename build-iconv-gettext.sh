@@ -75,10 +75,19 @@ fi
 # to build iConvert again so it picks up the new GetText.
 rm "$INSTX_PKG_CACHE/iconv"
 
-if ! ./build-iconv.sh
+if [[ "$IS_DARWIN" -ne 0 ]]
 then
-    echo "Failed to build iConv and GetText (2nd time)"
-    exit 1
+    if ! ./build-iconv-utf8mac.sh
+    then
+        echo "Failed to build iConv and GetText (2nd time)"
+        exit 1
+    fi
+else
+    if ! ./build-iconv.sh
+    then
+        echo "Failed to build iConv and GetText (2nd time)"
+        exit 1
+    fi
 fi
 
 exit 0
