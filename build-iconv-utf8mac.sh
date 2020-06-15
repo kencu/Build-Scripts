@@ -95,6 +95,9 @@ cd "$ICONV_DIR" || exit 1
 #    echo ""
 #fi
 
+# https://github.com/fumiyas/libiconv-utf8mac/commit/561d8c83506f
+wget -O lib/utf8mac.h https://raw.githubusercontent.com/fumiyas/libiconv-utf8mac/utf-8-mac-51.200.6.libiconv-1.16/lib/utf8mac.h
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 

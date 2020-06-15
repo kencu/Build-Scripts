@@ -52,7 +52,8 @@ then
         exit 1
     fi
 else
-    if ! ./build-iconv.sh
+    # if ! ./build-iconv.sh
+    if ! ./build-iconv-utf8mac.sh
     then
         echo "Failed to build iConv and GetText (1st time)"
         exit 1
@@ -83,7 +84,8 @@ then
         exit 1
     fi
 else
-    if ! ./build-iconv.sh
+    # if ! ./build-iconv.sh
+    if ! ./build-iconv-utf8mac.sh
     then
         echo "Failed to build iConv and GetText (2nd time)"
         exit 1
