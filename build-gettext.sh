@@ -96,6 +96,17 @@ cp -p gettext-tools/libgettextpo/xalloc-oversized.h \
 cp -p gettext-tools/gnulib-lib/xalloc-oversized.h \
 	gettext-tools/gnulib-lib/xalloc-oversized.h.orig
 
+cp -p gettext-runtime/gnulib-lib/xalloc.h \
+	gettext-runtime/gnulib-lib/xalloc.h.orig
+cp -p libtextstyle/lib/xalloc.h \
+	libtextstyle/lib/xalloc.h.orig
+cp -p gnulib-local/lib/xalloc.h \
+	gnulib-local/lib/xalloc.h.orig
+cp -p gettext-tools/libgettextpo/xalloc.h \
+	gettext-tools/libgettextpo/xalloc.h.orig
+cp -p gettext-tools/gnulib-lib/xalloc.h \
+	gettext-tools/gnulib-lib/xalloc.h.orig
+
 cp -p gettext-tools/libgrep/cdefs.h \
 	gettext-tools/libgrep/cdefs.h.orig
 cp -p gettext-tools/src/Makefile.in \
@@ -124,6 +135,17 @@ diff -u gettext-tools/libgettextpo/xalloc-oversized.h.orig \
 	gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u gettext-tools/gnulib-lib/xalloc-oversized.h.orig \
 	gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
+
+diff -u gettext-runtime/gnulib-lib/xalloc.h.orig \
+	gettext-runtime/gnulib-lib/xalloc.h >> ../patch/gettext.patch
+diff -u libtextstyle/lib/xalloc.h.orig \
+	libtextstyle/lib/xalloc.h >> ../patch/gettext.patch
+diff -u gnulib-local/lib/xalloc.h.orig \
+	gnulib-local/lib/xalloc.h >> ../patch/gettext.patch
+diff -u gettext-tools/libgettextpo/xalloc.h.orig \
+	gettext-tools/libgettextpo/xalloc.h >> ../patch/gettext.patch
+diff -u gettext-tools/gnulib-lib/xalloc.h.orig \
+	gettext-tools/gnulib-lib/xalloc.h >> ../patch/gettext.patch
 
 diff -u gettext-tools/libgrep/cdefs.h.orig \
 	gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
