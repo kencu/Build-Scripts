@@ -168,3 +168,14 @@
  # define xalloc_oversized(n, s) \
      ((size_t) (sizeof (ptrdiff_t) <= sizeof (size_t) ? -1 : -2) / (s) < (n))
  
+--- gettext-tools/libgrep/cdefs.h
++++ gettext-tools/libgrep/cdefs.h
+@@ -51,7 +51,7 @@
+    gcc 2.8.x and egcs.  For gcc 3.2 and up we even mark C functions
+    as non-throwing using a function attribute since programs can use
+    the -fexceptions options for C code as well.  */
+-# if !defined __cplusplus && __GNUC_PREREQ (3, 3)
++# if !defined __cplusplus && __GNUC_PREREQ (4, 0)
+ #  define __THROW	__attribute__ ((__nothrow__ __LEAF))
+ #  define __THROWNL	__attribute__ ((__nothrow__))
+ #  define __NTH(fct)	__attribute__ ((__nothrow__ __LEAF)) fct
