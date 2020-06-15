@@ -88,10 +88,12 @@ rm -rf "$ICONV_DIR" &>/dev/null
 gzip -d < "$ICONV_TAR" | tar xf -
 cd "$ICONV_DIR" || exit 1
 
-if [[ -e ../patch/iconv.patch ]]; then
-    patch -u -p0 < ../patch/iconv.patch
-    echo ""
-fi
+# libiconv-utf8mac already has patch applied
+# libiconv still needs the patch
+#if [[ -e ../patch/iconv.patch ]]; then
+#    patch -u -p0 < ../patch/iconv.patch
+#    echo ""
+#fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
