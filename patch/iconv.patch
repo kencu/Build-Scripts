@@ -24,3 +24,19 @@
  
  #ifdef WORDS_LITTLEENDIAN
  # define __LITTLE_ENDIAN__
+--- lib/utf8mac.h
++++ lib/utf8mac.h
+@@ -27,6 +27,13 @@
+  	Includes Unicode 3.2 decomposition code derived from Core Foundation
+  */
+ 
++#ifdef HAVE_STDINT_H
++# include <stdint.h>
++#endif
++#ifdef HAVE_INTTYPES_H
++# include <inttypes.h>
++#endif
++
+ #if defined(__APPLE__)
+ #include <libkern/OSByteOrder.h>
+ #elif defined(__sun)
