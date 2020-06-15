@@ -109,12 +109,6 @@ cp -p gettext-tools/gnulib-lib/xalloc.h \
 
 cp -p gettext-tools/libgrep/cdefs.h \
 	gettext-tools/libgrep/cdefs.h.orig
-cp -p gettext-tools/src/Makefile.in \
-	gettext-tools/src/Makefile.in.orig
-cp -p gettext-tools/gnulib-tests/Makefile.in \
-	gettext-tools/gnulib-tests/Makefile.in.orig
-cp -p gettext-tools/gnulib-tests/test-canonicalize-lgpl.c \
-	gettext-tools/gnulib-tests/test-canonicalize-lgpl.c.orig
 fi
 
 # Patches are created with 'diff -u' from the pkg root directory.
@@ -149,12 +143,6 @@ diff -u gettext-tools/gnulib-lib/xalloc.h.orig \
 
 diff -u gettext-tools/libgrep/cdefs.h.orig \
 	gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
-diff -u gettext-tools/src/Makefile.in.orig \
-	gettext-tools/src/Makefile.in >> ../patch/gettext.patch
-diff -u gettext-tools/gnulib-tests/Makefile.in.orig \
-	gettext-tools/gnulib-tests/Makefile.in >> ../patch/gettext.patch
-diff -u gettext-tools/gnulib-tests/test-canonicalize-lgpl.c.orig \
-	gettext-tools/gnulib-tests/test-canonicalize-lgpl.c >> ../patch/gettext.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
