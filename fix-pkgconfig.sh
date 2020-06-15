@@ -9,6 +9,10 @@
 # Zile can find the libraries when using:
 #     Libs: -L<path> -lncurses -ltinfo
 
+echo "**********************"
+echo "Fixing *.pc files"
+echo "**********************"
+
 if [[ -n "$1" ]]; then
     PROG_PATH="$1"
 elif [[ -d "./programs" ]]; then

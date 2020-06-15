@@ -4,6 +4,10 @@
 # This script converts LD_LIBRARY_PATH to DYLD_LIBRARY_PATH
 # for OS X. Autotools authors don't need to worry about it.
 
+echo "**********************"
+echo "Fixing LD_LIBRARY_PATH"
+echo "**********************"
+
 if [[ "$IS_DARWIN" -ne 0 ]]
 then
     grep -rl LD_LIBRARY_PATH . | cut -f 1 -d ':' | sort | uniq | while IFS='' read -r file
