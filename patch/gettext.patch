@@ -4,7 +4,7 @@
     By gnulib convention, SIZE_MAX represents overflow in size
     calculations, so the conservative size_t-based dividend to use here
     is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
++#undef __xalloc_oversized
  #define __xalloc_oversized(n, s) \
    ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
  
@@ -35,7 +35,7 @@
     By gnulib convention, SIZE_MAX represents overflow in size
     calculations, so the conservative size_t-based dividend to use here
     is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
++#undef __xalloc_oversized
  #define __xalloc_oversized(n, s) \
    ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
  
@@ -66,7 +66,7 @@
     By gnulib convention, SIZE_MAX represents overflow in size
     calculations, so the conservative size_t-based dividend to use here
     is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
++#undef __xalloc_oversized
  #define __xalloc_oversized(n, s) \
    ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
  
@@ -97,7 +97,7 @@
     By gnulib convention, SIZE_MAX represents overflow in size
     calculations, so the conservative size_t-based dividend to use here
     is SIZE_MAX - 1.  */
-+#undef xalloc_oversized
++#undef __xalloc_oversized
  #define __xalloc_oversized(n, s) \
    ((size_t) (PTRDIFF_MAX < SIZE_MAX ? PTRDIFF_MAX : SIZE_MAX - 1) / (s) < (n))
  
