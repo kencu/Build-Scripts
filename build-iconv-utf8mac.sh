@@ -14,14 +14,14 @@
 # Apple's UTF-8-Mac so they don't support it. Lack of UTF-8-Mac support
 # on OS X causes other programs to fail, like Git. Also see
 # https://marc.info/?l=git&m=158857581228100. That leaves two choices.
-# First, use a GitHub like https://github.com/fumiyas/libiconv.
+# First, use a GitHub like https://github.com/fumiyas/libiconv-utf8mac.
 # Second, use Apple's sources at http://opensource.apple.com/tarballs/.
 # Apple's libiconv-59 is really libiconv 1.11 in disguise. So we use
-# the first method, clone libiconv, build a release tarball,
+# the first method, clone libiconv-utf8mac, build a release tarball,
 # and then use it in place of the GNU package.
 
-ICONV_TAR=libiconv-1.16.tar.gz
-ICONV_DIR=libiconv-1.16
+ICONV_TAR=libiconv-utf8mac-1.16.tar.gz
+ICONV_DIR=libiconv-utf8mac-1.16
 PKG_NAME=iconv
 
 ###############################################################################
@@ -78,7 +78,7 @@ echo "Downloading package"
 echo "**********************"
 
 if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$GITHUB_ROOT" \
-     "https://ftp.gnu.org/pub/gnu/libiconv/$ICONV_TAR"
+     "https://github.com/noloader/libiconv-utf8mac/releases/download/v1_16/$ICONV_TAR"
 then
     echo echo "Failed to download iConv"
     exit 1
