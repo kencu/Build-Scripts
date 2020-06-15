@@ -52,10 +52,12 @@ fi
 
 ###############################################################################
 
-if ! ./build-termcap.sh
-then
-    echo "Failed to build Termcap"
-    exit 1
+if false; then
+    if ! ./build-termcap.sh
+    then
+        echo "Failed to build Termcap"
+        exit 1
+    fi
 fi
 
 ###############################################################################
