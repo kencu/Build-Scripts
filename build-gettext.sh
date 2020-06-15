@@ -87,10 +87,23 @@ gzip -d < "$GETTEXT_TAR" | tar xf -
 cd "$GETTEXT_DIR" || exit 1
 
 if false; then
-cp gettext-runtime/gnulib-lib/xalloc-oversized.h gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
-cp libtextstyle/lib/xalloc-oversized.h libtextstyle/lib/xalloc-oversized.h.orig
-cp gettext-tools/libgettextpo/xalloc-oversized.h gettext-tools/libgettextpo/xalloc-oversized.h.orig
-cp gettext-tools/gnulib-lib/xalloc-oversized.h gettext-tools/gnulib-lib/xalloc-oversized.h.orig
+cp -p gettext-runtime/gnulib-lib/xalloc-oversized.h \
+	gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
+cp -p libtextstyle/lib/xalloc-oversized.h \
+	libtextstyle/lib/xalloc-oversized.h.orig
+cp -p gettext-tools/libgettextpo/xalloc-oversized.h \
+	gettext-tools/libgettextpo/xalloc-oversized.h.orig
+cp -p gettext-tools/gnulib-lib/xalloc-oversized.h \
+	gettext-tools/gnulib-lib/xalloc-oversized.h.orig
+
+cp -p gettext-tools/libgrep/cdefs.h \
+	gettext-tools/libgrep/cdefs.h.orig
+cp -p gettext-tools/src/Makefile.in \
+	gettext-tools/src/Makefile.in.orig
+cp -p gettext-tools/gnulib-tests/Makefile.in \
+	gettext-tools/gnulib-tests/Makefile.in.orig
+cp -p gettext-tools/gnulib-tests/test-canonicalize-lgpl.c \
+	gettext-tools/gnulib-tests/test-canonicalize-lgpl.c.orig
 fi
 
 # Patches are created with 'diff -u' from the pkg root directory.
@@ -100,15 +113,29 @@ if [[ -e ../patch/gettext.patch ]]; then
 fi
 
 if false; then
+# Clear the current patch
+echo -n "" > ../patch/gettext.patch
+
 diff -u gettext-runtime/gnulib-lib/xalloc-oversized.h.orig \
-	gettext-runtime/gnulib-lib/xalloc-oversized.h > ../patch/gettext.patch
+	gettext-runtime/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u libtextstyle/lib/xalloc-oversized.h.orig \
 	libtextstyle/lib/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u gettext-tools/libgettextpo/xalloc-oversized.h.orig \
 	gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u gettext-tools/gnulib-lib/xalloc-oversized.h.orig \
 	gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
+
+diff -u gettext-tools/libgrep/cdefs.h.orig \
+	gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
+diff -u gettext-tools/src/Makefile.in.orig \
+	gettext-tools/src/Makefile.in >> ../patch/gettext.patch
+diff -u gettext-tools/gnulib-tests/Makefile.in.orig \
+	gettext-tools/gnulib-tests/Makefile.in >> ../patch/gettext.patch
+diff -u gettext-tools/gnulib-tests/test-canonicalize-lgpl.c.orig \
+	gettext-tools/gnulib-tests/test-canonicalize-lgpl.c >> ../patch/gettext.patch
 fi
+
+exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
