@@ -10,8 +10,8 @@
 # is build-iconv-gettext.sh. You should use build-iconv-gettext.sh
 # instead of build-gettext.sh directly
 
-GETTEXT_TAR=gettext-0.20.1.tar.gz
-GETTEXT_DIR=gettext-0.20.1
+GETTEXT_TAR=gettext-0.20.2.tar.gz
+GETTEXT_DIR=gettext-0.20.2
 PKG_NAME=gettext
 
 ###############################################################################
@@ -115,8 +115,8 @@ fi
     --with-included-gettext \
     --with-included-libxml \
     --with-included-libunistring \
-    --with-libncurses-prefix="$INSTX_PREFIX" \
-    --with-libiconv-prefix="$INSTX_PREFIX"
+    --with-libiconv-prefix="$INSTX_PREFIX" \
+    --with-libncurses-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GetText"
