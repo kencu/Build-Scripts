@@ -86,10 +86,28 @@ rm -rf "$GETTEXT_DIR" &>/dev/null
 gzip -d < "$GETTEXT_TAR" | tar xf -
 cd "$GETTEXT_DIR" || exit 1
 
+if false; then
+cp gettext-runtime/gnulib-lib/xalloc-oversized.h gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
+cp libtextstyle/lib/xalloc-oversized.h libtextstyle/lib/xalloc-oversized.h.orig
+cp gettext-tools/libgettextpo/xalloc-oversized.h gettext-tools/libgettextpo/xalloc-oversized.h.orig
+cp gettext-tools/gnulib-lib/xalloc-oversized.h gettext-tools/gnulib-lib/xalloc-oversized.h.orig
+fi
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/gettext.patch ]]; then
     patch -u -p0 < ../patch/gettext.patch
     echo ""
+fi
+
+if false; then
+diff -u gettext-runtime/gnulib-lib/xalloc-oversized.h.orig \
+	gettext-runtime/gnulib-lib/xalloc-oversized.h > ../patch/gettext.patch
+diff -u libtextstyle/lib/xalloc-oversized.h.orig \
+	libtextstyle/lib/xalloc-oversized.h >> ../patch/gettext.patch
+diff -u gettext-tools/libgettextpo/xalloc-oversized.h.orig \
+	gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
+diff -u gettext-tools/gnulib-lib/xalloc-oversized.h.orig \
+	gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -151,9 +169,10 @@ then
     echo "**********************"
 
     # Solaris and some friends fails lang-gawk
+    # Darwin fails copy-acl-2.sh
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
-    if [[ "$IS_SOLARIS" -eq 0 ]]; then
-    exit 1
+    if [[ "$IS_DARWIN" -eq 0 && "$SOLARIS" -eq 0 ]]; then
+        exit 1
     fi
 fi
 
