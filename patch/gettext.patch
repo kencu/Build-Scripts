@@ -16,9 +16,8 @@
  # define xalloc_oversized(n, s) \
     __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
  #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
--# define xalloc_oversized(n, s) \
 +# undef xalloc_oversized
-+# define xalloc_oversized(n, s)				 \
+ # define xalloc_oversized(n, s) \
     (__builtin_constant_p (n) && __builtin_constant_p (s) \
      ? __xalloc_oversized (n, s) \
      : ({ __xalloc_count_type __xalloc_count; \
@@ -48,9 +47,8 @@
  # define xalloc_oversized(n, s) \
     __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
  #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
--# define xalloc_oversized(n, s) \
 +# undef xalloc_oversized
-+# define xalloc_oversized(n, s)				 \
+ # define xalloc_oversized(n, s) \
     (__builtin_constant_p (n) && __builtin_constant_p (s) \
      ? __xalloc_oversized (n, s) \
      : ({ __xalloc_count_type __xalloc_count; \
@@ -80,9 +78,8 @@
  # define xalloc_oversized(n, s) \
     __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
  #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
--# define xalloc_oversized(n, s) \
 +# undef xalloc_oversized
-+# define xalloc_oversized(n, s)				 \
+ # define xalloc_oversized(n, s) \
     (__builtin_constant_p (n) && __builtin_constant_p (s) \
      ? __xalloc_oversized (n, s) \
      : ({ __xalloc_count_type __xalloc_count; \
@@ -112,9 +109,8 @@
  # define xalloc_oversized(n, s) \
     __builtin_mul_overflow_p (n, s, (__xalloc_count_type) 1)
  #elif 5 <= __GNUC__ && !defined __ICC && !__STRICT_ANSI__
--# define xalloc_oversized(n, s) \
 +# undef xalloc_oversized
-+# define xalloc_oversized(n, s)				 \
+ # define xalloc_oversized(n, s) \
     (__builtin_constant_p (n) && __builtin_constant_p (s) \
      ? __xalloc_oversized (n, s) \
      : ({ __xalloc_count_type __xalloc_count; \
