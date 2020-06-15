@@ -135,8 +135,6 @@ diff -u gettext-tools/gnulib-tests/test-canonicalize-lgpl.c.orig \
 	gettext-tools/gnulib-tests/test-canonicalize-lgpl.c >> ../patch/gettext.patch
 fi
 
-exit 1
-
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
@@ -224,7 +222,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$GETTEXT_TAR" "$GETTEXT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
