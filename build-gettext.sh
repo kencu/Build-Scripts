@@ -88,27 +88,27 @@ cd "$GETTEXT_DIR" || exit 1
 
 if false; then
 cp -p gettext-runtime/gnulib-lib/xalloc-oversized.h \
-	gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
+    gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
 cp -p libtextstyle/lib/xalloc-oversized.h \
-	libtextstyle/lib/xalloc-oversized.h.orig
+    libtextstyle/lib/xalloc-oversized.h.orig
 cp -p gettext-tools/libgettextpo/xalloc-oversized.h \
-	gettext-tools/libgettextpo/xalloc-oversized.h.orig
+    gettext-tools/libgettextpo/xalloc-oversized.h.orig
 cp -p gettext-tools/gnulib-lib/xalloc-oversized.h \
-	gettext-tools/gnulib-lib/xalloc-oversized.h.orig
+    gettext-tools/gnulib-lib/xalloc-oversized.h.orig
 
 cp -p gettext-runtime/gnulib-lib/xalloc.h \
-	gettext-runtime/gnulib-lib/xalloc.h.orig
+    gettext-runtime/gnulib-lib/xalloc.h.orig
 cp -p libtextstyle/lib/xalloc.h \
-	libtextstyle/lib/xalloc.h.orig
+    libtextstyle/lib/xalloc.h.orig
 cp -p gnulib-local/lib/xalloc.h \
-	gnulib-local/lib/xalloc.h.orig
+    gnulib-local/lib/xalloc.h.orig
 cp -p gettext-tools/libgettextpo/xalloc.h \
-	gettext-tools/libgettextpo/xalloc.h.orig
+    gettext-tools/libgettextpo/xalloc.h.orig
 cp -p gettext-tools/gnulib-lib/xalloc.h \
-	gettext-tools/gnulib-lib/xalloc.h.orig
+    gettext-tools/gnulib-lib/xalloc.h.orig
 
 cp -p gettext-tools/libgrep/cdefs.h \
-	gettext-tools/libgrep/cdefs.h.orig
+    gettext-tools/libgrep/cdefs.h.orig
 fi
 
 # Patches are created with 'diff -u' from the pkg root directory.
@@ -122,27 +122,27 @@ if false; then
 echo -n "" > ../patch/gettext.patch
 
 diff -u gettext-runtime/gnulib-lib/xalloc-oversized.h.orig \
-	gettext-runtime/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
+    gettext-runtime/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u libtextstyle/lib/xalloc-oversized.h.orig \
-	libtextstyle/lib/xalloc-oversized.h >> ../patch/gettext.patch
+    libtextstyle/lib/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u gettext-tools/libgettextpo/xalloc-oversized.h.orig \
-	gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
+    gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
 diff -u gettext-tools/gnulib-lib/xalloc-oversized.h.orig \
-	gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
+    gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
 
 diff -u gettext-runtime/gnulib-lib/xalloc.h.orig \
-	gettext-runtime/gnulib-lib/xalloc.h >> ../patch/gettext.patch
+    gettext-runtime/gnulib-lib/xalloc.h >> ../patch/gettext.patch
 diff -u libtextstyle/lib/xalloc.h.orig \
-	libtextstyle/lib/xalloc.h >> ../patch/gettext.patch
+    libtextstyle/lib/xalloc.h >> ../patch/gettext.patch
 diff -u gnulib-local/lib/xalloc.h.orig \
-	gnulib-local/lib/xalloc.h >> ../patch/gettext.patch
+    gnulib-local/lib/xalloc.h >> ../patch/gettext.patch
 diff -u gettext-tools/libgettextpo/xalloc.h.orig \
-	gettext-tools/libgettextpo/xalloc.h >> ../patch/gettext.patch
+    gettext-tools/libgettextpo/xalloc.h >> ../patch/gettext.patch
 diff -u gettext-tools/gnulib-lib/xalloc.h.orig \
-	gettext-tools/gnulib-lib/xalloc.h >> ../patch/gettext.patch
+    gettext-tools/gnulib-lib/xalloc.h >> ../patch/gettext.patch
 
 diff -u gettext-tools/libgrep/cdefs.h.orig \
-	gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
+    gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -157,7 +157,7 @@ fi
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    LIBS="${BUILD_LIBS[*]} -liconv" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
