@@ -162,6 +162,9 @@ fi
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    am_cv_func_iconv=yes \
+    am_cv_lib_iconv=yes \
+    am_cv_func_iconv_works=yes \
     --enable-static \
     --enable-shared \
     --with-pic \
