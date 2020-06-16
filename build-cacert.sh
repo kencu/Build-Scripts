@@ -52,26 +52,6 @@ fi
 
 ###############################################################################
 
-# Most systems will use Wget. Some OS X machines will use cURL
-CACERT_FILE=$(basename "$SH_CACERT_FILE")
-
-if [[ -n $(command -v "$WGET" 2>/dev/null) ]]
-then
-	if ! "$WGET" -q -O "$CACERT_FILE" --ca-certificate="$GLOBALSIGN_ROOT" \
-		 "https://curl.haxx.se/ca/cacert.pem"
-	then
-		echo "Failed to download $CACERT_FILE"
-		exit 1
-	fi
-else
-	if ! curl -L -o "$CACERT_FILE" --cacert "$GLOBALSIGN_ROOT" \
-		 "https://curl.haxx.se/ca/cacert.pem"
-	then
-		echo "Failed to download $CACERT_FILE"
-		exit 1
-	fi
-fi
-
 if [[ -d /private/etc ]]
 then
     ROOT_USR=$(ls -ld /private/etc | head -n 1 | awk 'NR==1 {print $3}')
@@ -81,19 +61,16 @@ else
     ROOT_GRP=$(ls -ld /etc | head -n 1 | awk 'NR==1 {print $4}')
 fi
 
-if [[ -s "$CACERT_FILE" ]]
-then
-    if [[ -n "$SUDO_PASSWORD" ]]; then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv cacert.pem "$SH_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
-    else
-        mkdir -p "$SH_CACERT_PATH"
-        cp "$CACERT_FILE" "$SH_CACERT_FILE"
-        chmod 644 "$SH_CACERT_FILE"
-    fi
+if [[ -n "$SUDO_PASSWORD" ]]; then
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_CACERT_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp bootstrap/cacert.pem "$SH_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
+else
+    mkdir -p "$SH_CACERT_PATH"
+    cp "$CACERT_FILE" "$SH_CACERT_FILE"
+    chmod 644 "$SH_CACERT_FILE"
 fi
 
 ###############################################################################
