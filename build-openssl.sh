@@ -163,7 +163,7 @@ if [[ "$IS_DARWIN" -ne 0 ]]; then
 fi
 
 # OpenSSL does not honor most of the standard variables.
-BUILD_OPTS="${BUILD_CPPFLAGS[*]} -DPEDANTIC ${BUILD_CFLAGS[*]}"
+BUILD_OPTS="${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}"
 
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
