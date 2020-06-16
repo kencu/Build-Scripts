@@ -148,6 +148,14 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+# Some non-Linux systems have Gzip, but it is anemic.
+# GZIP_ENV = --best causes a autopoint-3 test failure.
+(IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
+do
+    sed -e 's/GZIP_ENV = --best/GZIP_ENV = -7/g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done)
+
 if [[ -e "$INSTX_PREFIX/bin/sed" ]]; then
     export SED="$INSTX_PREFIX/bin/sed"
 fi
@@ -179,14 +187,6 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
-# Some non-Linux systems have Gzip, but it is anemic.
-# GZIP_ENV = --best causes a autopoint-3 test failure.
-(IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
-do
-    sed -e 's/GZIP_ENV = --best/GZIP_ENV = -7/g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-done)
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -215,9 +215,6 @@ then
     # Solaris and some friends fails lang-gawk
     # Darwin fails copy-acl-2.sh
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
-    if [[ "$IS_DARWIN" -eq 0 && "$SOLARIS" -eq 0 ]]; then
-        exit 1
-    fi
 fi
 
 echo "**********************"
