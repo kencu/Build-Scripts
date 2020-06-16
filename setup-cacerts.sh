@@ -413,7 +413,7 @@ echo "Wrote $HOME/.build-scripts/cacert/baltimore-root-ca.pem"
     cat "$HOME/.build-scripts/cacert/digicert-root-ca.pem"
     cat "$HOME/.build-scripts/cacert/baltimore-root-ca.pem"
 
-} > "$HOME/.build-scripts/cacert/github-ca-zoo.pem"
+} > "$HOME/.build-scripts/cacert/github-zoo.pem"
 
 ###############################################################################
 

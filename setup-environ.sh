@@ -57,7 +57,7 @@ DIGICERT_ROOT="$HOME/.build-scripts/cacert/digicert-root-ca.pem"
 DIGITRUST_ROOT="$HOME/.build-scripts/cacert/digitrust-root-ca.pem"
 GLOBALSIGN_ROOT="$HOME/.build-scripts/cacert/globalsign-root-r1.pem"
 USERTRUST_ROOT="$HOME/.build-scripts/cacert/usertrust-root-ca.pem"
-GITHUB_ROOT="$HOME/.build-scripts/cacert/github-ca-zoo.pem"
+GITHUB_ROOT="$HOME/.build-scripts/cacert/github-zoo.pem"
 
 # Some downloads need the CA Zoo due to multiple redirects
 CA_ZOO="$HOME/.build-scripts/cacert/cacert.pem"
