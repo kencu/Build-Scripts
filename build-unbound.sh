@@ -101,7 +101,7 @@ fi
 
 rm -rf "$UNBOUND_DIR" &>/dev/null
 gzip -d < "$UNBOUND_TAR" | tar xf -
-cd "$UNBOUND_DIR"
+cd "$UNBOUND_DIR" || exit 1
 
 if [[ -e ../patch/unbound.patch ]]; then
     patch -u -p0 < ../patch/unbound.patch
