@@ -211,6 +211,10 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 (IFS="" find . -name 'Makefile' -print | while read -r file
 do
     # Make console output more readable...

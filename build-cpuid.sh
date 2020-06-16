@@ -77,6 +77,10 @@ if [[ -e ../patch/cpuid.patch ]]; then
     echo ""
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 echo "**********************"
 echo "Building package"
 echo "**********************"

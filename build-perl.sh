@@ -137,16 +137,9 @@ then
     exit 1
 fi
 
-# Fix -Wl,-R,'$$ORIGIN/../lib'
-echo "patching Makefiles..."
-(IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
-do
-    chmod a+w "$file"
-    cp -p "$file" "$file.fixed"
-    sed 's|XXORIGIN|\$\$ORIGIN|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    chmod a-w "$file"
-done)
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Building package"

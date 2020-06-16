@@ -76,6 +76,10 @@ cd "b2sum"
 
 B2SUM_CFLAGS="${BUILD_CPPFLAGS[@]} ${BUILD_CFLAGS[@]} -std=c99 -I."
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 # Unconditionally remove OpenMP from makefile
 sed "/^NO_OPENMP/d" makefile > makefile.fixed
 mv makefile.fixed makefile

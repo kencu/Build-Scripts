@@ -218,7 +218,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
-../fix-library-path.sh
+bash ../fix-library-path.sh
 
 # See INSTALL for the formats and the requirements
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
@@ -231,6 +231,10 @@ fi
 if [[ -z $(command -v tclsh) ]]; then
     MAKE_FLAGS+=("NO_TCLTK=Yes")
 fi
+
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Building package"

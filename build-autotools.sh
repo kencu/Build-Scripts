@@ -94,6 +94,10 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -164,6 +168,10 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -229,13 +237,17 @@ bash ../fix-configure.sh
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR"
 
-sed -e 's|^MAKEINFO =.*|MAKEINFO = true|g' Makefile > Makefile.fixed
-mv Makefile.fixed Makefile
-
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Automake"
     exit 1
 fi
+
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
+sed -e 's|^MAKEINFO =.*|MAKEINFO = true|g' Makefile > Makefile.fixed
+mv Makefile.fixed Makefile
 
 echo "**********************"
 echo "Building package"

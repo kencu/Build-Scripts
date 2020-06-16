@@ -77,12 +77,16 @@ if [[ -e ../patch/uthash.patch ]]; then
     echo ""
 fi
 
-# No Autotools or makefile in src/
-cd tests
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Testing package"
 echo "**********************"
+
+# No Autotools or makefile in src/
+cd tests
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 MAKE_FLAGS+=("PKG_CONFIG_PATH=${BUILD_PKGCONFIG[*]}")

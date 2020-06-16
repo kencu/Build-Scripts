@@ -118,7 +118,6 @@ if [[ -e ../patch/gettext.patch ]]; then
 fi
 
 if false; then
-# Clear the current patch
 echo -n "" > ../patch/gettext.patch
 
 diff -u gettext-runtime/gnulib-lib/xalloc-oversized.h.orig \
@@ -148,7 +147,7 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-# Some non-Linux systems have Gzip, but it is anemic.
+# Some non-GNU systems have Gzip, but it is anemic.
 # GZIP_ENV = --best causes a autopoint-3 test failure.
 (IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
 do
@@ -170,9 +169,6 @@ fi
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    am_cv_lib_iconv=yes \
-    am_cv_func_iconv=yes \
-    am_cv_func_iconv_works=yes \
     --enable-static \
     --enable-shared \
     --with-pic \
@@ -186,6 +182,10 @@ if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GetText"
     exit 1
 fi
+
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Building package"

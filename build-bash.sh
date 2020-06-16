@@ -54,12 +54,10 @@ fi
 
 ###############################################################################
 
-if false; then
-    if ! ./build-termcap.sh
-    then
-        echo "Failed to build Termcap"
-        exit 1
-    fi
+if ! ./build-ncurses.sh
+then
+	echo "Failed to build Ncurses"
+	exit 1
 fi
 
 ###############################################################################
@@ -103,6 +101,10 @@ if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Bash"
     exit 1
 fi
+
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Building package"

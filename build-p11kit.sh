@@ -133,6 +133,10 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 # On Solaris the script puts /usr/gnu/bin on-path, so we get a useful grep
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     for file in $(grep -IR '#define _XOPEN_SOURCE' "$PWD" | cut -f 1 -d ':' | sort | uniq)

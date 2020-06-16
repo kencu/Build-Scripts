@@ -300,7 +300,8 @@ fi
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib"
     DEF_RPATH="$INSTX_PREFIX/lib"
-    DEF_OPATH="'""\$\$ORIGIN/../lib""'"
+    #DEF_OPATH="'""\$\$ORIGIN/../lib""'"
+    DEF_OPATH="'""\$ORIGIN/../lib""'"
 elif [[ "$IS_DARWIN" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib"
     DEF_RPATH="$INSTX_PREFIX/lib"
@@ -308,11 +309,13 @@ elif [[ "$IS_DARWIN" -ne 0 ]]; then
 elif [[ "$IS_RH_FAMILY" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib64"
     DEF_RPATH="$INSTX_PREFIX/lib64"
-    DEF_OPATH="'""\$\$ORIGIN/../lib64""'"
+    #DEF_OPATH="'""\$\$ORIGIN/../lib64""'"
+    DEF_OPATH="'""\$ORIGIN/../lib64""'"
 else
     DEF_LIBDIR="$INSTX_PREFIX/lib"
     DEF_RPATH="$INSTX_PREFIX/lib"
-    DEF_OPATH="'""\$\$ORIGIN/../lib""'"
+    #DEF_OPATH="'""\$\$ORIGIN/../lib""'"
+    DEF_OPATH="'""\$ORIGIN/../lib""'"
 fi
 
 # Don't override a user choice of INSTX_LIBDIR. Also see
@@ -371,9 +374,9 @@ fi
 # PowerMac's with 128-bit long double. Gnulib and GetText expect 64-bit long double.
 SH_ERROR=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$SH_ERROR" -eq 0 ]]; then
-	if [[ $("./$outfile") == "106" ]]; then
-		SH_64BIT_DOUBLE="-mlong-double-64"
-	fi
+    if [[ $("./$outfile") == "106" ]]; then
+        SH_64BIT_DOUBLE="-mlong-double-64"
+    fi
 fi
 
 SH_ERROR=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)

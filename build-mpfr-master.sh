@@ -87,18 +87,14 @@ rm -rf "$MPFR_DIR" &>/dev/null
 gzip -d < "$MPFR_TAR" | tar xf -
 cd "$MPFR_DIR" || exit 1
 
-if false; then
-
 # Per INSTALL
 if "$WGET" -q -O allpatches --ca-certificate="$CA_ZOO" \
-     https://www.mpfr.org/mpfr-4.0.2/allpatches
+     https://www.mpfr.org/mpfr-4.1.0/allpatches
 then
     patch -N -Z -p1 < allpatches
 else
     echo "Failed to download MPFR patches"
     exit 1
-fi
-
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -123,6 +119,10 @@ if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure MPFR"
     exit 1
 fi
+
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
 
 echo "**********************"
 echo "Building package"

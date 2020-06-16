@@ -78,6 +78,10 @@ if [[ "$IS_SOLARIS" -ne 0 ]]; then
     fi
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 echo "**********************"
 echo "Building package"
 echo "**********************"

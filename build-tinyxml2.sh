@@ -82,6 +82,10 @@ MAKE_FLAGS+=("CXXFLAGS=${BUILD_CXXFLAGS[*]}")
 MAKE_FLAGS+=("LDFLAGS=${BUILD_LDFLAGS[*]}")
 MAKE_FLAGS+=("LIBS=${BUILD_LIBS[*]}")
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 echo "**********************"
 echo "Building package"
 echo "**********************"

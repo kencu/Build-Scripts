@@ -133,12 +133,15 @@ if [[ "$?" -ne 0 ]]; then
     exit 1
 fi
 
+# Escape dollar sign for $ORIGIN in makefiles. Required so
+# $ORIGIN works in both configure tests and makefiles.
+bash ../fix-makefiles.sh
+
 # Remove unneeded warning
-echo "patching Makefiles..."
 (IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
-    sed 's| --param max-inline-insns-single=1200||g' "$file" > "$file.fixed"
+    sed 's/ --param max-inline-insns-single=1200//g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
 done)
 
