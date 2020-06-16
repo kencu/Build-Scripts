@@ -85,7 +85,7 @@ fi
 
 rm -rf "$LDNS_DIR" &>/dev/null
 gzip -d < "$LDNS_TAR" | tar xf -
-cd "$LDNS_DIR"
+cd "$LDNS_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
