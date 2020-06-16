@@ -23,7 +23,7 @@ PACKAGES=(
     libffi libtool mawk ncurses nettle
     openssl openvpn p11kit pcre    perl
     psl readline sed ssh tar
-    tasn1 termcap tinyxml2 unbound
+    tasn1 tinyxml2 unbound
     unistr wget xz zlib
 )
 

@@ -45,16 +45,6 @@ fi
 
 ###############################################################################
 
-if false; then
-    if ! ./build-termcap.sh
-    then
-        echo "Failed to build Termcap"
-        exit 1
-    fi
-fi
-
-###############################################################################
-
 if ! ./build-ncurses.sh
 then
     echo "Failed to build Ncurses"
