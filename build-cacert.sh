@@ -61,9 +61,11 @@ else
     ROOT_GRP=$(ls -ld /etc | head -n 1 | awk 'NR==1 {print $4}')
 fi
 
+CACERT_FILE="bootstrap/cacert.pem"
+
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_CACERT_PATH"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp bootstrap/cacert.pem "$SH_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$CACERT_FILE" "$SH_CACERT_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_CACERT_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
