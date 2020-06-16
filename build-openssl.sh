@@ -162,17 +162,20 @@ if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="-Wl,-headerpad_max_install_names"
 fi
 
+# OpenSSL does not honor most of the standard variables.
+BUILD_OPTS="${BUILD_CPPFLAGS[*]} -DPEDANTIC ${BUILD_CFLAGS[*]}"
+
     KERNEL_BITS="$INSTX_BITNESS" \
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]} -DPEDANTIC" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
 ./config \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --openssldir="$INSTX_PREFIX" \
-    "${CONFIG_OPTS[@]}"
+    "${CONFIG_OPTS[@]}" \
+    "${BUILD_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenSSL"
@@ -220,7 +223,9 @@ then
         # exit 1
     fi
 else
-    echo "OpenSSL is not tested."
+    echo "**********************"
+    echo "OpenSSL is not tested"
+    echo "**********************"
 fi
 
 if [[ "$IS_DARWIN" -ne 0 ]]
