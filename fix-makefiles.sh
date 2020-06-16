@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script fixes $ORIGIN-based runpaths in Makefiles.
-# Projects that generate makefiles on the fly after
-# configure may break due to their cleverness.
+# This script fixes $ORIGIN-based runpaths in Makefiles. Projects that generate
+# makefiles on the fly after configure may break due to their cleverness.
+# Also see https://gitlab.alpinelinux.org/alpine/aports/-/issues/11655
 
 echo "**********************"
 echo "Fixing Makefiles"
