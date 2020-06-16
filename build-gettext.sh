@@ -157,7 +157,7 @@ fi
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="-liconv ${BUILD_LIBS[*]}" \
+    LIBS="${BUILD_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
@@ -178,6 +178,14 @@ if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GetText"
     exit 1
 fi
+
+# Some non-Linux systems have Gzip, but it is anemic.
+# GZIP_ENV = --best causes a autopoint-3 test failure.
+(IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
+do
+    sed -e 's/GZIP_ENV = --best/GZIP_ENV = -7/g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+done)
 
 echo "**********************"
 echo "Building package"
