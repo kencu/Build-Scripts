@@ -157,7 +157,7 @@ fi
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]} -liconv" \
+    LIBS="-liconv ${BUILD_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
