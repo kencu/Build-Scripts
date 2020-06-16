@@ -238,7 +238,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$GETTEXT_TAR" "$GETTEXT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
