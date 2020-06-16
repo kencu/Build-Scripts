@@ -162,8 +162,8 @@ fi
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    am_cv_func_iconv=yes \
     am_cv_lib_iconv=yes \
+    am_cv_func_iconv=yes \
     am_cv_func_iconv_works=yes \
     --enable-static \
     --enable-shared \
@@ -197,8 +197,6 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Gnulib fails one self test on older systems, like Fedora 1
-# and Ubuntu 4. Allow the failure but print the result.
 MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
