@@ -94,7 +94,6 @@ then
     patch -N -Z -p1 < allpatches
 else
     echo "Failed to download MPFR patches"
-    exit 1
 fi
 
 # Fix sys_lib_dlsearch_path_spec
