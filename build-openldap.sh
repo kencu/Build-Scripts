@@ -68,16 +68,25 @@ fi
 
 ###############################################################################
 
+if [[ "$IS_ALPINE" -ne 0 ]] && [[ -z "$(command -v soelim 2>/dev/null)" ]]
+then
+    if ! ./build-mandoc.sh
+    then
+        echo "Failed to build Mandoc"
+        exit 1
+    fi
+fi
+
+###############################################################################
+
 # Problem with paths on NetBSD???
 
-OLD_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
 LD_LIBRARY_PATH="$INSTX_LIBDIR:$LD_LIBRARY_PATH"
-LD_LIBRARY_PATH=$(printf "$LD_LIBRARY_PATH" | sed 's|:$||')
+LD_LIBRARY_PATH=$(printf "%s" "$LD_LIBRARY_PATH" | sed 's|:$||')
 export LD_LIBRARY_PATH
 
-OLD_DYLD_LIBRARY_PATH="$DYLD_LIBRARY_PATH"
 DYLD_LIBRARY_PATH="$INSTX_LIBDIR:$DYLD_LIBRARY_PATH"
-DYLD_LIBRARY_PATH=$(printf "$DYLD_LIBRARY_PATH" | sed 's|:$||')
+DYLD_LIBRARY_PATH=$(printf "%s" "$DYLD_LIBRARY_PATH" | sed 's|:$||')
 export DYLD_LIBRARY_PATH
 
 ###############################################################################
@@ -99,7 +108,7 @@ fi
 
 rm -rf "$LDAP_DIR" &>/dev/null
 gzip -d < "$LDAP_TAR" | tar xf -
-cd "$LDAP_DIR"
+cd "$LDAP_DIR" || exit 1
 
 if [[ -e ../patch/openldap.patch ]]; then
     patch -u -p0 < ../patch/openldap.patch
