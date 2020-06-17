@@ -84,3 +84,16 @@
  	*d++ = *s++;	\
  	*d = *s;	\
  } while (0)
+--- libraries/libldap/cyrus.c
++++ libraries/libldap/cyrus.c
+@@ -41,6 +41,10 @@
+ #define HOST_NAME_MAX _POSIX_HOST_NAME_MAX
+ #endif
+ 
++#if !defined(HOST_NAME_MAX)
++#define HOST_NAME_MAX 64
++#endif
++
+ #ifdef HAVE_SASL_SASL_H
+ #include <sasl/sasl.h>
+ #else
