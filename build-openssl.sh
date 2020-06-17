@@ -60,14 +60,6 @@ fi
 
 ###############################################################################
 
-if ! ./build-unistr.sh
-then
-    echo "Failed to build Unistring"
-    exit 1
-fi
-
-###############################################################################
-
 if [[ -n "$(command -v perl 2>/dev/null)" ]]; then
     PERL_MAJ=$(perl -V | head -n 1 | awk '{ print $6 }')
     PERL_MIN=$(perl -V | head -n 1 | awk '{ print $8 }')
