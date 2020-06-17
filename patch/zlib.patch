@@ -41,7 +41,7 @@
  	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS)
  
 -install-libs: $(LIBS)
-+make-directories:
++installdirs:
  	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
  	-@if [ ! -d $(DESTDIR)$(libdir)       ]; then mkdir -p $(DESTDIR)$(libdir); fi
  	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
@@ -49,7 +49,7 @@
  	-@if [ ! -d $(DESTDIR)$(man3dir)      ]; then mkdir -p $(DESTDIR)$(man3dir); fi
  	-@if [ ! -d $(DESTDIR)$(pkgconfigdir) ]; then mkdir -p $(DESTDIR)$(pkgconfigdir); fi
 +
-+install-libs: make-directories $(LIBS)
++install-libs: installdirs $(LIBS)
  	rm -f $(DESTDIR)$(libdir)/$(STATICLIB)
  	cp $(STATICLIB) $(DESTDIR)$(libdir)
  	chmod 644 $(DESTDIR)$(libdir)/$(STATICLIB)
@@ -76,7 +76,7 @@
  
 -install: install-libs
 -	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
-+install: make-directories install-libs
++install: installdirs install-libs
  	rm -f $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
  	cp $(SRCDIR)zlib.h zconf.h $(DESTDIR)$(includedir)
  	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
