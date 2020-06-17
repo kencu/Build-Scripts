@@ -149,6 +149,11 @@ if [[ "$IS_OPENBSD" -eq 1 ]]; then
     SKIP_OPENSSL_TESTS=1
 fi
 
+# Fix Alpine
+if [[ "$IS_ALPINE" -ne 0 ]]; then
+    CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-afalgeng"
+fi
+
 # Fix the install_name
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="-Wl,-headerpad_max_install_names"
@@ -172,6 +177,13 @@ BUILD_OPTS="${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}"
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenSSL"
     exit 1
+fi
+
+# Fix Alpine
+if [[ "$IS_ALPINE" -ne 0 ]]; then
+    # This undefine's the macro after it has been set.
+    echo '#undef OPENSSL_SECURE_MEMORY' >> e_os.h
+    echo '' >> e_os.h
 fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so

@@ -91,6 +91,9 @@ IS_OPENBSD=$(grep -i -c 'openbsd' <<< "$THIS_SYSTEM")
 IS_FREEBSD=$(grep -i -c 'freebsd' <<< "$THIS_SYSTEM")
 IS_NETBSD=$(grep -i -c 'netbsd' <<< "$THIS_SYSTEM")
 
+THIS_SYSTEM=$(uname -v 2>&1)
+IS_ALPINE=$(grep -i -c 'alpine' <<< "$THIS_SYSTEM")
+
 ###############################################################################
 
 # Paths are awful on Solaris. An unmodified environment only
