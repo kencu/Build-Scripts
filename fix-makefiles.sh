@@ -9,36 +9,30 @@ echo "**********************"
 echo "Fixing Makefiles"
 echo "**********************"
 
-old_origin=$(echo '$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-new_origin=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-(IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
+origin1=$(echo '$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+origin2=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+origin3=$(echo '$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+origin4=$(echo '$$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+
+(IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
-    sed -e "s/$old_origin/$new_origin/g" "$file" > "$file.fixed"
+    sed -e "s/$origin1/$origin2/g" \
+        -e "s/$origin3/$origin2/g" \
+        -e "s/$origin4/$origin2/g" \
+        "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
+    # echo "$file"
+    echo "${file#"./"}"
 done)
 
-old_origin=$(echo '$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-new_origin=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-(IFS="" find "$PWD" -iname 'Makefile' -print | while read -r file
+(IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
-    sed -e "s/$old_origin/$new_origin/g" "$file" > "$file.fixed"
+    sed -e "s/$origin1/$origin2/g" \
+        -e "s/$origin3/$origin2/g" \
+        -e "s/$origin4/$origin2/g" \
+           "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done)
-
-old_origin=$(echo '$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-new_origin=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-(IFS="" find "$PWD" -iname 'GNUmakefile' -print | while read -r file
-do
-    sed -e "s/$old_origin/$new_origin/g" "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-done)
-
-old_origin=$(echo '$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-new_origin=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-(IFS="" find "$PWD" -iname 'GNUmakefile' -print | while read -r file
-do
-    sed -e "s/$old_origin/$new_origin/g" "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+    echo "${file#"./"}"
 done)
 
 exit 0
