@@ -25,3 +25,58 @@
  #ifdef ZLIB_DEBUG
      s->compressed_len = (s->compressed_len + 3 + 7) & (ulg)~7L;
      s->compressed_len += (stored_len + 4) << 3;
+--- Makefile.in
++++ Makefile.in
+@@ -26,7 +26,7 @@
+ 
+ SFLAGS=-O
+ LDFLAGS=
+-TEST_LDFLAGS=-L. libz.a
++TEST_LDFLAGS=-L. ./libz.a
+ LDSHARED=$(CC)
+ CPP=$(CC) -E
+ 
+@@ -303,17 +303,20 @@
+ minigzip64$(EXE): minigzip64.o $(STATICLIB)
+ 	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS)
+ 
+-install-libs: $(LIBS)
++make-directories:
+ 	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
+ 	-@if [ ! -d $(DESTDIR)$(libdir)       ]; then mkdir -p $(DESTDIR)$(libdir); fi
+ 	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
++	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
+ 	-@if [ ! -d $(DESTDIR)$(man3dir)      ]; then mkdir -p $(DESTDIR)$(man3dir); fi
+ 	-@if [ ! -d $(DESTDIR)$(pkgconfigdir) ]; then mkdir -p $(DESTDIR)$(pkgconfigdir); fi
++
++install-libs: make-directories $(LIBS)
+ 	rm -f $(DESTDIR)$(libdir)/$(STATICLIB)
+ 	cp $(STATICLIB) $(DESTDIR)$(libdir)
+ 	chmod 644 $(DESTDIR)$(libdir)/$(STATICLIB)
+ 	-@($(RANLIB) $(DESTDIR)$(libdir)/libz.a || true) >/dev/null 2>&1
+-	-@if test -n "$(SHAREDLIBV)"; then \
++	-@if true; then \
+ 	  rm -f $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBV); \
+ 	  cp $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir); \
+ 	  echo "cp $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)"; \
+@@ -321,8 +324,9 @@
+ 	  echo "chmod 755 $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBV)"; \
+ 	  rm -f $(DESTDIR)$(sharedlibdir)/$(SHAREDLIB) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBM); \
+ 	  ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIB); \
++	  echo "ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIB)"; \
+ 	  ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBM); \
+-	  ($(LDCONFIG) || true)  >/dev/null 2>&1; \
++	  echo "ln -s $(SHAREDLIBV) $(DESTDIR)$(sharedlibdir)/$(SHAREDLIBM)"; \
+ 	fi
+ 	rm -f $(DESTDIR)$(man3dir)/zlib.3
+ 	cp $(SRCDIR)zlib.3 $(DESTDIR)$(man3dir)
+@@ -333,8 +337,7 @@
+ # The ranlib in install is needed on NeXTSTEP which checks file times
+ # ldconfig is for Linux
+ 
+-install: install-libs
+-	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
++install: make-directories install-libs
+ 	rm -f $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
+ 	cp $(SRCDIR)zlib.h zconf.h $(DESTDIR)$(includedir)
+ 	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
