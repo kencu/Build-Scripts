@@ -284,7 +284,7 @@ fi
 cp "./doc/sample.wgetrc" "./wgetrc"
 {
     echo ""
-    echo "# Default CA zoo file added by Build-Scripts"
+    echo "# Default CA Zoo file added by Build-Scripts"
     echo "ca_directory = $SH_CACERT_PATH"
     echo "ca_certificate = $SH_CACERT_FILE"
     echo ""
