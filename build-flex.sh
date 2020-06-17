@@ -98,8 +98,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+	# _GNU_SOURCE due to https://github.com/spack/spack/issues/8152
+
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
+    CPPFLAGS="${BUILD_CPPFLAGS[*]} -D_GNU_SOURCE" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
     LDFLAGS="${BUILD_LDFLAGS[*]}" \
