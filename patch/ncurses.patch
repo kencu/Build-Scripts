@@ -1,18 +1,99 @@
 # Ncurses 6.1 patches
 --- progs/tic.c
 +++ progs/tic.c
-@@ -131,6 +131,14 @@
+@@ -120,9 +120,11 @@
+     free_namelist(namelst);
+     _nc_leaks_dump_entry();
+ #endif
+-    if (tmp_fp != 0)
+-	fclose(tmp_fp);
+-    if (to_remove != 0) {
++    if (tmp_fp != NULL) {
++    fclose(tmp_fp);
++    tmp_fp = NULL;
++    }
++    if (to_remove != NULL) {
+ #if HAVE_REMOVE
+ 	rc = remove(to_remove);
+ #else
+@@ -131,6 +133,12 @@
  	if (rc != 0)
  	    perror(to_remove);
      }
++#if NO_LEAKS
 +    if (log_fp != stdin && log_fp != stdout && log_fp != stderr) {
 +    fclose(log_fp);
 +    log_fp = NULL;
 +    }
-+    if (tmp_fp != stdin && tmp_fp != stdout && tmp_fp != stderr) {
-+    fclose(tmp_fp);
-+    tmp_fp = NULL;
-+    }
++#endif
  }
  
  static void
+@@ -403,7 +411,7 @@
+ }
+ 
+ static FILE *
+-copy_input(FILE *source, const char *filename, char *alt_file)
++copy_input(FILE **source, const char *filename, char *alt_file)
+ {
+     char my_altfile[PATH_MAX];
+     FILE *result = 0;
+@@ -413,17 +421,17 @@
+     if (alt_file == 0)
+ 	alt_file = my_altfile;
+ 
+-    if (source == 0) {
++    if (*source == 0) {
+ 	failed("copy_input (source)");
+     } else if ((target = open_tempfile(alt_file)) == 0) {
+ 	failed("copy_input (target)");
+     } else {
+-	clearerr(source);
++	clearerr(*source);
+ 	for (;;) {
+-	    ch = fgetc(source);
+-	    if (feof(source)) {
++	    ch = fgetc(*source);
++	    if (feof(*source)) {
+ 		break;
+-	    } else if (ferror(source)) {
++	    } else if (ferror(*source)) {
+ 		failed(filename);
+ 	    } else if (ch == 0) {
+ 		/* don't loop in case someone wants to convert /dev/zero */
+@@ -432,7 +440,7 @@
+ 	    }
+ 	    fputc(ch, target);
+ 	}
+-	fclose(source);
++	fclose(*source); *source = NULL;
+ 	/*
+ 	 * rewind() does not force the target file's data to disk (not does
+ 	 * fflush()...).  So open a second stream on the data and then close
+@@ -440,7 +448,7 @@
+ 	 * second stream.
+ 	 */
+ 	result = fopen(alt_file, "r+");
+-	fclose(target);
++	fclose(target); target = NULL;
+ 	to_remove = strdup(alt_file);
+     }
+     return result;
+@@ -454,7 +462,7 @@
+     int mode;
+ 
+     if (!strcmp(filename, "-")) {
+-	fp = copy_input(stdin, STDIN_NAME, alt_file);
++	fp = copy_input(&stdin, STDIN_NAME, alt_file);
+     } else if (stat(filename, &sb) < 0) {
+ 	fprintf(stderr, "%s: %s %s\n", _nc_progname, filename, strerror(errno));
+ 	ExitProgram(EXIT_FAILURE);
+@@ -471,7 +479,7 @@
+ 	}
+ 	if (mode != S_IFREG) {
+ 	    if (alt_file != 0) {
+-		FILE *fp2 = copy_input(fp, filename, alt_file);
++		FILE *fp2 = copy_input(&fp, filename, alt_file);
+ 		fp = fp2;
+ 	    } else {
+ 		fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);

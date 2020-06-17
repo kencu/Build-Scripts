@@ -71,10 +71,17 @@ rm -rf "$NCURSES_DIR" &>/dev/null
 gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
+#cp -p progs/tic.c progs/tic.c.orig
+#cp -p progs/toe.c progs/toe.c.orig
+
 if [[ -e ../patch/ncurses.patch ]]; then
     patch -u -p0 < ../patch/ncurses.patch
     echo ""
 fi
+
+#echo "# Ncurses 6.1 patches" > ../patch/ncurses.patch
+#diff -u progs/tic.c.orig progs/tic.c >> ../patch/ncurses.patch
+#diff -u progs/toe.c.orig progs/toe.c >> ../patch/ncurses.patch
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
