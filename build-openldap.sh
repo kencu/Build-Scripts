@@ -123,9 +123,8 @@ cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure; chmod a+x configure
 
-# mdb is too dirty and cannot build on OS X
-# It is also full of undefined behavior
-# Just disable mdb on all platforms
+# mdb is too dirty and cannot build on OS X. It is also full of
+# undefined behavior. Just disable mdb on all platforms.
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--with-tls=openssl")
 CONFIG_OPTS+=("--enable-mdb=no")
