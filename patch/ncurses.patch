@@ -1,0 +1,18 @@
+# Ncurses 6.1 patches
+--- progs/tic.c
++++ progs/tic.c
+@@ -131,6 +131,14 @@
+ 	if (rc != 0)
+ 	    perror(to_remove);
+     }
++    if (log_fp != stdin && log_fp != stdout && log_fp != stderr) {
++    fclose(log_fp);
++    log_fp = NULL;
++    }
++    if (tmp_fp != stdin && tmp_fp != stdout && tmp_fp != stderr) {
++    fclose(tmp_fp);
++    tmp_fp = NULL;
++    }
+ }
+ 
+ static void
