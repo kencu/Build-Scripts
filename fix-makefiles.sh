@@ -21,7 +21,6 @@ do
         -e "s/$origin4/$origin2/g" \
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    # echo "$file"
     echo "${file#"./"}"
 done)
 
