@@ -80,6 +80,7 @@ fi
 bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
+    CC="${CC}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]} -I." \
     CFLAGS="${BUILD_CFLAGS[*]}" \
     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
@@ -88,7 +89,8 @@ bash ../fix-configure.sh
 ./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared
+    --static \
+    --shared \
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure zLib"
@@ -103,7 +105,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "all")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build zLib"
@@ -129,6 +131,8 @@ echo "Installing package"
 echo "**********************"
 
 MAKE_FLAGS=("install")
+MAKE_FLAGS+=("prefix=$INSTX_PREFIX")
+MAKE_FLAGS+=("libdir=$INSTX_LIBDIR")
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
