@@ -72,23 +72,6 @@ rm -rf "$MANDOC_DIR" &>/dev/null
 gzip -d < "$MANDOC_TAR" | tar xf -
 cd "$MANDOC_DIR" || exit 1
 
-echo "" > configure.local
-{
-    echo "PREFIX='$INSTX_PREFIX'"
-    echo "BINDIR='\${PREFIX}/bin'"
-    echo "SBINDIR='\${PREFIX}/sbin'"
-    echo "MANDIR='\${PREFIX}/man'"
-    # echo "MANPATH_DEFAULT='$INSTX_PREFIX/man'"
-
-    echo "CC='$CC'"
-    # echo "CPPFLAGS='${BUILD_CPPFLAGS[*]}'"
-    echo "CFLAGS='${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}'"
-    echo "LDFLAGS='${BUILD_LDFLAGS[*]}'"
-    echo "LDADD='${BUILD_LIBS[*]}'"
-
-    echo ""
-}  >> configure.local
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/mandoc.patch ]]; then
     patch -u -p0 < ../patch/mandoc.patch
@@ -98,6 +81,22 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "" > configure.local
+{
+    echo "PREFIX='$INSTX_PREFIX'"
+    echo "BINDIR='\${PREFIX}/bin'"
+    echo "SBINDIR='\${PREFIX}/sbin'"
+    echo "MANDIR='\${PREFIX}/man'"
+
+    echo "CC='$CC'"
+    echo "CFLAGS='${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}'"
+    echo "LDFLAGS='${BUILD_LDFLAGS[*]}'"
+    echo "LDADD='${BUILD_LIBS[*]}'"
+
+    echo ""
+}  >> configure.local
+
+    # Mandoc ignores this and uses configure.local.
     PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
     CFLAGS="${BUILD_CFLAGS[*]}" \
