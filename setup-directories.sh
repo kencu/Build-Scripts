@@ -24,9 +24,11 @@ fi
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_PREFIX/"{bin,sbin,etc,include,var,libexec,share,info,man}
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
 else
     mkdir -p "$INSTX_PREFIX/"{bin,sbin,etc,include,var,libexec,share,info,man}
     mkdir -p "$INSTX_LIBDIR"
+    mkdir -p "$INSTX_LIBDIR/pkgconfig"
 fi
 
 exit 0
