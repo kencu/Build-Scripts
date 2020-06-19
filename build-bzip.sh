@@ -103,9 +103,17 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-f" "Makefile" "-j" "$INSTX_JOBS"
-            CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]} -I."
-            LDFLAGS="${BUILD_LDFLAGS[*]}")
+# Since we call the makefile directly, we need to escape dollar signs.
+CPPFLAGS=$(echo "${BUILD_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${BUILD_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${BUILD_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+
+MAKE_FLAGS=("-f" "Makefile"
+            "-j" "$INSTX_JOBS"
+            CC="${CC}"
+            CPPFLAGS="${CPPFLAGS[*]} -I."
+            CFLAGS="${CFLAGS[*]}"
+            LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
@@ -138,10 +146,12 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("-f" "Makefile" "check" "-j" "$INSTX_JOBS"
-            CC="${CC}" CPPFLAGS="${BUILD_CPPFLAGS[*]}"
-            CFLAGS="${BUILD_CFLAGS[*]} -I."
-            LDFLAGS="${BUILD_LDFLAGS[*]}")
+MAKE_FLAGS=("-f" "Makefile" "check"
+            "-j" "$INSTX_JOBS"
+            CC="${CC}"
+            CPPFLAGS="${CPPFLAGS[*]} -I."
+            CFLAGS="${CFLAGS[*]}"
+            LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
@@ -191,10 +201,12 @@ else
     MAKEFILE=Makefile-libbz2_so
 fi
 
-MAKE_FLAGS=("-f" "$MAKEFILE" "-j" "$INSTX_JOBS"
-            CC="${CC}" CPPFLAGS="${BUILD_CPPFLAGS[*]}"
-            CFLAGS="${BUILD_CFLAGS[*]} -I."
-            LDFLAGS="${BUILD_LDFLAGS[*]}")
+MAKE_FLAGS=("-f" "Makefile"
+            "-j" "$INSTX_JOBS"
+            CC="${CC}"
+            CPPFLAGS="${CPPFLAGS[*]} -I."
+            CFLAGS="${CFLAGS[*]}"
+            LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
