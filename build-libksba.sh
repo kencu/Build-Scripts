@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libksba from sources.
 
-LIBKSBA_TAR=libksba-1.3.5.tar.bz2
-LIBKSBA_DIR=libksba-1.3.5
+LIBKSBA_TAR=libksba-1.4.0.tar.bz2
+LIBKSBA_DIR=libksba-1.4.0
 PKG_NAME=libksba
 
 ###############################################################################
