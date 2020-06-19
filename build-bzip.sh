@@ -111,8 +111,8 @@ LDFLAGS=$(echo "${BUILD_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
 MAKE_FLAGS=("-f" "Makefile"
             "-j" "$INSTX_JOBS"
             CC="${CC}"
-            CPPFLAGS="${CPPFLAGS[*]} -I."
-            CFLAGS="${CFLAGS[*]}"
+            CPPFLAGS="${CPPFLAGS} -I."
+            CFLAGS="${CFLAGS}"
             LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -149,8 +149,8 @@ echo "**********************"
 MAKE_FLAGS=("-f" "Makefile" "check"
             "-j" "$INSTX_JOBS"
             CC="${CC}"
-            CPPFLAGS="${CPPFLAGS[*]} -I."
-            CFLAGS="${CFLAGS[*]}"
+            CPPFLAGS="${CPPFLAGS} -I."
+            CFLAGS="${CFLAGS}"
             LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -204,8 +204,8 @@ fi
 MAKE_FLAGS=("-f" "Makefile"
             "-j" "$INSTX_JOBS"
             CC="${CC}"
-            CPPFLAGS="${CPPFLAGS[*]} -I."
-            CFLAGS="${CFLAGS[*]}"
+            CPPFLAGS="${CPPFLAGS} -I."
+            CFLAGS="${CFLAGS}"
             LDFLAGS="${LDFLAGS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
