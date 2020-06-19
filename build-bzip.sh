@@ -168,6 +168,10 @@ echo "**********************"
 if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing static archive..."
+    MAKE_FLAGS=("-f" "Makefile" installdirs
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
+
     MAKE_FLAGS=("-f" "Makefile" install
                 PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -178,6 +182,10 @@ then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing static archive..."
+    MAKE_FLAGS=("-f" "Makefile" installdirs
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
+    "${MAKE}" "${MAKE_FLAGS[@]}"
+
     MAKE_FLAGS=("-f" "Makefile" install
                 PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -224,6 +232,10 @@ if [[ -n "$SUDO_PASSWORD" ]]
 then
     echo "Installing shared object..."
     MAKE_FLAGS=("-f" "$MAKEFILE" install
+                PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
+
+    MAKE_FLAGS=("-f" "$MAKEFILE" installdirs
                 PREFIX="$INSTX_PREFIX" LIBDIR="$INSTX_LIBDIR")
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
