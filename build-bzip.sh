@@ -106,7 +106,9 @@ echo "**********************"
 # Since we call the makefile directly, we need to escape dollar signs.
 CPPFLAGS=$(echo "${BUILD_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
 CFLAGS=$(echo "${BUILD_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${BUILD_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${BUILD_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${BUILD_LIBS[*]}"
 
 MAKE_FLAGS=("-f" "Makefile"
             "-j" "$INSTX_JOBS"

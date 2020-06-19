@@ -79,12 +79,19 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
+# Since we call the makefile directly, we need to escape dollar signs.
+CPPFLAGS=$(echo "${BUILD_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${BUILD_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${BUILD_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${BUILD_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${BUILD_LIBS[*]}"
+
 MAKE_FLAGS=("all" "libcryptopp.pc" "-j" "$INSTX_JOBS")
-if ! CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-     CFLAGS="${BUILD_CFLAGS[*]}" \
-     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-     LIBS="${BUILD_LIBS[*]}" \
+if ! CPPFLAGS="${CPPFLAGS}" \
+     CFLAGS="${CFLAGS}" \
+     CXXFLAGS="${CXXFLAGS}" \
+     LDFLAGS="${LDFLAGS}" \
+     LIBS="${LIBS}" \
      "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Crypto++"
