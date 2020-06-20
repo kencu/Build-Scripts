@@ -1,4 +1,4 @@
-# Ncurses 6.1 patches
+# Ncurses 6.2 patches
 # Written and placed in public domain by Jeffrey Walton
 #
 --- progs/tic.c
@@ -23,7 +23,7 @@
  	    perror(to_remove);
      }
 +#ifdef NO_LEAKS
-+    if (log_fp != stdin && log_fp != stdout && log_fp != stderr) {
++    if (log_fp != NULL) {
 +    fclose(log_fp);
 +    log_fp = NULL;
 +    }
