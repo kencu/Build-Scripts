@@ -194,7 +194,9 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***********************"
     echo "Failed to build GetText"
+    echo "***********************"
     exit 1
 fi
 
