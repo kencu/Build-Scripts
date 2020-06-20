@@ -1,4 +1,6 @@
 # Ncurses 6.1 patches
+# Written and placed in public domain by Jeffrey Walton
+#
 --- progs/tic.c
 +++ progs/tic.c
 @@ -122,9 +122,11 @@
@@ -20,7 +22,7 @@
  	if (rc != 0)
  	    perror(to_remove);
      }
-+#if NO_LEAKS
++#ifdef NO_LEAKS
 +    if (log_fp != stdin && log_fp != stdout && log_fp != stderr) {
 +    fclose(log_fp);
 +    log_fp = NULL;
@@ -97,3 +99,16 @@
  		fp = fp2;
  	    } else {
  		fprintf(stderr, "%s: %s is not a file\n", _nc_progname, filename);
+--- test/background.c
++++ test/background.c
+@@ -35,6 +35,10 @@
+ #include <color_name.h>
+ #include <dump_window.h>
+ 
++#ifdef NO_LEAKS
++extern NCURSES_EXPORT(void) exit_curses (int) GCC_NORETURN;
++#endif
++
+ static int default_bg = COLOR_BLACK;
+ static int default_fg = COLOR_WHITE;
+ 
