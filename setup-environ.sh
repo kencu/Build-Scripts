@@ -529,106 +529,106 @@ SH_UNBOUND_CACERT_FILE="$INSTX_PREFIX/etc/unbound/icannbundle.pem"
 
 ###############################################################################
 
-BUILD_PKGCONFIG=("$INSTX_LIBDIR/pkgconfig")
-BUILD_CPPFLAGS=("-I$INSTX_PREFIX/include" "-DNDEBUG")
-BUILD_CFLAGS=("$SH_SYM" "$SH_OPT")
-BUILD_CXXFLAGS=("$SH_SYM" "$SH_OPT")
-BUILD_LDFLAGS=("-L$INSTX_LIBDIR")
-BUILD_LIBS=()
+INSTX_PKGCONFIG=("$INSTX_LIBDIR/pkgconfig")
+INSTX_CPPFLAGS=("-I$INSTX_PREFIX/include" "-DNDEBUG")
+INSTX_CFLAGS=("$SH_SYM" "$SH_OPT")
+INSTX_CXXFLAGS=("$SH_SYM" "$SH_OPT")
+INSTX_LDFLAGS=("-L$INSTX_LIBDIR")
+INSTX_LIBS=()
 
 if [[ -n "$CFLAGS64" ]]
 then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$CFLAGS64"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$CFLAGS64"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$CFLAGS64"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$CFLAGS64"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$CFLAGS64"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$CFLAGS64"
 fi
 
 if [[ -n "$SH_64BIT_DOUBLE" ]]
 then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_64BIT_DOUBLE"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_64BIT_DOUBLE"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_64BIT_DOUBLE"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_64BIT_DOUBLE"
 fi
 
 if [[ -n "$INSTX_UBSAN" ]]; then
-    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_UBSAN=1"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=undefined"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=undefined"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=undefined"
+    INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_UBSAN=1"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize=undefined"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize=undefined"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=undefined"
 
     if [[ -n "$SH_SAN_NORECOVER" ]]; then
-        BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_SAN_NORECOVER"
-        BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_SAN_NORECOVER"
-        BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_SAN_NORECOVER"
+        INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_SAN_NORECOVER"
+        INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_SAN_NORECOVER"
+        INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_SAN_NORECOVER"
     fi
 
 elif [[ -n "$INSTX_ASAN" ]]; then
-    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_ASAN=1"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=address"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-omit-frame-pointer"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=address"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=address"
+    INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_ASAN=1"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize=address"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize=address"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=address"
 
 elif [[ -n "$INSTX_MSAN" ]]; then
-    BUILD_CPPFLAGS[${#BUILD_CPPFLAGS[@]}]="-DTEST_MSAN=1"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize=memory"
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fno-omit-frame-pointer"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize=memory"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize=memory"
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_MSAN=1"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize=memory"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize=memory"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=memory"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fno-omit-frame-pointer"
 
     if [[ -n "$SH_MSAN_ORIGIN" ]]; then
-        BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-fsanitize-memory-track-origins"
-        BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="-fsanitize-memory-track-origins"
-        BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="-fsanitize-memory-track-origins"
+        INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize-memory-track-origins"
+        INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize-memory-track-origins"
+        INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize-memory-track-origins"
     fi
 fi
 
 if [[ -n "$SH_ARMV8" ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_ARMV8"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_ARMV8"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_ARMV8"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_ARMV8"
 elif [[ -n "$SH_ARMV7" ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_ARMV7"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_ARMV7"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_ARMV7"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_ARMV7"
 elif [[ -n "$SH_NATIVE" ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_NATIVE"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_NATIVE"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_NATIVE"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_NATIVE"
 fi
 
 if [[ -n "$SH_PIC" ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_PIC"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_PIC"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_PIC"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_PIC"
 fi
 
 if [[ -n "$SH_PTHREAD" ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="$SH_PTHREAD"
-    BUILD_CXXFLAGS[${#BUILD_CXXFLAGS[@]}]="$SH_PTHREAD"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_PTHREAD"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_PTHREAD"
 fi
 
 if [[ -n "$SH_OPATH" ]]; then
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_OPATH"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_OPATH"
 fi
 
 if [[ -n "$SH_RPATH" ]]; then
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_RPATH"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_RPATH"
 fi
 
 if [[ -n "$SH_DTAGS" ]]; then
-    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_DTAGS"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_DTAGS"
 fi
 
 if [[ -n "$SH_DL" ]]; then
-    BUILD_LIBS[${#BUILD_LIBS[@]}]="$SH_DL"
+    INSTX_LIBS[${#INSTX_LIBS[@]}]="$SH_DL"
 fi
 
 if [[ -n "$SH_LIBPTHREAD" ]]; then
-    BUILD_LIBS[${#BUILD_LIBS[@]}]="$SH_LIBPTHREAD"
+    INSTX_LIBS[${#INSTX_LIBS[@]}]="$SH_LIBPTHREAD"
 fi
 
 #if [[ "$IS_DARWIN" -ne 0 ]] && [[ -n "$SH_INSTNAME" ]]; then
-#    BUILD_LDFLAGS+=("$SH_INSTNAME")
-#    BUILD_LDFLAGS[${#BUILD_LDFLAGS[@]}]="$SH_INSTNAME"
+#    INSTX_LDFLAGS+=("$SH_INSTNAME")
+#    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_INSTNAME"
 #fi
 
 # Used to track packages that have been built by these scripts.
@@ -692,12 +692,12 @@ if [[ -z "$PRINT_ONCE" ]]; then
     printf "%s\n" "    INSTX_RPATH: $INSTX_RPATH"
     printf "%s\n" ""
     printf "%s\n" " AUTOCONF_BUILD: $AUTOCONF_BUILD"
-    printf "%s\n" "PKG_CONFIG_PATH: ${BUILD_PKGCONFIG[*]}"
-    printf "%s\n" "       CPPFLAGS: ${BUILD_CPPFLAGS[*]}"
-    printf "%s\n" "         CFLAGS: ${BUILD_CFLAGS[*]}"
-    printf "%s\n" "       CXXFLAGS: ${BUILD_CXXFLAGS[*]}"
-    printf "%s\n" "        LDFLAGS: ${BUILD_LDFLAGS[*]}"
-    printf "%s\n" "         LDLIBS: ${BUILD_LIBS[*]}"
+    printf "%s\n" "PKG_CONFIG_PATH: ${INSTX_PKGCONFIG[*]}"
+    printf "%s\n" "       CPPFLAGS: ${INSTX_CPPFLAGS[*]}"
+    printf "%s\n" "         CFLAGS: ${INSTX_CFLAGS[*]}"
+    printf "%s\n" "       CXXFLAGS: ${INSTX_CXXFLAGS[*]}"
+    printf "%s\n" "        LDFLAGS: ${INSTX_LDFLAGS[*]}"
+    printf "%s\n" "         LDLIBS: ${INSTX_LIBS[*]}"
     printf "%s\n" ""
 
     printf "%s\n" " WGET: $WGET"

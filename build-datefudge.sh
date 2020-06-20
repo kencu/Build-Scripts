@@ -87,7 +87,7 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
-if ! CC="${CC}" CFLAGS="${BUILD_CFLAGS[*]}" LDFLAGS="${BUILD_LDFLAGS[*]}" \
+if ! CC="${CC}" CFLAGS="${INSTX_CFLAGS[*]}" LDFLAGS="${INSTX_LDFLAGS[*]}" \
      "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Datefudge"

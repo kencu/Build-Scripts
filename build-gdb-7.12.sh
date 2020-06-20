@@ -99,12 +99,12 @@ CONFIG_OPTS+=("--with-gmp=$INSTX_PREFIX")
 CONFIG_OPTS+=("--disable-lto")
 CONFIG_OPTS+=("--disable-tui")
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ../configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

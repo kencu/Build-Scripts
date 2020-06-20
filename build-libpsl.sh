@@ -106,16 +106,16 @@ bash ../fix-configure.sh
 # Solaris is a tab bit stricter than libc
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
     # Don't use CPPFLAGS. _XOPEN_SOURCE will cross-pollinate into CXXFLAGS.
-    BUILD_CFLAGS+=("-D_XOPEN_SOURCE=600 -std=gnu99")
-    # BUILD_CXXFLAGS+=("-std=c++03")
+    INSTX_CFLAGS+=("-D_XOPEN_SOURCE=600 -std=gnu99")
+    # INSTX_CXXFLAGS+=("-std=c++03")
 fi
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

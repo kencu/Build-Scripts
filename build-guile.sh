@@ -144,15 +144,15 @@ CONFIG_OPTS+=("--with-libiconv-prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-libltdl-prefix=$INSTX_PREFIX")
 CONFIG_OPTS+=("--with-libintl-prefix=$INSTX_PREFIX")
 
-# --with-bdw-gc="${BUILD_PKGCONFIG[*]}/"
+# --with-bdw-gc="${INSTX_PKGCONFIG[*]}/"
 # --disable-posix --disable-networking
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

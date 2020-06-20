@@ -89,20 +89,20 @@ echo "" > configure.local
     echo "MANDIR='\${PREFIX}/man'"
 
     echo "CC='$CC'"
-    echo "CFLAGS='${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}'"
-    echo "LDFLAGS='${BUILD_LDFLAGS[*]}'"
-    echo "LDADD='${BUILD_LIBS[*]}'"
+    echo "CFLAGS='${INSTX_CPPFLAGS[*]} ${INSTX_CFLAGS[*]}'"
+    echo "LDFLAGS='${INSTX_LDFLAGS[*]}'"
+    echo "LDADD='${INSTX_LIBS[*]}'"
 
     echo ""
 }  >> configure.local
 
     # Mandoc ignores this and uses configure.local.
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

@@ -111,13 +111,13 @@ echo "**********************"
 	MAKE_FLAGS+=("-j" "$INSTX_JOBS")
 	MAKE_FLAGS+=("PREFIX=$INSTX_PREFIX")
 	MAKE_FLAGS+=("LIBDIR=$INSTX_LIBDIR")
-	MAKE_FLAGS+=("PKGLIBDIR=${BUILD_PKGCONFIG[*]}")
+	MAKE_FLAGS+=("PKGLIBDIR=${INSTX_PKGCONFIG[*]}")
 
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 "${MAKE}" "${MAKE_FLAGS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
@@ -151,7 +151,7 @@ echo "**********************"
 MAKE_FLAGS=("install")
 MAKE_FLAGS+=("PREFIX=$INSTX_PREFIX")
 MAKE_FLAGS+=("LIBDIR=$INSTX_LIBDIR")
-MAKE_FLAGS+=("PKGLIBDIR=${BUILD_PKGCONFIG[*]}")
+MAKE_FLAGS+=("PKGLIBDIR=${INSTX_PKGCONFIG[*]}")
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"

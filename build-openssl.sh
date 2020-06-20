@@ -139,7 +139,7 @@ if [[ "$IS_AMD64" -eq 1 && "$INT128_OPT" -eq 1 ]]; then
 fi
 
 if [[ "$IS_FREEBSD" -eq 1 ]]; then
-    BUILD_CFLAGS[${#BUILD_CFLAGS[@]}]="-Wno-error"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-Wno-error"
 fi
 
 # OpenSSL fails to link its engines and self tests on OpenBSD
@@ -160,19 +160,19 @@ if [[ "$IS_DARWIN" -ne 0 ]]; then
 fi
 
 # OpenSSL does not honor most of the standard variables.
-BUILD_OPTS="${BUILD_CPPFLAGS[*]} ${BUILD_CFLAGS[*]}"
+INSTX_OPTS="${INSTX_CPPFLAGS[*]} ${INSTX_CFLAGS[*]}"
 
     KERNEL_BITS="$INSTX_BITNESS" \
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]} -DPEDANTIC" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]} -DPEDANTIC" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
 ./config \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --openssldir="$INSTX_PREFIX" \
     "${CONFIG_OPTS[@]}" \
-    "${BUILD_OPTS[@]}"
+    "${INSTX_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenSSL"

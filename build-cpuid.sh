@@ -86,12 +86,12 @@ echo "Building package"
 echo "**********************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-     CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-     CFLAGS="${BUILD_CFLAGS[*]}" \
-     CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-     LDFLAGS="${BUILD_LDFLAGS[*]}" \
-     LIBS="${BUILD_LIBS[*]}" \
+if ! PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+     CFLAGS="${INSTX_CFLAGS[*]}" \
+     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+     LDFLAGS="${INSTX_LDFLAGS[*]}" \
+     LIBS="${INSTX_LIBS[*]}" \
     "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Cpuid"

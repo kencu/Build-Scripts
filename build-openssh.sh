@@ -97,10 +97,10 @@ cd "$OPENSSH_DIR" || exit 1
 bash ../fix-configure.sh
 
 CONFIG_OPTS=()
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${BUILD_CPPFLAGS[*]}"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cflags=${BUILD_CFLAGS[*]}"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldflags=${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}"
-CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-libs=-lz ${BUILD_LIBS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${INSTX_CPPFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cflags=${INSTX_CFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldflags=${INSTX_CFLAGS[*]} ${INSTX_LDFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-libs=-lz ${INSTX_LIBS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-zlib=$INSTX_PREFIX"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ssl-dir=$INSTX_PREFIX"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-pie"
@@ -111,12 +111,12 @@ then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldns=$INSTX_PREFIX"
 fi
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_CFLAGS[*]} ${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_CFLAGS[*]} ${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

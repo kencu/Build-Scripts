@@ -74,7 +74,7 @@ fi
 
 cd "b2sum"
 
-B2SUM_CFLAGS="${BUILD_CPPFLAGS[@]} ${BUILD_CFLAGS[@]} -std=c99 -I."
+B2SUM_CFLAGS="${INSTX_CPPFLAGS[@]} ${INSTX_CFLAGS[@]} -std=c99 -I."
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.

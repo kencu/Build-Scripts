@@ -109,11 +109,11 @@ mkdir -p "$HOME/.cpan"
 # https://www.nntp.perl.org/group/perl.beginners/2020/01/msg127308.html
 # -Dextras="HTTP::Daemon HTTP::Request Test::More Text::Template"
 
-PERL_PKGCONFIG="${BUILD_PKGCONFIG[*]}"
-PERL_CPPFLAGS="${BUILD_CPPFLAGS[*]}"
-PERL_CFLAGS="${BUILD_CFLAGS[*]}"
-PERL_CXXFLAGS="${BUILD_CXXFLAGS[*]}"
-PERL_LDFLAGS="${BUILD_LDFLAGS[*]}"
+PERL_PKGCONFIG="${INSTX_PKGCONFIG[*]}"
+PERL_CPPFLAGS="${INSTX_CPPFLAGS[*]}"
+PERL_CFLAGS="${INSTX_CFLAGS[*]}"
+PERL_CXXFLAGS="${INSTX_CXXFLAGS[*]}"
+PERL_LDFLAGS="${INSTX_LDFLAGS[*]}"
 PERL_CC="${CC}"; PERL_CXX="${CXX}"
 
 # Perl munges -Wl,-R,'$$ORIGIN/../lib'. Set it to XXORIGIN so we

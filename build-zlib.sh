@@ -79,13 +79,13 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CC="${CC}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]} -I." \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]} -I." \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \

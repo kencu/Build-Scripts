@@ -79,7 +79,7 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="-g2 -O3" \
     CFLAGS="-g2 -O3" \
     CXXFLAGS="-g2 -O3" \

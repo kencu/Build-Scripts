@@ -92,16 +92,16 @@ CONFIG_OPTS+=("--with-shared")
 CONFIG_OPTS+=("--with-cxx-shared")
 CONFIG_OPTS+=("--without-ada")
 CONFIG_OPTS+=("--enable-pc-files")
-#CONFIG_OPTS+=("--with-termlib")
+CONFIG_OPTS+=("--with-termlib")
 CONFIG_OPTS+=("--disable-root-environ")
-CONFIG_OPTS+=("--with-build-cc=$CC")
-CONFIG_OPTS+=("--with-build-cxx=$CXX")
-CONFIG_OPTS+=("--with-build-cpp=${BUILD_CPPFLAGS[*]}")
-CONFIG_OPTS+=("--with-build-cflags=${BUILD_CFLAGS[*]}")
-CONFIG_OPTS+=("--with-build-cxxflags=${BUILD_CXXFLAGS[*]}")
-CONFIG_OPTS+=("--with-build-ldflags=${BUILD_LDFLAGS[*]}")
-CONFIG_OPTS+=("--with-build-libs=${BUILD_LIBS[*]}")
-CONFIG_OPTS+=("--with-pkg-config-libdir=${BUILD_PKGCONFIG[*]}")
+#CONFIG_OPTS+=("--with-build-cc=$CC")
+#CONFIG_OPTS+=("--with-build-cxx=$CXX")
+#CONFIG_OPTS+=("--with-build-cpp=${INSTX_CPPFLAGS[*]}")
+#CONFIG_OPTS+=("--with-build-cflags=${INSTX_CFLAGS[*]}")
+#CONFIG_OPTS+=("--with-build-cxxflags=${INSTX_CXXFLAGS[*]}")
+#CONFIG_OPTS+=("--with-build-ldflags=${INSTX_LDFLAGS[*]}")
+#CONFIG_OPTS+=("--with-build-libs=${INSTX_LIBS[*]}")
+#CONFIG_OPTS+=("--with-pkg-config-libdir=${INSTX_PKGCONFIG[*]}")
 CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
 
 # Ncurses can be built narrow or wide. There's no real way to
@@ -117,13 +117,13 @@ else
 fi
 
     # Ncurses use PKG_CONFIG_LIBDIR, not PKG_CONFIG_PATH???
-    PKG_CONFIG_LIBDIR="${BUILD_PKGCONFIG[*]}" \
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_LIBDIR="${INSTX_PKGCONFIG[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \

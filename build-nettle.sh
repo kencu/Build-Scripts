@@ -111,8 +111,8 @@ CONFIG_OPTS+=("--disable-documentation")
 if [[ "$IS_IA32" -eq 1 ]]
 then
 
-    AESNI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
-    SHANI_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
+    AESNI_OPT=$("$CC" "${INSTX_CFLAGS[@]}" -dM -E -maes - </dev/null 2>&1 | grep -i -c "__AES__")
+    SHANI_OPT=$("$CC" "${INSTX_CFLAGS[@]}" -dM -E -msha - </dev/null 2>&1 | grep -i -c "__SHA__")
 
     if [[ "$AESNI_OPT" -ne 0 && "$SHANI_OPT" -ne 0 ]]
     then
@@ -130,7 +130,7 @@ fi
 if [[ "$IS_ARM_NEON" -eq 1 ]]
 then
 
-    NEON_OPT=$("$CC" "${BUILD_CFLAGS[@]}" -dM -E - </dev/null 2>&1 | grep -i -c "__NEON__")
+    NEON_OPT=$("$CC" "${INSTX_CFLAGS[@]}" -dM -E - </dev/null 2>&1 | grep -i -c "__NEON__")
 
     if [[ "$NEON_OPT" -ne 0 ]]
     then
@@ -142,12 +142,12 @@ then
     fi
 fi
 
-    PKG_CONFIG_PATH="${BUILD_PKGCONFIG[*]}" \
-    CPPFLAGS="${BUILD_CPPFLAGS[*]}" \
-    CFLAGS="${BUILD_CFLAGS[*]}" \
-    CXXFLAGS="${BUILD_CXXFLAGS[*]}" \
-    LDFLAGS="${BUILD_LDFLAGS[*]}" \
-    LIBS="${BUILD_LIBS[*]}" \
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
