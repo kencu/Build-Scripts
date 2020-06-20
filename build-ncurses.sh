@@ -52,6 +52,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-pcre2.sh
+then
+    echo "Failed to build PCRE2"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** ncurses **********"
 echo
@@ -100,9 +108,9 @@ CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-leaks")
 CONFIG_OPTS+=("--with-shared")
 CONFIG_OPTS+=("--with-cxx-shared")
-CONFIG_OPTS+=("--without-ada")
-CONFIG_OPTS+=("--enable-pc-files")
+CONFIG_OPTS+=("--with-pcre2")
 CONFIG_OPTS+=("--with-termlib")
+CONFIG_OPTS+=("--enable-pc-files")
 CONFIG_OPTS+=("--disable-root-environ")
 CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
 
