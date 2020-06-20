@@ -94,6 +94,9 @@ CONFIG_OPTS+=("--without-ada")
 CONFIG_OPTS+=("--enable-pc-files")
 CONFIG_OPTS+=("--with-termlib")
 CONFIG_OPTS+=("--disable-root-environ")
+CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
+
+# These options were needed for 6.1. They may be needed for 6.2.
 #CONFIG_OPTS+=("--with-build-cc=$CC")
 #CONFIG_OPTS+=("--with-build-cxx=$CXX")
 #CONFIG_OPTS+=("--with-build-cpp=${INSTX_CPPFLAGS[*]}")
@@ -102,7 +105,6 @@ CONFIG_OPTS+=("--disable-root-environ")
 #CONFIG_OPTS+=("--with-build-ldflags=${INSTX_LDFLAGS[*]}")
 #CONFIG_OPTS+=("--with-build-libs=${INSTX_LIBS[*]}")
 #CONFIG_OPTS+=("--with-pkg-config-libdir=${INSTX_PKGCONFIG[*]}")
-CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
 
 # Ncurses can be built narrow or wide. There's no real way to
 # know for sure, so we attempt to see what the distro is doing.
