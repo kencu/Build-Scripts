@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Ncurses from sources.
 
-NCURSES_TAR=ncurses-6.2.tar.gz
-NCURSES_DIR=ncurses-6.2
+NCURSES_TAR=ncurses-6.1.tar.gz
+NCURSES_DIR=ncurses-6.1
 PKG_NAME=ncurses
 
 ###############################################################################
@@ -71,17 +71,27 @@ rm -rf "$NCURSES_DIR" &>/dev/null
 gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
-#cp -p progs/tic.c progs/tic.c.orig
-#cp -p progs/toe.c progs/toe.c.orig
+if false; then
+cp -p progs/tic.c progs/tic.c.orig
+cp -p progs/toe.c progs/toe.c.orig
+cp -p test/background.c test/background.c.orig
+fi
 
 if [[ -e ../patch/ncurses.patch ]]; then
     patch -u -p0 < ../patch/ncurses.patch
     echo ""
 fi
 
-#echo "# Ncurses 6.1 patches" > ../patch/ncurses.patch
-#diff -u progs/tic.c.orig progs/tic.c >> ../patch/ncurses.patch
-#diff -u progs/toe.c.orig progs/toe.c >> ../patch/ncurses.patch
+if false; then
+{
+echo "# Ncurses 6.1 patches"
+echo "# Written and placed in public domain by Jeffrey Walton"
+echo "#"
+diff -u progs/tic.c.orig progs/tic.c
+diff -u progs/toe.c.orig progs/toe.c
+diff -u test/background.c.orig test/background.c
+} > ../patch/ncurses.patch
+fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
