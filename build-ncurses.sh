@@ -3,6 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Ncurses from sources.
 
+# Do NOT use Ncurses 6.2. There are too many problems with the release.
+# Wait for the Ncurses 6.3 release.
+
 NCURSES_VER=6.1
 NCURSES_TAR="ncurses-${NCURSES_VER}.tar.gz"
 NCURSES_DIR="ncurses-${NCURSES_VER}"
@@ -81,28 +84,26 @@ gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
 if false; then
-if "$WGET" -q -O ncurses-6.2-20200613.patch.gz --ca-certificate="$LETS_ENCRYPT_ROOT" \
-    "ftp://ftp.invisible-island.net/ncurses/6.2/ncurses-6.2-20200613.patch.gz"
+# https://invisible-island.net/ncurses/ncurses.faq.html#applying_patches
+if "$WGET" -q -O dev-patches.zip --ca-certificate="$LETS_ENCRYPT_ROOT" \
+    "ftp://ftp.invisible-island.net/ncurses/6.2/dev-patches.zip"
 then
-    if gunzip ncurses-6.2-20200613.patch.gz
+    if unzip dev-patches.zip -d .
     then
-        if ! patch -u -p0 < ncurses-6.2-20200613.patch
-        then
-            echo "********************************"
-            echo "Failed to unpack Ncurses patch"
-            echo "********************************"
-            exit 1
-        fi
+        echo "********************************"
+        echo "Applying Ncurses patches"
+        echo "********************************"
+        for p in ncurses-${NCURSES_VER}-*.patch.gz ; do zcat "${p}" | patch -s -p1 ; done
     else
         echo "********************************"
-        echo "Failed to unpack Ncurses patch"
+        echo "Failed to unpack Ncurses patches"
         echo "********************************"
         exit 1
     fi
 else
-    echo "********************************"
-    echo "Failed to download Ncurses patch"
-    echo "********************************"
+    echo "**********************************"
+    echo "Failed to download Ncurses patches"
+    echo "**********************************"
     exit 1
 fi
 fi
@@ -110,7 +111,7 @@ fi
 if false; then
 cp -p progs/tic.c progs/tic.c.orig
 cp -p progs/toe.c progs/toe.c.orig
-cp -p test/background.c test/background.c.orig
+#cp -p test/background.c test/background.c.orig
 fi
 
 if [[ -e ../patch/ncurses.patch ]]; then
@@ -125,7 +126,7 @@ echo "# Written and placed in public domain by Jeffrey Walton"
 echo "#"
 diff -u progs/tic.c.orig progs/tic.c
 diff -u progs/toe.c.orig progs/toe.c
-diff -u test/background.c.orig test/background.c
+#diff -u test/background.c.orig test/background.c
 } > ../patch/ncurses.patch
 fi
 

@@ -1,9 +1,9 @@
-# Ncurses 6.2 patches
+# Ncurses 6.1 patch
 # Written and placed in public domain by Jeffrey Walton
 #
 --- progs/tic.c
 +++ progs/tic.c
-@@ -122,9 +122,11 @@
+@@ -120,9 +120,11 @@
      free_namelist(namelst);
      _nc_leaks_dump_entry();
  #endif
@@ -18,7 +18,7 @@
  #if HAVE_REMOVE
  	rc = remove(to_remove);
  #else
-@@ -133,6 +135,12 @@
+@@ -131,6 +133,12 @@
  	if (rc != 0)
  	    perror(to_remove);
      }
@@ -31,7 +31,7 @@
  }
  
  static void
-@@ -406,7 +414,7 @@
+@@ -403,7 +411,7 @@
  }
  
  static FILE *
@@ -40,7 +40,7 @@
  {
      char my_altfile[PATH_MAX];
      FILE *result = 0;
-@@ -416,17 +424,17 @@
+@@ -413,17 +421,17 @@
      if (alt_file == 0)
  	alt_file = my_altfile;
  
@@ -63,7 +63,7 @@
  		failed(filename);
  	    } else if (ch == 0) {
  		/* don't loop in case someone wants to convert /dev/zero */
-@@ -435,7 +443,7 @@
+@@ -432,7 +440,7 @@
  	    }
  	    fputc(ch, target);
  	}
@@ -72,7 +72,7 @@
  	/*
  	 * rewind() does not force the target file's data to disk (not does
  	 * fflush()...).  So open a second stream on the data and then close
-@@ -443,7 +451,7 @@
+@@ -440,7 +448,7 @@
  	 * second stream.
  	 */
  	result = fopen(alt_file, "r+");
@@ -81,7 +81,7 @@
  	to_remove = strdup(alt_file);
      }
      return result;
-@@ -457,7 +465,7 @@
+@@ -454,7 +462,7 @@
      int mode;
  
      if (!strcmp(filename, "-")) {
@@ -90,7 +90,7 @@
      } else if (stat(filename, &sb) < 0) {
  	fprintf(stderr, "%s: %s %s\n", _nc_progname, filename, strerror(errno));
  	ExitProgram(EXIT_FAILURE);
-@@ -474,7 +482,7 @@
+@@ -471,7 +479,7 @@
  	}
  	if (mode != S_IFREG) {
  	    if (alt_file != 0) {
