@@ -140,6 +140,7 @@ CONFIG_OPTS+=("--with-pcre2")
 CONFIG_OPTS+=("--with-termlib")
 CONFIG_OPTS+=("--enable-pc-files")
 CONFIG_OPTS+=("--disable-root-environ")
+CONFIG_OPTS+=("--with-pkg-config-libdir=${INSTX_PKGCONFIG[*]}")
 CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
 
 # Ncurses can be built narrow or wide. There's no way to know for sure
