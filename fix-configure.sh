@@ -44,7 +44,7 @@ do
     cp -p "$file" "$file.fixed"
     touch -a -m -r "$file" "file.timestamp"
     ./fix-configure.exe "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+    mv "$file.fixed" "$file"; chmod a+x "$file"
     touch -a -m -r "file.timestamp" "$file"
     touch -t 197001010000 "$file"
 done)
@@ -55,7 +55,7 @@ do
     cp -p "$file" "$file.fixed"
     touch -a -m -r "$file" "file.timestamp"
     ./fix-configure.exe "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+    mv "$file.fixed" "$file"; chmod a+x "$file"
     touch -a -m -r "file.timestamp" "$file"
 done)
 
@@ -67,7 +67,7 @@ echo "patching config.sub..."
 do
     chmod a+w "$file"
     cp -p "$PROG_PATH/config.sub" "$file"
-    chmod a-w "$file"
+    chmod a-w "$file"; chmod a+x "$file"
 done)
 
 echo "patching config.guess..."
@@ -75,7 +75,7 @@ echo "patching config.guess..."
 do
     chmod a+w "$file"
     cp -p "$PROG_PATH/config.guess" "$file"
-    chmod a-w "$file"
+    chmod a-w "$file"; chmod a+x "$file"
 done)
 
 echo ""
