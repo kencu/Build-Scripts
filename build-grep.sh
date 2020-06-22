@@ -136,6 +136,9 @@ if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test Grep"
     exit 1
+
+    RETAIN_ARTIFACTS=true
+    bash ./collect-logs.sh
 fi
 
 echo "**********************"
@@ -164,9 +167,10 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" == "false" ]]; then
 
-    ARTIFACTS=("$GREP_TAR" "$GREP_DIR")
+    ARTIFACTS=("$GREP_XZ" "$GREP_TAR" "$GREP_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
