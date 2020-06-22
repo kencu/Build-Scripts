@@ -122,7 +122,13 @@ echo "**********************"
 MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test xz"
+    echo "**********************"
+
+    RETAIN_ARTIFACTS=true
+    bash ../collect-logs.sh
+
     exit 1
 fi
 
@@ -145,7 +151,8 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$XZ_TAR" "$XZ_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
