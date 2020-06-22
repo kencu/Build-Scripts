@@ -9,10 +9,11 @@ echo "**********************"
 echo "Fixing Makefiles"
 echo "**********************"
 
-origin1=$(echo '$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-origin2=$(echo '$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-origin3=$(echo '$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-origin4=$(echo '$$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+# We want the leading single quote, and the trailing slash.
+origin1=$(echo "'"'$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+origin2=$(echo "'"'$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+#origin3=$(echo "'"'$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
+#origin4=$(echo "'"'$$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
 
 (IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
