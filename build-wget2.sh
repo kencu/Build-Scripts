@@ -323,19 +323,7 @@ else
     cp "./wget2rc" "$INSTX_PREFIX/etc/"
 fi
 
-if [[ -n "$(command -v zip)" ]]
-then
-    echo "Saving log files"
-
-    rm -f "${HOME}/config.log.zip"
-    rm -f "${HOME}/test-suite.log.zip"
-
-    zip -9 "${HOME}/config.log.zip" config.log
-    (IFS="" find . -name 'test*.log' -print | while read -r file
-    do
-        zip -9 "${HOME}/test-suite.log.zip" "$file"
-    done)
-fi
+bash ../collect-logs.sh
 
 cd "$CURR_DIR" || exit 1
 

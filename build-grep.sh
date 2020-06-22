@@ -138,7 +138,7 @@ then
     exit 1
 
     RETAIN_ARTIFACTS=true
-    bash ./collect-logs.sh
+    bash ../collect-logs.sh
 fi
 
 echo "**********************"
