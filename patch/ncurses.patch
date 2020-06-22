@@ -81,12 +81,13 @@
  	to_remove = strdup(alt_file);
      }
      return result;
-@@ -457,7 +465,7 @@
+@@ -457,7 +465,8 @@
      int mode;
  
      if (!strcmp(filename, "-")) {
 -	fp = copy_input(stdin, STDIN_NAME, alt_file);
-+	fp = copy_input(&stdin, STDIN_NAME, alt_file);
++	FILE* tp = stdin;
++	fp = copy_input(&tp, STDIN_NAME, alt_file);
      } else if (stat(filename, &sb) < 0) {
  	fprintf(stderr, "%s: %s %s\n", _nc_progname, filename, strerror(errno));
  	ExitProgram(EXIT_FAILURE);
