@@ -211,7 +211,7 @@ else
     MAKEFILE=Makefile-libbz2_so
 fi
 
-MAKE_FLAGS=("-f" "Makefile"
+MAKE_FLAGS=("-f" "$MAKEFILE"
             "-j" "$INSTX_JOBS"
             CC="${CC}"
             CPPFLAGS="${CPPFLAGS} -I."
