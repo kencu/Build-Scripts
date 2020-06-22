@@ -83,17 +83,23 @@ rm -rf "$NCURSES_DIR" &>/dev/null
 gzip -d < "$NCURSES_TAR" | tar xf -
 cd "$NCURSES_DIR" || exit 1
 
+# Don't apply patches. It breaks things even more. Sigh...
 if false; then
+
 # https://invisible-island.net/ncurses/ncurses.faq.html#applying_patches
 if "$WGET" -q -O dev-patches.zip --ca-certificate="$LETS_ENCRYPT_ROOT" \
-    "ftp://ftp.invisible-island.net/ncurses/6.2/dev-patches.zip"
+    "ftp://ftp.invisible-island.net/ncurses/${NCURSES_VER}/dev-patches.zip"
 then
     if unzip dev-patches.zip -d .
     then
         echo "********************************"
         echo "Applying Ncurses patches"
         echo "********************************"
-        for p in ncurses-${NCURSES_VER}-*.patch.gz ; do zcat "${p}" | patch -s -p1 ; done
+        for p in ncurses-*.patch.gz ;
+        do
+            echo "Applying ${p}"
+            zcat "${p}" | patch -s -p1
+        done
     else
         echo "********************************"
         echo "Failed to unpack Ncurses patches"
@@ -106,28 +112,12 @@ else
     echo "**********************************"
     exit 1
 fi
-fi
 
-if false; then
-cp -p progs/tic.c progs/tic.c.orig
-cp -p progs/toe.c progs/toe.c.orig
-#cp -p test/background.c test/background.c.orig
 fi
 
 if [[ -e ../patch/ncurses.patch ]]; then
     patch -u -p0 < ../patch/ncurses.patch
     echo ""
-fi
-
-if false; then
-{
-echo "# Ncurses ${NCURSES_VER} patch"
-echo "# Written and placed in public domain by Jeffrey Walton"
-echo "#"
-diff -u progs/tic.c.orig progs/tic.c
-diff -u progs/toe.c.orig progs/toe.c
-#diff -u test/background.c.orig test/background.c
-} > ../patch/ncurses.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -137,7 +127,6 @@ CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-leaks")
 CONFIG_OPTS+=("--with-shared")
 CONFIG_OPTS+=("--with-cxx-shared")
-CONFIG_OPTS+=("--with-pcre2")
 CONFIG_OPTS+=("--with-termlib")
 CONFIG_OPTS+=("--enable-pc-files")
 CONFIG_OPTS+=("--disable-root-environ")
