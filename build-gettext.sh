@@ -214,9 +214,13 @@ then
     echo "Failed to test GetText"
     echo "**********************"
 
+    RETAIN_ARTIFACTS=true
+    bash ../collect-logs.sh
+
     # Solaris and some friends fails lang-gawk
     # Darwin fails copy-acl-2.sh
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
+    # exit 1
 fi
 
 echo "**********************"
@@ -240,7 +244,8 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$GETTEXT_TAR" "$GETTEXT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do

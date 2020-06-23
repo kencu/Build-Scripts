@@ -156,7 +156,13 @@ then
     MAKE_FLAGS=("check" "V=1")
     if ! "${MAKE}" "${MAKE_FLAGS[@]}"
     then
-        echo "Failed to test iConv"
+        echo "**********************"
+        echo "Failed to test package"
+        echo "**********************"
+
+        RETAIN_ARTIFACTS=true
+        bash ../collect-logs.sh
+
         exit 1
     fi
 fi
@@ -180,7 +186,8 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$ICONV_TAR" "$ICONV_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
