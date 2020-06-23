@@ -6,7 +6,7 @@ The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`
 
 ## Setup
 
-Once you clone the repo you need to perform a one-time setup. The setup installs updated CA certificates and build a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download source code packages for programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/wget`. It is a reduced-functionality version of Wget built to download packages over HTTPS.
+Once you clone the repo you should perform a one-time setup. The setup installs updated CA certificates and builds a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download source code packages for programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/wget`. It is a reduced-functionality version of Wget built to download packages over HTTPS.
 
 ```
 $ ./setup-cacerts.sh
@@ -32,7 +32,7 @@ On ancient systems, like Fedora 1 and Ubuntu 4, you will need to build Bash imme
 
 ## Output Artifacts
 
-Artifacts are placed in `/usr/local` by default with runtime paths and dtags set to the proper library location. The library location on 32-bit machines is `/usr/local/lib`; while 64-bit systems use `/usr/local/lib` (Debian and derivatives) or `/usr/local/lib64` (Red Hat and derivatives). The BSDs use `/opt/local` by default to avoid mixing libraries with system libraries in `/usr/local`.
+Artifacts are placed in `/usr/local` by default with runtime paths and dtags set to the proper library location. The library location on 32-bit machines is `/usr/local/lib`. 64-bit systems use `/usr/local/lib` (Debian and derivatives) or `/usr/local/lib64` (Red Hat and derivatives). The BSDs use `/opt/local` by default to avoid mixing libraries with system libraries in `/usr/local`.
 
 You can override the install locations with `INSTX_PREFIX` and `INSTX_LIBDIR`. `INSTX_PREFIX` is passed as `--prefix` to Autotools projects, and `INSTX_LIBDIR` is passed as `--libdir` to Autotools projects. Non-Autotools projects get patched after unpacking (see `build-bzip.sh` for an example).
 
@@ -44,24 +44,23 @@ Examples of running the scripts and changing variables are shown below:
 
 # Build and install in a temp directory
 INSTX_PREFIX="$HOME/tmp" ./build-wget.sh
-
-# Build and install in a temp directory and use and different library path
-INSTX_PREFIX="$HOME/tmp" INSTX_LIBDIR="$HOME/mylibs" ./build-wget.sh
 ```
 
 ## Runtime Paths
 
-The build scripts attempt to set runtime paths in everything it builds. For example, on Fedora x86_64 the  options include `-L/usr/local/lib64 -Wl,-R,/usr/local/lib64 -Wl,--enable-new-dtags`. `new-dtags` ensures a `RUNPATH` is used (as opposed to `RPATH`), and `RUNPATH` allows `LD_LIBRARY_PATH` overrides at runtime. The `LD_LIBRARY_PATH` support is important so self tests can run during `make check`.
+The build scripts attempt to set runtime paths in everything it builds. For example, on Fedora x86_64 the `LDFLAGS` include `-L/usr/local/lib64 -Wl,-R,/usr/local/lib64 -Wl,--enable-new-dtags`. `new-dtags` ensures a `RUNPATH` is used (as opposed to `RPATH`), and `RUNPATH` allows `LD_LIBRARY_PATH` overrides at runtime. The `LD_LIBRARY_PATH` support is important so self tests can run during `make check`.
 
 If all goes well you will not suffer the stupid path problems that have plagued Linux for the last 25 years or so.
 
 ## Dependencies
 
-Dependent libraries are minimally tracked. Once a library is built a file with the library name is `touch`'d in `$HOME/.build-scripts`. If the file is older than 7 days then the library is automatically rebuilt. Automatic rebuilding ensures newer versions of a library are used when available and sidesteps problems with trying to track version numbers.
+Dependent libraries are minimally tracked. Once a library is built a file with the library name is `touch`'d in `$HOME/.build-scripts/$prefix`. Use of `$prefix` allows tracking of multiple installs. If the file is older than 7 days then the library is automatically rebuilt. Automatic rebuilding ensures newer versions of a library are used when available and sidesteps problems with trying to track version numbers.
+
+Rebuilding after 7 days avoids a lot of package database bloat. As an example, MacPorts `registry.db` have been reported with sizes of 658,564,096, 744,112,128, 62,558,208 and 59,329,536. Also see [registry.db getting rather obese and updates very slow](https://lists.macports.org/pipermail/macports-users/2020-June/048510.html) on the MacPorts mailing list.
 
 Programs are not tracked. When a script like `build-git.sh` or `build-ssh.sh` is run then the program is always built or rebuilt. The dependently libraries may (or may not) be built based the age, but the program is always rebuilt.
 
-You can delete `$HOME/.build-scripts` and all dependent libraries will be rebuilt on the next run of a build script.
+You can delete `$HOME/.build-scripts/$prefix` and all dependent libraries will be rebuilt on the next run of a build script.
 
 ## Authenticity
 
@@ -106,8 +105,6 @@ Second, the documentation wastes processing time. Low-end devices like ARM dev-b
 
 Fourth, and most importantly, the documentation complicates package building. Many packages assume a maintainer is building for a desktop system with repos packed full of everything needed. And reconfiguring with `--no-docs` or `--no-gtk-doc` often requires a `bootstrap` or `autoreconf` which requires additional steps and additional dependencies.
 
-Some documentation is built and installed. You can run `clean-docs` to remove most of it. Use `sudo` if you installed into a privileged location.
-
 ## Sanitizers
 
 One of the benefits of using the build scripts is, you can somewhat easily build programs and dependent libraries using tools like Address Sanitizer (Asan) or Undefined Behavior Sanitizer (UBsan). Only minor modifications are necessary.
@@ -148,8 +145,6 @@ On new distros you should install Autotools from the distribution. The packages 
 
 The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of tangential incompatibility problems (which is kind of sad given they have had 25 years or so to get it right).
 
-If you install Autotools using `build-autotools.sh` and it causes more problems then it is worth, then run `clean-autotools.sh`. `clean-autotools.sh` removes all the Autotools artifacts it can find from `/usr/local`. `clean-autotools.sh` does not remove Libtool, so you may need to remove it by hand or reinstall it to ensure it is using the distro's Autotools.
-
 ## OpenBSD
 
 OpenBSD has an annoyance:
@@ -166,7 +161,7 @@ AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
 
 ## sysmacros.h
 
-Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The OS is actually OK, the problem is Gnulib. Gnulib sets `__THROW` to the unsupported `__attribute__ ((__nothrow__))` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html). (Gnulib did not fix their bug once it was reported).
+Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The system headers are actually OK, the problem is Gnulib. Gnulib sets `__THROW` to the unsupported `__attribute__ ((__nothrow__))` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html). (Gnulib did not fix their bug once it was reported).
 
 If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
 
