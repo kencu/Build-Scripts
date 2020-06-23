@@ -85,13 +85,21 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
+# Since we call the makefile directly, we need to escape dollar signs.
+PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
+CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${INSTX_LIBS[*]}"
+
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
-     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
-     CFLAGS="${INSTX_CFLAGS[*]}" \
-     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
-     LDFLAGS="${INSTX_LDFLAGS[*]}" \
-     LIBS="${INSTX_LIBS[*]}" \
+if ! PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" \
+     CPPFLAGS="${CPPFLAGS}" \
+     CFLAGS="${CFLAGS}" \
+     CXXFLAGS="${CXXFLAGS}" \
+     LDFLAGS="${LDFLAG}" \
+     LIBS="${LIBS}" \
     "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Cpuid"
