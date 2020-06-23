@@ -205,6 +205,10 @@ cd "$WGET_DIR" || exit 1
 # Hack for distro tools
 export MAKEINFO=true
 
+echo "**********************"
+echo "Bootstrapping package"
+echo "**********************"
+
 if ! ./bootstrap;
 then
     echo "Failed to bootstrap Wget2"
