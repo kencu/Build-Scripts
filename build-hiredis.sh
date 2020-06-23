@@ -106,18 +106,26 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-	MAKE_FLAGS=()
-	MAKE_FLAGS+=("-f" "Makefile")
-	MAKE_FLAGS+=("-j" "$INSTX_JOBS")
-	MAKE_FLAGS+=("PREFIX=$INSTX_PREFIX")
-	MAKE_FLAGS+=("LIBDIR=$INSTX_LIBDIR")
-	MAKE_FLAGS+=("PKGLIBDIR=${INSTX_PKGCONFIG[*]}")
+# Since we call the makefile directly, we need to escape dollar signs.
+PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
+CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${INSTX_LIBS[*]}"
 
-    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
-    CFLAGS="${INSTX_CFLAGS[*]}" \
-    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
-    LDFLAGS="${INSTX_LDFLAGS[*]}" \
-    LIBS="${INSTX_LIBS[*]}" \
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "Makefile")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("PREFIX=$INSTX_PREFIX")
+MAKE_FLAGS+=("LIBDIR=$INSTX_LIBDIR")
+MAKE_FLAGS+=("PKGLIBDIR=${PKG_CONFIG_PATH}")
+
+    CPPFLAGS="${CPPFLAGS}" \
+    CFLAGS="${CFLAGS}" \
+    CXXFLAGS="${CXXFLAGS}" \
+    LDFLAGS="${LDFLAGS}" \
+    LIBS="${LIBS}" \
 "${MAKE}" "${MAKE_FLAGS[@]}"
 
 if [[ "$?" -ne 0 ]]; then

@@ -93,16 +93,18 @@ CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
 LIBS="${INSTX_LIBS[*]}"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
-if ! PKG_CONFIG_PATH="${PKG_CONFIG_PATH}" \
-     CPPFLAGS="${CPPFLAGS}" \
-     CFLAGS="${CFLAGS}" \
-     CXXFLAGS="${CXXFLAGS}" \
-     LDFLAGS="${LDFLAG}" \
-     LIBS="${LIBS}" \
-    "${MAKE}" "${MAKE_FLAGS[@]}"
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "$MAKEFILE")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS} -I.")
+MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
+MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
+MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")
+MAKE_FLAGS+=("LIBS=${LIBS}")
+
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build Cpuid"
+    echo "Failed to build cpuid"
     exit 1
 fi
 

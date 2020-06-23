@@ -104,18 +104,21 @@ echo "Building package"
 echo "**********************"
 
 # Since we call the makefile directly, we need to escape dollar signs.
+PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
 CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
 CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
 CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
 LIBS="${INSTX_LIBS[*]}"
 
-MAKE_FLAGS=("-f" "Makefile"
-            "-j" "$INSTX_JOBS"
-            CC="${CC}"
-            CPPFLAGS="${CPPFLAGS} -I."
-            CFLAGS="${CFLAGS}"
-            LDFLAGS="${LDFLAGS}")
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "Makefile")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS} -I.")
+MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
+MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
+MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")
+MAKE_FLAGS+=("LIBS=${LIBS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
@@ -148,16 +151,18 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("-f" "Makefile" "check"
-            "-j" "$INSTX_JOBS"
-            CC="${CC}"
-            CPPFLAGS="${CPPFLAGS} -I."
-            CFLAGS="${CFLAGS}"
-            LDFLAGS="${LDFLAGS}")
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "Makefile" "check")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS} -I.")
+MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
+MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
+MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")
+MAKE_FLAGS+=("LIBS=${LIBS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test Bzip"
+    echo "Failed to test Bzip library"
     exit 1
 fi
 
@@ -211,12 +216,14 @@ else
     MAKEFILE=Makefile-libbz2_so
 fi
 
-MAKE_FLAGS=("-f" "$MAKEFILE"
-            "-j" "$INSTX_JOBS"
-            CC="${CC}"
-            CPPFLAGS="${CPPFLAGS} -I."
-            CFLAGS="${CFLAGS}"
-            LDFLAGS="${LDFLAGS}")
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "$MAKEFILE")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS} -I.")
+MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
+MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
+MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")
+MAKE_FLAGS+=("LIBS=${LIBS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then

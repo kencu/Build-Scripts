@@ -71,28 +71,24 @@ rm -rf "$TXML2_DIR" &>/dev/null
 gzip -d < "$TXML2_TAR" | tar xf -
 cd "$TXML2_DIR"
 
-# Fix sys_lib_dlsearch_path_spec
-bash ../fix-configure.sh
-
-echo "**********************"
-echo "Configuring package"
-echo "**********************"
-
-MAKE_FLAGS=("-j" "$INSTX_JOBS")
-MAKE_FLAGS+=("PKG_CONFIG_PATH=${INSTX_PKGCONFIG[*]}")
-MAKE_FLAGS+=("CPPFLAGS=${INSTX_CPPFLAGS[*]}")
-MAKE_FLAGS+=("CFLAGS=${INSTX_CFLAGS[*]}")
-MAKE_FLAGS+=("CXXFLAGS=${INSTX_CXXFLAGS[*]}")
-MAKE_FLAGS+=("LDFLAGS=${INSTX_LDFLAGS[*]}")
-MAKE_FLAGS+=("LIBS=${INSTX_LIBS[*]}")
-
-# Escape dollar sign for $ORIGIN in makefiles. Required so
-# $ORIGIN works in both configure tests and makefiles.
-bash ../fix-makefiles.sh
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
+
+# Since we call the makefile directly, we need to escape dollar signs.
+PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
+CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${INSTX_LIBS[*]}"
+
+MAKE_FLAGS=("-j" "$INSTX_JOBS")
+MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS}")
+MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
+MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
+MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")
+MAKE_FLAGS+=("LIBS=${LIBS}")
 
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then

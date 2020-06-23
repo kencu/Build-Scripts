@@ -85,6 +85,14 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
+# Since we call the makefile directly, we need to escape dollar signs.
+PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
+CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
+CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
+LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
+LIBS="${INSTX_LIBS[*]}"
+
 echo "" > configure.local
 {
     echo "PREFIX='$INSTX_PREFIX'"
@@ -93,20 +101,14 @@ echo "" > configure.local
     echo "MANDIR='\${PREFIX}/man'"
 
     echo "CC='$CC'"
-    echo "CFLAGS='${INSTX_CPPFLAGS[*]} ${INSTX_CFLAGS[*]}'"
-    echo "LDFLAGS='${INSTX_LDFLAGS[*]}'"
-    echo "LDADD='${INSTX_LIBS[*]}'"
+    echo "CFLAGS='${CPPFLAGS} ${CFLAGS} -I.'"
+    echo "LDFLAGS='${CXXFLAGS}'"
+    echo "LDADD='${LIBS}'"
 
     echo ""
 }  >> configure.local
 
-    # Mandoc ignores this and uses configure.local.
-    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
-    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
-    CFLAGS="${INSTX_CFLAGS[*]}" \
-    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
-    LDFLAGS="${INSTX_LDFLAGS[*]}" \
-    LIBS="${INSTX_LIBS[*]}" \
+# Mandoc uses configure.local
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
