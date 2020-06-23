@@ -175,9 +175,6 @@ if [[ -e ../patch/wget.patch ]]; then
     echo ""
 fi
 
-# Fix sys_lib_dlsearch_path_spec
-bash ../fix-configure.sh
-
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 (IFS="" find "$PWD" -name '*.h' -print | while read -r file
 do
@@ -197,6 +194,13 @@ do
     mv "$file.fixed" "$file"
     chmod a+x "$file" && chmod go-w "$file"
 done)
+
+# Fix sys_lib_dlsearch_path_spec
+bash ../fix-configure.sh
+
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \

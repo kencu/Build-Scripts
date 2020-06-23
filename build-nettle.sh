@@ -95,6 +95,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # Awful Solaris 64-bit hack. Use -G for SunC, and -shared for GCC
 if [[ "$IS_SOLARIS" -ne 0 && "$IS_SUNC" -eq 0 ]]; then
     sed 's/ -G / -shared /g' configure > configure.fixed

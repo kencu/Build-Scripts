@@ -81,6 +81,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 echo "" > configure.local
 {
     echo "PREFIX='$INSTX_PREFIX'"

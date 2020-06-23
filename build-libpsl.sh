@@ -103,6 +103,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # Solaris is a tab bit stricter than libc
 if [[ "$IS_SOLARIS" -eq 1 ]]; then
     # Don't use CPPFLAGS. _XOPEN_SOURCE will cross-pollinate into CXXFLAGS.

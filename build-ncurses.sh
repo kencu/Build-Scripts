@@ -88,7 +88,7 @@ if false; then
 
 # https://invisible-island.net/ncurses/ncurses.faq.html#applying_patches
 if "$WGET" -q -O dev-patches.zip --ca-certificate="$LETS_ENCRYPT_ROOT" \
-    "ftp://ftp.invisible-island.net/ncurses/${NCURSES_VER}/dev-patches.zip"
+   "ftp://ftp.invisible-island.net/ncurses/${NCURSES_VER}/dev-patches.zip"
 then
     if unzip dev-patches.zip -d .
     then
@@ -122,6 +122,10 @@ fi
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
+
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-leaks")

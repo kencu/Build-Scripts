@@ -99,6 +99,10 @@ cd "$EMACS_DIR"
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 CONFIG_OPTS=('--with-xml2' '--without-x' '--without-sound' '--without-xpm'
     '--without-jpeg' '--without-tiff' '--without-gif' '--without-png'
     '--without-rsvg' '--without-imagemagick' '--without-xft' '--without-libotf'

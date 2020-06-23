@@ -70,7 +70,7 @@ fi
 
 rm -rf "$ICU_DIR" &>/dev/null
 gzip -d < "$ICU_TAR" | tar xf -
-cd "$ICU_DIR"
+cd "$ICU_DIR" || exit 1
 
 if [[ -e ../patch/icu.patch ]]; then
     patch -u -p0 < ../patch/icu.patch
@@ -80,7 +80,11 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-cd "source"
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
+cd "source" || ext 1
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \

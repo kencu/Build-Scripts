@@ -83,6 +83,10 @@ cd "$READLN_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     INSTX_CPPFLAGS+=("-DNEED_EXTERN_PC")
 fi

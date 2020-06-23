@@ -105,6 +105,10 @@ fi
 # Note to future maintainers: never build shit during 'make install'.
 mkdir -p "$HOME/.cpan"
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # The HTTP gear breaks on all distros, like Ubuntu 4 and Fedora 32
 # https://www.nntp.perl.org/group/perl.beginners/2020/01/msg127308.html
 # -Dextras="HTTP::Daemon HTTP::Request Test::More Text::Template"

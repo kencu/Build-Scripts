@@ -118,6 +118,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # Fix Berkeley DB version test
 cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new

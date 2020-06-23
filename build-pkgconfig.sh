@@ -80,6 +80,10 @@ cd "$PKGCONFIG_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 CONFIG_OPTS=()
 if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS+=("--with-internal-glib")

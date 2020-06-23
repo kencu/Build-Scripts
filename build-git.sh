@@ -147,6 +147,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # Command line tools, like sed and awk, need this on OS X.
 if [[ "$IS_DARWIN" -ne 0 ]]
 then

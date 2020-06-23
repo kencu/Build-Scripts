@@ -66,8 +66,11 @@ gzip -d < "$MAWK_TAR" | tar xf -
 cd "$MAWK_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
-cp -p ../fix-configure.sh .
-./fix-config.s
+bash ../fix-configure.sh
+
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \

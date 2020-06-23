@@ -131,6 +131,10 @@ if [[ -e ../patch/openssl.patch ]]; then
     echo ""
 fi
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="no-comp"
 

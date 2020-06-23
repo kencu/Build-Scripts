@@ -224,6 +224,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--with-openssl=yes")
 CONFIG_OPTS+=("--with-ssl=openssl")

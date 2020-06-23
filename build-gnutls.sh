@@ -161,6 +161,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 GNUTLS_PKGCONFIG="${INSTX_PKGCONFIG[*]}"
 GNUTLS_CPPFLAGS="${INSTX_CPPFLAGS[*]}"
 GNUTLS_CFLAGS="${INSTX_CFLAGS[*]}"

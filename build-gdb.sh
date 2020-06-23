@@ -89,6 +89,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 # GDB must be built in a directory different from its sources
 mkdir -p build || exit 1
 cd build || exit 1

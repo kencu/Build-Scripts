@@ -98,6 +98,10 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 	# _GNU_SOURCE due to https://github.com/spack/spack/issues/8152
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \

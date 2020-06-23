@@ -74,6 +74,10 @@ cd "$TXML2_DIR"
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 MAKE_FLAGS+=("PKG_CONFIG_PATH=${INSTX_PKGCONFIG[*]}")
 MAKE_FLAGS+=("CPPFLAGS=${INSTX_CPPFLAGS[*]}")

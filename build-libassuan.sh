@@ -82,6 +82,10 @@ cd "$LIBASSUAN_DIR"
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     INSTX_STD="-std=c99"
 fi
