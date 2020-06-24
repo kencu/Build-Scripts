@@ -128,6 +128,23 @@ fi
 
 ###############################################################################
 
+# PSL may be skipped if Python is too old. libpsl requires Python 2.7
+# Also see https://stackoverflow.com/a/40950971/608639
+if [[ -n "$(command -v python 2>/dev/null)" ]]
+then
+    ver=$(python -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+    if [ "$ver" -ge 27 ]
+    then
+        if ! ./build-libpsl.sh
+        then
+            echo "Failed to build Public Suffix List library"
+            exit 1
+        fi
+    fi
+fi
+
+###############################################################################
+
 echo
 echo "********** cURL **********"
 echo
