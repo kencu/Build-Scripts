@@ -64,63 +64,65 @@ rm -rf "$B2SUM_DIR" &>/dev/null
 gzip -d < "$B2SUM_TAR" | tar xf -
 cd "$B2SUM_DIR"
 
-# cp sse/blake2s-load-sse2.h sse/blake2s-load-sse2.h.orig
-# cp sse/blake2b-load-sse2.h sse/blake2b-load-sse2.h.orig
-
 if [[ -e ../patch/b2sum.patch ]]; then
     patch -u -p0 < ../patch/b2sum.patch
     echo ""
 fi
 
-cd "b2sum"
+# The Makefiles needed so much work it was easier to provide Autotools for them.
+if [[ -e ../patch/b2sum-autotools.zip ]]; then
+    cp ../patch/b2sum-autotools.zip .
+    unzip -oq b2sum-autotools.zip
+fi
 
-B2SUM_CFLAGS="${INSTX_CPPFLAGS[@]} ${INSTX_CFLAGS[@]} -std=c99 -I."
+echo "**********************"
+echo "Bootstrapping package"
+echo "**********************"
+
+mkdir m4/
+if ! autoreconf --install --force 1>/dev/null
+then
+    echo "***************************"
+    echo "Failed to bootstrap package"
+    echo "***************************"
+    exit 1
+fi
+
+# Fix sys_lib_dlsearch_path_spec
+bash ../fix-configure.sh
+
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
+
+    PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
+./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR"
+
+if [[ "$?" -ne 0 ]]; then
+    echo "Failed to configure b2sum"
+    exit 1
+fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-# Unconditionally remove OpenMP from makefile
-sed "/^NO_OPENMP/d" makefile > makefile.fixed
-mv makefile.fixed makefile
-
-# Breaks compile on some platforms
-sed "s|-Werror=declaration-after-statement ||g" makefile > makefile.fixed
-mv makefile.fixed makefile
-
-# Remove all CFLAGS. We build our own list
-sed "/^CFLAGS/d" makefile > makefile.fixed
-mv makefile.fixed makefile
-
-# Either use the SSE files, or remove the SSE source files
-if [[ "$IS_IA32" -ne 0 ]]; then
-    B2SUM_CFLAGS="$B2SUM_CFLAGS -I../sse -msse2"
-    sed "/^#FILES=/d" makefile > makefile.fixed
-    mv makefile.fixed makefile
-else
-    B2SUM_CFLAGS="$B2SUM_CFLAGS -I../ref"
-    sed "/^FILES=/d" makefile > makefile.fixed
-    mv makefile.fixed makefile
-    sed "s|^#FILES=|FILES=|g" makefile > makefile.fixed
-    mv makefile.fixed makefile
-fi
-
-# Add OpenMP if available
-if [[ -n "$SH_OPENMP" ]]; then
-    B2SUM_CFLAGS="$B2SUM_CFLAGS $SH_OPENMP"
-fi
-
-if [[ "$IS_SOLARIS" -eq 1 ]]; then
-    CC=gcc
-    sed 's|CC?=gcc|CC=gcc|g' makefile > makefile.fixed
-    mv makefile.fixed makefile
-fi
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("CFLAGS=$B2SUM_CFLAGS" "-j" "$INSTX_JOBS")
+MAKE_FLAGS=()
+MAKE_FLAGS+=("-f" "Makefile" "V=1")
+MAKE_FLAGS+=("-j" "$INSTX_JOBS")
+
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build b2sum"
@@ -128,8 +130,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../../fix-pkgconfig.sh .
-./fix-pkgconfig.sh
+bash ../fix-pkgconfig.sh
 
 #echo "**********************"
 #echo "Testing package"
