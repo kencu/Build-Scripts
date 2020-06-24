@@ -38,8 +38,8 @@
    unsigned long long result;
 -  asm volatile( ".byte 15;.byte 49;shlq $32,%%rdx;orq %%rdx,%%rax"
 -                : "=a" ( result ) ::  "%rdx" );
-+  __asm __volatile( ".byte 15;.byte 49;shlq $32,%%rdx;orq %%rdx,%%rax"
-+                    : "=a" ( result ) ::  "%rdx" );
++  __asm__ __volatile__( ".byte 15;.byte 49;shlq $32,%%rdx;orq %%rdx,%%rax"
++                        : "=a" ( result ) ::  "%rdx" );
    return result;
  }
 --- bench/x86cpuinfo.c
@@ -49,6 +49,6 @@
  {
    unsigned long long result;
 -  asm volatile( ".byte 15;.byte 49" : "=A" ( result ) );
-+  __asm __volatile( ".byte 15;.byte 49" : "=A" ( result ) );
++  __asm__ __volatile__( ".byte 15;.byte 49" : "=A" ( result ) );
    return result;
  }
