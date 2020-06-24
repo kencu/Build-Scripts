@@ -78,6 +78,7 @@ if [[ -e ../patch/b2sum.patch ]]; then
 fi
 
 # The Makefiles needed so much work it was easier to provide Autotools for them.
+# The files were offered to BLAKE2 at https://github.com/BLAKE2/BLAKE2/pull/63.
 if [[ -e ../patch/b2sum-autotools.zip ]]; then
     cp ../patch/b2sum-autotools.zip .
     unzip -oq b2sum-autotools.zip
