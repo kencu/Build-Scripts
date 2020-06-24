@@ -171,7 +171,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$B2SUM_TAR" "$B2SUM_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
