@@ -75,6 +75,10 @@ if [[ -e ../patch/b2sum-autotools.zip ]]; then
     unzip -oq b2sum-autotools.zip
 fi
 
+# Old Autotools cannot handle this one...
+sed '/^LT_LANG*/d' configure.ac > configure.ac.fixed
+mv configure.ac.fixed configure.ac
+
 echo "**********************"
 echo "Bootstrapping package"
 echo "**********************"
@@ -97,7 +101,7 @@ echo "**********************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
-    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]} -std=c99" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
