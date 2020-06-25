@@ -45,10 +45,14 @@ fi
 
 ###############################################################################
 
-if ! ./build-openssl.sh
+# BLAKE2 only has benchmarks for Intel machines
+if [ "$IS_IA32" -ne 0 ]
 then
-    echo "Failed to build OpenSSL"
-    exit 1
+    if ! ./build-openssl.sh
+    then
+        echo "Failed to build OpenSSL"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -176,7 +180,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$B2SUM_TAR" "$B2SUM_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
