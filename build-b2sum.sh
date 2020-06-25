@@ -145,17 +145,16 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-#echo "**********************"
-#echo "Testing package"
-#echo "**********************"
+echo "**********************"
+echo "Testing package"
+echo "**********************"
 
-# Ugh, no 'check' or 'test' targets
-#MAKE_FLAGS=("check")
-#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
-#then
-#    echo "Failed to test b2sum"
-#    exit 1
-#fi
+MAKE_FLAGS=("check")
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
+then
+    echo "Failed to test b2sum"
+    exit 1
+fi
 
 echo "**********************"
 echo "Installing package"
