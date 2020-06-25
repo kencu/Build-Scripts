@@ -92,7 +92,6 @@ echo "**********************"
 echo "Bootstrapping package"
 echo "**********************"
 
-mkdir m4/
 if ! autoreconf --install --force 1>/dev/null
 then
     echo "***************************"
