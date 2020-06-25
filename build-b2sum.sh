@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds b2sum from sources.
 
-B2SUM_TAR=20160619.tar.gz
-B2SUM_DIR=BLAKE2-20160619
+B2SUM_TAR=20190724.tar.gz
+B2SUM_DIR=BLAKE2-20190724
 
 ###############################################################################
 
@@ -176,7 +176,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$B2SUM_TAR" "$B2SUM_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
