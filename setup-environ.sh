@@ -184,6 +184,7 @@ IS_BSD_FAMILY=$(${EGREP} -i -c 'dragonfly|freebsd|netbsd|openbsd' <<< "$THIS_SYS
 IS_REDHAT=$($GREP -i -c 'redhat' /etc/redhat-release 2>/dev/null)
 IS_CENTOS=$($GREP -i -c 'centos' /etc/centos-release 2>/dev/null)
 IS_FEDORA=$($GREP -i -c 'fedora' /etc/fedora-release 2>/dev/null)
+IS_DRAGONFLY=$(uname -s | $GREP -i -c DragonFly 2>/dev/null)
 
 OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | ${GREP} 'System Version:' | ${AWK} '{print $6}')
 OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | ${EGREP} -i -c "(^10.10|^1[1-9].|^[2-9][0-9])")

@@ -89,6 +89,8 @@ if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS+=("--with-internal-glib")
 elif [[ "$IS_SOLARIS" -ne 0 ]]; then
     CONFIG_OPTS+=("--with-internal-glib")
+elif [[ "$IS_DRAGONFLY" -ne 0 ]]; then
+    CONFIG_OPTS+=("--with-internal-glib")
 fi
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
