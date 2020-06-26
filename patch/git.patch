@@ -112,7 +112,7 @@
  [NEEDS_LIBGEN=],
 --- Makefile
 +++ Makefile
-@@ -1466,15 +1466,15 @@
+@@ -1469,15 +1469,15 @@
  	EXTLIBS += -lintl
  endif
  endif
