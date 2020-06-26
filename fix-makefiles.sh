@@ -21,7 +21,7 @@ do
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "$file" | sed 's/.\///g'
+    echo "$file" | sed 's/^\.\///g'
 done)
 
 (IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
@@ -30,7 +30,7 @@ do
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
            "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "$file" | sed 's/.\///g'
+    echo "$file" | sed 's/^\.\///g'
 done)
 
 exit 0
