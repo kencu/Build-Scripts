@@ -30,7 +30,7 @@
 if [[ "$INSTX_DISABLE_PKGCONFIG_CHECK" -ne 1 ]]
 then
     if [[ -z $(command -v pkg-config 2>/dev/null) ]]; then
-        printf "%s\n" "Some packages require Package-Config. Please install pkg-config."
+        printf "%s\n" "Some packages require Package-Config. Please install pkg-config, pkgconfig or pkgconf."
         [[ "$0" == "${BASH_SOURCE[0]}" ]] && exit 1 || return 1
     fi
 fi

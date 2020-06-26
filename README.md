@@ -68,6 +68,12 @@ The scripts do not check signatures on tarballs with GnuPG. Its non-trivial to b
 
 It is unfortunate GNU does not run their own PKI and have their own CA. More risk could be eliminated if we only needed to trust the GNU organization and their root certificate.
 
+## Build tools
+
+In addition to a compiler, just about every package uses Autotools. Be sure to install autoconf, automake, libtool and pkg-config. And install Perl and Python if possible since many test suites use them.
+
+The pkg-config package has several names, depending on the operating system. On Linux the package is `pkg-config` and sometimes `pkgconfig`. On other operating it may use the same name, or may use `pkgconf`.
+
 ## Sudo
 
 If you want to install into a location like `/usr/local`, then you will need to provide your password. If you want to install into a location like `$HOME`, then you do not need to provide your password. Just press `ENTER` at the password prompt.
