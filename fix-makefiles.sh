@@ -18,17 +18,19 @@ origin2=$(echo "'"'$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
 (IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
     sed -e "s/$origin1/$origin2/g" \
+        -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "${file#"./"}"
+    echo "$file" | sed 's/.\///g'
 done)
 
 (IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
     sed -e "s/$origin1/$origin2/g" \
+        -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
            "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "${file#"./"}"
+    echo "$file" | sed 's/.\///g'
 done)
 
 exit 0
