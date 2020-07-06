@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libgcrypt from sources.
 
-GCRYPT_TAR=libgcrypt-1.8.5.tar.bz2
-GCRYPT_DIR=libgcrypt-1.8.5
+GCRYPT_TAR=libgcrypt-1.8.6.tar.bz2
+GCRYPT_DIR=libgcrypt-1.8.6
 PKG_NAME=libgcrypt
 
 ###############################################################################
