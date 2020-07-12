@@ -52,6 +52,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-zlib.sh
+then
+    echo "Failed to build zLib"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-iconv-gettext.sh
 then
     echo "Failed to build iConv and GetText"
