@@ -331,6 +331,7 @@ else
     cp "./wget2rc" "$INSTX_PREFIX/etc/"
 fi
 
+# Collect test logs for error reporting
 bash ../collect-logs.sh
 
 cd "$CURR_DIR" || exit 1

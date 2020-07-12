@@ -176,6 +176,9 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 fi
 
+# Collect test logs for error reporting
+bash ../collect-logs.sh
+
 cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
