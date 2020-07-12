@@ -123,7 +123,7 @@ echo "**********************"
     --enable-shared \
     --enable-static \
     --with-math=gmp \
-    --with-xml2 \
+    --without-xml2 \
     --with-libiconv-prefix="$INSTX_LIBDIR" \
     --with-libintl-prefix="$INSTX_LIBDIR"
 
