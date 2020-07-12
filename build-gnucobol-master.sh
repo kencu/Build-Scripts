@@ -122,8 +122,10 @@ echo "**********************"
     --libdir="$INSTX_LIBDIR" \
     --enable-shared \
     --enable-static \
-    --with-gmp-include="$INSTX_PREFIX/include" \
-    --with-gmp-lib="$INSTX_LIBDIR"
+    --with-math=gmp \
+    --with-xml2 \
+    --with-libiconv-prefix="$INSTX_LIBDIR" \
+    --with-libintl-prefix="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GNU Cobol"
