@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds GNU Cobol from sources.
+# This script builds GnuCOBOL from sources.
 
 COBOL_TAR=gnucobol-3.1-rc1.tar.gz
 COBOL_DIR=gnucobol-3.1-rc1
@@ -85,7 +85,7 @@ fi
 ###############################################################################
 
 echo
-echo "********** GNU Cobol **********"
+echo "********** GnuCOBOL **********"
 echo
 
 echo "**********************"
@@ -95,7 +95,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$COBOL_TAR" --ca-certificate="$CA_ZOO" \
      "https://alpha.gnu.org/gnu/gnucobol/$COBOL_TAR"
 then
-    echo "Failed to download GNU Cobol"
+    echo "Failed to download GnuCOBOL"
     exit 1
 fi
 
@@ -128,7 +128,7 @@ echo "**********************"
     --with-libintl-prefix="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure GNU Cobol"
+    echo "Failed to configure GnuCOBOL"
     exit 1
 fi
 
@@ -143,7 +143,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build GNU Cobol"
+    echo "Failed to build GnuCOBOL"
     exit 1
 fi
 
@@ -157,7 +157,7 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test GNU Cobol"
+    echo "Failed to test GnuCOBOL"
     exit 1
 fi
 
