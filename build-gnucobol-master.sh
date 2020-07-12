@@ -2,6 +2,9 @@
 
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GnuCOBOL from sources.
+#
+# The script has to disable libxml2 and ncurses. Both
+# have build problems that surface under GnuCOBOL.
 
 COBOL_TAR=gnucobol-3.1-rc1.tar.gz
 COBOL_DIR=gnucobol-3.1-rc1
@@ -123,6 +126,7 @@ echo "**********************"
     --enable-shared \
     --enable-static \
     --with-math=gmp \
+    --without-curses \
     --without-xml2 \
     --with-libiconv-prefix="$INSTX_LIBDIR" \
     --with-libintl-prefix="$INSTX_LIBDIR"
