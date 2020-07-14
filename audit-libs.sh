@@ -7,16 +7,23 @@ if [[ -z "$dir" ]]; then
     exit 1
 fi
 
+GREP=$(command -v grep 2>/dev/null)
+SED=$(command -v sed 2>/dev/null)
+if [[ -d /usr/gnu/bin ]]; then
+    GREP=/usr/gnu/bin/grep
+    SED=/usr/gnu/bin/sed
+fi
+
 # Find libfoo.so* files using the shell wildcard. Some libraries
 # are _not_ executable and get missed in the do loop.
 IFS="" find "$dir" "*.so*" -print | while read -r file
 do
-    if [[ ! $(file -i "$file" | grep -E "regular|application") ]]; then continue; fi
+    if [[ ! $(file -i "$file" | $GREP -E "regular|application") ]]; then continue; fi
 
     echo "****************************************"
     echo "$file:"
     echo ""
-    readelf -d "$file" | grep -E 'RPATH|RUNPATH' | cut -c 20- | sed 's/    //g' | sed 's/Library runpath://g'
+    readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 20- | $SED 's/    //g' | $SED 's/Library runpath://g'
 
 done
 echo "****************************************"
