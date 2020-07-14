@@ -11,7 +11,7 @@ fi
 # are _not_ executable and get missed in the do loop.
 IFS="" find "$dir" "*.so*" -print | while read -r file
 do
-    if [[ ! $(file -i "$file" | grep "application") ]]; then continue; fi
+    if [[ ! $(file -i "$file" | grep -E "regular|application") ]]; then continue; fi
 
     echo "****************************************"
     echo "$file:"
