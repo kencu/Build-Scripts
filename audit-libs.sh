@@ -19,7 +19,7 @@ fi
 IFS="" find "$dir" "*.so*" -print | while read -r file
 do
     if [[ ! $(file -i "$file" | $GREP -E "regular|application") ]]; then continue; fi
-    if [[ ! $(grep '*.so*') ]]; then continue; fi 
+    if [[ ! $(echo $file | grep '*.so*') ]]; then continue; fi 
 
     echo "****************************************"
     echo "$file:"
