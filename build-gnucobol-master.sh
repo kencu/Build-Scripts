@@ -127,7 +127,7 @@ echo "**********************"
     --enable-static \
     --with-math=gmp \
     --without-curses \
-    --without-xml2 \
+    --with-xml2 \
     --with-libiconv-prefix="$INSTX_LIBDIR" \
     --with-libintl-prefix="$INSTX_LIBDIR"
 
