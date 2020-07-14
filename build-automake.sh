@@ -4,8 +4,8 @@
 # This script builds Automake from sources. A separate
 # script is available for Autotools for brave souls.
 
-AUTOMAKE_TAR=automake-1.16.1.tar.gz
-AUTOMAKE_DIR=automake-1.16.1
+AUTOMAKE_TAR=automake-1.16.2.tar.gz
+AUTOMAKE_DIR=automake-1.16.2
 
 ###############################################################################
 

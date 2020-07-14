@@ -14,8 +14,8 @@ M4_DIR=m4-1.4.18
 AUTOCONF_TAR=autoconf-2.69.tar.gz
 AUTOCONF_DIR=autoconf-2.69
 
-AUTOMAKE_TAR=automake-1.16.1.tar.gz
-AUTOMAKE_DIR=automake-1.16.1
+AUTOMAKE_TAR=automake-1.16.2.tar.gz
+AUTOMAKE_DIR=automake-1.16.2
 
 ###############################################################################
 
