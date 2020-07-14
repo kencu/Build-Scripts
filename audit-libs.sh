@@ -23,7 +23,12 @@ do
     echo "****************************************"
     echo "$file:"
     echo ""
-    readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 20- | $SED 's/    //g' | $SED 's/Library runpath://g'
+
+    if [[ $(command -v readelf 2>/dev/null) ]]; then
+        readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 20- | $SED 's/    //g' | $SED 's/Library runpath://g'
+    elif [[ $(command -v elfdump 2>/dev/null) ]]; then
+        elfdump "$file" | $GREP -E 'RPATH|RUNPATH'
+    fi
 
 done
 echo "****************************************"
