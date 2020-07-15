@@ -570,13 +570,14 @@ elif [[ -n "$INSTX_ASAN" ]]; then
     INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=address"
 
+# Requires GCC 10, like on Fedora 32
 elif [[ -n "$INSTX_ANALYZE" ]]; then
     INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_ANALYZE=1"
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fanalyze"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fanalyzer"
     INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fno-omit-frame-pointer"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fanalyze"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fanalyzer"
     INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fanalyze"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fanalyzer"
 
 elif [[ -n "$INSTX_MSAN" ]]; then
     INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_MSAN=1"
