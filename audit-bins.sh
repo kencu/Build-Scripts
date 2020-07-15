@@ -7,11 +7,10 @@ if [[ -z "$dir" ]]; then
     exit 1
 fi
 
+# Find a non-anemic grep
 GREP=$(command -v grep 2>/dev/null)
-SED=$(command -v sed 2>/dev/null)
 if [[ -d /usr/gnu/bin ]]; then
     GREP=/usr/gnu/bin/grep
-    SED=/usr/gnu/bin/sed
 fi
 
 # Find someprog files using the shell wildcard. Some programs
@@ -26,8 +25,11 @@ do
 
     if [[ $(command -v readelf 2>/dev/null) ]]; then
         readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,6
+    elif [[ $(command -v otool 2>/dev/null) ]]; then
+        otool -l "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
     elif [[ $(command -v elfdump 2>/dev/null) ]]; then
         elfdump "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
+    fi
 
 done
 echo "****************************************"

@@ -309,7 +309,7 @@ if [[ "$IS_SOLARIS" -ne 0 ]]; then
 elif [[ "$IS_DARWIN" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib"
     DEF_RPATH="$INSTX_PREFIX/lib"
-    DEF_OPATH="@executable_path/../lib"
+    DEF_OPATH="@loader_path/../lib"
 elif [[ "$IS_RH_FAMILY" -ne 0 ]] && [[ "$IS_64BIT" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib64"
     DEF_RPATH="$INSTX_PREFIX/lib64"

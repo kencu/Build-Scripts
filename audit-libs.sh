@@ -7,16 +7,21 @@ if [[ -z "$dir" ]]; then
     exit 1
 fi
 
+# Find a non-anemic grep
 GREP=$(command -v grep 2>/dev/null)
-SED=$(command -v sed 2>/dev/null)
 if [[ -d /usr/gnu/bin ]]; then
     GREP=/usr/gnu/bin/grep
-    SED=/usr/gnu/bin/sed
+fi
+
+if [[ $(uname -s | $GREP Darwin) ]]; then
+    LIB_EXT='*.dylib*'
+else
+    LIB_EXT='*.so*'
 fi
 
 # Find libfoo.so* files using the shell wildcard. Some libraries
 # are _not_ executable and get missed in the do loop.
-IFS="" find "$dir" -name '*.so*' -print | while read -r file
+IFS="" find "$dir" -name "$LIB_EXT" -print | while read -r file
 do
     if [[ ! $(file -i "$file" | $GREP -E "regular|application") ]]; then continue; fi
 
@@ -26,6 +31,8 @@ do
 
     if [[ $(command -v readelf 2>/dev/null) ]]; then
         readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,6
+    elif [[ $(command -v otool 2>/dev/null) ]]; then
+        otool -l "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
     elif [[ $(command -v elfdump 2>/dev/null) ]]; then
         elfdump "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
     fi
