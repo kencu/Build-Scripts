@@ -100,6 +100,14 @@ if [[ -e ../patch/libpsl.patch ]]; then
     echo ""
 fi
 
+# libpsl needs a new release
+if ! "$WGET" -q -O "tests/test-is-public-builtin.c" --ca-certificate="$CA_ZOO" \
+     "https://raw.githubusercontent.com/rockdaboot/libpsl/master/tests/test-is-public-builtin.c"
+then
+    echo "Failed to patch test-is-public-builtin.c"
+    exit 1
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
@@ -184,7 +192,7 @@ then
 	echo ""
 	echo "If you have existing libpsl libraries at $INSTX_LIBDIR"
 	echo "then you should manually delete them and run this script again."
-	# exit 1
+	exit 1
 fi
 
 echo "**********************"
