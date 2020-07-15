@@ -106,9 +106,9 @@ echo "**********************"
     --libdir="$INSTX_LIBDIR" \
     --with-drill \
     --with-ssl="$INSTX_PREFIX" \
-    --with-ca-file="$SH_UNBOUND_CACERT_FILE" \
-    --with-ca-path="$SH_UNBOUND_CACERT_PATH" \
-    --with-trust-anchor="$SH_UNBOUND_ROOTKEY_FILE"
+    --with-ca-file="$OPT_UNBOUND_CACERT_FILE" \
+    --with-ca-path="$OPT_UNBOUND_CACERT_PATH" \
+    --with-trust-anchor="$OPT_UNBOUND_ROOTKEY_FILE"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure LDNS"

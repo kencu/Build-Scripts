@@ -93,8 +93,8 @@ if [[ -e ../patch/idn.patch ]]; then
 fi
 
 # https://bugs.launchpad.net/ubuntu/+source/binutils/+bug/1340250
-if [[ -n "$SH_NO_AS_NEEDED" ]]; then
-    INSTX_LIBS+=("$SH_NO_AS_NEEDED")
+if [[ -n "$OPT_NO_AS_NEEDED" ]]; then
+    INSTX_LIBS+=("$OPT_NO_AS_NEEDED")
 fi
 
 # Fix sys_lib_dlsearch_path_spec

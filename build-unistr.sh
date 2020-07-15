@@ -92,8 +92,8 @@ echo "Configuring package"
 echo "**********************"
 
 # https://bugs.launchpad.net/ubuntu/+source/binutils/+bug/1340250
-if [[ -n "$SH_NO_AS_NEEDED" ]]; then
-    INSTX_LIBS[${#INSTX_LIBS[@]}]="$SH_NO_AS_NEEDED"
+if [[ -n "$OPT_NO_AS_NEEDED" ]]; then
+    INSTX_LIBS[${#INSTX_LIBS[@]}]="$OPT_NO_AS_NEEDED"
 fi
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \

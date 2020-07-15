@@ -26,7 +26,7 @@ fi
 # Perform this action automatically for the user.
 # setup-cacert.sh writes the certs locally for the user so
 # we can download cacerts.pem from cURL. build-cacert.sh
-# installs cacerts.pem in ${SH_CACERT_PATH}. Programs like
+# installs cacerts.pem in ${OPT_CACERT_PATH}. Programs like
 # cURL, Git and Wget use cacerts.pem.
 if [[ ! -e "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
     # Hide output to cut down on noise.
@@ -64,15 +64,15 @@ fi
 CACERT_FILE="bootstrap/cacert.pem"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_CACERT_PATH"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$CACERT_FILE" "$SH_CACERT_FILE"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_PATH"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_CACERT_FILE"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_CACERT_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$CACERT_FILE" "$OPT_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_CACERT_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_CACERT_FILE"
 else
-    mkdir -p "$SH_CACERT_PATH"
-    cp "$CACERT_FILE" "$SH_CACERT_FILE"
-    chmod 644 "$SH_CACERT_FILE"
+    mkdir -p "$OPT_CACERT_PATH"
+    cp "$CACERT_FILE" "$OPT_CACERT_FILE"
+    chmod 644 "$OPT_CACERT_FILE"
 fi
 
 ###############################################################################

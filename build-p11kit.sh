@@ -109,8 +109,8 @@ CONFIG_OPTS+=("--without-systemd")
 CONFIG_OPTS+=("--without-bash-completion")
 
 # Use the path if available
-if [[ -n "$SH_CACERT_PATH" ]]; then
-    CONFIG_OPTS+=("--with-trust-paths=$SH_CACERT_PATH")
+if [[ -n "$OPT_CACERT_PATH" ]]; then
+    CONFIG_OPTS+=("--with-trust-paths=$OPT_CACERT_PATH")
 else
     CONFIG_OPTS+=("--without-trust-paths")
 fi

@@ -346,173 +346,173 @@ export PATH
 
 ###############################################################################
 
-SH_ERROR=$(${TEST_CC} -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_PIC="-fPIC"
+CC_RESULT=$(${TEST_CC} -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_PIC="-fPIC"
 fi
 
 # Ugh... C++11 support as required. Things may still break.
-SH_ERROR=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
+CC_RESULT=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
     HAS_CXX11=1
 else
-    SH_ERROR=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_CXX11="-std=gnu++11"
+    CC_RESULT=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_CXX11="-std=gnu++11"
         HAS_CXX11=1
     else
-        SH_ERROR=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
-        if [[ "$SH_ERROR" -eq 0 ]]; then
-            SH_CXX11="-std=c++11"
+        CC_RESULT=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$CC_RESULT" -eq 0 ]]; then
+            OPT_CXX11="-std=c++11"
             HAS_CXX11=1
         fi
     fi
 fi
 
 # For the benefit of the programs and libraries. Make them run faster.
-SH_ERROR=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_NATIVE="-march=native"
+CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_NATIVE="-march=native"
 fi
 
 # PowerMac's with 128-bit long double. Gnulib and GetText expect 64-bit long double.
-SH_ERROR=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
+CC_RESULT=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
     if [[ $("./$outfile") == "106" ]]; then
-        SH_64BIT_DOUBLE="-mlong-double-64"
+        OPT_64BIT_DBL="-mlong-double-64"
     fi
 fi
 
-SH_ERROR=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_PTHREAD="-pthread"
+CC_RESULT=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_PTHREAD="-pthread"
 fi
 
 # Switch from -march=native to something more appropriate
 if [[ $($EGREP -i -c 'armv7' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    SH_ERROR=$(${TEST_CC} -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_ARMV7="-march=armv7-a"
+    CC_RESULT=$(${TEST_CC} -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_ARMV7="-march=armv7-a"
     fi
 fi
 # See if we can upgrade to ARMv7+NEON
 if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    SH_ERROR=$(${TEST_CC} -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
+    CC_RESULT=$(${TEST_CC} -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
         IS_ARM_NEON=1
-        SH_ARMV7="-march=armv7-a -mfpu=neon"
+        OPT_ARMV7="-march=armv7-a -mfpu=neon"
     fi
 fi
 # See if we can upgrade to ARMv8
 if [[ $(uname -m 2>&1 | ${EGREP} -i -c 'aarch32|aarch64') -ne 0 ]]; then
-    SH_ERROR=$(${TEST_CC} -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_ARMV8="-march=armv8-a"
+    CC_RESULT=$(${TEST_CC} -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_ARMV8="-march=armv8-a"
     fi
 fi
 
 # See if -Wl,-rpath,$ORIGIN/../lib works
-SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_OPATH="-Wl,-rpath,$INSTX_OPATH"
+CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_OPATH="-Wl,-rpath,$INSTX_OPATH"
 fi
-SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_OPATH="-Wl,-R,$INSTX_OPATH"
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_OPATH="-Wl,-R,$INSTX_OPATH"
 fi
 
 # See if -Wl,-rpath,${libdir} works. This is a RPATH.
-SH_ERROR=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_RPATH="-Wl,-rpath,$INSTX_RPATH"
+CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_RPATH="-Wl,-rpath,$INSTX_RPATH"
 fi
-SH_ERROR=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_RPATH="-Wl,-R,$INSTX_RPATH"
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_RPATH="-Wl,-R,$INSTX_RPATH"
 fi
 
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
-SH_ERROR=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_DTAGS="-Wl,--enable-new-dtags"
+CC_RESULT=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_DTAGS="-Wl,--enable-new-dtags"
 fi
 
-SH_ERROR=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_OPENMP="-fopenmp"
+CC_RESULT=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_OPENMP="-fopenmp"
 fi
 
-SH_ERROR=$(${TEST_CC} -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_NO_AS_NEEDED="-Wl,--no-as-needed"
+CC_RESULT=$(${TEST_CC} -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_NO_AS_NEEDED="-Wl,--no-as-needed"
 fi
 
 # OS X linker and install names
-SH_ERROR=$(${TEST_CC} -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-if [[ "$SH_ERROR" -eq 0 ]]; then
-    SH_INSTNAME="-headerpad_max_install_names"
+CC_RESULT=$(${TEST_CC} -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_INSTNAME="-headerpad_max_install_names"
 fi
 
 # Debug symbols
-if [[ -z "$SH_SYM" ]]; then
-    SH_ERROR=$(${TEST_CC} -g2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_SYM="-g2"
+if [[ -z "$OPT_SYM" ]]; then
+    CC_RESULT=$(${TEST_CC} -g2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_SYM="-g2"
     else
-        SH_ERROR=$(${TEST_CC} -g -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-        if [[ "$SH_ERROR" -eq 0 ]]; then
-            SH_SYM="-g"
+        CC_RESULT=$(${TEST_CC} -g -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$CC_RESULT" -eq 0 ]]; then
+            OPT_SYM="-g"
         fi
     fi
 fi
 
 # Optimizations symbols
-if [[ -z "$SH_OPT" ]]; then
-    SH_ERROR=$(${TEST_CC} -O2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_OPT="-O2"
+if [[ -z "$OPT_OPT" ]]; then
+    CC_RESULT=$(${TEST_CC} -O2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_OPT="-O2"
     else
-        SH_ERROR=$(${TEST_CC} -O -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
-        if [[ "$SH_ERROR" -eq 0 ]]; then
-            SH_OPT="-O"
+        CC_RESULT=$(${TEST_CC} -O -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$CC_RESULT" -eq 0 ]]; then
+            OPT_OPT="-O"
         fi
     fi
 fi
 
 # OpenBSD does not have -ldl
-if [[ -z "$SH_DL" ]]; then
-    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -ldl 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_DL="-ldl"
+if [[ -z "$OPT_DL" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -ldl 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_DL="-ldl"
     fi
 fi
 
-if [[ -z "$SH_LIBPTHREAD" ]]; then
-    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_LIBPTHREAD="-lpthread"
+if [[ -z "$OPT_LIBPTHREAD" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_LIBPTHREAD="-lpthread"
     fi
 fi
 
 # -fno-sanitize-recover causes an abort(). Useful for test
 # programs that swallow UBsan output and pretty print "OK"
-if [[ -z "$SH_SAN_NORECOVER" ]]; then
-    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover=all 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_SAN_NORECOVER="-fno-sanitize-recover=all"
+if [[ -z "$OPT_SAN_NORECOVER" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover=all 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_SAN_NORECOVER="-fno-sanitize-recover=all"
     else
-        SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover 2>&1 | tr ' ' '\n' | wc -l)
-        if [[ "$SH_ERROR" -eq 0 ]]; then
-            SH_SAN_NORECOVER="-fno-sanitize-recover"
+        CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover 2>&1 | tr ' ' '\n' | wc -l)
+        if [[ "$CC_RESULT" -eq 0 ]]; then
+            OPT_SAN_NORECOVER="-fno-sanitize-recover"
         fi
     fi
 fi
 
 # Msan option
-if [[ -z "$SH_MSAN_ORIGIN" ]]; then
-    SH_ERROR=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
-    if [[ "$SH_ERROR" -eq 0 ]]; then
-        SH_MSAN_ORIGIN=1
+if [[ -z "$OPT_MSAN_ORIGIN" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_MSAN_ORIGIN=1
     fi
 fi
 
@@ -521,19 +521,19 @@ fi
 # CA cert path? Also see http://gagravarr.org/writing/openssl-certs/others.shtml
 # For simplicity use $INSTX_PREFIX/etc/pki. Avoid about 10 different places.
 
-SH_CACERT_PATH="$INSTX_PREFIX/etc/pki"
-SH_CACERT_FILE="$INSTX_PREFIX/etc/pki/cacert.pem"
-SH_UNBOUND_ROOTKEY_PATH="$INSTX_PREFIX/etc/unbound"
-SH_UNBOUND_ROOTKEY_FILE="$INSTX_PREFIX/etc/unbound/root.key"
-SH_UNBOUND_CACERT_PATH="$INSTX_PREFIX/etc/unbound"
-SH_UNBOUND_CACERT_FILE="$INSTX_PREFIX/etc/unbound/icannbundle.pem"
+OPT_CACERT_PATH="$INSTX_PREFIX/etc/pki"
+OPT_CACERT_FILE="$INSTX_PREFIX/etc/pki/cacert.pem"
+OPT_UNBOUND_ROOTKEY_PATH="$INSTX_PREFIX/etc/unbound"
+OPT_UNBOUND_ROOTKEY_FILE="$INSTX_PREFIX/etc/unbound/root.key"
+OPT_UNBOUND_CACERT_PATH="$INSTX_PREFIX/etc/unbound"
+OPT_UNBOUND_CACERT_FILE="$INSTX_PREFIX/etc/unbound/icannbundle.pem"
 
 ###############################################################################
 
 INSTX_PKGCONFIG=("$INSTX_LIBDIR/pkgconfig")
 INSTX_CPPFLAGS=("-I$INSTX_PREFIX/include" "-DNDEBUG")
-INSTX_CFLAGS=("$SH_SYM" "$SH_OPT")
-INSTX_CXXFLAGS=("$SH_SYM" "$SH_OPT")
+INSTX_CFLAGS=("$OPT_SYM" "$OPT_OPT")
+INSTX_CXXFLAGS=("$OPT_SYM" "$OPT_OPT")
 INSTX_LDFLAGS=("-L$INSTX_LIBDIR")
 INSTX_LIBS=()
 
@@ -544,10 +544,10 @@ then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$CFLAGS64"
 fi
 
-if [[ -n "$SH_64BIT_DOUBLE" ]]
+if [[ -n "$OPT_64BIT_DBL" ]]
 then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_64BIT_DOUBLE"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_64BIT_DOUBLE"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_64BIT_DBL"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_64BIT_DBL"
 fi
 
 if [[ -n "$INSTX_UBSAN" ]]; then
@@ -556,10 +556,10 @@ if [[ -n "$INSTX_UBSAN" ]]; then
     INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize=undefined"
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=undefined"
 
-    if [[ -n "$SH_SAN_NORECOVER" ]]; then
-        INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_SAN_NORECOVER"
-        INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_SAN_NORECOVER"
-        INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_SAN_NORECOVER"
+    if [[ -n "$OPT_SAN_NORECOVER" ]]; then
+        INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_SAN_NORECOVER"
+        INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_SAN_NORECOVER"
+        INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_SAN_NORECOVER"
     fi
 
 elif [[ -n "$INSTX_ASAN" ]]; then
@@ -579,57 +579,57 @@ elif [[ -n "$INSTX_MSAN" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=memory"
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fno-omit-frame-pointer"
 
-    if [[ -n "$SH_MSAN_ORIGIN" ]]; then
+    if [[ -n "$OPT_MSAN_ORIGIN" ]]; then
         INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize-memory-track-origins"
         INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fsanitize-memory-track-origins"
         INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize-memory-track-origins"
     fi
 fi
 
-if [[ -n "$SH_ARMV8" ]]; then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_ARMV8"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_ARMV8"
-elif [[ -n "$SH_ARMV7" ]]; then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_ARMV7"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_ARMV7"
-elif [[ -n "$SH_NATIVE" ]]; then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_NATIVE"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_NATIVE"
+if [[ -n "$OPT_ARMV8" ]]; then
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_ARMV8"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_ARMV8"
+elif [[ -n "$OPT_ARMV7" ]]; then
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_ARMV7"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_ARMV7"
+elif [[ -n "$OPT_NATIVE" ]]; then
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_NATIVE"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_NATIVE"
 fi
 
-if [[ -n "$SH_PIC" ]]; then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_PIC"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_PIC"
+if [[ -n "$OPT_PIC" ]]; then
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_PIC"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_PIC"
 fi
 
-if [[ -n "$SH_PTHREAD" ]]; then
-    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$SH_PTHREAD"
-    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$SH_PTHREAD"
+if [[ -n "$OPT_PTHREAD" ]]; then
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="$OPT_PTHREAD"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_PTHREAD"
 fi
 
-if [[ -n "$SH_OPATH" ]]; then
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_OPATH"
+if [[ -n "$OPT_OPATH" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_OPATH"
 fi
 
-if [[ -n "$SH_RPATH" ]]; then
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_RPATH"
+if [[ -n "$OPT_RPATH" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_RPATH"
 fi
 
-if [[ -n "$SH_DTAGS" ]]; then
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_DTAGS"
+if [[ -n "$OPT_DTAGS" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_DTAGS"
 fi
 
-if [[ -n "$SH_DL" ]]; then
-    INSTX_LIBS[${#INSTX_LIBS[@]}]="$SH_DL"
+if [[ -n "$OPT_DL" ]]; then
+    INSTX_LIBS[${#INSTX_LIBS[@]}]="$OPT_DL"
 fi
 
-if [[ -n "$SH_LIBPTHREAD" ]]; then
-    INSTX_LIBS[${#INSTX_LIBS[@]}]="$SH_LIBPTHREAD"
+if [[ -n "$OPT_LIBPTHREAD" ]]; then
+    INSTX_LIBS[${#INSTX_LIBS[@]}]="$OPT_LIBPTHREAD"
 fi
 
-#if [[ "$IS_DARWIN" -ne 0 ]] && [[ -n "$SH_INSTNAME" ]]; then
-#    INSTX_LDFLAGS+=("$SH_INSTNAME")
-#    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$SH_INSTNAME"
+#if [[ "$IS_DARWIN" -ne 0 ]] && [[ -n "$OPT_INSTNAME" ]]; then
+#    INSTX_LDFLAGS+=("$OPT_INSTNAME")
+#    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_INSTNAME"
 #fi
 
 # Used to track packages that have been built by these scripts.
@@ -702,11 +702,11 @@ if [[ -z "$PRINT_ONCE" ]]; then
     printf "%s\n" ""
 
     printf "%s\n" " WGET: $WGET"
-    if [[ -n "$SH_CACERT_PATH" ]]; then
-        printf "%s\n" " SH_CACERT_PATH: $SH_CACERT_PATH"
+    if [[ -n "$OPT_CACERT_PATH" ]]; then
+        printf "%s\n" " OPT_CACERT_PATH: $OPT_CACERT_PATH"
     fi
-    if [[ -n "$SH_CACERT_FILE" ]]; then
-        printf "%s\n" " SH_CACERT_FILE: $SH_CACERT_FILE"
+    if [[ -n "$OPT_CACERT_FILE" ]]; then
+        printf "%s\n" " OPT_CACERT_FILE: $OPT_CACERT_FILE"
     fi
 
     export PRINT_ONCE="TRUE"

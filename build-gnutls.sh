@@ -206,9 +206,9 @@ fi
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libseccomp-prefix="$INSTX_PREFIX" \
     --with-libcrypto-prefix="$INSTX_PREFIX" \
-    --with-unbound-root-key-file="$SH_UNBOUND_ROOTKEY_FILE" \
-    --with-default-trust-store-file="$SH_CACERT_FILE" \
-    --with-default-trust-store-dir="$SH_CACERT_PATH"
+    --with-unbound-root-key-file="$OPT_UNBOUND_ROOTKEY_FILE" \
+    --with-default-trust-store-file="$OPT_CACERT_FILE" \
+    --with-default-trust-store-dir="$OPT_CACERT_PATH"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure GnuTLS"

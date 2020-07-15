@@ -318,8 +318,8 @@ fi
 {
     echo ""
     echo "# Default CA Zoo file added by Build-Scripts"
-    echo "ca_directory = $SH_CACERT_PATH"
-    echo "ca_certificate = $SH_CACERT_FILE"
+    echo "ca_directory = $OPT_CACERT_PATH"
+    echo "ca_certificate = $OPT_CACERT_FILE"
     echo ""
 } > "./wget2rc"
 

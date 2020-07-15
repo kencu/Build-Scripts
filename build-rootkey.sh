@@ -25,7 +25,7 @@ fi
 
 # Perform this action automatically for the user. setup-cacert.sh writes the
 # certs locally for the user so we can download cacerts.pem from cURL.
-# build-cacert.sh installs cacerts.pem in ${SH_CACERT_PATH}. Programs like
+# build-cacert.sh installs cacerts.pem in ${OPT_CACERT_PATH}. Programs like
 # cURL, Git and Wget use cacerts.pem.
 if [[ ! -f "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
     # Hide output to cut down on noise.
@@ -50,8 +50,8 @@ fi
 ###############################################################################
 
 ANY_FAIL=0
-ROOT_KEY=$(basename "$SH_UNBOUND_ROOTKEY_FILE")
-ICANN_BUNDLE=$(basename "$SH_UNBOUND_CACERT_FILE")
+ROOT_KEY=$(basename "$OPT_UNBOUND_ROOTKEY_FILE")
+ICANN_BUNDLE=$(basename "$OPT_UNBOUND_CACERT_FILE")
 
 if [[ -e "$INSTX_PREFIX/sbin/unbound-anchor" ]]; then
     UNBOUND_ANCHOR="$INSTX_PREFIX/sbin/unbound-anchor"
@@ -75,18 +75,18 @@ fi
 if [[ -s "$ROOT_KEY" ]]
 then
     echo ""
-    echo "Installing $SH_UNBOUND_ROOTKEY_FILE"
+    echo "Installing $OPT_UNBOUND_ROOTKEY_FILE"
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ROOT_KEY" "$SH_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_FILE"
     else
-        mkdir -p "$SH_UNBOUND_ROOTKEY_PATH"
-        cp "$ROOT_KEY" "$SH_UNBOUND_ROOTKEY_FILE"
-        chmod 644 "$SH_UNBOUND_ROOTKEY_FILE"
+        mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
+        cp "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+        chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
     fi
 else
     ANY_FAIL=1
@@ -113,18 +113,18 @@ fi
 if [[ -s "$ICANN_BUNDLE" ]]
 then
     echo ""
-    echo "Installing $SH_UNBOUND_CACERT_FILE"
+    echo "Installing $OPT_UNBOUND_CACERT_FILE"
     if [[ -n "$SUDO_PASSWORD" ]]
     then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$SH_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ICANN_BUNDLE" "$SH_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$SH_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$SH_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ICANN_BUNDLE" "$OPT_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_CACERT_PATH"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_CACERT_FILE"
+        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_CACERT_FILE"
     else
-        mkdir -p "$SH_UNBOUND_CACERT_PATH"
-        cp "$ICANN_BUNDLE" "$SH_UNBOUND_CACERT_FILE"
-        chmod 644 "$SH_UNBOUND_CACERT_FILE"
+        mkdir -p "$OPT_UNBOUND_CACERT_PATH"
+        cp "$ICANN_BUNDLE" "$OPT_UNBOUND_CACERT_FILE"
+        chmod 644 "$OPT_UNBOUND_CACERT_FILE"
     fi
 else
     ANY_FAIL=1
@@ -136,7 +136,7 @@ fi
 echo ""
 echo "*****************************************************************************"
 echo "You should create a cron job that runs unbound-anchor on a"
-echo "regular basis to update $SH_UNBOUND_ROOTKEY_FILE"
+echo "regular basis to update $OPT_UNBOUND_ROOTKEY_FILE"
 echo "*****************************************************************************"
 echo ""
 

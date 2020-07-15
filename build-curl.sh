@@ -207,7 +207,7 @@ CONFIG_OPTS+=("--without-mbedtls")
 CONFIG_OPTS+=("--without-cyassl")
 CONFIG_OPTS+=("--without-nss")
 CONFIG_OPTS+=("--without-libssh2")
-CONFIG_OPTS+=("--with-ca-bundle=$SH_CACERT_FILE")
+CONFIG_OPTS+=("--with-ca-bundle=$OPT_CACERT_FILE")
 
 if [[ "$HAS_CXX11" -eq 1 ]]; then
     CONFIG_OPTS+=("--with-nghttp2")
