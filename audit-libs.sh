@@ -25,9 +25,9 @@ do
     echo ""
 
     if [[ $(command -v readelf 2>/dev/null) ]]; then
-        readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 20- | $SED 's/    //g' | $SED 's/Library runpath://g'
+        readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 20-30,58-
     elif [[ $(command -v elfdump 2>/dev/null) ]]; then
-        elfdump "$file" | $GREP -E 'RPATH|RUNPATH'
+        elfdump "$file" | $GREP -E 'RPATH|RUNPATH' | cut -c 12-18,36-
     fi
 
 done
