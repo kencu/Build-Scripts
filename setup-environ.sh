@@ -570,6 +570,14 @@ elif [[ -n "$INSTX_ASAN" ]]; then
     INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fsanitize=address"
 
+elif [[ -n "$INSTX_ANALYZE" ]]; then
+    INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_ANALYZE=1"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fanalyze"
+    INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fanalyze"
+    INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="-fno-omit-frame-pointer"
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="-fanalyze"
+
 elif [[ -n "$INSTX_MSAN" ]]; then
     INSTX_CPPFLAGS[${#INSTX_CPPFLAGS[@]}]="-DTEST_MSAN=1"
     INSTX_CFLAGS[${#INSTX_CFLAGS[@]}]="-fsanitize=memory"
