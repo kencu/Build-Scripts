@@ -24,11 +24,13 @@ do
     echo ""
 
     if [[ $(command -v readelf 2>/dev/null) ]]; then
-        readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,6
+        readelf -d "$file" | $GREP -E 'RPATH|RUNPATH' | tr '\t' ' ' | sed 's/  */ /g' | cut -d ' ' -f 3,6
     elif [[ $(command -v otool 2>/dev/null) ]]; then
-        otool -l "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
+        otool -l "$file" | $GREP -E 'RPATH|RUNPATH' | tr '\t' ' ' | sed 's/  */ /g' | cut -d ' ' -f 3,5
+    elif [[ $(command -v dump 2>/dev/null) ]]; then
+        dump -Lv "$file" | $GREP -E 'RPATH|RUNPATH' | tr '\t' ' ' | sed 's/  */ /g' | cut -d ' ' -f 2,3
     elif [[ $(command -v elfdump 2>/dev/null) ]]; then
-        elfdump "$file" | $GREP -E 'RPATH|RUNPATH' | sed 's/  */ /g' | cut -d ' ' -f 3,5
+        elfdump "$file" | $GREP -E 'RPATH|RUNPATH' | tr '\t' ' ' | sed 's/  */ /g' | cut -d ' ' -f 3,5
     fi
 
 done
