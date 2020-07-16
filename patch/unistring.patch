@@ -1438,3 +1438,15 @@
  /* Macros specified by ISO/IEC TS 18661-1:2014.  */
  
  #define verify_width(width, min, max) \
+--- tests/test-localename.c
++++ tests/test-localename.c
+@@ -478,7 +478,9 @@
+             {
+               ASSERT (strcmp (unsaved_names[j][i], saved_names[j][i]) == 0);
+               free (saved_names[j][i]);
++              saved_names[j][i] = NULL;
+             }
++          available[j] = 0;
+         }
+   }
+ #else
