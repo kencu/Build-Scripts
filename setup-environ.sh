@@ -516,6 +516,36 @@ if [[ -z "$OPT_MSAN_ORIGIN" ]]; then
     fi
 fi
 
+# GOT and PLT hardening
+if [[ -z "$OPT_RELRO" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,relro 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_RELRO="-Wl,-z,relro"
+    fi
+fi
+
+if [[ -z "$OPT_NOW" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,now 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_NOW="-Wl,-z,now"
+    fi
+fi
+
+# NX stacks
+if [[ -z "$OPT_AS_NXSTACK" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wa,--noexecstack 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_AS_NXSTACK="-Wa,--noexecstack"
+    fi
+fi
+
+if [[ -z "$OPT_LD_NXSTACK" ]]; then
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,noexecstack 2>&1 | tr ' ' '\n' | wc -l)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_LD_NXSTACK="-Wl,-z,noexecstack"
+    fi
+fi
+
 ###############################################################################
 
 # CA cert path? Also see http://gagravarr.org/writing/openssl-certs/others.shtml
@@ -616,6 +646,10 @@ if [[ -n "$OPT_PTHREAD" ]]; then
     INSTX_CXXFLAGS[${#INSTX_CXXFLAGS[@]}]="$OPT_PTHREAD"
 fi
 
+if [[ -n "$OPT_AS_NXSTACK" ]]; then
+    INSTX_ASFLAGS[${#INSTX_ASFLAGS[@]}]="$OPT_AS_NXSTACK"
+fi
+
 if [[ -n "$OPT_OPATH" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_OPATH"
 fi
@@ -626,6 +660,18 @@ fi
 
 if [[ -n "$OPT_DTAGS" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_DTAGS"
+fi
+
+if [[ -n "$OPT_RELRO" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_RELRO"
+fi
+
+if [[ -n "$OPT_NOW" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_NOW"
+fi
+
+if [[ -n "$OPT_LD_NXSTACK" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_LD_NXSTACK"
 fi
 
 if [[ -n "$OPT_DL" ]]; then
