@@ -832,6 +832,17 @@
      }
  }
  
+--- lib/unicase/u-ct-totitle.h
++++ lib/unicase/u-ct-totitle.h
+@@ -109,7 +109,7 @@
+         ucs4_t mapped_uc[3];
+         unsigned int mapped_count;
+ 
+-        if (*wp)
++        if (wp && *wp)
+           /* Crossing a word boundary.  */
+           in_word_first_part = true;
+ 
 --- tests/test-float.c
 +++ tests/test-float.c
 @@ -315,6 +315,11 @@
@@ -1427,14 +1438,3 @@
  /* Macros specified by ISO/IEC TS 18661-1:2014.  */
  
  #define verify_width(width, min, max) \
---- lib/unicase/u-ct-totitle.h
-+++ lib/unicase/u-ct-totitle.h
-@@ -109,7 +109,7 @@
-         ucs4_t mapped_uc[3];
-         unsigned int mapped_count;
- 
--        if (*wp)
-+        if (wp && *wp)
-           /* Crossing a word boundary.  */
-           in_word_first_part = true;
- 
