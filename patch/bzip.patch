@@ -16,9 +16,11 @@
     typedef  unsigned __int64  MaybeUInt64;
 --- bzip2.c
 +++ bzip2.c
-@@ -816,9 +816,7 @@
+@@ -815,10 +815,9 @@
+ static
  void mySIGSEGVorSIGBUScatcher ( IntNative n )
  {
++   const char *msg;
     if (opMode == OM_Z)
 -      fprintf ( 
 -      stderr,
@@ -27,7 +29,7 @@
        "\n"
        "   Possible causes are (most likely first):\n"
        "   (1) This computer has unreliable memory or cache hardware\n"
-@@ -834,12 +832,9 @@
+@@ -834,12 +833,9 @@
        "   bug report should have.  If the manual is available on your\n"
        "   system, please try and read it before mailing me.  If you don't\n"
        "   have the manual or can't be bothered to read it, mail me anyway.\n"
@@ -43,7 +45,7 @@
        "\n"
        "   Possible causes are (most likely first):\n"
        "   (1) The compressed data is corrupted, and bzip2's usual checks\n"
-@@ -857,13 +852,26 @@
+@@ -857,13 +853,26 @@
        "   bug report should have.  If the manual is available on your\n"
        "   system, please try and read it before mailing me.  If you don't\n"
        "   have the manual or can't be bothered to read it, mail me anyway.\n"
