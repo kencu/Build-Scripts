@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Download and install checksec:
+#   wget https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec
+#   xattr -r -d com.apple.quarantine checksec
+#   chmod a+x checksec
+#   sudo mv checksec /usr/bin
+
 dir="$1"
 
 if [[ -z "$dir" ]]; then
