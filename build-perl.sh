@@ -115,6 +115,7 @@ echo "**********************"
 
 PERL_PKGCONFIG="${INSTX_PKGCONFIG[*]}"
 PERL_CPPFLAGS="${INSTX_CPPFLAGS[*]}"
+PERL_ASFLAGS="${INSTX_ASFLAGS[*]}"
 PERL_CFLAGS="${INSTX_CFLAGS[*]}"
 PERL_CXXFLAGS="${INSTX_CXXFLAGS[*]}"
 PERL_LDFLAGS="${INSTX_LDFLAGS[*]}"
@@ -132,6 +133,7 @@ if ! ./Configure -des \
      -Dcc="$PERL_CC" \
      -Dcxx="$PERL_CXX" \
      -Acppflags="$PERL_CPPFLAGS" \
+     -Aasflags="$PERL_ASFLAGS" \
      -Accflags="$PERL_CFLAGS" \
      -Acxxflags="$PERL_CXXFLAGS" \
      -Aldflags="$PERL_LDFLAGS" \

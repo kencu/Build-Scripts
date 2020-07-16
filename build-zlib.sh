@@ -86,6 +86,7 @@ echo "**********************"
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CC="${CC}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]} -I." \
+    ASFLAGS="${INSTX_ASFLAGS[*]}" \
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \

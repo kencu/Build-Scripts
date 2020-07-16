@@ -88,6 +88,7 @@ echo "**********************"
 
 # Since we call the makefile directly, we need to escape dollar signs.
 CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+ASFLAGS=$(echo "${INSTX_ASFLAGS[*]}" | sed 's/\$/\$\$/g')
 CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
 CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
@@ -96,6 +97,7 @@ LIBS="${INSTX_LIBS[*]}"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! CC="${CC}" \
      CPPFLAGS="${CPPFLAGS}" \
+     ASFLAGS="${ASFLAGS}" \
      CFLAGS="${CFLAGS}" \
      LDFLAGS="${LDFLAGS}" \
      "${MAKE}" "${MAKE_FLAGS[@]}"

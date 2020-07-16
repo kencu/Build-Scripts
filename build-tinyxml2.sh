@@ -78,6 +78,7 @@ echo "**********************"
 # Since we call the makefile directly, we need to escape dollar signs.
 PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}"
 CPPFLAGS=$(echo "${INSTX_CPPFLAGS[*]}" | sed 's/\$/\$\$/g')
+ASFLAGS=$(echo "${INSTX_ASFLAGS[*]}" | sed 's/\$/\$\$/g')
 CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
 CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
@@ -85,6 +86,7 @@ LIBS="${INSTX_LIBS[*]}"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 MAKE_FLAGS+=("CPPFLAGS=${CPPFLAGS}")
+MAKE_FLAGS+=("ASFLAGS=${ASFLAGS}")
 MAKE_FLAGS+=("CFLAGS=${CFLAGS}")
 MAKE_FLAGS+=("CXXFLAGS=${CXXFLAGS}")
 MAKE_FLAGS+=("LDFLAGS=${LDFLAGS}")

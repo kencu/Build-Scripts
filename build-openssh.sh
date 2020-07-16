@@ -102,6 +102,7 @@ echo "**********************"
 
 CONFIG_OPTS=()
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cppflags=${INSTX_CPPFLAGS[*]}"
+CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-asflags=${INSTX_ASFLAGS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-cflags=${INSTX_CFLAGS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldflags=${INSTX_CFLAGS[*]} ${INSTX_LDFLAGS[*]}"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-libs=-lz ${INSTX_LIBS[*]}"
@@ -117,6 +118,7 @@ fi
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
+    ASFLAGS="${INSTX_ASFLAGS[*]}" \
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_CFLAGS[*]} ${INSTX_LDFLAGS[*]}" \

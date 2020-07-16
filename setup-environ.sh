@@ -750,6 +750,11 @@ if [[ -z "$PRINT_ONCE" ]]; then
     printf "%s\n" " AUTOCONF_BUILD: $AUTOCONF_BUILD"
     printf "%s\n" "PKG_CONFIG_PATH: ${INSTX_PKGCONFIG[*]}"
     printf "%s\n" "       CPPFLAGS: ${INSTX_CPPFLAGS[*]}"
+
+    if [[ "${#INSTX_ASFLAGS[@]}" -ne 0 ]]; then
+        printf "%s\n" "        ASFLAGS: ${INSTX_ASFLAGS[*]}"
+    fi
+
     printf "%s\n" "         CFLAGS: ${INSTX_CFLAGS[*]}"
     printf "%s\n" "       CXXFLAGS: ${INSTX_CXXFLAGS[*]}"
     printf "%s\n" "        LDFLAGS: ${INSTX_LDFLAGS[*]}"
