@@ -16,8 +16,24 @@
     typedef  unsigned __int64  MaybeUInt64;
 --- bzip2.c
 +++ bzip2.c
-@@ -815,10 +815,10 @@
- static
+@@ -44,6 +44,15 @@
+ 
+ /*---------------------------------------------*/
+ /*--
++  Portable way to silence some warnings
++--*/
++#ifndef BZIP_UNUSED
++#define BZIP_UNUSED(x) ((void)(x))
++#endif
++
++
++/*---------------------------------------------*/
++/*--
+   Some stuff for all platforms.
+ --*/
+ 
+@@ -815,10 +824,10 @@
+ static 
  void mySIGSEGVorSIGBUScatcher ( IntNative n )
  {
 +   const char *msg;
@@ -30,7 +46,7 @@
        "\n"
        "   Possible causes are (most likely first):\n"
        "   (1) This computer has unreliable memory or cache hardware\n"
-@@ -834,12 +833,9 @@
+@@ -834,12 +843,9 @@
        "   bug report should have.  If the manual is available on your\n"
        "   system, please try and read it before mailing me.  If you don't\n"
        "   have the manual or can't be bothered to read it, mail me anyway.\n"
@@ -46,7 +62,7 @@
        "\n"
        "   Possible causes are (most likely first):\n"
        "   (1) The compressed data is corrupted, and bzip2's usual checks\n"
-@@ -857,13 +853,27 @@
+@@ -857,13 +863,27 @@
        "   bug report should have.  If the manual is available on your\n"
        "   system, please try and read it before mailing me.  If you don't\n"
        "   have the manual or can't be bothered to read it, mail me anyway.\n"
@@ -70,7 +86,7 @@
 +   rc = write ( STDERR_FILENO, msg, strlen (msg) );
 +   rc = write ( STDERR_FILENO, outName, strlen (outName) );
 +   rc = write ( STDERR_FILENO, "\n", 1 );
-+   (void) rc;
++   BZIP_UNUSED( rc );
 +
 +   /* Don't call cleanupAndFail. If we ended up here something went
 +      terribly wrong. Trying to clean up might fail spectacularly. */
@@ -80,3 +96,14 @@
  }
  
  
+@@ -1070,7 +1090,9 @@
+    retVal = fchmod ( fd, fileMetaInfo.st_mode );
+    ERROR_IF_NOT_ZERO ( retVal );
+ 
+-   (void) fchown ( fd, fileMetaInfo.st_uid, fileMetaInfo.st_gid );
++   retVal = fchown ( fd, fileMetaInfo.st_uid, fileMetaInfo.st_gid );
++   BZIP_UNUSED( retVal );
++
+    /* chown() will in many cases return with EPERM, which can
+       be safely ignored.
+    */
