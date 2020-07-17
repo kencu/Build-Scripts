@@ -12,8 +12,6 @@ echo "**********************"
 # We want the leading single quote, and the trailing slash.
 origin1=$(echo "'"'$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
 origin2=$(echo "'"'$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-#origin3=$(echo "'"'$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
-#origin4=$(echo "'"'$$$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
 
 (IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
@@ -25,6 +23,16 @@ do
 done)
 
 (IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
+do
+    sed -e "s/$origin1/$origin2/g" \
+        -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
+           "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+    echo "$file" | sed 's/^\.\///g'
+done)
+
+# This is for Nettle. Nettle is special.
+(IFS="" find "./" -iname 'config.make' -print | while read -r file
 do
     sed -e "s/$origin1/$origin2/g" \
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
