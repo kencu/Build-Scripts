@@ -187,7 +187,6 @@ then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
@@ -201,7 +200,6 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
-    mkdir -p "$INSTX_LIBDIR/pkgconfig"
     cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 fi
@@ -255,7 +253,6 @@ then
 
     echo "Installing pkgconfig file..."
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$INSTX_LIBDIR/pkgconfig"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 else
     echo "Installing shared object..."
@@ -268,7 +265,6 @@ else
     "${MAKE}" "${MAKE_FLAGS[@]}"
 
     echo "Installing pkgconfig file..."
-    mkdir -p "$INSTX_LIBDIR/pkgconfig"
     cp libbz2.pc "$INSTX_LIBDIR/pkgconfig"
     chmod 644 "$INSTX_LIBDIR/pkgconfig/libbz2.pc"
 fi
