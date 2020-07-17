@@ -437,6 +437,12 @@ if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_DTAGS="-Wl,--enable-new-dtags"
 fi
 
+# http://www.sco.com/developers/gabi/latest/ch5.dynamic.html#shobj_dependencies
+CC_RESULT=$(${TEST_CC} ${OPT_OPATH} -Wl,-z,origin -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_LD_OPATH="-Wl,-z,origin"
+fi
+
 CC_RESULT=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPENMP="-fopenmp"
@@ -672,6 +678,10 @@ fi
 
 if [[ -n "$OPT_LD_NXSTACK" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_LD_NXSTACK"
+fi
+
+if [[ -n "$OPT_LD_OPATH" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_LD_OPATH"
 fi
 
 if [[ -n "$OPT_DL" ]]; then
