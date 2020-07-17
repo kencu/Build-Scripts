@@ -15,7 +15,7 @@ fi
 
 # Find someprog files using the shell wildcard. Some programs
 # are _not_ executable and get missed in the do loop.
-IFS="" find "$dir" -name '*' -print | while read -r file
+IFS="" find "$dir" -type f -name '*' -print | while read -r file
 do
     if [[ ! $(file -i "$file" | $GREP -E "regular|application") ]]; then continue; fi
 

@@ -21,7 +21,7 @@ fi
 
 # Find libfoo.so* files using the shell wildcard. Some libraries
 # are _not_ executable and get missed in the do loop.
-IFS="" find "$dir" -name "$LIB_EXT" -print | while read -r file
+IFS="" find "$dir" -type f -name "$LIB_EXT" -print | while read -r file
 do
     if [[ ! $(file -i "$file" | $GREP -E "regular|application") ]]; then continue; fi
 
