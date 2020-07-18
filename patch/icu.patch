@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with ICU.
 --- source/tools/gensprep/store.c
 +++ source/tools/gensprep/store.c
 @@ -412,7 +412,7 @@

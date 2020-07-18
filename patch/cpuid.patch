@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with CPUID program.
 --- Makefile
 +++ Makefile
 @@ -1,10 +1,5 @@

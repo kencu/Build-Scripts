@@ -1,6 +1,5 @@
-# Ncurses 6.2 patch
-# Written and placed in public domain by Jeffrey Walton
-#
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with Ncurses 6.2.
 --- progs/tic.c
 +++ progs/tic.c
 @@ -122,9 +122,11 @@

@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with libdb.
 --- src/log/log_put.c
 +++ src/log/log_put.c
 @@ -1915,7 +1915,8 @@

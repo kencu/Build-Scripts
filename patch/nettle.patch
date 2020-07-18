@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with Nettle.
 --- run-tests
 +++ run-tests
 @@ -44,6 +44,13 @@

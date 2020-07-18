@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with Hiredis.
 --- Makefile
 +++ Makefile
 @@ -3,6 +3,8 @@

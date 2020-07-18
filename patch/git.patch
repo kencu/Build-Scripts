@@ -1,4 +1,5 @@
-# Patch against Git 2.25.0 using 'diff -u'
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with Git.
 --- configure.ac
 +++ configure.ac
 @@ -712,39 +712,57 @@

@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with c-ares.
 --- ares_init.c
 +++ ares_init.c
 @@ -1603,6 +1603,7 @@

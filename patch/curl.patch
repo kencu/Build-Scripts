@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with cURL.
 --- libcurl.pc.in
 +++ libcurl.pc.in
 @@ -25,6 +25,7 @@

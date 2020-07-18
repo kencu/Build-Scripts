@@ -1,5 +1,7 @@
---- tests/t-logging.c.orig	2019-08-22 06:18:30.000000000 -0400
-+++ tests/t-logging.c	2020-04-01 01:33:55.404695558 -0400
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with GnuPG.
+--- tests/t-logging.c
++++ tests/t-logging.c
 @@ -76,15 +76,21 @@
  
        nread = gpgrt_fread (buffer + buflen, 1, NCHUNK, stream);

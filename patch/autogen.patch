@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with Autogen.
 --- config/guile.m4
 +++ config/guile.m4
 @@ -61,7 +61,7 @@

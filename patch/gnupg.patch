@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with GnuPG.
 --- g10/keylist.c
 +++ g10/keylist.c
 @@ -1636,8 +1636,8 @@

@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with libiconv.
 --- src/iconv.c
 +++ src/iconv.c
 @@ -465,7 +465,7 @@
