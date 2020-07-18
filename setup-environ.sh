@@ -434,7 +434,7 @@ fi
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
 CC_RESULT=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
-    OPT_DTAGS="-Wl,--enable-new-dtags"
+    OPT_NEW_DTAGS="-Wl,--enable-new-dtags"
 fi
 
 # http://www.sco.com/developers/gabi/latest/ch5.dynamic.html#shobj_dependencies
@@ -664,8 +664,8 @@ if [[ -n "$OPT_RPATH" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_RPATH"
 fi
 
-if [[ -n "$OPT_DTAGS" ]]; then
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_DTAGS"
+if [[ -n "$OPT_NEW_DTAGS" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_NEW_DTAGS"
 fi
 
 if [[ -n "$OPT_RELRO" ]]; then
