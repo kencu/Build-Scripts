@@ -12,8 +12,8 @@
 # something with it.
 #     curl -L http://cpanmin.us | perl - App::cpanminus
 
-PERL_TAR=perl-5.30.1.tar.gz
-PERL_DIR=perl-5.30.1
+PERL_TAR=perl-5.32.0.tar.gz
+PERL_DIR=perl-5.32.0
 PKG_NAME=perl
 
 ###############################################################################
