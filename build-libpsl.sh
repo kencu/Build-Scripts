@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds PSL from sources.
 
-PSL_TAR=libpsl-0.21.0.tar.gz
-PSL_DIR=libpsl-0.21.0
+PSL_VER=0.21.1
+PSL_TAR=libpsl-${PSL_VER}.tar.gz
+PSL_DIR=libpsl-${PSL_VER}
 PKG_NAME=libpsl
 
 ###############################################################################
@@ -85,7 +86,7 @@ echo "Downloading package"
 echo "**********************"
 
 if ! "$WGET" -q -O "$PSL_TAR" --ca-certificate="$GITHUB_ROOT" \
-     "https://github.com/rockdaboot/libpsl/releases/download/$PSL_DIR/$PSL_TAR"
+     "https://github.com/rockdaboot/libpsl/releases/download/$PSL_VER/$PSL_TAR"
 then
     echo "Failed to download libpsl"
     exit 1
@@ -98,14 +99,6 @@ cd "$PSL_DIR"
 if [[ -e ../patch/libpsl.patch ]]; then
     patch -u -p0 < ../patch/libpsl.patch
     echo ""
-fi
-
-# libpsl needs a new release
-if ! "$WGET" -q -O "tests/test-is-public-builtin.c" --ca-certificate="$CA_ZOO" \
-     "https://raw.githubusercontent.com/rockdaboot/libpsl/master/tests/test-is-public-builtin.c"
-then
-    echo "Failed to patch test-is-public-builtin.c"
-    exit 1
 fi
 
 # Fix sys_lib_dlsearch_path_spec
