@@ -440,7 +440,7 @@ fi
 # http://www.sco.com/developers/gabi/latest/ch5.dynamic.html#shobj_dependencies
 CC_RESULT=$(${TEST_CC} ${OPT_OPATH} -Wl,-z,origin -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
-    OPT_LD_OPATH="-Wl,-z,origin"
+    OPT_ORIGIN="-Wl,-z,origin"
 fi
 
 CC_RESULT=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
@@ -680,8 +680,8 @@ if [[ -n "$OPT_LD_NXSTACK" ]]; then
     INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_LD_NXSTACK"
 fi
 
-if [[ -n "$OPT_LD_OPATH" ]]; then
-    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_LD_OPATH"
+if [[ -n "$OPT_ORIGIN" ]]; then
+    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_ORIGIN"
 fi
 
 if [[ -n "$OPT_DL" ]]; then
