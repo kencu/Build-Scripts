@@ -71,6 +71,13 @@ rm -rf "$CARES_DIR" &>/dev/null
 gzip -d < "$CARES_TAR" | tar xf -
 cd "$CARES_DIR" || exit 1
 
+cp ares_init.c ares_init.c.orig
+
+if [[ -e ../patch/cares.patch ]]; then
+    patch -u -p0 < ../patch/cares.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
