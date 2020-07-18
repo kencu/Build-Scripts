@@ -71,7 +71,7 @@ rm -rf "$CARES_DIR" &>/dev/null
 gzip -d < "$CARES_TAR" | tar xf -
 cd "$CARES_DIR" || exit 1
 
-cp ares_init.c ares_init.c.orig
+# cp ares_init.c ares_init.c.orig
 
 if [[ -e ../patch/cares.patch ]]; then
     patch -u -p0 < ../patch/cares.patch
@@ -151,7 +151,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$CARES_TAR" "$CARES_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
