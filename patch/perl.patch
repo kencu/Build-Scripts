@@ -1,3 +1,154 @@
+--- op.c
++++ op.c
+@@ -14836,7 +14836,7 @@
+             op_sibling_splice(parent, first, -1, NULL);
+ 	op_free(entersubop);
+ 
+-	if (cvflags == (OP_ENTEREVAL | (1<<16)))
++	if (cvflags == (OP_ENTEREVAL | (1U<<16)))
+ 	    flags |= OPpEVAL_BYTES <<8;
+ 
+ 	switch (PL_opargs[opnum] & OA_CLASS_MASK) {
+--- pp.c
++++ pp.c
+@@ -32,6 +32,14 @@
+ #include "reentr.h"
+ #include "regcharclass.h"
+ 
++/* Inline ASM due to undefined behavior and testing with UBsan. ASM does
++ * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
++ * SunC added GCC inline asm support at version 12.1.
++ */
++#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER) || (__SUNPRO_C >= 0x5100)
++# define GCC_INLINE_ASM 1
++#endif
++
+ /* variations on pp_null */
+ 
+ PP(pp_stub)
+@@ -2625,7 +2633,17 @@
+     tryAMAGICbin_MG(mult_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("imulq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "rdx", "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("imull %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "edx", "cc" );
++      SETi( res );
++#else
+       SETi( left * right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2644,7 +2662,7 @@
+ 
+       /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
+       if (value == -1)
+-          value = - num;
++          value = -(unsigned long int)num;
+       else
+           value = num / value;
+       SETi(value);
+@@ -2675,7 +2693,17 @@
+     tryAMAGICbin_MG(add_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("addq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("addl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#else
+       SETi( left + right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2686,7 +2714,17 @@
+     tryAMAGICbin_MG(subtr_amg, AMGf_assign);
+     {
+       dPOPTOPiirl_ul_nomg;
++#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
++      long int res;
++      __asm__ ("subq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
++      long int res;
++      __asm__ ("subl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
++      SETi( res );
++#else
+       SETi( left - right );
++#endif
+       RETURN;
+     }
+ }
+@@ -2784,7 +2822,7 @@
+     {
+ 	SV * const sv = TOPs;
+ 	IV const i = SvIV_nomg(sv);
+-	SETi(-i);
++	SETi( -(unsigned long int)i );
+ 	return NORMAL;
+     }
+ }
+--- regcomp.c
++++ regcomp.c
+@@ -20886,7 +20886,7 @@
+     ASSUME(REG_INTFLAGS_NAME_SIZE <= sizeof(flags)*8);
+ 
+     for (bit=0; bit<REG_INTFLAGS_NAME_SIZE; bit++) {
+-        if (flags & (1<<bit)) {
++        if (flags & (1U<<bit)) {
+             if (!set++ && lead)
+                 Perl_re_printf( aTHX_  "%s", lead);
+             Perl_re_printf( aTHX_  "%s ", PL_reg_intflags_name[bit]);
+@@ -20910,8 +20910,8 @@
+     ASSUME(REG_EXTFLAGS_NAME_SIZE <= sizeof(flags)*8);
+ 
+     for (bit=0; bit<REG_EXTFLAGS_NAME_SIZE; bit++) {
+-        if (flags & (1<<bit)) {
+-	    if ((1<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
++        if (flags & (1U<<bit)) {
++	    if ((1U<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
+ 		continue;
+ 	    }
+             if (!set++ && lead)
+--- vms/vms.c
++++ vms/vms.c
+@@ -11145,7 +11145,7 @@
+       sockflagsize = fdoff + 2;
+     }
+     if (fstat(fd, &sbuf.crtl_stat) == 0 && S_ISSOCK(sbuf.st_mode))
+-      sockflags[fdoff] |= 1 << (fd % sizeof(unsigned int));
++      sockflags[fdoff] |= 1U << (fd % sizeof(unsigned int));
+   }
+   return fp;
+ 
+@@ -11166,7 +11166,7 @@
+     unsigned int fdoff = fd / sizeof(unsigned int);
+ 
+     if (sockflagsize && fdoff < sockflagsize)
+-      sockflags[fdoff] &= ~(1 << fd % sizeof(unsigned int));
++      sockflags[fdoff] &= ~(1U << fd % sizeof(unsigned int));
+   }
+   return fclose(fp);
+ }
+@@ -11193,7 +11193,7 @@
+   int bufsize = itmsz * nitm + 1;
+ 
+   if (fdoff < sockflagsize &&
+-      (sockflags[fdoff] | 1 << (fd % sizeof(unsigned int)))) {
++      (sockflags[fdoff] | 1U << (fd % sizeof(unsigned int)))) {
+     if (write(fd, src, itmsz * nitm) == EOF) return EOF;
+     return nitm;
+   }
 --- cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 +++ cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 @@ -42,70 +42,70 @@
@@ -96,163 +247,3 @@
  #    endif
  #  endif
  #endif
---- op.c
-+++ op.c
-@@ -13542,7 +13542,7 @@
-             op_sibling_splice(parent, first, -1, NULL);
- 	op_free(entersubop);
- 
--	if (cvflags == (OP_ENTEREVAL | (1<<16)))
-+	if (cvflags == (OP_ENTEREVAL | (1U<<16)))
- 	    flags |= OPpEVAL_BYTES <<8;
- 	
- 	switch (PL_opargs[opnum] & OA_CLASS_MASK) {
---- regcomp.c
-+++ regcomp.c
-@@ -334,7 +334,7 @@
- 
- 
- #define PBYTE(u8str,paren) ((U8*)(u8str))[(paren) >> 3]
--#define PBITVAL(paren) (1 << ((paren) & 7))
-+#define PBITVAL(paren) (1U << ((paren) & 7))
- #define PAREN_TEST(u8str,paren) ( PBYTE(u8str,paren) & PBITVAL(paren))
- #define PAREN_SET(u8str,paren) PBYTE(u8str,paren) |= PBITVAL(paren)
- #define PAREN_UNSET(u8str,paren) PBYTE(u8str,paren) &= (~PBITVAL(paren))
-@@ -19983,7 +19983,7 @@
-     ASSUME(REG_INTFLAGS_NAME_SIZE <= sizeof(flags)*8);
- 
-     for (bit=0; bit<REG_INTFLAGS_NAME_SIZE; bit++) {
--        if (flags & (1<<bit)) {
-+        if (flags & (1U<<bit)) {
-             if (!set++ && lead)
-                 Perl_re_printf( aTHX_  "%s", lead);
-             Perl_re_printf( aTHX_  "%s ", PL_reg_intflags_name[bit]);
-@@ -20007,8 +20007,8 @@
-     ASSUME(REG_EXTFLAGS_NAME_SIZE <= sizeof(flags)*8);
- 
-     for (bit=0; bit<REG_EXTFLAGS_NAME_SIZE; bit++) {
--        if (flags & (1<<bit)) {
--	    if ((1<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
-+        if (flags & (1U<<bit)) {
-+	    if ((1U<<bit) & RXf_PMf_CHARSET) {	/* Output separately, below */
- 		continue;
- 	    }
-             if (!set++ && lead)
---- vms/vms.c
-+++ vms/vms.c
-@@ -11145,7 +11145,7 @@
-       sockflagsize = fdoff + 2;
-     }
-     if (fstat(fd, &sbuf.crtl_stat) == 0 && S_ISSOCK(sbuf.st_mode))
--      sockflags[fdoff] |= 1 << (fd % sizeof(unsigned int));
-+      sockflags[fdoff] |= 1U << (fd % sizeof(unsigned int));
-   }
-   return fp;
- 
-@@ -11166,7 +11166,7 @@
-     unsigned int fdoff = fd / sizeof(unsigned int);
- 
-     if (sockflagsize && fdoff < sockflagsize)
--      sockflags[fdoff] &= ~(1 << fd % sizeof(unsigned int));
-+      sockflags[fdoff] &= ~(1U << fd % sizeof(unsigned int));
-   }
-   return fclose(fp);
- }
-@@ -11193,7 +11193,7 @@
-   int bufsize = itmsz * nitm + 1;
- 
-   if (fdoff < sockflagsize &&
--      (sockflags[fdoff] | 1 << (fd % sizeof(unsigned int)))) {
-+      (sockflags[fdoff] | 1U << (fd % sizeof(unsigned int)))) {
-     if (write(fd, src, itmsz * nitm) == EOF) return EOF;
-     return nitm;
-   }
---- pp.c
-+++ pp.c
-@@ -32,6 +32,14 @@
- #include "reentr.h"
- #include "regcharclass.h"
- 
-+/* Inline ASM due to undefined behavior and testing with UBsan. ASM does
-+ * not suffer C rules. See https://github.com/Perl/perl5/issues/17508.
-+ * SunC added GCC inline asm support at version 12.1.
-+ */
-+#if defined(__GNUC__) || defined(__clang__) || defined(__INTEL_COMPILER) || (__SUNPRO_C >= 0x5100)
-+# define GCC_INLINE_ASM 1
-+#endif
-+
- /* variations on pp_null */
- 
- PP(pp_stub)
-@@ -2618,7 +2626,17 @@
-     tryAMAGICbin_MG(mult_amg, AMGf_assign);
-     {
-       dPOPTOPiirl_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
-+      long int res;
-+      __asm__ ("imulq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "rdx", "cc" );
-+      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
-+      long int res;
-+      __asm__ ("imull %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "edx", "cc" );
-+      SETi( res );
-+#else
-       SETi( left * right );
-+#endif
-       RETURN;
-     }
- }
-@@ -2637,7 +2655,7 @@
- 
-       /* avoid FPE_INTOVF on some platforms when num is IV_MIN */
-       if (value == -1)
--          value = - num;
-+          value = -(unsigned long int)num;
-       else
-           value = num / value;
-       SETi(value);
-@@ -2693,7 +2711,17 @@
-     tryAMAGICbin_MG(add_amg, AMGf_assign);
-     {
-       dPOPTOPiirl_ul_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
-+      long int res;
-+      __asm__ ("addq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
-+      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
-+      long int res;
-+      __asm__ ("addl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
-+      SETi( res );
-+#else
-       SETi( left + right );
-+#endif
-       RETURN;
-     }
- }
-@@ -2704,7 +2732,17 @@
-     tryAMAGICbin_MG(subtr_amg, AMGf_assign);
-     {
-       dPOPTOPiirl_ul_nomg;
-+#if defined(GCC_INLINE_ASM) && (defined(__x86_64) || defined(__x86_64__) || defined(__amd64__))
-+      long int res;
-+      __asm__ ("subq %2, %%rax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
-+      SETi( res );
-+#elif defined(GCC_INLINE_ASM) && (defined(__i386) || defined(__i386__) || defined(__i686__))
-+      long int res;
-+      __asm__ ("subl %2, %%eax;" : "=a" (res) : "a" (left), "g" (right) : "cc" );
-+      SETi( res );
-+#else
-       SETi( left - right );
-+#endif
-       RETURN;
-     }
- }
-@@ -2802,7 +2840,7 @@
-     {
- 	SV * const sv = TOPs;
- 	IV const i = SvIV_nomg(sv);
--	SETi(-i);
-+	SETi( -(unsigned long int)i );
- 	return NORMAL;
-     }
- }

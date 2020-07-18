@@ -88,6 +88,12 @@ rm -rf "$PERL_DIR" &>/dev/null
 gzip -d < "$PERL_TAR" | tar xf -
 cd "$PERL_DIR" || exit 1
 
+#cp op.c op.c.orig
+#cp pp.c pp.c.orig
+#cp regcomp.c regcomp.c.orig
+#cp vms/vms.c vms/vms.c.orig
+#cp cpan/Compress-Raw-Zlib/zlib-src/zutil.c cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/perl.patch ]]; then
     chmod a+w op.c pp.c regcomp.c vms/vms.c
@@ -99,6 +105,12 @@ if [[ -e ../patch/perl.patch ]]; then
     chmod a-w op.c pp.c regcomp.c vms/vms.c
     chmod a-w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 fi
+
+#diff -u op.c.orig op.c > ../patch/perl.patch
+#diff -u pp.c.orig pp.c >> ../patch/perl.patch
+#diff -u regcomp.c.orig regcomp.c >> ../patch/perl.patch
+#diff -u vms/vms.c.orig vms/vms.c >> ../patch/perl.patch
+#diff -u cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig cpan/Compress-Raw-Zlib/zlib-src/zutil.c >> ../patch/perl.patch
 
 # Perl creates files in the user's home directory, but owned by root:root.
 # It looks like they are building shit during 'make install'. WTF???
