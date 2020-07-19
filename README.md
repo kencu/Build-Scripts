@@ -219,4 +219,6 @@ GnuPG may break Git and code signing. There seems to be an incompatibility in th
 
 GnuTLS may (or may not) build and install correctly. It is a big recipe and Guile causes a fair amount of trouble on many systems.
 
+Perl is a constant source of problems, but it is needed for OpenSSL 1.1.x. Perl's build system does not handle runpaths properly, and it builds packages as root during `make install`. Note to future maintainers: never build shit during `make install`.
+
 If you find a bug then submit a patch or raise a bug report.
