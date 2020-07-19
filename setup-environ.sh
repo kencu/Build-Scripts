@@ -97,11 +97,7 @@ IS_ALPINE=$(grep -i -c 'alpine' <<< "$THIS_SYSTEM")
 ###############################################################################
 
 # Paths are awful on Solaris. An unmodified environment only
-# has /usr/bin and /usr/sbin. Worse, the tools in $PATH are
-# anemic. And even worse, some tools are installed in SFW
-# and GNU, but paths are missing from $PATH. And to add insult
-# to injury, Autotools on Solaris has an implied requirement
-# for GNU. Things fall apart without GNU on path.
+# has /usr/bin and /usr/sbin with anemic tools.
 if [ "$IS_SOLARIS" -ne 0 ]
 then
     for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
