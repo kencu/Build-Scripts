@@ -184,7 +184,7 @@ If you encounter a build error *"error: parse error before '{' token"*, then ope
 
 ## Self Tests
 
-The scripts attempt to run the program's or library's self tests. Usually the recipe is `make check`, but it is `make test` on occassion. If the self tests are run and fails, then the script stops before installation.
+The scripts attempt to run the program's or library's self tests. Usually the recipe is `make check`, but it is `make test` on occasion. If the self tests are run and fails, then the script stops before installation.
 
 You have three choices on self-test failure. First, you can ignore the failure, `cd` into the program's directory, and then run `sudo make install`. Second, you can fix the failure, `cd` into the program's directory, run `make`, run `make check`, and then run `sudo make install`.
 
