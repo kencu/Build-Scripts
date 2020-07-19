@@ -173,6 +173,7 @@ echo "**********************"
 # Also see https://github.com/Perl/perl5/issues/17543.
 export MAKE="${MAKE}"
 
+# Perl has a problem with parallel builds on some paltforms.
 if [[ "$IS_NETBSD" -ne 0 ]]; then
     MAKE_FLAGS=("-j" "1")
 else
