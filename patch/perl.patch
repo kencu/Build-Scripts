@@ -177,6 +177,19 @@
      if (write(fd, src, itmsz * nitm) == EOF) return EOF;
      return nitm;
    }
+--- ext/POSIX/POSIX.xs
++++ ext/POSIX/POSIX.xs
+@@ -19,6 +19,10 @@
+ #include "perl.h"
+ #include "XSUB.h"
+ 
++#ifdef __sun
++# include <sunmath.h>
++#endif
++
+ static int not_here(const char *s);
+ 
+ #if defined(PERL_IMPLICIT_SYS)
 --- cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 +++ cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 @@ -42,70 +42,70 @@

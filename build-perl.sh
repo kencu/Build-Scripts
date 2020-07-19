@@ -94,17 +94,20 @@ cd "$PERL_DIR" || exit 1
 #cp numeric.c numeric.c.orig
 #cp regcomp.c regcomp.c.orig
 #cp vms/vms.c vms/vms.c.orig
+#cp ext/POSIX/POSIX.xs ext/POSIX/POSIX.xs.orig
 #cp cpan/Compress-Raw-Zlib/zlib-src/zutil.c cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/perl.patch ]]; then
     chmod a+w op.c pp.c sv.c numeric.c regcomp.c vms/vms.c
+    chmod a+w ext/POSIX/POSIX.xs
     chmod a+w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 
     patch -u -p0 < ../patch/perl.patch
     echo ""
 
     chmod a-w op.c pp.c sv.c numeric.c regcomp.c vms/vms.c
+    chmod a-w ext/POSIX/POSIX.xs
     chmod a-w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 fi
 
@@ -114,6 +117,7 @@ fi
 #diff -u numeric.c.orig numeric.c >> ../patch/perl.patch
 #diff -u regcomp.c.orig regcomp.c >> ../patch/perl.patch
 #diff -u vms/vms.c.orig vms/vms.c >> ../patch/perl.patch
+#diff -u ext/POSIX/POSIX.xs.orig ext/POSIX/POSIX.xs >> ../patch/perl.patch
 #diff -u cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig cpan/Compress-Raw-Zlib/zlib-src/zutil.c >> ../patch/perl.patch
 
 # Perl creates files in the user's home directory, but owned by root:root.
