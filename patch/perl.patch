@@ -135,6 +135,19 @@
  		continue;
  	    }
              if (!set++ && lead)
+--- numeric.c
++++ numeric.c
+@@ -29,6 +29,10 @@
+ #define PERL_IN_NUMERIC_C
+ #include "perl.h"
+ 
++#ifdef __sun
++# include <sunmath.h>
++#endif
++
+ #ifdef Perl_strtod
+ 
+ PERL_STATIC_INLINE NV
 --- vms/vms.c
 +++ vms/vms.c
 @@ -11145,7 +11145,7 @@

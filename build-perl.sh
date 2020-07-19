@@ -91,24 +91,27 @@ cd "$PERL_DIR" || exit 1
 #cp op.c op.c.orig
 #cp pp.c pp.c.orig
 #cp sv.c sv.c.orig
+#cp numeric.c numeric.c.orig
 #cp regcomp.c regcomp.c.orig
 #cp vms/vms.c vms/vms.c.orig
 #cp cpan/Compress-Raw-Zlib/zlib-src/zutil.c cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/perl.patch ]]; then
-    chmod a+w op.c pp.c sv.c regcomp.c vms/vms.c
+    chmod a+w op.c pp.c sv.c numeric.c regcomp.c vms/vms.c
     chmod a+w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 
     patch -u -p0 < ../patch/perl.patch
     echo ""
 
-    chmod a-w op.c pp.c sv.c regcomp.c vms/vms.c
+    chmod a-w op.c pp.c sv.c numeric.c regcomp.c vms/vms.c
     chmod a-w cpan/Compress-Raw-Zlib/zlib-src/zutil.c
 fi
 
 #diff -u op.c.orig op.c > ../patch/perl.patch
 #diff -u pp.c.orig pp.c >> ../patch/perl.patch
+#diff -u sv.c.orig sv.c >> ../patch/perl.patch
+#diff -u numeric.c.orig numeric.c >> ../patch/perl.patch
 #diff -u regcomp.c.orig regcomp.c >> ../patch/perl.patch
 #diff -u vms/vms.c.orig vms/vms.c >> ../patch/perl.patch
 #diff -u cpan/Compress-Raw-Zlib/zlib-src/zutil.c.orig cpan/Compress-Raw-Zlib/zlib-src/zutil.c >> ../patch/perl.patch
