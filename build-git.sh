@@ -223,7 +223,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
-bash ../fix-library-path.sh
+bash ../fix-ld-library-path.sh
 
 # See INSTALL for the formats and the requirements
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")

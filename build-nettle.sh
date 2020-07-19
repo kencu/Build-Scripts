@@ -165,7 +165,7 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 # Fix LD_LIBRARY_PATH and DYLD_LIBRARY_PATH
-bash ../fix-library-path.sh
+bash ../fix-ld-library-path.sh
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
