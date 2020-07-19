@@ -100,7 +100,7 @@ echo "**********************"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --static \
-    --shared \
+    --shared
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure zLib"
