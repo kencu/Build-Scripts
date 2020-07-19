@@ -157,8 +157,11 @@ PERL_CXXFLAGS="${INSTX_CXXFLAGS[*]}"
 PERL_LDFLAGS="${INSTX_LDFLAGS[*]}"
 PERL_CC="${CC}"; PERL_CXX="${CXX}"
 
-# Perl munges -Wl,-R,'$ORIGIN/../lib'.
+# Perl munges -Wl,-R,'$ORIGIN/../lib'. Somehow it manages
+# to escape the '$ORIGIN/../lib' in single quotes. Set $ORIGIN
+# to itself to workaround it. Things are still broke, though.
 # Also see https://github.com/Perl/perl5/issues/17534
+export ORIGIN="\$ORIGIN"
 
 if ! ./Configure -des \
      -Dprefix="$INSTX_PREFIX" \
