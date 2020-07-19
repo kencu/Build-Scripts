@@ -133,10 +133,8 @@ PERL_CXXFLAGS="${INSTX_CXXFLAGS[*]}"
 PERL_LDFLAGS="${INSTX_LDFLAGS[*]}"
 PERL_CC="${CC}"; PERL_CXX="${CXX}"
 
-# Perl munges -Wl,-R,'$$ORIGIN/../lib'. Set it to XXORIGIN so we
-# can fix it later after Perl produces the makefiles.
+# Perl munges -Wl,-R,'$ORIGIN/../lib'.
 # Also see https://github.com/Perl/perl5/issues/17534
-PERL_LDFLAGS=$(echo -n "${PERL_LDFLAGS}" | sed 's/\$\$ORIGIN/XXORIGIN/g')
 
 if ! ./Configure -des \
      -Dprefix="$INSTX_PREFIX" \
