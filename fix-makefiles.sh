@@ -5,6 +5,10 @@
 # generate makefiles on the fly after configure may break due to their
 # cleverness. Also see https://github.com/Perl/perl5/issues/17978 and
 # https://gitlab.alpinelinux.org/alpine/aports/-/issues/11655.
+#
+# Perl's build system is completely broken beyond repair. The broken
+# runpath handling cannot be fixed with makefile patching. Also see
+# https://github.com/Perl/perl5/issues/17978.
 
 echo "**********************"
 echo "Fixing Makefiles"

@@ -61,6 +61,22 @@ fi
 
 ###############################################################################
 
+if ! ./build-zlib.sh
+then
+    echo "Failed to build zLib"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-bzip.sh
+then
+    echo "Failed to build Bzip"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-bdb.sh
 then
     echo "Failed to build Berkeley DB"
