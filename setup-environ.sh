@@ -108,8 +108,8 @@ then
     done
 
     # Add user's path in case a binary is in a non-standard location, like /opt/local
-    SOLARIS_PATH="$SOLARIS_PATH:$PATH"
-    PATH="$SOLARIS_PATH"
+    # Place the PATH after SOLARIS_PATH so the anemic tools are last in the list.
+    PATH="$SOLARIS_PATH:$PATH"
 fi
 
 # Strip leading and trailing semi-colons
