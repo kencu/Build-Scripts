@@ -71,6 +71,11 @@ rm -rf "$ZLIB_DIR" &>/dev/null
 gzip -d < "$ZLIB_TAR" | tar xf -
 cd "$ZLIB_DIR" || exit 1
 
+# cp gzguts.h gzguts.h.orig
+# cp trees.c trees.c.orig
+# cp Makefile.in Makefile.in.orig
+# cp configure configure.orig
+
 if [[ -e ../patch/zlib.patch ]]; then
     patch -u -p0 < ../patch/zlib.patch
     echo ""
@@ -85,7 +90,7 @@ echo "**********************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CC="${CC}" \
-    CPPFLAGS="${INSTX_CPPFLAGS[*]} -I." \
+    CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
