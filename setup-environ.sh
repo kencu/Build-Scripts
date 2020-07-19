@@ -100,7 +100,7 @@ IS_ALPINE=$(grep -i -c 'alpine' <<< "$THIS_SYSTEM")
 # has /usr/bin and /usr/sbin with anemic tools.
 if [ "$IS_SOLARIS" -ne 0 ]
 then
-    for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /bin /usr/bin /sbin /usr/sbin
+    for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /usr/xpg4/bin /bin /usr/bin /sbin /usr/sbin
     do
         if [ -d "$path" ]; then
             SOLARIS_PATH="$SOLARIS_PATH:$path"
