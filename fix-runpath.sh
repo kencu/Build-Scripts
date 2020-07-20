@@ -79,8 +79,10 @@ do
     # Check for ELF signature
     magic=$(./file-magic.exe "$file")
     if [[ "$magic" != "7F454C46" ]]; then continue; fi
+
     echo "$file" | sed 's/^\.\///g'
 
+    touch -a -m -r "$file" "file.timestamp"
     chmod a+w "$file"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
@@ -105,6 +107,8 @@ do
     fi
 
     chmod go-w "$file"
+    touch -a -m -r "file.timestamp" "$file"
+
 done
 
 exit 0
