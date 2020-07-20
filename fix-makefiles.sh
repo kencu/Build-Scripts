@@ -22,7 +22,7 @@ origin2=$(echo "'"'$$ORIGIN/' | sed -e 's/[\/&]/\\&/g')
 origin1b=$(echo "'"'${ORIGIN}/' | sed -e 's/[\/&]/\\&/g')
 origin2b=$(echo "'"'$${ORIGIN}/' | sed -e 's/[\/&]/\\&/g')
 
-(IFS="" find "./" -iname 'Makefile' -print | while read -r file
+IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
@@ -31,9 +31,9 @@ do
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     echo "$file" | sed 's/^\.\///g'
-done)
+done
 
-(IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
+IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
@@ -42,18 +42,6 @@ do
            "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     echo "$file" | sed 's/^\.\///g'
-done)
-
-# This is for Nettle. Nettle is special.
-(IFS="" find "./" -iname 'config.make' -print | while read -r file
-do
-    chmod a+w "$file"
-    sed -e "s/$origin1/$origin2/g" \
-        -e "s/$origin1b/$origin2b/g" \
-        -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
-           "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    echo "$file" | sed 's/^\.\///g'
-done)
+done
 
 exit 0
