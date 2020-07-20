@@ -26,6 +26,7 @@ fi
 
 ###############################################################################
 
+# Build a program to easily read magic bytes
 if [[ -n "$1" ]]; then
     PROG_PATH="$1"
 elif [[ -d "./programs" ]]; then
@@ -65,8 +66,9 @@ if [[ -d /usr/gnu/bin ]]; then
     GREP=/usr/gnu/bin/grep
 fi
 
-# Find find programs and libraries using the shell wildcard. Some programs
-# and libraries are _not_ executable and get missed in the do loop.
+# Find programs and libraries using the shell wildcard. Some programs
+# and libraries are _not_ executable and get missed in the do loop
+# when using options like -executable.
 IFS="" find "./" -type f -name '*' -print | while read -r file
 do
     # Quick smoke test. Object files have ELF signature.
