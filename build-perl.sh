@@ -61,7 +61,7 @@ fi
 
 ###############################################################################
 
-if ! ../build-patchelf.sh
+if ! ./build-patchelf.sh
 then
     echo "Failed to build patchelf"
     exit 1
