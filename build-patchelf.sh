@@ -85,12 +85,15 @@ echo "*************************"
 echo "Configuring package"
 echo "*************************"
 
+# patchelf does not have regular dependencies, like libbzip2,
+# so we don't need LDFLAGS. We can omit the variable since
+# our standard LDFLAGS mucks with the self tests.
+
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
-    LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
@@ -104,7 +107,7 @@ fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
-bash ../fix-makefiles.sh
+# bash ../fix-makefiles.sh
 
 echo "*************************"
 echo "Building package"
@@ -118,7 +121,7 @@ then
 fi
 
 # Fix flags in *.pc files
-bash ../fix-pkgconfig.sh
+# bash ../fix-pkgconfig.sh
 
 echo "*************************"
 echo "Testing package"
