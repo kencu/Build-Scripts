@@ -76,15 +76,15 @@ do
     magic=$(./file-magic.exe "$file")
     if [[ "$magic" != "7F454C46" ]]; then continue; fi
     echo "$file" | sed 's/^\.\///g'
-    # echo "$file"
 
     chmod a+w "$file"
 
     # https://stackoverflow.com/questions/13769141/can-i-change-rpath-in-an-already-compiled-binary
     if [[ -n $(command -v patchelf 2>/dev/null) ]]
     then
+        #echo "  Before: $(readelf -d "$file" | grep PATH)"
         patchelf --set-rpath "$THIS_RUNPATH" "$file"
-        # patchelf --set-rpath --force-rpath "$THIS_RUNPATH" "$file"
+        #echo "  After: $(readelf -d "$file" | grep PATH)"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
     elif [[ -n $(command -v elfedit 2>/dev/null) ]]

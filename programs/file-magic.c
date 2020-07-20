@@ -6,7 +6,7 @@
 int main(int argc, char* argv[])
 {
     int file = -1, ret = -1;
-	unsigned char vals[4];
+    unsigned char vals[4];
 
     if (argc == 1)
     {
