@@ -38,45 +38,44 @@ then
     fi
 fi
 
-(IFS="" find . -name 'configure.ac' -print | while read -r file
+IFS="" find . -name 'configure.ac' -print | while read -r file
 do
     echo "patching $file..."
-    cp -p "$file" "$file.fixed"
-    touch -a -m -r "$file" "file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"; chmod a+x "$file"
-    touch -a -m -r "file.timestamp" "$file"
-    touch -t 197001010000 "$file"
-done)
+    mv "$file.fixed" "$file";
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    # touch -t 197001010000 "$file"
+done
 
-(IFS="" find . -name 'configure' -print | while read -r file
+IFS="" find . -name 'configure' -print | while read -r file
 do
     echo "patching $file..."
-    cp -p "$file" "$file.fixed"
-    touch -a -m -r "$file" "file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"; chmod a+x "$file"
-    touch -a -m -r "file.timestamp" "$file"
-done)
-
-# Cleanup artifacts.
-rm -f file.timestamp 2>/dev/null
+    mv "$file.fixed" "$file";
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+done
 
 echo "patching config.sub..."
-(IFS="" find . -name 'config.sub' -print | while read -r file
+IFS="" find . -name 'config.sub' -print | while read -r file
 do
-    chmod a+w "$file"
+    chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.sub" "$file"
-    chmod a-w "$file"; chmod a+x "$file"
-done)
+    chmod a+x; chmod go-w "$file"
+done
 
 echo "patching config.guess..."
-(IFS="" find . -name 'config.guess' -print | while read -r file
+IFS="" find . -name 'config.guess' -print | while read -r file
 do
-    chmod a+w "$file"
+    chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.guess" "$file"
-    chmod a-w "$file"; chmod a+x "$file"
-done)
+    chmod a+x; chmod go-w "$file"
+done
 
 echo ""
 

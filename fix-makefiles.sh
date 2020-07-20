@@ -24,24 +24,32 @@ origin2b=$(echo "'"'$${ORIGIN}/' | sed -e 's/[\/&]/\\&/g')
 
 IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
+    echo "$file" | sed 's/^\.\///g'
+
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "$file" | sed 's/^\.\///g'
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
 done
 
 IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
+    echo "$file" | sed 's/^\.\///g'
+
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
            "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    echo "$file" | sed 's/^\.\///g'
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
 done
 
 exit 0
