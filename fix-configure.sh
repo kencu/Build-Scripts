@@ -45,7 +45,7 @@ do
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
-    chmod go-w "$file"
+    chmod a+x "$file"; chmod go-w "$file"
     touch -a -m -r "$file.timestamp" "$file"
     # touch -t 197001010000 "$file"
 done
@@ -57,7 +57,7 @@ do
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
-    chmod go-w "$file"
+    chmod a+x "$file"; chmod go-w "$file"
     touch -a -m -r "$file.timestamp" "$file"
 done
 
