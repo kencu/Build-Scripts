@@ -52,6 +52,16 @@ fi
 
 ###############################################################################
 
+# zLib does not need patchelf. However, many of the programs and libraries
+# that depend on zLib need it. Build it here for the sake of convenience.
+if ! ./build-patchelf.sh
+then
+    echo "Failed to build patchelf"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** zLib **********"
 echo

@@ -59,6 +59,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-patchelf.sh
+then
+    echo "Failed to build patchelf"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-ncurses.sh
 then
     echo "Failed to build Ncurses"
