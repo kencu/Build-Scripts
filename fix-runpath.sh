@@ -3,11 +3,12 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script attempts to fix runpaths. Perl, OpenLDAP, Nettle and
 # several others need a full fix because they don't escape the dollar
-# sign. Also see https://github.com/Perl/perl5/issues/17534.
-# Many GNU libraries need the runpaths re-ordered because the order
-# gets randomized during configuration. This script should be run
-# after 'make' and before 'make check'. Finally, the latest patchelf
-# is needed due to mishandling something in patchelf.
+# sign or expand the rpath token. Also see
+# https://github.com/Perl/perl5/issues/17534.
+# Many GNU libraries need the runpaths fixed because the order gets
+# randomized during configuration. This script should be run after
+# 'make' and before 'make check'. Finally, the latest patchelf is
+# needed due to mishandling something in patchelf.
 # Also see https://bugzilla.redhat.com/show_bug.cgi?id=1497012 and
 # https://bugs.launchpad.net/ubuntu/+source/patchelf/+bug/1888175
 
