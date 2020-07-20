@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script attempts to fix runpaths. Perl, OpenLDAP, Nettle and
 # several others need a full fix because they don't escape the dollar
-# sign or expand the rpath token. Also see
+# sign or they expand the rpath token. Also see
 # https://github.com/Perl/perl5/issues/17534.
 # Many GNU libraries need the runpaths fixed because the order gets
 # randomized during configuration. This script should be run after
