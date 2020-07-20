@@ -18,7 +18,7 @@ echo "**********************"
 ###############################################################################
 
 # Verify system uses ELF
-magic=$(head -n 1 /bin/ls | cut -b 2-4)
+magic=$(cut -b 2-4 /bin/ls | head -n 1)
 if [[ "x$magic" != "xELF" ]]; then
     echo "Nothing to do; ELF is not used"
     exit 0
@@ -47,7 +47,7 @@ do
     if [[ $(echo "$file" | $GREP -E '\.o$') ]]; then continue; fi
 
     # Check for ELF signature
-    magic=$(head -n 1 "$file" | cut -b 2-4)
+    magic=$(cut -b 2-4 "$file" | head -n 1)
     if [[ "x$magic" != "xELF" ]]; then continue; fi
     # echo "$file" | sed 's/^\.\///g'
     # echo "$file"

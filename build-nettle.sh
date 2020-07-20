@@ -230,7 +230,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$NETTLE_TAR" "$NETTLE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
