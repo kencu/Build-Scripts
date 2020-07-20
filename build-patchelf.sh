@@ -28,6 +28,12 @@ then
     exit 1
 fi
 
+# Verify system uses ELF
+magic=$(cut -b 2-4 /bin/ls | head -n 1)
+if [[ "$magic" != "ELF" ]]; then
+    exit 0
+fi
+
 # patchelf is a program and it is suppoed to be rebuilt
 # on demand. However, this recipe can be called for each
 # build recipe, so build it only once.
