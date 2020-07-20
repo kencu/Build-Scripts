@@ -84,7 +84,7 @@ do
 
     echo "$file" | sed 's/^\.\///g'
 
-    touch -a -m -r "$file" "$file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp.saved"
     chmod a+w "$file"; chmod a+x "$file"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
@@ -109,8 +109,8 @@ do
     fi
 
     chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp" "$file"
-
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
 done
 
 exit 0

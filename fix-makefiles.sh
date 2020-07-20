@@ -26,7 +26,7 @@ IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
     echo "$file" | sed 's/^\.\///g'
 
-    touch -a -m -r "$file" "$file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp.saved"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
@@ -34,14 +34,15 @@ do
         "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     chmod go-w "$file"
-    touch -a -m -r "$file.timestamp" "$file"
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
 done
 
 IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
     echo "$file" | sed 's/^\.\///g'
 
-    touch -a -m -r "$file" "$file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp.saved"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
@@ -49,7 +50,8 @@ do
            "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     chmod go-w "$file"
-    touch -a -m -r "$file.timestamp" "$file"
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
 done
 
 exit 0

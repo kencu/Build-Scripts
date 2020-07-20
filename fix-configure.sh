@@ -41,24 +41,26 @@ fi
 IFS="" find . -name 'configure.ac' -print | while read -r file
 do
     echo "patching $file..."
-    touch -a -m -r "$file" "$file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp.saved"
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
     chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp" "$file"
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
     # touch -t 197001010000 "$file"
 done
 
 IFS="" find . -name 'configure' -print | while read -r file
 do
     echo "patching $file..."
-    touch -a -m -r "$file" "$file.timestamp"
+    touch -a -m -r "$file" "$file.timestamp.saved"
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
     chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp" "$file"
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
 done
 
 echo "patching config.sub..."
