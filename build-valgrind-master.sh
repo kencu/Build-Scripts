@@ -69,9 +69,8 @@ fi
 
 cd "$VALGRIND_DIR"
 
-./autogen.sh
-
-if [[ "$?" -ne 0 ]]; then
+if ! ./autogen.sh
+then
     echo "Failed to generate Valgrind build files"
     exit 1
 fi
