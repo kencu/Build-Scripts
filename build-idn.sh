@@ -145,6 +145,9 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
+# Fix runpaths
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
@@ -156,13 +159,12 @@ then
     exit 1
 fi
 
+# Fix runpaths again
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Installing package"
 echo "**********************"
-
-# Delete Libs.private from the *.pc file. Some scripts cannot parse the output.
-sed '/^Libs.private/d' libidn.pc > libidn.pc.new
-mv libidn.pc.new libidn.pc
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then

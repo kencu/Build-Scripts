@@ -175,6 +175,9 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
+# Fix runpaths
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
@@ -188,6 +191,9 @@ then
 	echo "then you should manually delete them and run this script again."
 	exit 1
 fi
+
+# Fix runpaths again
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Installing package"
