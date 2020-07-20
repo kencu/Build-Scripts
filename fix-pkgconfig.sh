@@ -38,14 +38,15 @@ then
     fi
 fi
 
-(IFS="" find . -iname '*.pc' -print | while read -r file
+IFS="" find . -iname '*.pc' -print | while read -r file
 do
     echo "patching $file..."
-    cp -p "$file" "$file.fixed"
+    chmod a+w "$file"
     touch -a -m -r "$file" "file.timestamp"
     ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
     touch -a -m -r "file.timestamp" "$file"
-done)
+    chmod go-w "$file"
+done
 
 exit 0
