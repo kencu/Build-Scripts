@@ -11,6 +11,8 @@
 # needed due to mishandling something in patchelf.
 # Also see https://bugzilla.redhat.com/show_bug.cgi?id=1497012 and
 # https://bugs.launchpad.net/ubuntu/+source/patchelf/+bug/1888175
+# Related issues are https://github.com/NixOS/patchelf/issues/44
+# and https://sourceware.org/bugzilla/show_bug.cgi?id=25087.
 
 echo "**********************"
 echo "Fixing runpaths"
