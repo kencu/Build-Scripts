@@ -66,7 +66,7 @@ IFS="" find . -name 'config.sub' -print | while read -r file
 do
     chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.sub" "$file"
-    chmod a+x; chmod go-w "$file"
+    chmod a+x "$file"; chmod go-w "$file"
 done
 
 echo "patching config.guess..."
@@ -74,7 +74,7 @@ IFS="" find . -name 'config.guess' -print | while read -r file
 do
     chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.guess" "$file"
-    chmod a+x; chmod go-w "$file"
+    chmod a+x "$file"; chmod go-w "$file"
 done
 
 echo ""
