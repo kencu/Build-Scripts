@@ -127,6 +127,11 @@ cp -p configure configure.new
 sed 's|0x060014|0x060300|g' configure > configure.new
 mv configure.new configure; chmod a+x configure
 
+# OpenLDAP munges -Wl,-R,'$ORIGIN/../lib'. Somehow it manages
+# to escape the '$ORIGIN/../lib' in single quotes. Set $ORIGIN
+# to itself to workaround it.
+export ORIGIN="\$ORIGIN"
+
 # mdb is too dirty and cannot build on OS X. It is also full of
 # undefined behavior. Just disable mdb on all platforms.
 CONFIG_OPTS=()

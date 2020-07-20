@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script attempts to fix runpaths. Perl, Nettle and several
-# others need a full fix because they don't escape the dollar sign.
-# Also see https://github.com/Perl/perl5/issues/17534.
+# This script attempts to fix runpaths. Perl, OpenLDAP, Nettle and
+# several others need a full fix because they don't escape the dollar
+# sign. Also see https://github.com/Perl/perl5/issues/17534.
 # Many GNU libraries need the runpaths re-ordered because the order
 # gets randomized during configuration. This script should be run
 # after 'make' and before 'make check'. Finally, the latest patchelf
