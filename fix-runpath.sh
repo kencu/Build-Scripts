@@ -19,9 +19,36 @@ echo "**********************"
 
 # Verify system uses ELF
 magic=$(cut -b 2-4 /bin/ls | head -n 1)
-if [[ "x$magic" != "xELF" ]]; then
+if [[ "$magic" != "ELF" ]]; then
     echo "Nothing to do; ELF is not used"
     exit 0
+fi
+
+###############################################################################
+
+if [[ -n "$1" ]]; then
+    PROG_PATH="$1"
+elif [[ -d "./programs" ]]; then
+    PROG_PATH="./programs"
+elif [[ -d "../programs" ]]; then
+    PROG_PATH="../programs"
+elif [[ -d "../../programs" ]]; then
+    PROG_PATH="../../programs"
+elif [[ -d "../../../programs" ]]; then
+    PROG_PATH="../../../programs"
+fi
+
+CC="${CC:-cc}"
+if ! "${CC}" "$PROG_PATH/file-magic.c" -o file-magic.exe 2>/dev/null;
+then
+    if ! gcc "$PROG_PATH/file-magic.c" -o file-magic.exe 2>/dev/null;
+    then
+        if ! clang "$PROG_PATH/file-magic.c" -o file-magic.exe 2>/dev/null;
+        then
+            echo "Failed to build file-magic"
+            exit 1
+        fi
+    fi
 fi
 
 ###############################################################################
@@ -45,9 +72,9 @@ do
     if [[ $(echo "$file" | $GREP -E '\.o$') ]]; then continue; fi
 
     # Check for ELF signature
-    magic=$(cut -b 2-4 "$file" | head -n 1)
-    if [[ "x$magic" != "xELF" ]]; then continue; fi
-    # echo "$file" | sed 's/^\.\///g'
+    magic=$(./file-magic.exe "$file")
+    if [[ "$magic" != "7F454C46" ]]; then continue; fi
+    echo "$file" | sed 's/^\.\///g'
     # echo "$file"
 
     chmod a+w "$file"
