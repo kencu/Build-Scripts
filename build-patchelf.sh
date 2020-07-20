@@ -28,6 +28,15 @@ then
     exit 1
 fi
 
+# patchelf is a program and it is suppoed to be rebuilt
+# on demand. However, this recipe can be called for each
+# build recipe, so build it only once.
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
+fi
+
 # The password should die when this subshell goes out of scope
 if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
     if ! source ./setup-password.sh
