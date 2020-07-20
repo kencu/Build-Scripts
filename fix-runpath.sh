@@ -83,7 +83,7 @@ do
     echo "$file" | sed 's/^\.\///g'
 
     touch -a -m -r "$file" "$file.timestamp"
-    chmod a+w "$file"
+    chmod a+w "$file"; chmod a+x "$file"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
     if [[ "$IS_SOLARIS" -ne 0 && -e /usr/bin/elfedit ]]
@@ -106,7 +106,7 @@ do
         echo "Unable to find elf editor"
     fi
 
-    chmod go-w "$file"
+    chmod a+x "$file"; chmod go-w "$file"
     touch -a -m -r "$file.timestamp" "$file"
 
 done
