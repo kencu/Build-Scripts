@@ -11,6 +11,10 @@
 # Also see https://bugzilla.redhat.com/show_bug.cgi?id=1497012 and
 # https://bugs.launchpad.net/ubuntu/+source/patchelf/+bug/1888175
 
+echo "**********************"
+echo "Fixing runpaths"
+echo "**********************"
+
 ###############################################################################
 
 # Verify system uses ELF
@@ -21,10 +25,6 @@ if [[ "x$magic" != "xELF" ]]; then
 fi
 
 ###############################################################################
-
-echo "**********************"
-echo "Fixing runpaths"
-echo "**********************"
 
 # We need to remove the single quotes.
 THIS_RUNPATH="$INSTX_OPATH:$INSTX_RPATH"
@@ -41,7 +41,7 @@ fi
 
 # Find find programs and libraries using the shell wildcard. Some programs
 # and libraries are _not_ executable and get missed in the do loop.
-IFS="" find "$PWD" -type f -name '*' -print | while read -r file
+IFS="" find "./" -type f -name '*' -print | while read -r file
 do
     # Quick smoke test. Object files have ELF signature.
     if [[ $(echo "$file" | $GREP -E '\.o$') ]]; then continue; fi
@@ -50,7 +50,7 @@ do
     magic=$(head -n 1 "$file" | cut -b 2-4)
     if [[ "x$magic" != "xELF" ]]; then continue; fi
     # echo "$file" | sed 's/^\.\///g'
-	echo "$file"
+    # echo "$file"
 
     chmod a+w "$file"
 
@@ -71,7 +71,7 @@ do
         chrpath -r "$THIS_RUNPATH" "$file" 2>/dev/null
 
     else
-	    echo "Unable to find elf editor"
+        echo "Unable to find elf editor"
     fi
 
     chmod go-w "$file"
