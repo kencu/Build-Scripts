@@ -58,7 +58,7 @@ fi
 # We need to remove the single quotes.
 FIXED_RUNPATH="$INSTX_OPATH:$INSTX_RPATH"
 FIXED_RUNPATH="""$(echo "$FIXED_RUNPATH" | sed "s/'//g")"""
-echo "Using RUNPATH \"$FIXED_RUNPATH\""
+# echo "Using RUNPATH \"$FIXED_RUNPATH\""
 
 # Find a non-anemic grep
 GREP=$(command -v grep 2>/dev/null)
