@@ -66,6 +66,8 @@ if [[ -d /usr/gnu/bin ]]; then
     GREP=/usr/gnu/bin/grep
 fi
 
+IS_SOLARIS=$(uname -s | $GREP -i -c 'sunos')
+
 # Find programs and libraries using the shell wildcard. Some programs
 # and libraries are _not_ executable and get missed in the do loop
 # when using options like -executable.
@@ -82,7 +84,7 @@ do
     chmod a+w "$file"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
-    if [[ -e /usr/bin/elfedit ]]
+    if [[ "$IS_SOLARIS" -ne 0 && -e /usr/bin/elfedit ]]
     then
         /usr/bin/elfedit -e "dyn:rpath $THIS_RUNPATH" "$file"
         /usr/bin/elfedit -e "dyn:runpath $THIS_RUNPATH" "$file"

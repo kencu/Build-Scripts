@@ -208,6 +208,9 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
+# Fix runpaths
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
@@ -227,6 +230,9 @@ then
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
     # exit 1
 fi
+
+# Fix runpaths again
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Installing package"
