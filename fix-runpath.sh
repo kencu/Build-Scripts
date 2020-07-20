@@ -29,8 +29,6 @@ fi
 # We need to remove the single quotes.
 THIS_RUNPATH="$INSTX_OPATH:$INSTX_RPATH"
 THIS_RUNPATH="""$(echo $THIS_RUNPATH | sed "s/'//g" | sed 's/\$/\\\$/g')"""
-
-THIS_RUNPATH="""\$ORIGIN/../lib:/export/home/jwalton/tmp/ok2delete/lib"""
 echo "Using \"$THIS_RUNPATH\""
 
 # Find a non-anemic grep
