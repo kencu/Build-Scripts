@@ -52,6 +52,14 @@ fi
 
 ###############################################################################
 
+if ! ../build-patchelf.sh
+then
+    echo "Failed to build patchelf"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-gmp.sh
 then
     echo "Failed to build GMP"
@@ -186,6 +194,9 @@ fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Testing package"
