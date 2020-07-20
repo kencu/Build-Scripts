@@ -81,18 +81,18 @@ do
 
     chmod a+w "$file"
 
+    # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
+    if [[ -e /usr/bin/elfedit ]]
+    then
+        /usr/bin/elfedit -e "dyn:rpath $THIS_RUNPATH" "$file"
+        /usr/bin/elfedit -e "dyn:runpath $THIS_RUNPATH" "$file"
+
     # https://stackoverflow.com/questions/13769141/can-i-change-rpath-in-an-already-compiled-binary
-    if [[ -n $(command -v patchelf 2>/dev/null) ]]
+    elif [[ -n $(command -v patchelf 2>/dev/null) ]]
     then
         #echo "  Before: $(readelf -d "$file" | grep PATH)"
         patchelf --set-rpath "$THIS_RUNPATH" "$file"
         #echo "  After: $(readelf -d "$file" | grep PATH)"
-
-    # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
-    elif [[ -n $(command -v elfedit 2>/dev/null) ]]
-    then
-        elfedit -e "dyn:rpath $THIS_RUNPATH" "$file"
-        elfedit -e "dyn:runpath $THIS_RUNPATH" "$file"
 
     elif [[ -n $(command -v chrpath 2>/dev/null) ]]
     then
