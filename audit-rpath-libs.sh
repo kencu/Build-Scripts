@@ -14,9 +14,9 @@ if [[ -d /usr/gnu/bin ]]; then
 fi
 
 if [[ $(uname -s | $GREP Darwin) ]]; then
-    LIB_EXT='*.dylib*'
+    LIB_EXT='*\.dylib*'
 else
-    LIB_EXT='*.so*'
+    LIB_EXT='*\.so*'
 fi
 
 # Find libfoo.so* files using the shell wildcard. Some libraries
