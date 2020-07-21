@@ -72,6 +72,9 @@ rm -rf "$AUTOGEN_DIR" &>/dev/null
 gzip -d < "$AUTOGEN_TAR" | tar xf -
 cd "$AUTOGEN_DIR" || exit 1
 
+# cp configure.ac configure.ac.orig
+# cp configure configure.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/autogen.patch ]]; then
     patch -u -p0 < ../patch/autogen.patch
