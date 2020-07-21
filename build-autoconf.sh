@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds Libtool from sources.
+# This script builds autoconf from sources. A separate
+# script is available for Autotools for brave souls.
 
-LIBTOOL_TAR=libtool-2.4.6.tar.gz
-LIBTOOL_DIR=libtool-2.4.6
+AUTOCONF_TAR=autoconf-2.69.tar.gz
+AUTOCONF_DIR=autoconf-2.69
 
 ###############################################################################
 
@@ -46,44 +47,35 @@ fi
 ###############################################################################
 
 echo
-echo "********** libtool and libltdl **********"
+echo "********** Autoconf **********"
 echo
 
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$LIBTOOL_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/libtool/$LIBTOOL_TAR"
+if ! "$WGET" -q -O "$AUTOCONF_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/autoconf/$AUTOCONF_TAR"
 then
-    echo "Failed to download libtool and libltdl"
+    echo "Failed to download libtool"
     exit 1
 fi
 
-rm -rf "$LIBTOOL_DIR" &>/dev/null
-gzip -d < "$LIBTOOL_TAR" | tar xf -
-cd "$LIBTOOL_DIR" || exit 1
+rm -rf "$AUTOCONF_DIR" &>/dev/null
+gzip -d < "$AUTOCONF_TAR" | tar xf -
+cd "$AUTOCONF_DIR" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
-
-echo "**********************"
-echo "Configuring package"
-echo "**********************"
-
-CONFIG_OPTS=()
-CONFIG_OPTS+=("--enable-static")
-CONFIG_OPTS+=("--enable-shared")
-CONFIG_OPTS+=("--enable-ltdl-install")
-
-if [[ "$IS_DARWIN" -ne 0 ]]; then
-    CONFIG_OPTS+=("--program-prefix=g")
-fi
 
 CONFIG_M4=$(command -v m4 2>/dev/null)
 if [[ -e "$INSTX_PREFIX/bin/m4" ]]; then
     CONFIG_M4="$INSTX_PREFIX/bin/m4"
 fi
+
+echo "**********************"
+echo "Configuring package"
+echo "**********************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -96,11 +88,10 @@ fi
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR" \
-    "${CONFIG_OPTS[@]}"
+    --libdir="$INSTX_LIBDIR"
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure libtool and libltdl"
+    echo "Failed to configure Autoconf"
     exit 1
 fi
 
@@ -115,24 +106,12 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build libtool and libltdl"
+    echo "Failed to build Autoconf"
     exit 1
 fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
-
-#echo "**********************"
-#echo "Testing package"
-#echo "**********************"
-
-# https://lists.gnu.org/archive/html/bug-libtool/2017-10/msg00009.html
-# MAKE_FLAGS=("check" "V=1")
-# if ! "${MAKE}" "${MAKE_FLAGS[@]}"
-# then
-#     echo "Failed to test libtool and libltdl"
-#     exit 1
-# fi
 
 echo "**********************"
 echo "Installing package"
@@ -147,8 +126,6 @@ fi
 
 cd "$CURR_DIR" || exit 1
 
-[[ "$0" = "${BASH_SOURCE[0]}" ]] && hash -r
-
 ###############################################################################
 
 echo ""
@@ -161,14 +138,14 @@ echo "**************************************************************************
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$LIBTOOL_TAR" "$LIBTOOL_DIR")
+    ARTIFACTS=("$AUTOCONF_TAR" "$AUTOCONF_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
 
-    # ./build-libtool.sh 2>&1 | tee build-libtool.log
-    if [[ -e build-libtool.log ]]; then
-        rm -f build-libtool.log
+    # ./build-autoconf.sh 2>&1 | tee build-autoconf.log
+    if [[ -e build-autoconf.log ]]; then
+        rm -f build-autoconf.log
     fi
 fi
 

@@ -92,7 +92,8 @@ echo "**********************"
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --enable-c++
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure M4"
@@ -168,6 +169,7 @@ echo "**********************"
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
+    M4="${INSTX_PREFIX}/bin/m4" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
@@ -261,14 +263,11 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-sed -e 's|^MAKEINFO =.*|MAKEINFO = true|g' Makefile > Makefile.fixed
-mv Makefile.fixed Makefile
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "MAKEINFO=true" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Automake"
