@@ -138,51 +138,6 @@ Many programs and libraries feel it is OK to leak resources, and it screws up a 
 
 Once finished with testing perform `rm -rf /var/sanitize` so everything is deleted.
 
-## Autotools
-
-Autotools is its own special kind of hell. Autotools is a place where progammers get sent when they have behaved badly.
-
-On new distros you should install Autotools from the distribution. The packages in the Autotools collection which should be installed through the distribution include:
-
-* Aclocal
-* Autoconf
-* Automake
-* Autopoint
-* Libtool
-
-The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of tangential incompatibility problems (which is kind of sad given they have had 25 years or so to get it right).
-
-## OpenBSD
-
-OpenBSD has an annoyance:
-
-```
-Provide an AUTOCONF_VERSION environment variable, please
-```
-
-If you encounter the annoyance then set the variables to `*`:
-
-```
-AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
-```
-
-## sysmacros.h
-
-Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The system headers are actually OK, the problem is Gnulib. Gnulib sets `__THROW` to the unsupported `__attribute__ ((__nothrow__))` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html). (Gnulib did not fix their bug once it was reported).
-
-If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
-
-```
-#include <features.h>
-
-/* Gnulib redefines __THROW to __attribute__ ((__nothrow__)) */
-/* This GCC compiler cannot handle the attribute.            */
-#ifndef __cplusplus
-# undef __THROW
-# define __THROW
-#endif
-```
-
 ## Self Tests
 
 The scripts attempt to run the program's or library's self tests. Usually the recipe is `make check`, but it is `make test` on occasion. If the self tests are run and fails, then the script stops before installation.
@@ -214,12 +169,69 @@ $ git reset --hard origin/master
 HEAD is now at 9a50195 Reset repository after OpenSSL 1.1.1d bump
 ```
 
+## Problems
+
+This section details some known problems and problem packages.
+
+### sysmacros.h
+
+Some older versions of `sysmacros.h` cause a broken compile due to `__THROW` on C functions. The system headers are actually OK, the problem is Gnulib. Gnulib sets `__THROW` to the unsupported `__attribute__ ((__nothrow__))` and it breaks the compile. Affected versions include the header supplied with Fedora 1. Also see [ctype.h:192: error: parse error before '{' token](https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00059.html). (Gnulib did not fix their bug once it was reported).
+
+If you encounter a build error *"error: parse error before '{' token"*, then open `/usr/include/sys/sysmacros.h` and add the following after the last include. The last include should be `<features.h>`.
+
+```
+#include <features.h>
+
+/* Gnulib redefines __THROW to __attribute__ ((__nothrow__)) */
+/* This GCC compiler cannot handle the attribute.            */
+#ifndef __cplusplus
+# undef __THROW
+# define __THROW
+#endif
+```
+
+### Autogen
+
+It appears Autogen was abandoned sometime around 2015. Autogen does not detect Guile 2.2 or 3.0. It also uses libraries that are no longer present, like `libintl_dgettext` and `libintl_gettext`. Expect about 20 self test failures.
+
+We attempted to patch Autogen so it would at least compile against Guile 2.2. We don't know if Autogen actually works in practice.
+
+### Autotools
+
+Autotools is its own special kind of hell. Autotools is a place where progammers get sent when they have behaved badly.
+
+On new distros you should install Autotools from the distribution. The packages in the Autotools collection which should be installed through the distribution include:
+
+* Aclocal
+* Autoconf
+* Automake
+* Autopoint
+* Libtool
+
+The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems, which is kind of sad given they have had 25 years or so to get it right. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Etc, etc, etc.
+
+### OpenBSD
+
+OpenBSD has an annoyance:
+
+```
+Provide an AUTOCONF_VERSION environment variable, please
+```
+
+If you encounter the annoyance then set the variables to `*`:
+
+```
+AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
+```
+
+### Perl
+
+Perl is a constant source of problems, but it is needed by OpenSSL 1.1.x. Perl's build system does not handle runpaths properly, and it builds packages as root during `make install`. Note to future maintainers: never build shit during `make install`.
+
 ## Bugs
 
 GnuPG may break Git and code signing. There seems to be an incompatibility in the way GnuPG prompts for a password and the way Git expects a user to provide a password.
 
 GnuTLS may (or may not) build and install correctly. It is a big recipe and Guile causes a fair amount of trouble on many systems.
-
-Perl is a constant source of problems, but it is needed for OpenSSL 1.1.x. Perl's build system does not handle runpaths properly, and it builds packages as root during `make install`. Note to future maintainers: never build shit during `make install`.
 
 If you find a bug then submit a patch or raise a bug report.
