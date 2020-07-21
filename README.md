@@ -192,9 +192,9 @@ If you encounter a build error *"error: parse error before '{' token"*, then ope
 
 ### Autogen
 
-It appears Autogen was abandoned sometime around 2015. Autogen does not detect Guile 2.2 or 3.0. It also uses libraries that are no longer present, like `libintl_dgettext` and `libintl_gettext`. Expect about 20 self test failures.
+It appears Autogen is no longer being maintained. It uses libraries that are no longer present, like `libintl_dgettext` and `libintl_gettext`. Expect about 20/24 self test failures.
 
-We attempted to patch Autogen so it would at least compile against Guile 2.2. We don't know if Autogen actually works in practice.
+We don't know if Autogen actually works in practice.
 
 ### Autotools
 
