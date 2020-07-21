@@ -74,6 +74,7 @@ cd "$AUTOGEN_DIR" || exit 1
 
 # cp configure.ac configure.ac.orig
 # cp configure configure.orig
+# cp agen5/guile-iface.h agen5/guile-iface.h.orig
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/autogen.patch ]]; then
@@ -93,6 +94,26 @@ if [[ -e "$INSTX_PREFIX/bin/m4" ]]; then
     CONFIG_M4="$INSTX_PREFIX/bin/m4"
 fi
 
+CONFIG_ACLOCAL=$(command -v aclocal 2>/dev/null)
+if [[ -e "$INSTX_PREFIX/bin/aclocal" ]]; then
+    CONFIG_ACLOCAL="$INSTX_PREFIX/bin/aclocal"
+fi
+
+CONFIG_AUTOHEADER=$(command -v autoheader 2>/dev/null)
+if [[ -e "$INSTX_PREFIX/bin/autoheader" ]]; then
+    CONFIG_AUTOHEADER="$INSTX_PREFIX/bin/autoheader"
+fi
+
+CONFIG_AUTOCONF=$(command -v autoconf 2>/dev/null)
+if [[ -e "$INSTX_PREFIX/bin/autoconf" ]]; then
+    CONFIG_AUTOCONF="$INSTX_PREFIX/bin/autoconf"
+fi
+
+CONFIG_AUTOMAKE=$(command -v automake 2>/dev/null)
+if [[ -e "$INSTX_PREFIX/bin/automake" ]]; then
+    CONFIG_AUTOMAKE="$INSTX_PREFIX/bin/automake"
+fi
+
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
@@ -101,6 +122,10 @@ fi
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
     M4="${CONFIG_M4}" \
+    ACLOCAL="${CONFIG_ACLOCAL}" \
+    AUTOHEADER="${CONFIG_AUTOHEADER}" \
+    AUTOCONF="${CONFIG_AUTOCONF}" \
+    AUTOMAKE="${CONFIG_AUTOMAKE}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
