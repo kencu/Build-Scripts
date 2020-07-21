@@ -208,7 +208,17 @@ On new distros you should install Autotools from the distribution. The packages 
 * Autopoint
 * Libtool
 
-The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems, which is kind of sad given they have had 25 years or so to get it right. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Etc, etc, etc.
+The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Etc, etc, etc.
+
+### GnuPG
+
+GnuPG may break Git and code signing. There seems to be an incompatibility in the way GnuPG prompts for a password and the way Git expects a user to provide a password.
+
+### GnuTLS
+
+GnuTLS may or may not build and install correctly. It is a big recipe and Guile causes a fair amount of trouble on many systems.
+
+GnuTLS uses private headers from libraries like Nettle, so things can go sideways if the wrong libraries are loaded at runtime.
 
 ### OpenBSD
 
@@ -229,9 +239,5 @@ AUTOCONF_VERSION=* AUTOMAKE_VERSION=* ./build-package.sh
 Perl is a constant source of problems, but it is needed by OpenSSL 1.1.x. Perl's build system does not handle runpaths properly, and it builds packages as root during `make install`. Note to future maintainers: never build shit during `make install`.
 
 ## Bugs
-
-GnuPG may break Git and code signing. There seems to be an incompatibility in the way GnuPG prompts for a password and the way Git expects a user to provide a password.
-
-GnuTLS may (or may not) build and install correctly. It is a big recipe and Guile causes a fair amount of trouble on many systems.
 
 If you find a bug then submit a patch or raise a bug report.
