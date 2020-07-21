@@ -118,7 +118,7 @@ then
 fi
 
 # Fix flags in *.pc files
-cp -p ../fix_pc.sh .; ./fix_pc.sh
+bash ../fix-pkgconfig.sh
 
 echo "**********************"
 echo "Testing package"
