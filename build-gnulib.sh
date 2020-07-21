@@ -22,7 +22,7 @@ function finish {
 trap finish EXIT INT
 
 # Sets the number of make jobs if not set in environment
-: "${INSTX_JOBS:=2}"
+: "${INSTX_JOBS:-2}"
 
 ###############################################################################
 
