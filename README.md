@@ -113,7 +113,7 @@ Fourth, and most importantly, the documentation complicates package building. Ma
 
 ## Sanitizers
 
-One of the benefits of using the build scripts is, you can somewhat easily build programs and dependent libraries using tools like Address Sanitizer (Asan) or Undefined Behavior Sanitizer (UBsan). Only minor modifications are necessary.
+One of the benefits of using the build scripts is, you can somewhat easily build programs and dependent libraries using tools like Address Sanitizer (Asan), Undefined Behavior Sanitizer (UBsan) and GCC 10's Analyzer. Only minor modifications are necessary.
 
 First, decide on a directory to sandbox the build. As an example, `/var/sanitize`:
 
@@ -126,6 +126,7 @@ Second, use one of the following variables to enable a sanitizer:
 * `INSTX_UBSAN=1`
 * `INSTX_ASAN=1`
 * `INSTX_MSAN=1`
+* `INSTX_ANALYZE=1`
 
 Finally, build and test the program or library as usual. For example, to build OpenSSL, perform:
 
