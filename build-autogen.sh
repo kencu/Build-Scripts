@@ -45,6 +45,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-libxml2.sh
+then
+    echo "Failed to build libxml2"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** AutoGen **********"
 echo
@@ -77,6 +85,11 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
+CONFIG_M4=$(command -v m4 2>/dev/null)
+if [[ -e "$INSTX_PREFIX/bin/m4" ]]; then
+    CONFIG_M4="$INSTX_PREFIX/bin/m4"
+fi
+
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
@@ -84,10 +97,12 @@ echo "**********************"
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
+    M4="${CONFIG_M4}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --with-libxml2="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure AutoGen"
