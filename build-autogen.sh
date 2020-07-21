@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds AutoGen from sources.
+# This script builds Autogen from sources.
 
-AUTOGEN_TAR=autogen-5.18.7.tar.gz
-AUTOGEN_DIR=autogen-5.18.7
+AUTOGEN_VER=5.18.16
+AUTOGEN_TAR=autogen-${AUTOGEN_VER}.tar.gz
+AUTOGEN_DIR=autogen-${AUTOGEN_VER}
 
 ###############################################################################
 
@@ -54,7 +55,7 @@ fi
 ###############################################################################
 
 echo
-echo "********** AutoGen **********"
+echo "********** Autogen **********"
 echo
 
 echo "**********************"
@@ -62,9 +63,9 @@ echo "Downloading package"
 echo "**********************"
 
 if ! "$WGET" -q -O "$AUTOGEN_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/autogen/$AUTOGEN_TAR"
+     "https://ftp.gnu.org/gnu/autogen/rel${AUTOGEN_VER}/$AUTOGEN_TAR"
 then
-    echo "Failed to download AutoGen"
+    echo "Failed to download Autogen"
     exit 1
 fi
 
@@ -89,31 +90,6 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
-CONFIG_M4=$(command -v m4 2>/dev/null)
-if [[ -e "$INSTX_PREFIX/bin/m4" ]]; then
-    CONFIG_M4="$INSTX_PREFIX/bin/m4"
-fi
-
-CONFIG_ACLOCAL=$(command -v aclocal 2>/dev/null)
-if [[ -e "$INSTX_PREFIX/bin/aclocal" ]]; then
-    CONFIG_ACLOCAL="$INSTX_PREFIX/bin/aclocal"
-fi
-
-CONFIG_AUTOHEADER=$(command -v autoheader 2>/dev/null)
-if [[ -e "$INSTX_PREFIX/bin/autoheader" ]]; then
-    CONFIG_AUTOHEADER="$INSTX_PREFIX/bin/autoheader"
-fi
-
-CONFIG_AUTOCONF=$(command -v autoconf 2>/dev/null)
-if [[ -e "$INSTX_PREFIX/bin/autoconf" ]]; then
-    CONFIG_AUTOCONF="$INSTX_PREFIX/bin/autoconf"
-fi
-
-CONFIG_AUTOMAKE=$(command -v automake 2>/dev/null)
-if [[ -e "$INSTX_PREFIX/bin/automake" ]]; then
-    CONFIG_AUTOMAKE="$INSTX_PREFIX/bin/automake"
-fi
-
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
@@ -121,19 +97,15 @@ fi
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
-    M4="${CONFIG_M4}" \
-    ACLOCAL="${CONFIG_ACLOCAL}" \
-    AUTOHEADER="${CONFIG_AUTOHEADER}" \
-    AUTOCONF="${CONFIG_AUTOCONF}" \
-    AUTOMAKE="${CONFIG_AUTOMAKE}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --with-libxml2="$INSTX_PREFIX"
+    --with-libxml2="$INSTX_PREFIX" \
+    --disable-dependency-tracking
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure AutoGen"
+    echo "Failed to configure Autogen"
     exit 1
 fi
 
@@ -148,7 +120,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build AutoGen"
+    echo "Failed to build Autogen"
     exit 1
 fi
 
@@ -163,7 +135,7 @@ MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
-    echo "Failed to test AutoGen"
+    echo "Failed to test Autogen"
     echo "**********************"
     exit 1
 fi
