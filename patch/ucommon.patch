@@ -1250,16 +1250,27 @@
  
 --- corelib/memory.cpp
 +++ corelib/memory.cpp
-@@ -688,7 +688,7 @@
+@@ -42,6 +42,10 @@
+ #define aligned_alloc(a, s) _aligned_malloc(s, a)
+ #endif
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ namespace ucommon {
+ 
+ extern "C" {
+@@ -688,7 +692,7 @@
  {
-     const char *out = UCOMMON_NULLPTR;
+     const char *out = NULL;
  
 -    if(root == nullptr) {
 +    if(root == UCOMMON_NULLPTR) {
          __THROW_RUNTIME("no root");
-         return UCOMMON_NULLPTR;
+         return NULL;
      }
-@@ -898,7 +898,7 @@
+@@ -898,7 +902,7 @@
  }
  
  PagerObject::PagerObject() :
@@ -1289,7 +1300,18 @@
  
  #if _POSIX_PRIORITY_SCHEDULING > 0
  #include <sched.h>
-@@ -211,7 +212,7 @@
+@@ -34,6 +35,10 @@
+ 
+ #undef  _POSIX_SPIN_LOCKS
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ namespace ucommon {
+ 
+ #if _POSIX_TIMERS > 0 && defined(POSIX_TIMERS)
+@@ -211,7 +216,7 @@
  
  void *Thread::Local::allocate()
  {
@@ -1298,7 +1320,7 @@
  }
  
  void Thread::release(void)
-@@ -1311,13 +1312,14 @@
+@@ -1311,13 +1316,14 @@
      free(buffer);
      return line_size;
  #elif defined(__APPLE__)
