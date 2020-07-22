@@ -85,8 +85,34 @@ cp openssl/random.cpp openssl/random.cpp.orig
 cp openssl/cipher.cpp openssl/cipher.cpp.orig
 cp openssl/hmac.cpp openssl/hmac.cpp.orig
 cp commoncpp/tcp.cpp commoncpp/tcp.cpp.orig
+cp corelib/condition.cpp corelib/condition.cpp.orig
 cp inc/ucommon/generics.h inc/ucommon/generics.h.orig
 cp inc/ucommon/temporary.h inc/ucommon/temporary.h.orig
+fi
+
+if false; then
+	for file in corelib/arrayref.cpp \
+		corelib/atomic.cpp \
+		corelib/linked.cpp \
+		corelib/memory.cpp \
+		corelib/shared.cpp \
+		corelib/thread.cpp \
+		corelib/typeref.cpp \
+		inc/ucommon/arrayref.h \
+		inc/ucommon/generics.h \
+		inc/ucommon/platform.h \
+		inc/ucommon/secure.h \
+		inc/ucommon/shared.h \
+		inc/ucommon/socket.h \
+		inc/ucommon/string.h \
+		inc/ucommon/thread.h \
+		inc/ucommon/typeref.h \
+		test/memory.cpp \
+		test/thread.cpp
+	do
+		cp "$file" "$file.orig"
+		sed -i 's/nullptr/NULL/g' "$file"
+	done
 fi
 
 # Patches are created with 'diff -u' from the pkg root directory.
@@ -102,9 +128,34 @@ diff -u openssl/random.cpp.orig openssl/random.cpp
 diff -u openssl/cipher.cpp.orig openssl/cipher.cpp
 diff -u openssl/hmac.cpp.orig openssl/hmac.cpp
 diff -u commoncpp/tcp.cpp.orig commoncpp/tcp.cpp
+diff -u corelib/condition.cpp.orig corelib/condition.cpp
 diff -u inc/ucommon/generics.h.orig inc/ucommon/generics.h
 diff -u inc/ucommon/temporary.h.orig inc/ucommon/temporary.h
 } > ../patch/ucommon.patch
+fi
+
+if false; then
+	for file in corelib/arrayref.cpp \
+		corelib/atomic.cpp \
+		corelib/linked.cpp \
+		corelib/memory.cpp \
+		corelib/shared.cpp \
+		corelib/thread.cpp \
+		corelib/typeref.cpp \
+		inc/ucommon/arrayref.h \
+		inc/ucommon/generics.h \
+		inc/ucommon/platform.h \
+		inc/ucommon/secure.h \
+		inc/ucommon/shared.h \
+		inc/ucommon/socket.h \
+		inc/ucommon/string.h \
+		inc/ucommon/thread.h \
+		inc/ucommon/typeref.h \
+		test/memory.cpp \
+		test/thread.cpp
+	do
+		diff -u "$file.orig" "$file" >> ../patch/ucommon.patch
+	done
 fi
 
 # Fix sys_lib_dlsearch_path_spec
