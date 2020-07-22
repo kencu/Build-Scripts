@@ -79,34 +79,10 @@ rm -rf "$UCOMMON_DIR" &>/dev/null
 gzip -d < "$UCOMMON_TAR" | tar xf -
 cd "$UCOMMON_DIR" || exit 1
 
-if false; then
-cp openssl/digest.cpp openssl/digest.cpp.orig
-cp openssl/random.cpp openssl/random.cpp.orig
-cp openssl/cipher.cpp openssl/cipher.cpp.orig
-cp openssl/hmac.cpp openssl/hmac.cpp.orig
-cp commoncpp/tcp.cpp commoncpp/tcp.cpp.orig
-cp corelib/condition.cpp corelib/condition.cpp.orig
-cp inc/ucommon/generics.h inc/ucommon/generics.h.orig
-cp inc/ucommon/temporary.h inc/ucommon/temporary.h.orig
-fi
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/ucommon.patch ]]; then
     patch -u -p0 < ../patch/ucommon.patch
     echo ""
-fi
-
-if false; then
-{
-diff -u openssl/digest.cpp.orig openssl/digest.cpp
-diff -u openssl/random.cpp.orig openssl/random.cpp
-diff -u openssl/cipher.cpp.orig openssl/cipher.cpp
-diff -u openssl/hmac.cpp.orig openssl/hmac.cpp
-diff -u commoncpp/tcp.cpp.orig commoncpp/tcp.cpp
-diff -u corelib/condition.cpp.orig corelib/condition.cpp
-diff -u inc/ucommon/generics.h.orig inc/ucommon/generics.h
-diff -u inc/ucommon/temporary.h.orig inc/ucommon/temporary.h
-} > ../patch/ucommon.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
