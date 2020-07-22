@@ -73,7 +73,7 @@
  
      bufsize = 0;
 -    memset(textbuf, 0, sizeof(textbuf));
-+    OPENSSL_cleanse(textbuf sizeof(textbuf));
++    OPENSSL_cleanse(textbuf, sizeof(textbuf));
  }
  
  bool Digest::put(const void *address, size_t size)
