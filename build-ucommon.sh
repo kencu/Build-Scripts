@@ -61,7 +61,7 @@ fi
 ###############################################################################
 
 echo
-echo "********** ucommon **********"
+echo "********** uCommon **********"
 echo
 
 echo "**********************"
@@ -71,7 +71,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$UCOMMON_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/commoncpp/$UCOMMON_TAR"
 then
-    echo "Failed to download ucommon"
+    echo "Failed to download uCommon"
     exit 1
 fi
 
@@ -130,7 +130,7 @@ echo "**********************"
     --with-sslstack=openssl
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure ucommon"
+    echo "Failed to configure uCommon"
     exit 1
 fi
 
@@ -145,7 +145,7 @@ echo "**********************"
 MAKE_FLAGS=("-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build ucommon"
+    echo "Failed to build uCommon"
     exit 1
 fi
 
@@ -160,7 +160,7 @@ MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
-    echo "Failed to test ucommon"
+    echo "Failed to test uCommon"
     echo "**********************"
     exit 1
 fi
