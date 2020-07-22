@@ -1518,27 +1518,6 @@
  #ifndef UCOMMON_SYSRUNTIME
  #ifndef NEW_STDCPP
  #define NEW_STDCPP
-@@ -50,16 +71,16 @@
- #define __THROW_RANGE(x)      throw std::out_of_range(x)
- #define __THROW_RUNTIME(x)    throw std::runtime_error(x)
- #define __THROW_ALLOC()       throw std::bad_alloc()
--#define __THROW_DEREF(v)      if(v == nullptr) \
-+#define __THROW_DEREF(v)      if(v == UCOMMON_NULLPTR) \
-                                 throw std::runtime_error("Dereference UCOMMON_NULLPTR")
--#define __THROW_UNDEF(v,x)    if(v == nullptr) throw std::runtime_error(x)
-+#define __THROW_UNDEF(v,x)    if(v == UCOMMON_NULLPTR) throw std::runtime_error(x)
- #else
- #define __THROW_RANGE(x)      abort()
- #define __THROW_SIZE(x)       abort()
- #define __THROW_RUNTIME(x)    abort()
- #define __THROW_ALLOC()       abort()
--#define __THROW_DEREF(v)      if(v == nullptr) abort()
--#define __THROW_UNDEF(v,x)    if(v == nullptr) abort()
-+#define __THROW_DEREF(v)      if(v == UCOMMON_NULLPTR) abort()
-+#define __THROW_UNDEF(v,x)    if(v == UCOMMON_NULLPTR) abort()
- #endif
- 
- /**
 @@ -90,7 +111,7 @@
  #endif
  #endif
