@@ -1,6 +1,6 @@
 --- openssl/digest.cpp
 +++ openssl/digest.cpp
-@@ -18,6 +18,17 @@
+@@ -18,6 +18,21 @@
  
  #include "local.h"
  
@@ -8,38 +8,49 @@
 +#include <openssl/opensslv.h>
 +#endif
 +
++#ifdef HAVE_OPENSSL_CRYPTO_H
++#include <openssl/crypto.h>
++#endif
++
 +#ifdef HAVE_OPENSSL_EVP_H
 +#include <openssl/evp.h>
 +#endif
 +
 +#include <stdexcept>
-+#include <new>
++#include <cassert>
 +
  namespace ucommon {
  
  bool Digest::has(const char *id)
-@@ -36,15 +47,28 @@
+@@ -36,26 +51,49 @@
          type = "sha1";
  
      hashtype = (void *)EVP_get_digestbyname(type);
 -    if(hashtype) {
--        context = new EVP_MD_CTX;
++    assert(hashtype != NULL);
++
++    if (hashtype)
++    {
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++        context = EVP_MD_CTX_new();
++        assert(context != NULL);
++
++        if (context) {
++            int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++            if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
++        }
++#else
+         context = new EVP_MD_CTX;
 -        EVP_MD_CTX_init((EVP_MD_CTX *)context);
 -        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
--    }
-+    if (! hashtype) throw std::bad_alloc();
++        assert(context != NULL);
 +
-+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-+    context = EVP_MD_CTX_new();
-+    if (! context) throw std::bad_alloc();
-+
-+    int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
-+    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
-+#else
-+    context = new EVP_MD_CTX;
-+    EVP_MD_CTX_init((EVP_MD_CTX *)context);
-+    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++        if (context) {
++            EVP_MD_CTX_init((EVP_MD_CTX *)context);
++            EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++        }
 +#endif
+     }
  }
  
  void Digest::release(void)
@@ -52,15 +63,21 @@
      if(context)
          EVP_MD_CTX_cleanup((EVP_MD_CTX *)context);
  
-@@ -53,6 +77,7 @@
+     if(context) {
+-        memset(context, 0, sizeof(EVP_MD_CTX));
++        OPENSSL_cleanse(context, sizeof(EVP_MD_CTX));
          delete (EVP_MD_CTX *)context;
          context = NULL;
      }
 +#endif
  
      bufsize = 0;
-     memset(textbuf, 0, sizeof(textbuf));
-@@ -63,12 +88,31 @@
+-    memset(textbuf, 0, sizeof(textbuf));
++    OPENSSL_cleanse(textbuf sizeof(textbuf));
+ }
+ 
+ bool Digest::put(const void *address, size_t size)
+@@ -63,23 +101,48 @@
      if(!context)
          return false;
  
@@ -79,35 +96,45 @@
 +    if(!context) {
 +        if(hashtype) {
 +            context = EVP_MD_CTX_new();
-+            if (! context) throw std::bad_alloc();
++            assert(context != NULL);
 +        }
 +        else
 +            return;
 +    }
 +
-+    int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
-+    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
-+    bufsize = 0;
++    if (context) {
++        int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++        if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
++        bufsize = 0;
++    }
 +#else
      if(!context) {
          if(hashtype) {
              context = new EVP_MD_CTX;
-@@ -80,6 +124,7 @@
++            assert(context != NULL);
+             EVP_MD_CTX_init((EVP_MD_CTX *)context);
+         }
+         else
+             return;
+     }
  
-     EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
-     bufsize = 0;
+-    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
+-    bufsize = 0;
++    if (context) {
++        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++        bufsize = 0;
++    }
 +#endif
  }
  
  void Digest::recycle(bool bin)
-@@ -89,6 +134,32 @@
+@@ -89,6 +152,31 @@
      if(!context)
          return;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    int rc;
-+    if(!bufsize)
-+    {
++    if(!bufsize) {
 +        rc = EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
 +        if (rc != 1) throw std::runtime_error("EVP_DigestFinal_ex failed");
 +    }
@@ -133,7 +160,7 @@
      if(!bufsize)
          EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
  
-@@ -99,15 +170,14 @@
+@@ -99,15 +187,13 @@
      else {
          unsigned count = 0;
          while(count < size) {
@@ -142,8 +169,9 @@
 +            snprintf(textbuf + (count * 2), 3, "%2.2x", buffer[count]);
              ++count;
          }
-         EVP_DigestUpdate((EVP_MD_CTX *)context, textbuf, size *
- 2);
+-        EVP_DigestUpdate((EVP_MD_CTX *)context, textbuf, size *
+-2);
++        EVP_DigestUpdate((EVP_MD_CTX *)context, textbuf, size * 2);
      }
      bufsize = 0;
 -
@@ -151,7 +179,7 @@
  }
  
  const uint8_t *Digest::get(void)
-@@ -121,7 +191,12 @@
+@@ -121,7 +207,12 @@
      if(!context)
          return NULL;
  
@@ -166,7 +194,7 @@
  
 --- openssl/random.cpp
 +++ openssl/random.cpp
-@@ -18,6 +18,17 @@
+@@ -18,6 +18,14 @@
  
  #include "local.h"
  
@@ -178,13 +206,10 @@
 +#include <openssl/rand.h>
 +#endif
 +
-+#include <stdexcept>
-+#include <new>
-+
  namespace ucommon {
  
  void Random::seed(void)
-@@ -47,9 +58,15 @@
+@@ -47,9 +55,15 @@
  {
      secure::init();
  
@@ -215,12 +240,32 @@
 +#endif
 +
 +#include <stdexcept>
-+#include <new>
++#include <cassert>
 +
  static const uint8_t *_salt = NULL;
  static unsigned _rounds = 1;
  
-@@ -105,12 +116,19 @@
+@@ -76,6 +87,7 @@
+         String::set(fpart, sizeof(algoname), fpart + 1);
+ 
+     algotype = EVP_get_cipherbyname(algoname);
++    assert(algotype != NULL);
+ 
+     if(!algotype)
+         return;
+@@ -96,7 +108,10 @@
+     if(fpart && fpart == lpart)
+         String::set(fpart, sizeof(algoname), fpart + 1);
+ 
+-    return (EVP_get_cipherbyname(algoname) != NULL);
++    const EVP_CIPHER * cipher = EVP_get_cipherbyname(algoname);
++    assert(cipher != NULL);
++
++    return (cipher != NULL);
+ }
+ 
+ void Cipher::push(uint8_t *address, size_t size)
+@@ -105,12 +120,19 @@
  
  void Cipher::release(void)
  {
@@ -240,18 +285,21 @@
  }
  
  void Cipher::set(const key_t key, mode_t mode, uint8_t *address, size_t size)
-@@ -125,10 +143,20 @@
+@@ -125,10 +147,23 @@
      if(!keys.keysize)
          return;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    context = EVP_CIPHER_CTX_new();
-+    if (! context) throw std::bad_alloc();
++    assert(context != NULL);
 +
-+    int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
-+    if (rc != 1) throw std::runtime_error("EVP_CipherInit_ex failed");
-+    rc = EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
-+    if (rc != 1) throw std::runtime_error("EVP_CIPHER_CTX_set_padding failed");
++    if (context)
++    {
++        int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
++        if (rc != 1) throw std::runtime_error("EVP_CipherInit_ex failed");
++        rc = EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
++        if (rc != 1) throw std::runtime_error("EVP_CIPHER_CTX_set_padding failed");
++    }
 +#else
      context = new EVP_CIPHER_CTX;
      EVP_CIPHER_CTX_init((EVP_CIPHER_CTX *)context);
@@ -263,7 +311,7 @@
  size_t Cipher::put(const uint8_t *data, size_t size)
 --- openssl/hmac.cpp
 +++ openssl/hmac.cpp
-@@ -18,75 +18,114 @@
+@@ -18,75 +18,128 @@
  
  #include "local.h"
  
@@ -271,12 +319,16 @@
 +#include <openssl/opensslv.h>
 +#endif
 +
++#ifdef HAVE_OPENSSL_CRYPTO_H
++#include <openssl/crypto.h>
++#endif
++
 +#ifdef HAVE_OPENSSL_EVP_H
 +#include <openssl/evp.h>
 +#endif
 +
 +#include <stdexcept>
-+#include <new>
++#include <cassert>
 +
  namespace ucommon {
  
@@ -305,19 +357,29 @@
 -    }
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	hmactype = EVP_get_digestbyname(digest);
++	assert(hmactype != NULL);
++
 +	if(hmactype && len) {
 +		context = HMAC_CTX_new();
-+		if (! context) throw std::bad_alloc();
++		assert(context != NULL);
 +
-+		int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, NULL);
-+		if (rc != 1) throw std::runtime_error("HMAC_Init_ex failed");
++		if (context) {
++			int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, NULL);
++			if (rc != 1) throw std::runtime_error("HMAC_Init_ex failed");
++		}
 +	}
 +#else
 +	hmactype = EVP_get_digestbyname(digest);
++	assert(hmactype != NULL);
++
 +	if(hmactype && len) {
 +		context = new HMAC_CTX;
-+		HMAC_CTX_init((HMAC_CTX *)context);
-+		HMAC_Init((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype);
++		assert(context != NULL);
++
++		if (context) {
++			HMAC_CTX_init((HMAC_CTX *)context);
++			HMAC_Init((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype);
++		}
 +	}
 +#endif
  }
@@ -337,7 +399,7 @@
 +#else
 +	if(context) {
 +		HMAC_cleanup((HMAC_CTX *)context);
-+		memset(context, 0, sizeof(HMAC_CTX));
++		OPENSSL_cleanse(context, sizeof(HMAC_CTX));
 +		delete (HMAC_CTX *)context;
 +		context = NULL;
 +	}
@@ -346,7 +408,7 @@
 -    bufsize = 0;
 -    memset(textbuf, 0, sizeof(textbuf));
 +	bufsize = 0;
-+	memset(textbuf, 0, sizeof(textbuf));
++	OPENSSL_cleanse(textbuf, sizeof(textbuf));
  }
  
  bool HMAC::put(const void *address, size_t size)
