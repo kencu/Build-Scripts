@@ -27,27 +27,27 @@
  
      hashtype = (void *)EVP_get_digestbyname(type);
 -    if(hashtype) {
-+    assert(hashtype != UCOMMON_NULLPTR);
++    assert(hashtype != NULL);
 +
 +    if (hashtype)
 +    {
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +        context = EVP_MD_CTX_new();
-+        assert(context != UCOMMON_NULLPTR);
++        assert(context != NULL);
 +
 +        if (context) {
-+            int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, UCOMMON_NULLPTR);
++            int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
 +            if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +        }
 +#else
          context = new EVP_MD_CTX;
 -        EVP_MD_CTX_init((EVP_MD_CTX *)context);
--        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
-+        assert(context != UCOMMON_NULLPTR);
+-        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++        assert(context != NULL);
 +
 +        if (context) {
 +            EVP_MD_CTX_init((EVP_MD_CTX *)context);
-+            EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
++            EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
 +        }
 +#endif
      }
@@ -58,7 +58,7 @@
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    if(context)
 +        EVP_MD_CTX_free((EVP_MD_CTX *)context);
-+    context = UCOMMON_NULLPTR;
++    context = NULL;
 +#else
      if(context)
          EVP_MD_CTX_cleanup((EVP_MD_CTX *)context);
@@ -67,7 +67,7 @@
 -        memset(context, 0, sizeof(EVP_MD_CTX));
 +        OPENSSL_cleanse(context, sizeof(EVP_MD_CTX));
          delete (EVP_MD_CTX *)context;
-         context = UCOMMON_NULLPTR;
+         context = NULL;
      }
 +#endif
  
@@ -96,14 +96,14 @@
 +    if(!context) {
 +        if(hashtype) {
 +            context = EVP_MD_CTX_new();
-+            assert(context != UCOMMON_NULLPTR);
++            assert(context != NULL);
 +        }
 +        else
 +            return;
 +    }
 +
 +    if (context) {
-+        int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, UCOMMON_NULLPTR);
++        int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
 +        if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +        bufsize = 0;
 +    }
@@ -111,17 +111,17 @@
      if(!context) {
          if(hashtype) {
              context = new EVP_MD_CTX;
-+            assert(context != UCOMMON_NULLPTR);
++            assert(context != NULL);
              EVP_MD_CTX_init((EVP_MD_CTX *)context);
          }
          else
              return;
      }
  
--    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
+-    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
 -    bufsize = 0;
 +    if (context) {
-+        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
++        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
 +        bufsize = 0;
 +    }
 +#endif
@@ -139,7 +139,7 @@
 +        if (rc != 1) throw std::runtime_error("EVP_DigestFinal_ex failed");
 +    }
 +
-+    rc = EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
++    rc = EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
 +    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +
 +    if(bin) {
@@ -181,7 +181,7 @@
  const uint8_t *Digest::get(void)
 @@ -121,7 +207,12 @@
      if(!context)
-         return UCOMMON_NULLPTR;
+         return NULL;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    int rc = EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
@@ -242,14 +242,14 @@
 +#include <stdexcept>
 +#include <cassert>
 +
- static const uint8_t *_salt = UCOMMON_NULLPTR;
+ static const uint8_t *_salt = NULL;
  static unsigned _rounds = 1;
  
 @@ -76,6 +87,7 @@
          String::set(fpart, sizeof(algoname), fpart + 1);
  
      algotype = EVP_get_cipherbyname(algoname);
-+    assert(algotype != UCOMMON_NULLPTR);
++    assert(algotype != NULL);
  
      if(!algotype)
          return;
@@ -257,11 +257,11 @@
      if(fpart && fpart == lpart)
          String::set(fpart, sizeof(algoname), fpart + 1);
  
--    return (EVP_get_cipherbyname(algoname) != UCOMMON_NULLPTR);
+-    return (EVP_get_cipherbyname(algoname) != NULL);
 +    const EVP_CIPHER * cipher = EVP_get_cipherbyname(algoname);
-+    assert(cipher != UCOMMON_NULLPTR);
++    assert(cipher != NULL);
 +
-+    return (cipher != UCOMMON_NULLPTR);
++    return (cipher != NULL);
  }
  
  void Cipher::push(uint8_t *address, size_t size)
@@ -273,13 +273,13 @@
 +    keys.clear();
 +    if(context)
 +        EVP_CIPHER_CTX_free((EVP_CIPHER_CTX*)context);
-+    context = UCOMMON_NULLPTR;
++    context = NULL;
 +#else
      keys.clear();
      if(context) {
          EVP_CIPHER_CTX_cleanup((EVP_CIPHER_CTX*)context);
          delete (EVP_CIPHER_CTX*)context;
-         context = UCOMMON_NULLPTR;
+         context = NULL;
      }
 +#endif
  }
@@ -291,11 +291,11 @@
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    context = EVP_CIPHER_CTX_new();
-+    assert(context != UCOMMON_NULLPTR);
++    assert(context != NULL);
 +
 +    if (context)
 +    {
-+        int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, UCOMMON_NULLPTR, keys.keybuf, keys.ivbuf, (int)mode);
++        int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
 +        if (rc != 1) throw std::runtime_error("EVP_CipherInit_ex failed");
 +        rc = EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
 +        if (rc != 1) throw std::runtime_error("EVP_CIPHER_CTX_set_padding failed");
@@ -303,7 +303,7 @@
 +#else
      context = new EVP_CIPHER_CTX;
      EVP_CIPHER_CTX_init((EVP_CIPHER_CTX *)context);
-     EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, UCOMMON_NULLPTR, keys.keybuf, keys.ivbuf, (int)mode);
+     EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
      EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
 +#endif
  }
@@ -334,8 +334,8 @@
  
  bool HMAC::has(const char *id)
  {
--    return (EVP_get_digestbyname(id) != UCOMMON_NULLPTR);
-+	return (EVP_get_digestbyname(id) != UCOMMON_NULLPTR);
+-    return (EVP_get_digestbyname(id) != NULL);
++	return (EVP_get_digestbyname(id) != NULL);
  }
  
  void HMAC::set(const char *digest, const secure::keybytes& key)
@@ -357,24 +357,24 @@
 -    }
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	hmactype = EVP_get_digestbyname(digest);
-+	assert(hmactype != UCOMMON_NULLPTR);
++	assert(hmactype != NULL);
 +
 +	if(hmactype && len) {
 +		context = HMAC_CTX_new();
-+		assert(context != UCOMMON_NULLPTR);
++		assert(context != NULL);
 +
 +		if (context) {
-+			int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, UCOMMON_NULLPTR);
++			int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, NULL);
 +			if (rc != 1) throw std::runtime_error("HMAC_Init_ex failed");
 +		}
 +	}
 +#else
 +	hmactype = EVP_get_digestbyname(digest);
-+	assert(hmactype != UCOMMON_NULLPTR);
++	assert(hmactype != NULL);
 +
 +	if(hmactype && len) {
 +		context = new HMAC_CTX;
-+		assert(context != UCOMMON_NULLPTR);
++		assert(context != NULL);
 +
 +		if (context) {
 +			HMAC_CTX_init((HMAC_CTX *)context);
@@ -390,18 +390,18 @@
 -        HMAC_cleanup((HMAC_CTX *)context);
 -        memset(context, 0, sizeof(HMAC_CTX));
 -        delete (HMAC_CTX *)context;
--        context = UCOMMON_NULLPTR;
+-        context = NULL;
 -    }
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	if(context)
 +		HMAC_CTX_free((HMAC_CTX *)context);
-+	context = UCOMMON_NULLPTR;
++	context = NULL;
 +#else
 +	if(context) {
 +		HMAC_cleanup((HMAC_CTX *)context);
 +		OPENSSL_cleanse(context, sizeof(HMAC_CTX));
 +		delete (HMAC_CTX *)context;
-+		context = UCOMMON_NULLPTR;
++		context = NULL;
 +	}
 +#endif
  
@@ -442,9 +442,9 @@
 +		return buffer;
  
 -    if(!context)
--        return UCOMMON_NULLPTR;
+-        return NULL;
 +	if(!context)
-+		return UCOMMON_NULLPTR;
++		return NULL;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	int rc = HMAC_Final((HMAC_CTX *)context, buffer, &size);
@@ -456,7 +456,7 @@
  	release();
  
  	if(!size)
- 		return UCOMMON_NULLPTR;
+ 		return NULL;
  
 -    bufsize = size;
 +	bufsize = size;
