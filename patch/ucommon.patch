@@ -495,7 +495,18 @@
  
 --- corelib/arrayref.cpp
 +++ corelib/arrayref.cpp
-@@ -212,7 +212,7 @@
+@@ -23,6 +23,10 @@
+ #include <ucommon/arrayref.h>
+ #include <cstdlib>
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ namespace ucommon {
+ 
+ ArrayRef::Array::Array(arraytype_t arraymode, void *addr, size_t used) :
+@@ -212,7 +216,7 @@
  
  void ArrayRef::clear(void)
  {
@@ -506,7 +517,26 @@
  ArrayRef::Array *ArrayRef::create(arraytype_t mode, size_t size)
 --- corelib/atomic.cpp
 +++ corelib/atomic.cpp
-@@ -468,7 +468,7 @@
+@@ -20,6 +20,7 @@
+ #include <ucommon/export.h>
+ #include <ucommon/atomic.h>
+ #include <ucommon/thread.h>
++#include <cstdlib>
+ 
+ #if __cplusplus >= 201103l
+ #include <atomic>
+@@ -44,6 +45,10 @@
+ #define aligned_alloc(a, s) _aligned_malloc(s, a)
+ #endif
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ namespace ucommon {
+ 
+ Atomic::counter::counter(atomic_t init)
+@@ -468,7 +473,7 @@
              --base;
          }
          ::free(base);
@@ -1342,7 +1372,18 @@
  #elif defined(linux)
 --- corelib/typeref.cpp
 +++ corelib/typeref.cpp
-@@ -36,7 +36,7 @@
+@@ -22,6 +22,10 @@
+ #include <ucommon/thread.h>
+ #include <cstdlib>
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ namespace ucommon {
+ 
+ TypeRef::Counted::Counted(void *addr, size_t objsize, TypeRelease *ar) : 
+@@ -36,7 +40,7 @@
  {
      TypeRelease *rel = autorelease;
      if(rel) {
@@ -1351,7 +1392,7 @@
          rel->dealloc(this);
          return;
      }
-@@ -225,7 +225,7 @@
+@@ -225,7 +229,7 @@
  {
      value *v1 = polystatic_cast<value *>(ref);
      const char *str1 = "";
@@ -1360,7 +1401,7 @@
  
      if(v1) {
          str1 = &v1->mem[0];
-@@ -401,7 +401,7 @@
+@@ -401,7 +405,7 @@
  TypeRef()
  {
      caddr_t p = ar->allocate(sizeof(value) + size);
@@ -1369,7 +1410,7 @@
  }
  
  typeref<const uint8_t *>::typeref(bool mode, size_t bits, TypeRelease *ar) :
-@@ -412,7 +412,7 @@
+@@ -412,7 +416,7 @@
          ++size;
  
      caddr_t p = ar->allocate(sizeof(value) + size);
@@ -1378,7 +1419,7 @@
      set(mode, 0, bits);
  }
  
-@@ -449,7 +449,7 @@
+@@ -449,7 +453,7 @@
          return 0;
  
      caddr_t p = ar->allocate(sizeof(value) + size);
@@ -1387,7 +1428,7 @@
      String::hex2bin(str, data(), size, ws);
      return size;
  }
-@@ -462,7 +462,7 @@
+@@ -462,7 +466,7 @@
          return 0;
  
      caddr_t p = ar->allocate(sizeof(value) + size);
@@ -1396,7 +1437,7 @@
      String::b64decode(data(), str, size, ws);
      return size;
  }
-@@ -492,7 +492,7 @@
+@@ -492,7 +496,7 @@
  typeref<const uint8_t *>::value *typeref<const uint8_t *>::create(size_t size, TypeRelease *ar)
  {
      caddr_t p = ar->allocate(sizeof(value) + size);
@@ -1405,7 +1446,7 @@
  }
  
  void typeref<const uint8_t *>::destroy(typeref<const uint8_t *>::value *bytes)
-@@ -561,7 +561,7 @@
+@@ -561,7 +565,7 @@
      uint8_t *out;
      size_t s1 = 0, s2 = 0, max;
      typeref<const uint8_t*> result;
@@ -1414,7 +1455,7 @@
  
      if(v1) {
          s1 = v1->max();
-@@ -658,7 +658,7 @@
+@@ -658,7 +662,7 @@
  
  void TypeRelease::release(TypeRef::Counted *obj)
  {
@@ -1423,7 +1464,7 @@
      obj->dealloc();
  }
  
-@@ -680,10 +680,10 @@
+@@ -680,10 +684,10 @@
      TypeRef::Counted *obj = *root;
      if(obj) {
          *root = obj->linkrelease;
@@ -1436,7 +1477,7 @@
      return obj;
  }
  
-@@ -714,7 +714,7 @@
+@@ -714,7 +718,7 @@
  
  public:
      TypeReleaseLater() { 
@@ -1445,7 +1486,7 @@
      }
  
      unsigned purge(void) __FINAL;
-@@ -734,10 +734,10 @@
+@@ -734,10 +738,10 @@
      TypeRef::Counted *pool;
      lock.acquire();
      pool = list;
