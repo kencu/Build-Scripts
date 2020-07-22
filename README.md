@@ -208,7 +208,7 @@ On new distros you should install Autotools from the distribution. The packages 
 * Autopoint
 * Libtool
 
-The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Etc, etc, etc.
+The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Libtool will fail to link a library that is present in the expected location. Etc, etc, etc.
 
 ### GnuPG
 
