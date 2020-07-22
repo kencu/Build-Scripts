@@ -1,0 +1,463 @@
+--- openssl/digest.cpp
++++ openssl/digest.cpp
+@@ -18,6 +18,17 @@
+ 
+ #include "local.h"
+ 
++#ifdef HAVE_OPENSSL_OPENSSLV_H
++#include <openssl/opensslv.h>
++#endif
++
++#ifdef HAVE_OPENSSL_EVP_H
++#include <openssl/evp.h>
++#endif
++
++#include <stdexcept>
++#include <new>
++
+ namespace ucommon {
+ 
+ bool Digest::has(const char *id)
+@@ -36,15 +47,28 @@
+         type = "sha1";
+ 
+     hashtype = (void *)EVP_get_digestbyname(type);
+-    if(hashtype) {
+-        context = new EVP_MD_CTX;
+-        EVP_MD_CTX_init((EVP_MD_CTX *)context);
+-        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
+-    }
++    if (! hashtype) throw std::bad_alloc();
++
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    context = EVP_MD_CTX_new();
++    if (! context) throw std::bad_alloc();
++
++    int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
++#else
++    context = new EVP_MD_CTX;
++    EVP_MD_CTX_init((EVP_MD_CTX *)context);
++    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++#endif
+ }
+ 
+ void Digest::release(void)
+ {
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    if(context)
++        EVP_MD_CTX_free((EVP_MD_CTX *)context);
++    context = NULL;
++#else
+     if(context)
+         EVP_MD_CTX_cleanup((EVP_MD_CTX *)context);
+ 
+@@ -53,6 +77,7 @@
+         delete (EVP_MD_CTX *)context;
+         context = NULL;
+     }
++#endif
+ 
+     bufsize = 0;
+     memset(textbuf, 0, sizeof(textbuf));
+@@ -63,12 +88,31 @@
+     if(!context)
+         return false;
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    int rc = EVP_DigestUpdate((EVP_MD_CTX *)context, address, size);
++    return rc == 1;
++#else
+     EVP_DigestUpdate((EVP_MD_CTX *)context, address, size);
+     return true;
++#endif
+ }
+ 
+ void Digest::reset(void)
+ {
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    if(!context) {
++        if(hashtype) {
++            context = EVP_MD_CTX_new();
++            if (! context) throw std::bad_alloc();
++        }
++        else
++            return;
++    }
++
++    int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
++    bufsize = 0;
++#else
+     if(!context) {
+         if(hashtype) {
+             context = new EVP_MD_CTX;
+@@ -80,6 +124,7 @@
+ 
+     EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
+     bufsize = 0;
++#endif
+ }
+ 
+ void Digest::recycle(bool bin)
+@@ -89,6 +134,32 @@
+     if(!context)
+         return;
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    int rc;
++    if(!bufsize)
++    {
++        rc = EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
++        if (rc != 1) throw std::runtime_error("EVP_DigestFinal_ex failed");
++    }
++
++    rc = EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
++
++    if(bin) {
++        rc = EVP_DigestUpdate((EVP_MD_CTX *)context, buffer, size);
++        if (rc != 1) throw std::runtime_error("EVP_DigestUpdate failed");
++    }
++    else {
++        unsigned count = 0;
++        while(count < size) {
++            snprintf(textbuf + (count * 2), 3, "%2.2x", buffer[count]);
++            ++count;
++        }
++        rc = EVP_DigestUpdate((EVP_MD_CTX *)context, textbuf, size * 2);
++        if (rc != 1) throw std::runtime_error("EVP_DigestUpdate failed");
++    }
++    bufsize = 0;
++#else
+     if(!bufsize)
+         EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
+ 
+@@ -99,15 +170,14 @@
+     else {
+         unsigned count = 0;
+         while(count < size) {
+-            snprintf(textbuf + (count * 2), 3, "%2.2x",
+-buffer[count]);
++            snprintf(textbuf + (count * 2), 3, "%2.2x", buffer[count]);
+             ++count;
+         }
+         EVP_DigestUpdate((EVP_MD_CTX *)context, textbuf, size *
+ 2);
+     }
+     bufsize = 0;
+-
++#endif
+ }
+ 
+ const uint8_t *Digest::get(void)
+@@ -121,7 +191,12 @@
+     if(!context)
+         return NULL;
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    int rc = EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
++    if (rc != 1) throw std::runtime_error("EVP_DigestFinal_ex failed");
++#else
+     EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
++#endif
+ 
+     release();
+ 
+--- openssl/random.cpp
++++ openssl/random.cpp
+@@ -18,6 +18,17 @@
+ 
+ #include "local.h"
+ 
++#ifdef HAVE_OPENSSL_OPENSSLV_H
++#include <openssl/opensslv.h>
++#endif
++
++#ifdef HAVE_OPENSSL_RAND_H
++#include <openssl/rand.h>
++#endif
++
++#include <stdexcept>
++#include <new>
++
+ namespace ucommon {
+ 
+ void Random::seed(void)
+@@ -47,9 +58,15 @@
+ {
+     secure::init();
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    if(RAND_bytes(buf, (int)size))
++        return size;
++    return 0;
++#else
+     if(RAND_pseudo_bytes(buf, (int)size))
+         return size;
+     return 0;
++#endif
+ }
+ 
+ bool Random::status(void)
+--- openssl/cipher.cpp
++++ openssl/cipher.cpp
+@@ -18,6 +18,17 @@
+ 
+ #include "local.h"
+ 
++#ifdef HAVE_OPENSSL_OPENSSLV_H
++#include <openssl/opensslv.h>
++#endif
++
++#ifdef HAVE_OPENSSL_EVP_H
++#include <openssl/evp.h>
++#endif
++
++#include <stdexcept>
++#include <new>
++
+ static const uint8_t *_salt = NULL;
+ static unsigned _rounds = 1;
+ 
+@@ -105,12 +116,19 @@
+ 
+ void Cipher::release(void)
+ {
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    keys.clear();
++    if(context)
++        EVP_CIPHER_CTX_free((EVP_CIPHER_CTX*)context);
++    context = NULL;
++#else
+     keys.clear();
+     if(context) {
+         EVP_CIPHER_CTX_cleanup((EVP_CIPHER_CTX*)context);
+         delete (EVP_CIPHER_CTX*)context;
+         context = NULL;
+     }
++#endif
+ }
+ 
+ void Cipher::set(const key_t key, mode_t mode, uint8_t *address, size_t size)
+@@ -125,10 +143,20 @@
+     if(!keys.keysize)
+         return;
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    context = EVP_CIPHER_CTX_new();
++    if (! context) throw std::bad_alloc();
++
++    int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
++    if (rc != 1) throw std::runtime_error("EVP_CipherInit_ex failed");
++    rc = EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
++    if (rc != 1) throw std::runtime_error("EVP_CIPHER_CTX_set_padding failed");
++#else
+     context = new EVP_CIPHER_CTX;
+     EVP_CIPHER_CTX_init((EVP_CIPHER_CTX *)context);
+     EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
+     EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
++#endif
+ }
+ 
+ size_t Cipher::put(const uint8_t *data, size_t size)
+--- openssl/hmac.cpp
++++ openssl/hmac.cpp
+@@ -18,75 +18,114 @@
+ 
+ #include "local.h"
+ 
++#ifdef HAVE_OPENSSL_OPENSSLV_H
++#include <openssl/opensslv.h>
++#endif
++
++#ifdef HAVE_OPENSSL_EVP_H
++#include <openssl/evp.h>
++#endif
++
++#include <stdexcept>
++#include <new>
++
+ namespace ucommon {
+ 
+ bool HMAC::has(const char *id)
+ {
+-    return (EVP_get_digestbyname(id) != NULL);
++	return (EVP_get_digestbyname(id) != NULL);
+ }
+ 
+ void HMAC::set(const char *digest, const secure::keybytes& key)
+ {
+-    secure::init();
++	secure::init();
+ 
+-    release();
++	release();
+ 
+-    size_t len = key.size() / 8;
++	size_t len = key.size() / 8;
+ 
+-    hmactype = EVP_get_digestbyname(digest);
+-    if(hmactype && len) {
+-        context = new ::HMAC_CTX;
+-        HMAC_CTX_init((HMAC_CTX *)context);
+-        HMAC_Init((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype);
+-    }
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++	hmactype = EVP_get_digestbyname(digest);
++	if(hmactype && len) {
++		context = HMAC_CTX_new();
++		if (! context) throw std::bad_alloc();
++
++		int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, NULL);
++		if (rc != 1) throw std::runtime_error("HMAC_Init_ex failed");
++	}
++#else
++	hmactype = EVP_get_digestbyname(digest);
++	if(hmactype && len) {
++		context = new HMAC_CTX;
++		HMAC_CTX_init((HMAC_CTX *)context);
++		HMAC_Init((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype);
++	}
++#endif
+ }
+ 
+ void HMAC::release(void)
+ {
+-    if(context) {
+-        HMAC_cleanup((HMAC_CTX *)context);
+-        memset(context, 0, sizeof(HMAC_CTX));
+-        delete (HMAC_CTX *)context;
+-        context = NULL;
+-    }
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++	if(context)
++		HMAC_CTX_free((HMAC_CTX *)context);
++	context = NULL;
++#else
++	if(context) {
++		HMAC_cleanup((HMAC_CTX *)context);
++		memset(context, 0, sizeof(HMAC_CTX));
++		delete (HMAC_CTX *)context;
++		context = NULL;
++	}
++#endif
+ 
+-    bufsize = 0;
+-    memset(textbuf, 0, sizeof(textbuf));
++	bufsize = 0;
++	memset(textbuf, 0, sizeof(textbuf));
+ }
+ 
+ bool HMAC::put(const void *address, size_t size)
+ {
+-    if(!context)
+-        return false;
++	if(!context)
++		return false;
+ 
+-    HMAC_Update((HMAC_CTX *)context, (const uint8_t *)address, size);
+-    return true;
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++	int rc = HMAC_Update((HMAC_CTX *)context, (const uint8_t *)address, size);
++	return rc == 1;
++#else
++	HMAC_Update((HMAC_CTX *)context, (const uint8_t *)address, size);
++	return true;
++#endif
+ }
+ 
+ const uint8_t *HMAC::get(void)
+ {
+-    unsigned count = 0;
+-    unsigned size = 0;
++	unsigned count = 0;
++	unsigned size = 0;
+ 
+-    if(bufsize)
+-        return buffer;
++	if(bufsize)
++		return buffer;
+ 
+-    if(!context)
+-        return NULL;
++	if(!context)
++		return NULL;
+ 
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++	int rc = HMAC_Final((HMAC_CTX *)context, buffer, &size);
++	if (rc != 1) throw std::runtime_error("HMAC_Final failed");
++#else
+ 	HMAC_Final((HMAC_CTX *)context, buffer, &size);
++#endif
++
+ 	release();
+ 
+ 	if(!size)
+ 		return NULL;
+ 
+-    bufsize = size;
++	bufsize = size;
+ 
+-    while(count < bufsize) {
+-        snprintf(textbuf + (count * 2), 3, "%2.2x", buffer[count]);
+-        ++count;
+-    }
+-    return buffer;
++	while(count < bufsize) {
++		snprintf(textbuf + (count * 2), 3, "%2.2x", buffer[count]);
++		++count;
++	}
++	return buffer;
+ }
+ 
+ } // namespace ucommon
+--- commoncpp/tcp.cpp
++++ commoncpp/tcp.cpp
+@@ -482,10 +482,13 @@
+ TCPStream::~TCPStream()
+ {
+ #ifdef  CCXX_EXCEPTIONS
+-        try { endStream(); }
+-        catch( ... ) { if ( ! std::uncaught_exception()) throw;};
++    try { endStream(); }
++    catch( ... ) {  // ugh...
++        if (! std::uncaught_exception())
++            throw;  // rethrow
++    };
+ #else
+-        endStream();
++    endStream();
+ #endif
+ }
+ 
+--- inc/ucommon/generics.h
++++ inc/ucommon/generics.h
+@@ -33,9 +33,11 @@
+ #include <cstring>
+ #include <stdexcept>
+ 
++// Do not declare an exception specification. It is an anti-pattern.
++// Also see https://stackoverflow.com/q/1055387.
+ #ifndef UCOMMON_SYSRUNTIME
+ #define THROW(x)    throw x
+-#define THROWS(x)   throw(x)
++#define THROWS(x)
+ #define THROWS_ANY  throw()
+ #else
+ #define THROW(x)    ::abort()
+--- inc/ucommon/temporary.h
++++ inc/ucommon/temporary.h
+@@ -53,9 +53,11 @@
+ #include <cstring>
+ #include <stdexcept>
+ 
++// Do not declare an exception specification. It is an anti-pattern.
++// Also see https://stackoverflow.com/q/1055387.
+ #ifndef UCOMMON_SYSRUNTIME
+ #define THROW(x)    throw x
+-#define THROWS(x)   throw(x)
++#define THROWS(x)
+ #define THROWS_ANY  throw()
+ #else
+ #define THROW(x)    ::abort()
