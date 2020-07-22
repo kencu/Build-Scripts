@@ -1718,9 +1718,72 @@
  
  		void destroy(void);
  
+--- test/datetime.cpp
++++ test/datetime.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/digest.cpp
++++ test/digest.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/keydata.cpp
++++ test/keydata.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/linked.cpp
++++ test/linked.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
 --- test/memory.cpp
 +++ test/memory.cpp
-@@ -188,7 +188,7 @@
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+@@ -188,7 +192,7 @@
      stringref_t sr = map(3);
      assert(eq(*sr, "hello"));
      sr = map(2);
@@ -1729,7 +1792,7 @@
      typeref<int> ki(3);
      sr = "goodbye";
      map(ki, sr);
-@@ -213,7 +213,7 @@
+@@ -213,7 +217,7 @@
      map(9, "9");
      assert(map.used() == 2);
      sr = map(7);
@@ -1738,7 +1801,7 @@
  
      listref<int> intlist;
      intlist << 3 << 5 << 7 << 9;
-@@ -228,7 +228,7 @@
+@@ -228,7 +232,7 @@
  
      mapped_pointer<char, maptest> pmap;
      maptest *out = pmap.get("bye");
@@ -1747,7 +1810,7 @@
      pmap.release(out);
      pmap.set(mt[0].key, &mt[0]);
      pmap.set(mt[1].key, &mt[1]);
-@@ -237,7 +237,7 @@
+@@ -237,7 +241,7 @@
      pmap.release(out);
      pmap.remove("bye");
      out = pmap.get("bye");
@@ -1756,9 +1819,85 @@
      pmap.release(out);
  
      int a = 1, b = 2;
+--- test/shell.cpp
++++ test/shell.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/socket.cpp
++++ test/socket.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU ucommon.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/stdcpp.cpp
++++ test/stdcpp.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/stream.cpp
++++ test/stream.cpp
+@@ -17,6 +17,10 @@
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ #ifndef UCOMMON_SYSRUNTIME
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+--- test/string.cpp
++++ test/string.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
 --- test/thread.cpp
 +++ test/thread.cpp
-@@ -48,8 +48,8 @@
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
+@@ -48,8 +52,8 @@
      testThread() : JoinableThread() {};
  
      void run(void) {
@@ -1769,7 +1908,7 @@
  
          ++count;
          ::sleep(2);
-@@ -62,9 +62,9 @@
+@@ -62,9 +66,9 @@
      testThread *thr;
      void *mem;
  
@@ -1781,3 +1920,16 @@
      assert(mem == *local);
  
      time(&now);
+--- test/unicode.cpp
++++ test/unicode.cpp
+@@ -16,6 +16,10 @@
+ // You should have received a copy of the GNU Lesser General Public License
+ // along with GNU uCommon C++.  If not, see <http://www.gnu.org/licenses/>.
+ 
++#ifdef NDEBUG
++#undef NDEBUG
++#endif
++
+ #ifndef DEBUG
+ #define DEBUG
+ #endif
