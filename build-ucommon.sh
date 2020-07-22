@@ -52,6 +52,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-openssl.sh
+then
+    echo "Failed to build OpenSSL"
+    exit 1
+fi
+
+###############################################################################
+
 echo
 echo "********** ucommon **********"
 echo
@@ -116,7 +124,8 @@ echo "**********************"
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --with-sslstack=openssl
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure ucommon"
