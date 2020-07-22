@@ -2040,7 +2040,18 @@
  #ifndef DEBUG
  #define DEBUG
  #endif
-@@ -48,8 +52,8 @@
+@@ -24,6 +28,10 @@
+ 
+ #include <stdio.h>
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ using namespace ucommon;
+ 
+ static unsigned count = 0;
+@@ -48,8 +56,8 @@
      testThread() : JoinableThread() {};
  
      void run(void) {
@@ -2051,7 +2062,7 @@
  
          ++count;
          ::sleep(2);
-@@ -62,9 +66,9 @@
+@@ -62,9 +70,9 @@
      testThread *thr;
      void *mem;
  
