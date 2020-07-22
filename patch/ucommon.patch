@@ -1509,7 +1509,7 @@
 +#endif
 +
 +// TODO: add configure.ac test
-+#if HAVE_NULLPTR
++#ifdef HAVE_NULLPTR
 +# define UCOMMON_NULLPTR nullptr
 +#else
 +# define UCOMMON_NULLPTR NULL
