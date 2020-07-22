@@ -27,27 +27,27 @@
  
      hashtype = (void *)EVP_get_digestbyname(type);
 -    if(hashtype) {
-+    assert(hashtype != NULL);
++    assert(hashtype != UCOMMON_NULLPTR);
 +
 +    if (hashtype)
 +    {
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +        context = EVP_MD_CTX_new();
-+        assert(context != NULL);
++        assert(context != UCOMMON_NULLPTR);
 +
 +        if (context) {
-+            int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++            int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, UCOMMON_NULLPTR);
 +            if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +        }
 +#else
          context = new EVP_MD_CTX;
 -        EVP_MD_CTX_init((EVP_MD_CTX *)context);
--        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
-+        assert(context != NULL);
+-        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
++        assert(context != UCOMMON_NULLPTR);
 +
 +        if (context) {
 +            EVP_MD_CTX_init((EVP_MD_CTX *)context);
-+            EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++            EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
 +        }
 +#endif
      }
@@ -58,7 +58,7 @@
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    if(context)
 +        EVP_MD_CTX_free((EVP_MD_CTX *)context);
-+    context = NULL;
++    context = UCOMMON_NULLPTR;
 +#else
      if(context)
          EVP_MD_CTX_cleanup((EVP_MD_CTX *)context);
@@ -67,7 +67,7 @@
 -        memset(context, 0, sizeof(EVP_MD_CTX));
 +        OPENSSL_cleanse(context, sizeof(EVP_MD_CTX));
          delete (EVP_MD_CTX *)context;
-         context = NULL;
+         context = UCOMMON_NULLPTR;
      }
 +#endif
  
@@ -96,14 +96,14 @@
 +    if(!context) {
 +        if(hashtype) {
 +            context = EVP_MD_CTX_new();
-+            assert(context != NULL);
++            assert(context != UCOMMON_NULLPTR);
 +        }
 +        else
 +            return;
 +    }
 +
 +    if (context) {
-+        int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, NULL);
++        int rc = EVP_DigestInit_ex((EVP_MD_CTX*)context, (const EVP_MD*)hashtype, UCOMMON_NULLPTR);
 +        if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +        bufsize = 0;
 +    }
@@ -111,17 +111,17 @@
      if(!context) {
          if(hashtype) {
              context = new EVP_MD_CTX;
-+            assert(context != NULL);
++            assert(context != UCOMMON_NULLPTR);
              EVP_MD_CTX_init((EVP_MD_CTX *)context);
          }
          else
              return;
      }
  
--    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
+-    EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
 -    bufsize = 0;
 +    if (context) {
-+        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++        EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
 +        bufsize = 0;
 +    }
 +#endif
@@ -139,7 +139,7 @@
 +        if (rc != 1) throw std::runtime_error("EVP_DigestFinal_ex failed");
 +    }
 +
-+    rc = EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, NULL);
++    rc = EVP_DigestInit_ex((EVP_MD_CTX *)context, (const EVP_MD *)hashtype, UCOMMON_NULLPTR);
 +    if (rc != 1) throw std::runtime_error("EVP_DigestInit_ex failed");
 +
 +    if(bin) {
@@ -181,7 +181,7 @@
  const uint8_t *Digest::get(void)
 @@ -121,7 +207,12 @@
      if(!context)
-         return NULL;
+         return UCOMMON_NULLPTR;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    int rc = EVP_DigestFinal_ex((EVP_MD_CTX *)context, buffer, &size);
@@ -242,14 +242,14 @@
 +#include <stdexcept>
 +#include <cassert>
 +
- static const uint8_t *_salt = NULL;
+ static const uint8_t *_salt = UCOMMON_NULLPTR;
  static unsigned _rounds = 1;
  
 @@ -76,6 +87,7 @@
          String::set(fpart, sizeof(algoname), fpart + 1);
  
      algotype = EVP_get_cipherbyname(algoname);
-+    assert(algotype != NULL);
++    assert(algotype != UCOMMON_NULLPTR);
  
      if(!algotype)
          return;
@@ -257,11 +257,11 @@
      if(fpart && fpart == lpart)
          String::set(fpart, sizeof(algoname), fpart + 1);
  
--    return (EVP_get_cipherbyname(algoname) != NULL);
+-    return (EVP_get_cipherbyname(algoname) != UCOMMON_NULLPTR);
 +    const EVP_CIPHER * cipher = EVP_get_cipherbyname(algoname);
-+    assert(cipher != NULL);
++    assert(cipher != UCOMMON_NULLPTR);
 +
-+    return (cipher != NULL);
++    return (cipher != UCOMMON_NULLPTR);
  }
  
  void Cipher::push(uint8_t *address, size_t size)
@@ -273,13 +273,13 @@
 +    keys.clear();
 +    if(context)
 +        EVP_CIPHER_CTX_free((EVP_CIPHER_CTX*)context);
-+    context = NULL;
++    context = UCOMMON_NULLPTR;
 +#else
      keys.clear();
      if(context) {
          EVP_CIPHER_CTX_cleanup((EVP_CIPHER_CTX*)context);
          delete (EVP_CIPHER_CTX*)context;
-         context = NULL;
+         context = UCOMMON_NULLPTR;
      }
 +#endif
  }
@@ -291,11 +291,11 @@
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +    context = EVP_CIPHER_CTX_new();
-+    assert(context != NULL);
++    assert(context != UCOMMON_NULLPTR);
 +
 +    if (context)
 +    {
-+        int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
++        int rc = EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, UCOMMON_NULLPTR, keys.keybuf, keys.ivbuf, (int)mode);
 +        if (rc != 1) throw std::runtime_error("EVP_CipherInit_ex failed");
 +        rc = EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
 +        if (rc != 1) throw std::runtime_error("EVP_CIPHER_CTX_set_padding failed");
@@ -303,7 +303,7 @@
 +#else
      context = new EVP_CIPHER_CTX;
      EVP_CIPHER_CTX_init((EVP_CIPHER_CTX *)context);
-     EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, NULL, keys.keybuf, keys.ivbuf, (int)mode);
+     EVP_CipherInit_ex((EVP_CIPHER_CTX *)context, (EVP_CIPHER *)keys.algotype, UCOMMON_NULLPTR, keys.keybuf, keys.ivbuf, (int)mode);
      EVP_CIPHER_CTX_set_padding((EVP_CIPHER_CTX *)context, 0);
 +#endif
  }
@@ -334,8 +334,8 @@
  
  bool HMAC::has(const char *id)
  {
--    return (EVP_get_digestbyname(id) != NULL);
-+	return (EVP_get_digestbyname(id) != NULL);
+-    return (EVP_get_digestbyname(id) != UCOMMON_NULLPTR);
++	return (EVP_get_digestbyname(id) != UCOMMON_NULLPTR);
  }
  
  void HMAC::set(const char *digest, const secure::keybytes& key)
@@ -357,24 +357,24 @@
 -    }
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	hmactype = EVP_get_digestbyname(digest);
-+	assert(hmactype != NULL);
++	assert(hmactype != UCOMMON_NULLPTR);
 +
 +	if(hmactype && len) {
 +		context = HMAC_CTX_new();
-+		assert(context != NULL);
++		assert(context != UCOMMON_NULLPTR);
 +
 +		if (context) {
-+			int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, NULL);
++			int rc = HMAC_Init_ex((HMAC_CTX *)context, *key, (int)len, (const EVP_MD *)hmactype, UCOMMON_NULLPTR);
 +			if (rc != 1) throw std::runtime_error("HMAC_Init_ex failed");
 +		}
 +	}
 +#else
 +	hmactype = EVP_get_digestbyname(digest);
-+	assert(hmactype != NULL);
++	assert(hmactype != UCOMMON_NULLPTR);
 +
 +	if(hmactype && len) {
 +		context = new HMAC_CTX;
-+		assert(context != NULL);
++		assert(context != UCOMMON_NULLPTR);
 +
 +		if (context) {
 +			HMAC_CTX_init((HMAC_CTX *)context);
@@ -390,18 +390,18 @@
 -        HMAC_cleanup((HMAC_CTX *)context);
 -        memset(context, 0, sizeof(HMAC_CTX));
 -        delete (HMAC_CTX *)context;
--        context = NULL;
+-        context = UCOMMON_NULLPTR;
 -    }
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	if(context)
 +		HMAC_CTX_free((HMAC_CTX *)context);
-+	context = NULL;
++	context = UCOMMON_NULLPTR;
 +#else
 +	if(context) {
 +		HMAC_cleanup((HMAC_CTX *)context);
 +		OPENSSL_cleanse(context, sizeof(HMAC_CTX));
 +		delete (HMAC_CTX *)context;
-+		context = NULL;
++		context = UCOMMON_NULLPTR;
 +	}
 +#endif
  
@@ -442,9 +442,9 @@
 +		return buffer;
  
 -    if(!context)
--        return NULL;
+-        return UCOMMON_NULLPTR;
 +	if(!context)
-+		return NULL;
++		return UCOMMON_NULLPTR;
  
 +#if OPENSSL_VERSION_NUMBER >= 0x10100000L
 +	int rc = HMAC_Final((HMAC_CTX *)context, buffer, &size);
@@ -456,7 +456,7 @@
  	release();
  
  	if(!size)
- 		return NULL;
+ 		return UCOMMON_NULLPTR;
  
 -    bufsize = size;
 +	bufsize = size;
@@ -500,7 +500,7 @@
  void ArrayRef::clear(void)
  {
 -    reset(nullptr);
-+    reset(NULL);
++    reset(UCOMMON_NULLPTR);
  }
  
  ArrayRef::Array *ArrayRef::create(arraytype_t mode, size_t size)
@@ -511,7 +511,7 @@
          }
          ::free(base);
 -        address = nullptr;
-+        address = NULL;
++        address = UCOMMON_NULLPTR;
      }
  }
  
@@ -522,7 +522,7 @@
  LinkedObject::LinkedObject(LinkedObject **root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
      enlist(root);
  }
  
@@ -531,7 +531,7 @@
      LinkedObject *after;
  
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
      while(root) {
          after = root->Next;
@@ -540,7 +540,7 @@
  bool LinkedObject::is_member(LinkedObject *list) const
  {
 -    assert(list != nullptr);
-+    assert(list != NULL);
++    assert(list != UCOMMON_NULLPTR);
  
      while(list) {
          if(list == this)
@@ -549,7 +549,7 @@
  void LinkedObject::enlist(LinkedObject **root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
      Next = *root;
      *root = this;
@@ -558,10 +558,10 @@
  void LinkedObject::delist(LinkedObject **root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
 -    LinkedObject *prior = nullptr, *node = *root;
-+    LinkedObject *prior = NULL, *node = *root;
++    LinkedObject *prior = UCOMMON_NULLPTR, *node = *root;
  
      while(node && node != this) {
          prior = node;
@@ -570,14 +570,14 @@
  void ReusableObject::release(void)
  {
 -    Next = nullptr;
-+    Next = NULL;
++    Next = UCOMMON_NULLPTR;
  }
  
  NamedObject::NamedObject() :
  OrderedObject()
  {
 -    Id = nullptr;
-+    Id = NULL;
++    Id = UCOMMON_NULLPTR;
  }
  
  NamedObject::NamedObject(OrderedIndex *root, char *nid) :
@@ -585,11 +585,11 @@
  {
 -    assert(root != nullptr);
 -    assert(nid != nullptr && *nid != 0);
-+    assert(root != NULL);
-+    assert(nid != NULL && *nid != 0);
++    assert(root != UCOMMON_NULLPTR);
++    assert(nid != UCOMMON_NULLPTR && *nid != 0);
  
 -    NamedObject *node = static_cast<NamedObject*>(root->head), *prior = nullptr;
-+    NamedObject *node = static_cast<NamedObject*>(root->head), *prior = NULL;
++    NamedObject *node = static_cast<NamedObject*>(root->head), *prior = UCOMMON_NULLPTR;
  
      while(node) {
          if(node->equal(nid)) {
@@ -598,7 +598,7 @@
          node = node->getNext();
      }
 -    Next = nullptr;
-+    Next = NULL;
++    Next = UCOMMON_NULLPTR;
      Id = nid;
      if(!root->head)
          root->head = this;
@@ -608,12 +608,12 @@
  {
 -    assert(root != nullptr);
 -    assert(nid != nullptr && *nid != 0);
-+    assert(root != NULL);
-+    assert(nid != NULL && *nid != 0);
++    assert(root != UCOMMON_NULLPTR);
++    assert(nid != UCOMMON_NULLPTR && *nid != 0);
      assert(max > 0);
  
 -    Id = nullptr;
-+    Id = NULL;
++    Id = UCOMMON_NULLPTR;
      add(root, nid, max);
  }
  
@@ -621,14 +621,14 @@
  {
 -    assert(root != nullptr);
 -    assert(nid != nullptr && *nid != 0);
-+    assert(root != NULL);
-+    assert(nid != NULL && *nid != 0);
++    assert(root != UCOMMON_NULLPTR);
++    assert(nid != UCOMMON_NULLPTR && *nid != 0);
      assert(max > 0);
  
      clearId();
  
 -    NamedObject *node, *prior = nullptr;
-+    NamedObject *node, *prior = NULL;
++    NamedObject *node, *prior = UCOMMON_NULLPTR;
  
      if(max < 2)
          max = 0;
@@ -637,7 +637,7 @@
      if(Id) {
          free(Id);
 -        Id = nullptr;
-+        Id = NULL;
++        Id = UCOMMON_NULLPTR;
      }
  }
  
@@ -646,7 +646,7 @@
  LinkedObject *LinkedObject::getIndexed(LinkedObject *root, unsigned index)
  {
 -    while(index-- && root != nullptr)
-+    while(index-- && root != NULL)
++    while(index-- && root != UCOMMON_NULLPTR)
          root = root->Next;
  
      return root;
@@ -655,7 +655,7 @@
  unsigned LinkedObject::count(const LinkedObject *root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
      unsigned c = 0;
      while(root) {
@@ -664,7 +664,7 @@
  unsigned NamedObject::keyindex(const char *id, unsigned max)
  {
 -    assert(id != nullptr && *id != 0);
-+    assert(id != NULL && *id != 0);
++    assert(id != UCOMMON_NULLPTR && *id != 0);
      assert(max > 1);
  
      unsigned val = 0;
@@ -673,7 +673,7 @@
  int NamedObject::compare(const char *cid) const
  {
 -    assert(cid != nullptr && *cid != 0);
-+    assert(cid != NULL && *cid != 0);
++    assert(cid != UCOMMON_NULLPTR && *cid != 0);
  
  #ifdef  HAVE_STRCOLL
      return strcoll(Id, cid);
@@ -683,8 +683,8 @@
      {
 -        assert(o1 != nullptr);
 -        assert(o2 != nullptr);
-+        assert(o1 != NULL);
-+        assert(o2 != NULL);
++        assert(o1 != UCOMMON_NULLPTR);
++        assert(o2 != UCOMMON_NULLPTR);
          const NamedObject * const *n1 = static_cast<const NamedObject * const*>(o1);
          const NamedObject * const*n2 = static_cast<const NamedObject * const*>(o2);
          return ((*n1)->compare((*n2)->getId()));
@@ -693,7 +693,7 @@
  NamedObject **NamedObject::sort(NamedObject **list, size_t size)
  {
 -    assert(list != nullptr);
-+    assert(list != NULL);
++    assert(list != UCOMMON_NULLPTR);
  
      if(!size) {
          while(list[size])
@@ -702,26 +702,26 @@
  NamedObject **NamedObject::index(NamedObject **idx, unsigned max)
  {
 -    assert(idx != nullptr);
-+    assert(idx != NULL);
++    assert(idx != UCOMMON_NULLPTR);
      assert(max > 0);
      NamedObject **op = new NamedObject *[count(idx, max) + 1];
      unsigned pos = 0;
 -    NamedObject *node = skip(idx, nullptr, max);
-+    NamedObject *node = skip(idx, NULL, max);
++    NamedObject *node = skip(idx, UCOMMON_NULLPTR, max);
  
      while(node) {
          op[pos++] = node;
          node = skip(idx, node, max);
      }
 -    op[pos] = nullptr;
-+    op[pos] = NULL;
++    op[pos] = UCOMMON_NULLPTR;
      return op;
  }
  
  NamedObject *NamedObject::skip(NamedObject **idx, NamedObject *rec, unsigned max)
  {
 -    assert(idx != nullptr);
-+    assert(idx != NULL);
++    assert(idx != UCOMMON_NULLPTR);
      assert(max > 0);
  
      unsigned key = 0;
@@ -730,7 +730,7 @@
              ++key;
          if(key >= max)
 -            return nullptr;
-+            return NULL;
++            return UCOMMON_NULLPTR;
          return idx[key];
      }
  
@@ -739,7 +739,7 @@
  void NamedObject::purge(NamedObject **idx, unsigned max)
  {
 -    assert(idx != nullptr);
-+    assert(idx != NULL);
++    assert(idx != UCOMMON_NULLPTR);
      assert(max > 0);
  
      LinkedObject *root;
@@ -748,7 +748,7 @@
  unsigned NamedObject::count(NamedObject **idx, unsigned max)
  {
 -    assert(idx != nullptr);
-+    assert(idx != NULL);
++    assert(idx != UCOMMON_NULLPTR);
      assert(max > 0);
  
      unsigned count = 0;
@@ -758,8 +758,8 @@
  {
 -    assert(idx != nullptr);
 -    assert(id != nullptr && *id != 0);
-+    assert(idx != NULL);
-+    assert(id != NULL && *id != 0);
++    assert(idx != UCOMMON_NULLPTR);
++    assert(id != UCOMMON_NULLPTR && *id != 0);
      assert(max > 0);
  
      if(max < 2)
@@ -769,8 +769,8 @@
  {
 -    assert(idx != nullptr);
 -    assert(id != nullptr && *id != 0);
-+    assert(idx != NULL);
-+    assert(id != NULL && *id != 0);
++    assert(idx != UCOMMON_NULLPTR);
++    assert(id != UCOMMON_NULLPTR && *id != 0);
      assert(max > 0);
  
      if(max < 2)
@@ -779,7 +779,7 @@
  NamedObject *NamedObject::find(NamedObject *root, const char *id)
  {
 -    assert(id != nullptr && *id != 0);
-+    assert(id != NULL && *id != 0);
++    assert(id != UCOMMON_NULLPTR && *id != 0);
  
      while(root) {
          if(root->equal(id))
@@ -789,11 +789,11 @@
  {
 -    assert(id != nullptr && *id != 0);
 -    assert(root != nullptr);
-+    assert(id != NULL && *id != 0);
-+    assert(root != NULL);
++    assert(id != UCOMMON_NULLPTR && *id != 0);
++    assert(root != UCOMMON_NULLPTR);
  
 -    NamedObject *prior = nullptr;
-+    NamedObject *prior = NULL;
++    NamedObject *prior = UCOMMON_NULLPTR;
      NamedObject *node = *root;
  
      while(node) {
@@ -802,10 +802,10 @@
  
      if(!node)
 -        return nullptr;
-+        return NULL;
++        return UCOMMON_NULLPTR;
  
 -    if(prior == nullptr)
-+    if(prior == NULL)
++    if(prior == UCOMMON_NULLPTR)
          *root = node->getNext();
      else
          prior->Next = node->getNext();
@@ -814,14 +814,14 @@
  {
      Id = nid;
 -    Parent = nullptr;
-+    Parent = NULL;
++    Parent = UCOMMON_NULLPTR;
  }
  
  NamedTree::NamedTree(const NamedTree& source)
  {
      Id = source.Id;
 -    Parent = nullptr;
-+    Parent = NULL;
++    Parent = UCOMMON_NULLPTR;
      Child = source.Child;
  }
  
@@ -830,8 +830,8 @@
  {
 -    assert(p != nullptr);
 -    assert(nid != nullptr && *nid != 0);
-+    assert(p != NULL);
-+    assert(nid != NULL && *nid != 0);
++    assert(p != UCOMMON_NULLPTR);
++    assert(nid != UCOMMON_NULLPTR && *nid != 0);
  
      enlistTail(&p->Child);
      Id = nid;
@@ -840,14 +840,14 @@
  NamedTree::~NamedTree()
  {
 -    Id = nullptr;
-+    Id = NULL;
++    Id = UCOMMON_NULLPTR;
      purge();
  }
  
  NamedTree *NamedTree::getChild(const char *tid) const
  {
 -    assert(tid != nullptr && *tid != 0);
-+    assert(tid != NULL && *tid != 0);
++    assert(tid != UCOMMON_NULLPTR && *tid != 0);
  
      linked_pointer<NamedTree> node = Child.begin();
  
@@ -856,7 +856,7 @@
          node.next();
      }
 -    return nullptr;
-+    return NULL;
++    return UCOMMON_NULLPTR;
  }
  
  void NamedTree::relistTail(NamedTree *trunk)
@@ -865,7 +865,7 @@
  NamedTree *NamedTree::path(const char *tid) const
  {
 -    assert(tid != nullptr && *tid != 0);
-+    assert(tid != NULL && *tid != 0);
++    assert(tid != UCOMMON_NULLPTR && *tid != 0);
  
      const char *np;
      char buf[65];
@@ -874,7 +874,7 @@
      while(*tid == '.') {
          if(!node->Parent)
 -            return nullptr;
-+            return NULL;
++            return UCOMMON_NULLPTR;
          node = node->Parent;
  
          ++tid;
@@ -883,7 +883,7 @@
              tid = ++np;
          else
 -            tid = nullptr;
-+            tid = NULL;
++            tid = UCOMMON_NULLPTR;
          node = node->getChild(buf);
      }
      return node;
@@ -892,7 +892,7 @@
  NamedTree *NamedTree::getLeaf(const char *tid) const
  {
 -    assert(tid != nullptr && *tid != 0);
-+    assert(tid != NULL && *tid != 0);
++    assert(tid != UCOMMON_NULLPTR && *tid != 0);
  
      linked_pointer<NamedTree> node = Child.begin();
  
@@ -901,13 +901,13 @@
          node.next();
      }
 -    return nullptr;
-+    return NULL;
++    return UCOMMON_NULLPTR;
  }
  
  NamedTree *NamedTree::leaf(const char *tid) const
  {
 -    assert(tid != nullptr && *tid != 0);
-+    assert(tid != NULL && *tid != 0);
++    assert(tid != UCOMMON_NULLPTR && *tid != 0);
  
      linked_pointer<NamedTree> node = Child.begin();
      NamedTree *obj;
@@ -916,7 +916,7 @@
          if(node->is_leaf() && eq(node->Id, tid))
              return *node;
 -        obj = nullptr;
-+        obj = NULL;
++        obj = UCOMMON_NULLPTR;
          if(!node->is_leaf())
              obj = node->leaf(tid);
          if(obj)
@@ -924,13 +924,13 @@
          node.next();
      }
 -    return nullptr;
-+    return NULL;
++    return UCOMMON_NULLPTR;
  }
  
  NamedTree *NamedTree::find(const char *tid) const
  {
 -    assert(tid != nullptr && *tid != 0);
-+    assert(tid != NULL && *tid != 0);
++    assert(tid != UCOMMON_NULLPTR && *tid != 0);
  
      linked_pointer<NamedTree> node = Child.begin();
      NamedTree *obj;
@@ -939,13 +939,13 @@
          node.next();
      }
 -    return nullptr;
-+    return NULL;
++    return UCOMMON_NULLPTR;
  }
  
  void NamedTree::setId(char *nid)
  {
 -    assert(nid != nullptr && *nid != 0);
-+    assert(nid != NULL && *nid != 0);
++    assert(nid != UCOMMON_NULLPTR && *nid != 0);
  
      Id = nid;
  }
@@ -954,7 +954,7 @@
          delist(&Parent->Child);
  
 -    Id = nullptr;
-+    Id = NULL;
++    Id = UCOMMON_NULLPTR;
  }
  
  void NamedTree::purge(void)
@@ -963,7 +963,7 @@
  		if (!obj)
  			break;
 -        obj->Parent = nullptr; // save processing
-+        obj->Parent = NULL; // save processing
++        obj->Parent = UCOMMON_NULLPTR; // save processing
          node = obj->getNext();
          delete obj;
      }
@@ -972,13 +972,13 @@
  LinkedObject::LinkedObject()
  {
 -    Next = nullptr;
-+    Next = NULL;
++    Next = UCOMMON_NULLPTR;
  }
  
  LinkedObject::LinkedObject(const LinkedObject& from)
  {
 -    Next = nullptr;
-+    Next = NULL;
++    Next = UCOMMON_NULLPTR;
  }
  
  OrderedObject::OrderedObject() : LinkedObject()
@@ -988,18 +988,18 @@
  {
 -    assert(root != nullptr);
 -    Next = nullptr;
-+    assert(root != NULL);
-+    Next = NULL;
++    assert(root != UCOMMON_NULLPTR);
++    Next = UCOMMON_NULLPTR;
      enlistTail(root);
  }
  
  void OrderedObject::delist(OrderedIndex *root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
 -    OrderedObject *prior = nullptr, *node;
-+    OrderedObject *prior = NULL, *node;
++    OrderedObject *prior = UCOMMON_NULLPTR, *node;
  
      node = root->head;
  
@@ -1008,20 +1008,20 @@
  void OrderedObject::enlist(OrderedIndex *root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
 -    Next = nullptr;
-+    Next = NULL;
++    Next = UCOMMON_NULLPTR;
      enlistTail(root);
  }
  
  void OrderedObject::enlistTail(OrderedIndex *root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
 -    if(root->head == nullptr)
-+    if(root->head == NULL)
++    if(root->head == UCOMMON_NULLPTR)
          root->head = this;
      else if(root->tail)
          root->tail->Next = this;
@@ -1030,12 +1030,12 @@
  void OrderedObject::enlistHead(OrderedIndex *root)
  {
 -    assert(root != nullptr);
-+    assert(root != NULL);
++    assert(root != UCOMMON_NULLPTR);
  
 -    Next = nullptr;
 -    if(root->tail == nullptr)
-+    Next = NULL;
-+    if(root->tail == NULL)
++    Next = UCOMMON_NULLPTR;
++    if(root->tail == UCOMMON_NULLPTR)
          root->tail = this;
      else if(root->head)
          Next = root->head;
@@ -1046,9 +1046,9 @@
 -    Root = nullptr;
 -    Prev = nullptr;
 -    Next = nullptr;
-+    Root = NULL;
-+    Prev = NULL;
-+    Next = NULL;
++    Root = UCOMMON_NULLPTR;
++    Prev = UCOMMON_NULLPTR;
++    Next = UCOMMON_NULLPTR;
  }
  
  DLinkedObject::DLinkedObject(const DLinkedObject& from)
@@ -1056,17 +1056,17 @@
 -    Root = nullptr;
 -    Prev = nullptr;
 -    Next = nullptr;
-+    Root = NULL;
-+    Prev = NULL;
-+    Next = NULL;
++    Root = UCOMMON_NULLPTR;
++    Prev = UCOMMON_NULLPTR;
++    Next = UCOMMON_NULLPTR;
  }
  
  DLinkedObject::DLinkedObject(OrderedIndex *r)
  {
 -    Root = nullptr;
 -    Next = Prev = nullptr;
-+    Root = NULL;
-+    Next = Prev = NULL;
++    Root = UCOMMON_NULLPTR;
++    Next = Prev = UCOMMON_NULLPTR;
      if(r)
          enlist(r);
  }
@@ -1074,7 +1074,7 @@
  void DLinkedObject::enlist(OrderedIndex *r)
  {
 -    assert(r != nullptr);
-+    assert(r != NULL);
++    assert(r != UCOMMON_NULLPTR);
  
      enlistTail(r);
  }
@@ -1082,7 +1082,7 @@
  void DLinkedObject::insert(DLinkedObject *o)
  {
 -    assert(o != nullptr);
-+    assert(o != NULL);
++    assert(o != UCOMMON_NULLPTR);
  
      insertTail(o);
  }
@@ -1090,7 +1090,7 @@
  void DLinkedObject::insertHead(DLinkedObject *o)
  {
 -    assert(o != nullptr);
-+    assert(o != NULL);
++    assert(o != UCOMMON_NULLPTR);
  
      if(o->Root)
          o->delist();
@@ -1099,7 +1099,7 @@
      else {
          Root->head = o;
 -        o->Prev = nullptr;
-+        o->Prev = NULL;
++        o->Prev = UCOMMON_NULLPTR;
      }
      o->Root = Root;
      o->Next = this;
@@ -1108,7 +1108,7 @@
  void DLinkedObject::insertTail(DLinkedObject *o)
  {
 -    assert(o != nullptr);
-+    assert(o != NULL);
++    assert(o != UCOMMON_NULLPTR);
  
      if(o->Root)
          o->delist();
@@ -1117,7 +1117,7 @@
      else {
          Root->tail = o;
 -        o->Next = nullptr;
-+        o->Next = NULL;
++        o->Next = UCOMMON_NULLPTR;
      }
      o->Root = Root;
      o->Prev = this;
@@ -1126,7 +1126,7 @@
  void DLinkedObject::enlistHead(OrderedIndex *r)
  {
 -    assert(r != nullptr);
-+    assert(r != NULL);
++    assert(r != UCOMMON_NULLPTR);
  
      if(Root)
          delist();
@@ -1134,8 +1134,8 @@
      Root = r;
 -    Prev = nullptr; 
 -    Next = nullptr;
-+    Prev = NULL; 
-+    Next = NULL;
++    Prev = UCOMMON_NULLPTR; 
++    Next = UCOMMON_NULLPTR;
  
      if(!Root->tail) {
          Root->tail = Root->head = static_cast<OrderedObject *>(this);
@@ -1144,14 +1144,14 @@
  void DLinkedObject::enlistTail(OrderedIndex *r)
  {
 -    assert(r != nullptr);
-+    assert(r != NULL);
++    assert(r != UCOMMON_NULLPTR);
  
      if(Root)
          delist();
  
      Root = r;
 -    Next = Prev = nullptr;
-+    Next = Prev = NULL;
++    Next = Prev = UCOMMON_NULLPTR;
  
      if(!Root->head) {
          Root->head = Root->tail = static_cast<OrderedObject *>(this);
@@ -1161,8 +1161,8 @@
  
 -    Root = nullptr;
 -    Next = Prev = nullptr;
-+    Root = NULL;
-+    Next = Prev = NULL;
++    Root = UCOMMON_NULLPTR;
++    Next = Prev = UCOMMON_NULLPTR;
  }
  
  DLinkedObject::~DLinkedObject()
@@ -1171,13 +1171,13 @@
  OrderedIndex::OrderedIndex()
  {
 -    head = tail = nullptr;
-+    head = tail = NULL;
++    head = tail = UCOMMON_NULLPTR;
  }
  
  OrderedIndex::~OrderedIndex()
  {
 -    head = tail = nullptr;
-+    head = tail = NULL;
++    head = tail = UCOMMON_NULLPTR;
  }
  
  void OrderedIndex::copy(const OrderedIndex& source)
@@ -1186,7 +1186,7 @@
  void OrderedIndex::operator*=(OrderedObject *object)
  {
 -    assert(object != nullptr);
-+    assert(object != NULL);
++    assert(object != UCOMMON_NULLPTR);
  
      object->enlist(this);
  }
@@ -1194,7 +1194,7 @@
  void OrderedIndex::add(OrderedObject *object)
  {
 -    assert(object != nullptr);
-+    assert(object != NULL);
++    assert(object != UCOMMON_NULLPTR);
  
      object->enlist(this);
  }
@@ -1203,13 +1203,13 @@
  
      if(!head)
 -        return nullptr;
-+        return NULL;
++        return UCOMMON_NULLPTR;
  
      node = head;
      head = static_cast<OrderedObject *>(node->getNext());
      if(!head)
 -        tail = nullptr;
-+        tail = NULL;
++        tail = UCOMMON_NULLPTR;
  
      return static_cast<LinkedObject *>(node);
  }
@@ -1218,14 +1218,14 @@
      if(head) {
          LinkedObject::purge((LinkedObject *)head);
 -        head = tail = nullptr;
-+        head = tail = NULL;
++        head = tail = UCOMMON_NULLPTR;
      }
  }
  
  void OrderedIndex::reset(void)
  {
 -    head = tail = nullptr;
-+    head = tail = NULL;
++    head = tail = UCOMMON_NULLPTR;
  }
  
  void OrderedIndex::lock_index(void)
@@ -1234,7 +1234,7 @@
          node = node->Next;
      }
 -    op[idx] = nullptr;
-+    op[idx] = NULL;
++    op[idx] = UCOMMON_NULLPTR;
      return op;
  }
  
@@ -1242,19 +1242,19 @@
 +++ corelib/memory.cpp
 @@ -688,7 +688,7 @@
  {
-     const char *out = NULL;
+     const char *out = UCOMMON_NULLPTR;
  
 -    if(root == nullptr) {
-+    if(root == NULL) {
++    if(root == UCOMMON_NULLPTR) {
          __THROW_RUNTIME("no root");
-         return NULL;
+         return UCOMMON_NULLPTR;
      }
 @@ -898,7 +898,7 @@
  }
  
  PagerObject::PagerObject() :
 -LinkedObject(nullptr), CountedObject()
-+LinkedObject(NULL), CountedObject()
++LinkedObject(UCOMMON_NULLPTR), CountedObject()
  {
  }
  
@@ -1265,7 +1265,7 @@
  void MappedPointer::release(void *object)
  {
 -	if(object != nullptr)
-+	if(object != NULL)
++	if(object != UCOMMON_NULLPTR)
  		lock->release();
  }
  
@@ -1284,7 +1284,7 @@
  void *Thread::Local::allocate()
  {
 -    return nullptr;
-+    return NULL;
++    return UCOMMON_NULLPTR;
  }
  
  void Thread::release(void)
@@ -1315,7 +1315,7 @@
      TypeRelease *rel = autorelease;
      if(rel) {
 -        autorelease = nullptr;
-+        autorelease = NULL;
++        autorelease = UCOMMON_NULLPTR;
          rel->dealloc(this);
          return;
      }
@@ -1324,7 +1324,7 @@
      value *v1 = polystatic_cast<value *>(ref);
      const char *str1 = "";
 -    TypeRelease *ar = nullptr;
-+    TypeRelease *ar = NULL;
++    TypeRelease *ar = UCOMMON_NULLPTR;
  
      if(v1) {
          str1 = &v1->mem[0];
@@ -1333,7 +1333,7 @@
  {
      caddr_t p = ar->allocate(sizeof(value) + size);
 -    TypeRef::set(new(mem(p)) value(p, size, nullptr, ar));
-+    TypeRef::set(new(mem(p)) value(p, size, NULL, ar));
++    TypeRef::set(new(mem(p)) value(p, size, UCOMMON_NULLPTR, ar));
  }
  
  typeref<const uint8_t *>::typeref(bool mode, size_t bits, TypeRelease *ar) :
@@ -1342,7 +1342,7 @@
  
      caddr_t p = ar->allocate(sizeof(value) + size);
 -    TypeRef::set(new(mem(p)) value(p, size, nullptr, ar));
-+    TypeRef::set(new(mem(p)) value(p, size, NULL, ar));
++    TypeRef::set(new(mem(p)) value(p, size, UCOMMON_NULLPTR, ar));
      set(mode, 0, bits);
  }
  
@@ -1351,7 +1351,7 @@
  
      caddr_t p = ar->allocate(sizeof(value) + size);
 -    TypeRef::set(new(mem(p)) value(p, size, nullptr, ar));
-+    TypeRef::set(new(mem(p)) value(p, size, NULL, ar));
++    TypeRef::set(new(mem(p)) value(p, size, UCOMMON_NULLPTR, ar));
      String::hex2bin(str, data(), size, ws);
      return size;
  }
@@ -1360,7 +1360,7 @@
  
      caddr_t p = ar->allocate(sizeof(value) + size);
 -    TypeRef::set(new(mem(p)) value(p, size, nullptr, ar));
-+    TypeRef::set(new(mem(p)) value(p, size, NULL, ar));
++    TypeRef::set(new(mem(p)) value(p, size, UCOMMON_NULLPTR, ar));
      String::b64decode(data(), str, size, ws);
      return size;
  }
@@ -1369,7 +1369,7 @@
  {
      caddr_t p = ar->allocate(sizeof(value) + size);
 -    return new(mem(p)) value(p, size, nullptr, ar);
-+    return new(mem(p)) value(p, size, NULL, ar);
++    return new(mem(p)) value(p, size, UCOMMON_NULLPTR, ar);
  }
  
  void typeref<const uint8_t *>::destroy(typeref<const uint8_t *>::value *bytes)
@@ -1378,7 +1378,7 @@
      size_t s1 = 0, s2 = 0, max;
      typeref<const uint8_t*> result;
 -    TypeRelease *ar = nullptr;
-+    TypeRelease *ar = NULL;
++    TypeRelease *ar = UCOMMON_NULLPTR;
  
      if(v1) {
          s1 = v1->max();
@@ -1387,7 +1387,7 @@
  void TypeRelease::release(TypeRef::Counted *obj)
  {
 -    obj->autorelease = nullptr;
-+    obj->autorelease = NULL;
++    obj->autorelease = UCOMMON_NULLPTR;
      obj->dealloc();
  }
  
@@ -1396,11 +1396,11 @@
      if(obj) {
          *root = obj->linkrelease;
 -        obj->autorelease = nullptr;
-+        obj->autorelease = NULL;
++        obj->autorelease = UCOMMON_NULLPTR;
      }
      else
 -        *root = nullptr;
-+        *root = NULL;
++        *root = UCOMMON_NULLPTR;
      return obj;
  }
  
@@ -1409,7 +1409,7 @@
  public:
      TypeReleaseLater() { 
 -        list = nullptr; 
-+        list = NULL; 
++        list = UCOMMON_NULLPTR; 
      }
  
      unsigned purge(void) __FINAL;
@@ -1418,11 +1418,11 @@
      lock.acquire();
      pool = list;
 -    list = nullptr;
-+    list = NULL;
++    list = UCOMMON_NULLPTR;
      lock.release();
  
 -    while((obj = delist(&pool)) != nullptr) {
-+    while((obj = delist(&pool)) != NULL) {
++    while((obj = delist(&pool)) != UCOMMON_NULLPTR) {
          TypeRelease::release(obj);
          ++count;
      }
@@ -1433,7 +1433,7 @@
  
  	inline void release(void) {
 -		TypeRef::set(nullptr);
-+		TypeRef::set(NULL);
++		TypeRef::set(UCOMMON_NULLPTR);
  	}
  
  	inline typeref<T> pull() {
@@ -1442,7 +1442,7 @@
  
  	inline void release(void) {
 -		TypeRef::set(nullptr);
-+		TypeRef::set(NULL);
++		TypeRef::set(UCOMMON_NULLPTR);
  	}
  
  	inline typeref<T> pull() {
@@ -1451,7 +1451,7 @@
  
  	inline void release(void) {
 -		TypeRef::set(nullptr);
-+		TypeRef::set(NULL);
++		TypeRef::set(UCOMMON_NULLPTR);
  	}
  };
  
@@ -1475,7 +1475,7 @@
  template<typename T>
  inline bool isnull(T& object) {
 -    return (bool)(object.operator*() == nullptr);
-+    return (bool)(object.operator*() == NULL);
++    return (bool)(object.operator*() == UCOMMON_NULLPTR);
  }
  
  /**
@@ -1484,21 +1484,49 @@
  template<typename T>
  inline bool isnullp(T *object) {
 -    return (bool)(object->operator*() == nullptr);
-+    return (bool)(object->operator*() == NULL);
++    return (bool)(object->operator*() == UCOMMON_NULLPTR);
  }
  
  /**
 --- inc/ucommon/platform.h
 +++ inc/ucommon/platform.h
-@@ -50,16 +50,16 @@
+@@ -40,6 +40,27 @@
+ #define _UCOMMON_PLATFORM_H_
+ #define UCOMMON_ABI 7
+ 
++// https://clang.llvm.org/docs/LanguageExtensions.html
++#ifndef __has_feature
++# define __has_feature(x) 0
++#endif
++
++// Clang depends on __has_feature
++#if (_MSC_VER >= 1600) || __has_feature(cxx_nullptr) || \
++    ((__GNUC__ >= 5) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || \
++    (__INTEL_COMPILER >= 1000) || (__SUNPRO_CC >= 0x5130) || \
++    defined(__IBMCPP_NULLPTR)
++# undef  HAVE_NULLPTR
++# define HAVE_NULLPTR 1
++#endif
++
++// TODO: add configure.ac test
++#if HAVE_NULLPTR
++# define UCOMMON_NULLPTR nullptr
++#else
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ #ifndef UCOMMON_SYSRUNTIME
+ #ifndef NEW_STDCPP
+ #define NEW_STDCPP
+@@ -50,16 +71,16 @@
  #define __THROW_RANGE(x)      throw std::out_of_range(x)
  #define __THROW_RUNTIME(x)    throw std::runtime_error(x)
  #define __THROW_ALLOC()       throw std::bad_alloc()
 -#define __THROW_DEREF(v)      if(v == nullptr) \
-+#define __THROW_DEREF(v)      if(v == NULL) \
-                                 throw std::runtime_error("Dereference NULL")
++#define __THROW_DEREF(v)      if(v == UCOMMON_NULLPTR) \
+                                 throw std::runtime_error("Dereference UCOMMON_NULLPTR")
 -#define __THROW_UNDEF(v,x)    if(v == nullptr) throw std::runtime_error(x)
-+#define __THROW_UNDEF(v,x)    if(v == NULL) throw std::runtime_error(x)
++#define __THROW_UNDEF(v,x)    if(v == UCOMMON_NULLPTR) throw std::runtime_error(x)
  #else
  #define __THROW_RANGE(x)      abort()
  #define __THROW_SIZE(x)       abort()
@@ -1506,65 +1534,96 @@
  #define __THROW_ALLOC()       abort()
 -#define __THROW_DEREF(v)      if(v == nullptr) abort()
 -#define __THROW_UNDEF(v,x)    if(v == nullptr) abort()
-+#define __THROW_DEREF(v)      if(v == NULL) abort()
-+#define __THROW_UNDEF(v,x)    if(v == NULL) abort()
++#define __THROW_DEREF(v)      if(v == UCOMMON_NULLPTR) abort()
++#define __THROW_UNDEF(v,x)    if(v == UCOMMON_NULLPTR) abort()
  #endif
  
  /**
-@@ -173,9 +173,9 @@
+@@ -90,7 +111,7 @@
+ #endif
+ #endif
  
- #if __cplusplus <= 199711L && !defined(_MSC_VER)
- #if defined(__GNUC_MINOR__) && !defined(__clang__)
+-#if !defined(__GNUC__) && !defined(__has_feature) && !defined(_MSC_VER)
++#if !defined(__GNUC__) && !defined(_MSC_VER)
+ #define UCOMMON_RTTI    1
+ #endif
+ 
+@@ -102,11 +123,9 @@
+ #define UCOMMON_RTTI    1
+ #endif
+ 
+-#if defined(__has_feature)
+ #if __has_feature(cxx_rtti)
+ #define UCOMMON_RTTI    1
+ #endif
+-#endif
+ 
+ #ifdef  UCOMMON_RTTI
+ #define __PROTOCOL   virtual
+@@ -171,30 +190,6 @@
+                                 __DELETE_COPY(x)
+ #endif
+ 
+-#if __cplusplus <= 199711L && !defined(_MSC_VER)
+-#if defined(__GNUC_MINOR__) && !defined(__clang__)
 -#define nullptr __null
-+#define NULL __null
- #elif !defined(__clang__) || (defined(__clang__) && defined(__linux__))
+-#elif !defined(__clang__) || (defined(__clang__) && defined(__linux__))
 -const class nullptr_t 
-+const class NULL_t 
- {
- public:
-     template<class T>
-@@ -191,7 +191,7 @@
- private:
-     void operator&() const;
- 
+-{
+-public:
+-    template<class T>
+-    inline operator T*() const {
+-        return 0; 
+-    }
+-
+-    template<class C, class T>
+-    inline operator T C::*() const {
+-        return 0; 
+-    }
+-
+-private:
+-    void operator&() const;
+-
 -} nullptr = {};
-+} NULL = {};
- #endif
- #endif
- 
-@@ -392,13 +392,13 @@
+-#endif
+-#endif
+-
+ #ifndef __MALLOC
+ #define __PRINTF(x, y)
+ #define __SCANF(x, y)
+@@ -392,13 +387,13 @@
      {};
  
  inline void pthread_mutex_lock(pthread_mutex_t *mutex)
 -    {pth_mutex_acquire(mutex, 0, nullptr);};
-+    {pth_mutex_acquire(mutex, 0, NULL);};
++    {pth_mutex_acquire(mutex, 0, UCOMMON_NULLPTR);};
  
  inline void pthread_mutex_unlock(pthread_mutex_t *mutex)
      {pth_mutex_release(mutex);};
  
  inline void pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex)
 -    {pth_cond_await(cond, mutex, nullptr);};
-+    {pth_cond_await(cond, mutex, NULL);};
++    {pth_cond_await(cond, mutex, UCOMMON_NULLPTR);};
  
  inline void pthread_cond_signal(pthread_cond_t *cond)
      {pth_cond_notify(cond, FALSE);};
-@@ -549,7 +549,7 @@
+@@ -549,7 +544,7 @@
   */
  template<class T>
  inline T *init(T *memory)
 -    {return ((memory) ? new(((void *)memory)) T : nullptr);}
-+    {return ((memory) ? new(((void *)memory)) T : NULL);}
++    {return ((memory) ? new(((void *)memory)) T : UCOMMON_NULLPTR);}
  
  typedef long Integer;
  typedef unsigned long Unsigned;
-@@ -567,8 +567,8 @@
+@@ -567,8 +562,8 @@
  inline T polypointer_cast(S *s)
  {
  #if defined(DEBUG) && defined(UCOMMON_RTTI)
 -    if(s == nullptr)
 -        return nullptr;
-+    if(s == NULL)
-+        return NULL;
++    if(s == UCOMMON_NULLPTR)
++        return UCOMMON_NULLPTR;
      T ptr = dynamic_cast<T>(s);
      __THROW_DEREF(ptr);
      return ptr;
@@ -1575,7 +1634,7 @@
      /**
       * Get peer (x509) certificate for current stream if present.
 -     * @return certificate of peer or nullptr if none.
-+     * @return certificate of peer or NULL if none.
++     * @return certificate of peer or UCOMMON_NULLPTR if none.
       */
      inline secure::cert_t certificate(void) const {
          return cert;
@@ -1586,7 +1645,7 @@
  		}
  		lock->release();
 -		return nullptr;
-+		return NULL;
++		return UCOMMON_NULLPTR;
  	}
  
  	void set(const K* key, V* ptr) {
@@ -1597,17 +1656,17 @@
           */
          inline operator bool() const {
 -            return list != nullptr;
-+            return list != NULL;
++            return list != UCOMMON_NULLPTR;
          }
  
          inline bool is_valid() const {
 -            return list != nullptr;
-+            return list != NULL;
++            return list != UCOMMON_NULLPTR;
          }
  
          inline bool isValid() const {
 -            return list != nullptr;
-+            return list != NULL;
++            return list != UCOMMON_NULLPTR;
          }
  
          /**
@@ -1616,7 +1675,7 @@
           */
          inline bool operator!() const {
 -            return list == nullptr;
-+            return list == NULL;
++            return list == UCOMMON_NULLPTR;
          }
  
          /**
@@ -1625,7 +1684,7 @@
  
      inline linked_pointer() {
 -        ptr = nullptr;
-+        ptr = NULL;
++        ptr = UCOMMON_NULLPTR;
      }
  
      inline linked_pointer(Socket::address& list) {
@@ -1634,7 +1693,7 @@
       */
      inline operator bool() const {
 -        return ptr != nullptr;
-+        return ptr != NULL;
++        return ptr != UCOMMON_NULLPTR;
      }
  
      /**
@@ -1643,7 +1702,7 @@
       */
      inline bool operator!() const {
 -        return ptr == nullptr;
-+        return ptr == NULL;
++        return ptr == UCOMMON_NULLPTR;
      }
  
      inline void next(void) {
@@ -1654,12 +1713,12 @@
  
      inline operator bool() const {
 -        return data != nullptr;
-+        return data != NULL;
++        return data != UCOMMON_NULLPTR;
      }
  
      inline bool operator!() const {
 -        return data == nullptr;
-+        return data == NULL;
++        return data == UCOMMON_NULLPTR;
      }
  
      inline operator char*() const {
@@ -1685,7 +1744,7 @@
  
          inline void clear() {
 -            set(nullptr);
-+            set(NULL);
++            set(UCOMMON_NULLPTR);
          }
      };
  
@@ -1696,7 +1755,7 @@
  public:
  	inline TypeRelease() {
 -		delegate = nullptr;
-+		delegate = NULL;
++		delegate = UCOMMON_NULLPTR;
  	}
  
  	inline TypeRelease(TypeRelease *target) {
@@ -1705,7 +1764,7 @@
  		value *v = polystatic_cast<value*>(ref);
  		if(!v)
 -			return nullptr;
-+			return NULL;
++			return UCOMMON_NULLPTR;
  
  		return &(v->data);
  	}
@@ -1714,7 +1773,7 @@
  		uint8_t mem[1];
  
 -		value(caddr_t addr, size_t size, const uint8_t *data = nullptr, TypeRelease *ar = &auto_release);
-+		value(caddr_t addr, size_t size, const uint8_t *data = NULL, TypeRelease *ar = &auto_release);
++		value(caddr_t addr, size_t size, const uint8_t *data = UCOMMON_NULLPTR, TypeRelease *ar = &auto_release);
  
  		void destroy(void);
  
@@ -1788,7 +1847,7 @@
      assert(eq(*sr, "hello"));
      sr = map(2);
 -    assert(*sr == nullptr);
-+    assert(*sr == NULL);
++    assert(*sr == UCOMMON_NULLPTR);
      typeref<int> ki(3);
      sr = "goodbye";
      map(ki, sr);
@@ -1797,7 +1856,7 @@
      assert(map.used() == 2);
      sr = map(7);
 -    assert(*sr == nullptr);
-+    assert(*sr == NULL);
++    assert(*sr == UCOMMON_NULLPTR);
  
      listref<int> intlist;
      intlist << 3 << 5 << 7 << 9;
@@ -1806,7 +1865,7 @@
      mapped_pointer<char, maptest> pmap;
      maptest *out = pmap.get("bye");
 -    assert(out == nullptr);
-+    assert(out == NULL);
++    assert(out == UCOMMON_NULLPTR);
      pmap.release(out);
      pmap.set(mt[0].key, &mt[0]);
      pmap.set(mt[1].key, &mt[1]);
@@ -1815,7 +1874,7 @@
      pmap.remove("bye");
      out = pmap.get("bye");
 -    assert(out == nullptr);
-+    assert(out == NULL);
++    assert(out == UCOMMON_NULLPTR);
      pmap.release(out);
  
      int a = 1, b = 2;
@@ -1903,8 +1962,8 @@
      void run(void) {
 -        assert(local.get() == nullptr);
 -        assert(*local != nullptr);
-+        assert(local.get() == NULL);
-+        assert(*local != NULL);
++        assert(local.get() == UCOMMON_NULLPTR);
++        assert(*local != UCOMMON_NULLPTR);
  
          ++count;
          ::sleep(2);
@@ -1913,10 +1972,10 @@
      void *mem;
  
 -    assert(local.get() == nullptr);
-+    assert(local.get() == NULL);
++    assert(local.get() == UCOMMON_NULLPTR);
      mem = *local;
 -    assert(mem != nullptr);
-+    assert(mem != NULL);
++    assert(mem != UCOMMON_NULLPTR);
      assert(mem == *local);
  
      time(&now);
