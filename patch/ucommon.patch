@@ -1271,7 +1271,15 @@
  
 --- corelib/thread.cpp
 +++ corelib/thread.cpp
-@@ -211,7 +211,7 @@
+@@ -26,6 +26,7 @@
+ #include <string.h>
+ #include <stdarg.h>
+ #include <limits.h>
++#include <sys/sysctl.h>
+ 
+ #if _POSIX_PRIORITY_SCHEDULING > 0
+ #include <sched.h>
+@@ -211,7 +212,7 @@
  
  void *Thread::Local::allocate()
  {
@@ -1280,6 +1288,26 @@
  }
  
  void Thread::release(void)
+@@ -1311,13 +1312,14 @@
+     free(buffer);
+     return line_size;
+ #elif defined(__APPLE__)
+-    size_t line_size = 0;
+-    size_t sizeof_line_size = sizeof(line_size);
+-    sysctlbyname("hw.cachelinesize", &line_size, &sizeof_line_size, 0, 0);
+-    return line_size;
++    size_t lsize = 0;
++    size_t sizeof_line_size = sizeof(lsize);
++    sysctlbyname("hw.cachelinesize", &lsize, &sizeof_line_size, 0, 0);
++    return lsize;
+ #elif defined(_SC_LEVEL1_DCACHE_LINESIZE)
++    const size_t neg_one = (size_t) -1;
+     line_size = sysconf(_SC_LEVEL1_DCACHE_LINESIZE);
+-    if(!line_size)
++    if(line_size == neg_one || line_size == 0)
+         line_size = 64;
+     return line_size;
+ #elif defined(linux)
 --- corelib/typeref.cpp
 +++ corelib/typeref.cpp
 @@ -36,7 +36,7 @@
