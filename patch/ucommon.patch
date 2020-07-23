@@ -5,6 +5,38 @@
 # - https://lists.gnu.org/archive/html/bug-commoncpp/2020-05/msg00000.html
 # - https://lists.gnu.org/archive/html/bug-commoncpp/2019-05/msg00000.html
 # - https://lists.gnu.org/archive/html/bug-commoncpp/2017-10/msg00000.html
+--- ucommon.pc.in
++++ ucommon.pc.in
+@@ -1,6 +1,6 @@
++prefix=@CMAKE_INSTALL_PREFIX@
+ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+ libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+-prefix=@CMAKE_INSTALL_PREFIX@
+ modflags="@MODULE_FLAGS@"
+ minimal="-lucommon @PKG_UCOMMON_LIBS@"
+ cmake_macros=@CMAKE_INSTALL_FULL_DATADIR@/ucommon/cmake
+--- inc/ucommon/Makefile.am
++++ inc/ucommon/Makefile.am
+@@ -18,7 +18,7 @@
+ 	timers.h socket.h access.h export.h thread.h mapped.h \
+ 	keydata.h memory.h platform.h fsys.h ucommon.h stream.h \
+ 	shell.h protocols.h atomic.h numbers.h condition.h \
+-	datetime.h unicode.h secure.h generics.h stl.h \
++	datetime.h unicode.h secure.h generics.h nullptr.h stl.h \
+ 	typeref.h arrayref.h mapref.h shared.h temporary.h
+ 
+ 
+--- inc/ucommon/Makefile.in
++++ inc/ucommon/Makefile.in
+@@ -340,7 +340,7 @@
+ 	timers.h socket.h access.h export.h thread.h mapped.h \
+ 	keydata.h memory.h platform.h fsys.h ucommon.h stream.h \
+ 	shell.h protocols.h atomic.h numbers.h condition.h \
+-	datetime.h unicode.h secure.h generics.h stl.h \
++	datetime.h unicode.h secure.h generics.h nullptr.h stl.h \
+ 	typeref.h arrayref.h mapref.h shared.h temporary.h
+ 
+ all: all-am
 --- openssl/digest.cpp
 +++ openssl/digest.cpp
 @@ -18,6 +18,21 @@
@@ -2671,13 +2703,3 @@
  #ifndef DEBUG
  #define DEBUG
  #endif
---- ucommon.pc.in
-+++ ucommon.pc.in
-@@ -1,6 +1,6 @@
-+prefix=@CMAKE_INSTALL_PREFIX@
- includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
- libdir=@CMAKE_INSTALL_FULL_LIBDIR@
--prefix=@CMAKE_INSTALL_PREFIX@
- modflags="@MODULE_FLAGS@"
- minimal="-lucommon @PKG_UCOMMON_LIBS@"
- cmake_macros=@CMAKE_INSTALL_FULL_DATADIR@/ucommon/cmake
