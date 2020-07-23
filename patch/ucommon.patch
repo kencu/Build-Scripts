@@ -1534,7 +1534,15 @@
  
 --- inc/ucommon/generics.h
 +++ inc/ucommon/generics.h
-@@ -33,9 +33,11 @@
+@@ -29,13 +29,19 @@
+ #include <ucommon/cpr.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ #include <cstdlib>
  #include <cstring>
  #include <stdexcept>
  
@@ -1547,7 +1555,106 @@
  #define THROWS_ANY  throw()
  #else
  #define THROW(x)    ::abort()
-@@ -301,7 +303,7 @@
+@@ -63,8 +69,8 @@
+             delete counter;
+             delete object;
+         }
+-        object = NULL;
+-        counter = NULL;
++        object = UCOMMON_NULLPTR;
++        counter = UCOMMON_NULLPTR;
+     }
+ 
+     inline void retain(void) {
+@@ -96,17 +102,17 @@
+     }
+ 
+     inline pointer() {
+-        counter = NULL;
+-        object = NULL;
++        counter = UCOMMON_NULLPTR;
++        object = UCOMMON_NULLPTR;
+     }
+ 
+-    inline explicit pointer(T* ptr = NULL) : object(ptr) {
++    inline explicit pointer(T* ptr = UCOMMON_NULLPTR) : object(ptr) {
+         if(object) {
+             counter = new unsigned;
+             *counter = 1;
+         }
+         else
+-            counter = NULL;
++            counter = UCOMMON_NULLPTR;
+     }
+ 
+     inline pointer(const pointer<T> &ref) {
+@@ -139,11 +145,11 @@
+     }
+ 
+     inline bool operator!() const {
+-        return (counter == NULL);
++        return (counter == UCOMMON_NULLPTR);
+     }
+ 
+     inline operator bool() const {
+-        return counter != NULL;
++        return counter != UCOMMON_NULLPTR;
+     }
+ };
+ 
+@@ -165,8 +171,8 @@
+             delete counter;
+             delete[] array;
+         }
+-        array = NULL;
+-        counter = NULL;
++        array = UCOMMON_NULLPTR;
++        counter = UCOMMON_NULLPTR;
+     }
+ 
+     inline void retain(void) {
+@@ -198,17 +204,17 @@
+     }
+ 
+     inline array_pointer() {
+-        counter = NULL;
+-        array = NULL;
++        counter = UCOMMON_NULLPTR;
++        array = UCOMMON_NULLPTR;
+     }
+ 
+-    inline explicit array_pointer(T* ptr = NULL) : array(ptr) {
++    inline explicit array_pointer(T* ptr = UCOMMON_NULLPTR) : array(ptr) {
+         if(array) {
+             counter = new unsigned;
+             *counter = 1;
+         }
+         else
+-            counter = NULL;
++            counter = UCOMMON_NULLPTR;
+     }
+ 
+     inline array_pointer(const array_pointer<T> &ref) {
+@@ -245,11 +251,11 @@
+     }
+ 
+     inline bool operator!() const {
+-        return (counter == NULL);
++        return (counter == UCOMMON_NULLPTR);
+     }
+ 
+     inline operator bool() const {
+-        return counter != NULL;
++        return counter != UCOMMON_NULLPTR;
+     }
+ };
+ 
+@@ -297,22 +303,22 @@
+  * Convenience function to test pointer object.  This solves issues where
+  * some compilers get confused between bool and pointer operators.
+  * @param object we are testing.
+- * @return true if object points to NULL.
++ * @return true if object points to nullptr or NULL.
   */
  template<typename T>
  inline bool isnull(T& object) {
@@ -1556,7 +1663,11 @@
  }
  
  /**
-@@ -312,7 +314,7 @@
+  * Convenience function to test pointer-pointer object.  This solves issues
+  * where some compilers get confused between bool and pointer operators.
+  * @param object we are testing.
+- * @return true if object points to NULL.
++ * @return true if object points to nullptr or NULL.
   */
  template<typename T>
  inline bool isnullp(T *object) {
