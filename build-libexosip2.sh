@@ -106,9 +106,7 @@ echo "***************************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --with-pkg-config \
-    --enable-openssl \
-    --enable-test
+    --enable-openssl
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libeXosip2"
