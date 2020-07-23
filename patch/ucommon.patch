@@ -2355,7 +2355,45 @@
  
 --- inc/ucommon/typeref.h
 +++ inc/ucommon/typeref.h
-@@ -267,7 +267,7 @@
+@@ -52,6 +52,10 @@
+ #include <ucommon/thread.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ namespace ucommon {
+ 
+ class TypeRelease;
+@@ -109,7 +113,7 @@
+ 		 * @param size of object allocated.
+ 		 * @param ar pool to use
+ 		 */
+-		explicit Counted(void *address, size_t size, TypeRelease *ar = NULL);
++		explicit Counted(void *address, size_t size, TypeRelease *ar = UCOMMON_NULLPTR);
+ 
+ 		/**
+ 		 * Release memory and delete object when no longer referenced.
+@@ -236,7 +240,7 @@
+ 	 * @return true if we are referencing a container.
+ 	 */
+ 	inline operator bool() const {
+-		return ref != NULL;
++		return ref != UCOMMON_NULLPTR;
+ 	}
+ 
+ 	/**
+@@ -244,7 +248,7 @@
+ 	 * @return true if not referencing a container.
+ 	 */
+ 	inline bool operator!() const {
+-		return ref == NULL;
++		return ref == UCOMMON_NULLPTR;
+ 	}
+ 
+ 	/**
+@@ -267,7 +271,7 @@
  {
  public:
  	inline TypeRelease() {
@@ -2364,7 +2402,16 @@
  	}
  
  	inline TypeRelease(TypeRelease *target) {
-@@ -372,7 +372,7 @@
+@@ -358,7 +362,7 @@
+ 
+ 	inline const T* operator->() const {
+ 		if(!ref)
+-			return NULL;
++			return UCOMMON_NULLPTR;
+ 		value *v = polystatic_cast<value *>(ref);
+ 		return &(v->data);
+ 	}
+@@ -372,7 +376,7 @@
  	inline const T* operator()() const {
  		value *v = polystatic_cast<value*>(ref);
  		if(!v)
@@ -2373,7 +2420,7 @@
  
  		return &(v->data);
  	}
-@@ -566,7 +566,7 @@
+@@ -566,7 +570,7 @@
  
  		uint8_t mem[1];
  
