@@ -2319,7 +2319,32 @@
  #define THROW(x)    ::abort()
 --- inc/ucommon/thread.h
 +++ inc/ucommon/thread.h
-@@ -706,7 +706,7 @@
+@@ -63,6 +63,10 @@
+ #include <ucommon/condition.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ namespace ucommon {
+ 
+ /**
+@@ -593,11 +597,11 @@
+     ~AutoProtect();
+ 
+     inline operator bool() const {
+-        return object != NULL;
++        return object != UCOMMON_NULLPTR;
+     }
+ 
+     inline bool operator!() const {
+-        return object == NULL;
++        return object == UCOMMON_NULLPTR;
+     }    
+ };
+ 
+@@ -706,7 +710,7 @@
          void *get(void);
  
          inline void clear() {
