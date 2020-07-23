@@ -508,18 +508,15 @@
  #endif
 --- corelib/arrayref.cpp
 +++ corelib/arrayref.cpp
-@@ -23,6 +23,10 @@
- #include <ucommon/arrayref.h>
- #include <cstdlib>
+@@ -17,6 +17,7 @@
  
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
-+#endif
-+
- namespace ucommon {
- 
- ArrayRef::Array::Array(arraytype_t arraymode, void *addr, size_t used) :
-@@ -212,7 +216,7 @@
+ #include <ucommon-config.h>
+ #include <ucommon/export.h>
++#include <ucommon/nullptr.h>
+ #include <ucommon/typeref.h>
+ #include <ucommon/string.h>
+ #include <ucommon/thread.h>
+@@ -212,7 +213,7 @@
  
  void ArrayRef::clear(void)
  {
@@ -530,26 +527,18 @@
  ArrayRef::Array *ArrayRef::create(arraytype_t mode, size_t size)
 --- corelib/atomic.cpp
 +++ corelib/atomic.cpp
-@@ -20,6 +20,7 @@
+@@ -18,8 +18,10 @@
+ 
+ #include <ucommon-config.h>
  #include <ucommon/export.h>
++#include <ucommon/nullptr.h>
  #include <ucommon/atomic.h>
  #include <ucommon/thread.h>
 +#include <cstdlib>
  
  #if __cplusplus >= 201103l
  #include <atomic>
-@@ -44,6 +45,10 @@
- #define aligned_alloc(a, s) _aligned_malloc(s, a)
- #endif
- 
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
-+#endif
-+
- namespace ucommon {
- 
- Atomic::counter::counter(atomic_t init)
-@@ -468,7 +473,7 @@
+@@ -468,7 +470,7 @@
              --base;
          }
          ::free(base);
