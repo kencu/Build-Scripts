@@ -1993,8 +1993,8 @@
  
  #include <stdio.h>
  
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
 +#endif
 +
  using namespace ucommon;
@@ -2118,8 +2118,8 @@
  
  #include <stdio.h>
  
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
 +#endif
 +
  using namespace ucommon;
