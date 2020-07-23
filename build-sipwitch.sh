@@ -45,7 +45,7 @@ fi
 
 ###############################################################################
 
-if ! ./build-libosip2.sh
+if ! ./build-libexosip2.sh
 then
     echo "Failed to build libosip2"
     exit 1

@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds libosip2 from sources.
+# This script builds libexosip2 from sources.
 
-OSIP2_TAR=libosip2-5.1.1.tar.gz
-OSIP2_DIR=libosip2-5.1.1
-PKG_NAME=libosip2
+# Sources available at
+# http://download.savannah.nongnu.org/releases/exosip
+
+OSIP2_TAR=libexosip2-5.1.1.tar.gz
+OSIP2_DIR=libexosip2-5.1.1
+PKG_NAME=libexosip2
 
 ###############################################################################
 
@@ -52,8 +55,16 @@ fi
 
 ###############################################################################
 
+if ! ./build-openssl.sh
+then
+    echo "Failed to build OpenSSL"
+    exit 1
+fi
+
+###############################################################################
+
 echo
-echo "********** libosip2 **********"
+echo "********** libeXosip2 **********"
 echo
 
 echo "***************************"
@@ -61,9 +72,9 @@ echo "Downloading package"
 echo "***************************"
 
 if ! "$WGET" -q -O "$OSIP2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/osip/$OSIP2_TAR"
+     "http://download.savannah.nongnu.org/releases/exosip/$OSIP2_TAR"
 then
-    echo "Failed to download libosip2"
+    echo "Failed to download libeXosip2"
     exit 1
 fi
 
@@ -72,8 +83,8 @@ gzip -d < "$OSIP2_TAR" | tar xf -
 cd "$OSIP2_DIR" || exit 1
 
 # Patches are created with 'diff -u' from the pkg root directory.
-if [[ -e ../patch/libosip2.patch ]]; then
-    patch -u -p0 < ../patch/libosip2.patch
+if [[ -e ../patch/libexosip2.patch ]]; then
+    patch -u -p0 < ../patch/libexosip2.patch
     echo ""
 fi
 
@@ -96,10 +107,11 @@ echo "***************************"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --with-pkg-config \
+    --enable-openssl \
     --enable-test
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure libosip2"
+    echo "Failed to configure libeXosip2"
     exit 1
 fi
 
@@ -114,7 +126,7 @@ echo "***************************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build libosip2"
+    echo "Failed to build libeXosip2"
     exit 1
 fi
 
@@ -129,7 +141,7 @@ MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "***************************"
-    echo "Failed to test libosip2"
+    echo "Failed to test libeXosip2"
     echo "***************************"
     exit 1
 fi
@@ -167,9 +179,9 @@ if true; then
         rm -rf "$artifact"
     done
 
-    # ./build-libosip2.sh 2>&1 | tee build-libosip2.log
-    if [[ -e build-libosip2.log ]]; then
-        rm -f build-libosip2.log
+    # ./build-libexosip2.sh 2>&1 | tee build-libexosip2.log
+    if [[ -e build-libexosip2.log ]]; then
+        rm -f build-libexosip2.log
     fi
 fi
 

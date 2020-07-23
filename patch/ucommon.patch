@@ -2671,3 +2671,13 @@
  #ifndef DEBUG
  #define DEBUG
  #endif
+--- ucommon.pc.in
++++ ucommon.pc.in
+@@ -1,6 +1,6 @@
++prefix=@CMAKE_INSTALL_PREFIX@
+ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+ libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+-prefix=@CMAKE_INSTALL_PREFIX@
+ modflags="@MODULE_FLAGS@"
+ minimal="-lucommon @PKG_UCOMMON_LIBS@"
+ cmake_macros=@CMAKE_INSTALL_FULL_DATADIR@/ucommon/cmake
