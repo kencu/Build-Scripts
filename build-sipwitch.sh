@@ -105,7 +105,8 @@ echo "**********************"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --with-pkg-config \
-    --with-libeXosip2=libosip2
+    --with-default="$INSTX_PREFIX/etc/sipwitch" \
+    --with-libeXosip2=libeXosip2
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure SIP Witch"
@@ -115,6 +116,22 @@ fi
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
+
+# Fix makefiles again
+IFS="" find "./" -iname 'Makefile' -print | while read -r file
+do
+    echo "$file" | sed 's/^\.\///g'
+
+    touch -a -m -r "$file" "$file.timestamp.saved"
+    chmod a+w "$file"
+    sed -e "s/ libosip2/ -leXosip2/g" \
+        -e "s/ libeXosip2/ -leXosip2/g" \
+        "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp.saved" "$file"
+    rm "$file.timestamp.saved"
+done
 
 echo "**********************"
 echo "Building package"
