@@ -4,11 +4,13 @@
 # libeXosip2 does not provide eXosip_enable_ipv6()
 --- common/voip.cpp
 +++ common/voip.cpp
-@@ -140,7 +140,7 @@
+@@ -140,7 +140,9 @@
  
      *msg = NULL;
      eXosip_lock(ctx);
 -    eXosip_call_build_prack(ctx, tid, msg);
++    // TODO: verify this change to fix compil error
++    // eXosip_call_build_prack(ctx, tid, msg);
 +    eXosip_call_build_prack(ctx, tid, NULL, msg);
      if(!*msg) {
          eXosip_unlock(ctx);
