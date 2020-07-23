@@ -80,8 +80,6 @@ rm -rf "$SIPW_DIR" &>/dev/null
 gzip -d < "$SIPW_TAR" | tar xf -
 cd "$SIPW_DIR" || exit 1
 
-cp server/stack.cpp server/stack.cpp.orig
-
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/sipwitch.patch ]]; then
     patch -u -p0 < ../patch/sipwitch.patch
@@ -186,7 +184,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$SIPW_TAR" "$SIPW_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
