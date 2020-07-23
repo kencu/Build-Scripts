@@ -1293,18 +1293,15 @@
  
 --- corelib/memory.cpp
 +++ corelib/memory.cpp
-@@ -42,6 +42,10 @@
- #define aligned_alloc(a, s) _aligned_malloc(s, a)
- #endif
+@@ -18,6 +18,7 @@
  
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
-+#endif
-+
- namespace ucommon {
- 
- extern "C" {
-@@ -688,7 +692,7 @@
+ #include <ucommon-config.h>
+ #include <ucommon/export.h>
++#include <ucommon/nullptr.h>
+ #include <ucommon/object.h>
+ #include <ucommon/memory.h>
+ #include <ucommon/thread.h>
+@@ -688,7 +689,7 @@
  {
      const char *out = NULL;
  
@@ -1313,7 +1310,7 @@
          __THROW_RUNTIME("no root");
          return NULL;
      }
-@@ -898,7 +902,7 @@
+@@ -898,7 +899,7 @@
  }
  
  PagerObject::PagerObject() :
