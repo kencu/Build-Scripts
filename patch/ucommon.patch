@@ -2033,7 +2033,44 @@
  	void set(const K* key, V* ptr) {
 --- inc/ucommon/socket.h
 +++ inc/ucommon/socket.h
-@@ -603,15 +603,15 @@
+@@ -43,6 +43,10 @@
+ #include <ucommon/typeref.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ extern "C" {
+     struct addrinfo;
+ }
+@@ -391,7 +395,7 @@
+          * @param hostname or ip address.  The socket family is used for hostnames.
+          * @param service port or name we are referencing or NULL.
+          */
+-        address(int family, const char *hostname, const char *service = NULL);
++        address(int family, const char *hostname, const char *service = UCOMMON_NULLPTR);
+ 
+         /**
+          * Construct a socket address list for a service.
+@@ -423,14 +427,14 @@
+         /**
+          * Construct a socket address from a sockaddr object.
+          */
+-        address(const sockaddr& address) : list(NULL) {
++        address(const sockaddr& address) : list(UCOMMON_NULLPTR) {
+             insert(&address);
+         }
+ 
+         /**
+          * Construct a socket address from an addrinfo structure.
+          */
+-        address(const addrinfo* address) : list(NULL) {
++        address(const addrinfo* address) : list(UCOMMON_NULLPTR) {
+             insert(address);
+         }
+ 
+@@ -603,15 +607,15 @@
           * @return true if we have an address list.
           */
          inline operator bool() const {
@@ -2052,7 +2089,7 @@
          }
  
          /**
-@@ -619,7 +619,7 @@
+@@ -619,7 +623,7 @@
           * @return true if we have no address list.
           */
          inline bool operator!() const {
@@ -2061,7 +2098,79 @@
          }
  
          /**
-@@ -1959,7 +1959,7 @@
+@@ -675,7 +679,7 @@
+          * @param service name or port number, or NULL if not used.
+          * @param type of socket (stream or dgram) to filter list by.
+          */
+-        void set(const char *hostname, const char *service = NULL, int type = SOCK_STREAM);
++        void set(const char *hostname, const char *service = UCOMMON_NULLPTR, int type = SOCK_STREAM);
+ 
+         /**
+          * Append additional host addresses to our list.
+@@ -683,7 +687,7 @@
+          * @param service name or port number, or NULL if not used.
+          * @param type of socket (stream or dgram).
+          */
+-        void add(const char *hostname, const char *service = NULL, int type = SOCK_STREAM);
++        void add(const char *hostname, const char *service = UCOMMON_NULLPTR, int type = SOCK_STREAM);
+ 
+         /**
+          * Set an entry for host binding.
+@@ -1194,7 +1198,7 @@
+      * @param address of peer data was received from.
+      * @return number of bytes actually read, 0 if none, -1 if error.
+      */
+-    size_t readfrom(void *data, size_t number, struct sockaddr_storage *address = NULL);
++    size_t readfrom(void *data, size_t number, struct sockaddr_storage *address = UCOMMON_NULLPTR);
+ 
+     /**
+      * Write data to the socket send buffer.  This will be used in abi 4.
+@@ -1203,7 +1207,7 @@
+      * @param address of peer to send data to if not connected.
+      * @return number of bytes actually sent, 0 if none, -1 if error.
+      */
+-    size_t writeto(const void *data, size_t number, const struct sockaddr *address = NULL);
++    size_t writeto(const void *data, size_t number, const struct sockaddr *address = UCOMMON_NULLPTR);
+ 
+     /**
+      * Read a newline of text data from the socket and save in NULL terminated
+@@ -1482,7 +1486,7 @@
+      * @param address of source.
+      * @return number of bytes received, -1 if error.
+      */
+-    static ssize_t recvfrom(socket_t socket, void *buffer, size_t size, int flags = 0, struct sockaddr_storage *address = NULL);
++    static ssize_t recvfrom(socket_t socket, void *buffer, size_t size, int flags = 0, struct sockaddr_storage *address = UCOMMON_NULLPTR);
+ 
+     /**
+      * Send data on socket.
+@@ -1493,7 +1497,7 @@
+      * @param address of destination, NULL if connected.
+      * @return number of bytes sent, -1 if error.
+      */
+-    static ssize_t sendto(socket_t socket, const void *buffer, size_t size, int flags = 0, const struct sockaddr *address = NULL);
++    static ssize_t sendto(socket_t socket, const void *buffer, size_t size, int flags = 0, const struct sockaddr *address = UCOMMON_NULLPTR);
+ 
+     /**
+      * Send reply on socket.  Used to reply to a recvfrom message.
+@@ -1541,7 +1545,7 @@
+      * @param address of socket accepting.
+      * @return new socket accepted.
+      */
+-    static socket_t acceptfrom(socket_t socket, struct sockaddr_storage *address = NULL);
++    static socket_t acceptfrom(socket_t socket, struct sockaddr_storage *address = UCOMMON_NULLPTR);
+ 
+     /**
+      * Create a socket object unbound.
+@@ -1851,7 +1855,7 @@
+      * @param address to save peer connecting.
+      * @return socket descriptor of connected socket.
+      */
+-    socket_t accept(struct sockaddr_storage *address = NULL) const;
++    socket_t accept(struct sockaddr_storage *address = UCOMMON_NULLPTR) const;
+ 
+     /**
+      * Wait for a pending connection.
+@@ -1959,7 +1963,7 @@
      }
  
      inline linked_pointer() {
@@ -2070,7 +2179,7 @@
      }
  
      inline linked_pointer(Socket::address& list) {
-@@ -2012,7 +2012,7 @@
+@@ -2012,7 +2016,7 @@
       * @return true if we have an address list.
       */
      inline operator bool() const {
@@ -2079,7 +2188,7 @@
      }
  
      /**
-@@ -2063,7 +2063,7 @@
+@@ -2063,7 +2067,7 @@
       * @return true if we have no address list.
       */
      inline bool operator!() const {
