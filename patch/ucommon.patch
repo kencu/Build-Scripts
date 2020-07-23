@@ -1,3 +1,5 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with uCommon C/C++ libraries.
 --- openssl/digest.cpp
 +++ openssl/digest.cpp
 @@ -18,6 +18,21 @@
