@@ -1626,7 +1626,7 @@
 +# define UCOMMON_NULLPTR NULL
 +#endif
 +
-+// uCommon C++ provided the following class for non-C++11 implementations
++// uCommon C++ provided the following class for non-C++11 implementations.
 +// Unfortunately, we need more than a class file since one of the features
 +// of nullptr is to distinguish between ints, longs and pointers while
 +// still being convertible to bool. That requires compiler support.
