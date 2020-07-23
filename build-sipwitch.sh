@@ -104,6 +104,7 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --with-pkg-config \
     --with-libeXosip2=libosip2
 
 if [[ "$?" -ne 0 ]]; then

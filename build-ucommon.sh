@@ -103,6 +103,7 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --with-pkg-config \
     --with-sslstack=openssl
 
 if [[ "$?" -ne 0 ]]; then

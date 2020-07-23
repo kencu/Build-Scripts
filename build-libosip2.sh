@@ -95,6 +95,7 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --with-pkg-config \
     --enable-test
 
 if [[ "$?" -ne 0 ]]; then
