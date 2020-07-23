@@ -1630,17 +1630,17 @@
 
 --- inc/ucommon/platform.h
 +++ inc/ucommon/platform.h
-@@ -40,3 +40,6 @@
- #define _UCOMMON_PLATFORM_H_
- #define UCOMMON_ABI 7
-
+@@ -36,6 +36,10 @@
+ #include <malloc.h>
+ #endif
+ 
 +#ifndef _UCOMMON_NULLPTR_H_
 +#include <ucommon/nullptr.h>
 +#endif
-
- #ifndef UCOMMON_SYSRUNTIME
- #ifndef NEW_STDCPP
- #define NEW_STDCPP
++
+ #ifndef _UCOMMON_PLATFORM_H_
+ #define _UCOMMON_PLATFORM_H_
+ #define UCOMMON_ABI 7
 @@ -50,16 +71,16 @@
  #define __THROW_RANGE(x)      throw std::out_of_range(x)
  #define __THROW_RUNTIME(x)    throw std::runtime_error(x)
