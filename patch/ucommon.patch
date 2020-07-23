@@ -1889,6 +1889,137 @@
       */
      inline secure::cert_t certificate(void) const {
          return cert;
+--- inc/ucommon/secure.h
++++ inc/ucommon/secure.h
+@@ -50,6 +50,10 @@
+ #include <ucommon/ucommon.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ #define MAX_CIPHER_KEYSIZE  512
+ #define MAX_DIGEST_HASHSIZE 512
+ 
+@@ -216,7 +220,7 @@
+      * @param authority path to use or NULL if none.
+      * @return a security context that is cast from derived library.
+      */
+-    static server_t server(const char *keyfile = NULL, const char *authority = NULL);
++    static server_t server(const char *keyfile = UCOMMON_NULLPTR, const char *authority = UCOMMON_NULLPTR);
+ 
+     /**
+      * Create an anonymous client context with an optional authority to
+@@ -225,7 +229,7 @@
+      * @param paths of certificates to use.
+      * @return a basic client security context.
+      */
+-    static client_t client(const char *authority = NULL, const char *paths = NULL);
++    static client_t client(const char *authority = UCOMMON_NULLPTR, const char *paths = UCOMMON_NULLPTR);
+ 
+     /**
+      * Create a peer user client context.  This assumes a user certificate
+@@ -328,7 +332,7 @@
+     public:
+         Key();
+ 
+-        Key(const char *cipher, const char *digest, const char *text, size_t size = 0, const uint8_t *salt = NULL, unsigned rounds = 1);
++        Key(const char *cipher, const char *digest, const char *text, size_t size = 0, const uint8_t *salt = UCOMMON_NULLPTR, unsigned rounds = 1);
+ 
+         Key(const char *cipher, const uint8_t *iv, size_t ivsize);
+ 
+@@ -366,7 +370,7 @@
+ 
+         void b64(const char *string);
+ 
+-        size_t get(uint8_t *key, uint8_t *ivout = NULL);
++        size_t get(uint8_t *key, uint8_t *ivout = UCOMMON_NULLPTR);
+ 
+         inline size_t size(void) const {
+             return keysize;
+@@ -395,7 +399,7 @@
+             return !operator==(other);
+         }
+ 
+-        static void options(const uint8_t *salt = NULL, unsigned rounds = 1);
++        static void options(const uint8_t *salt = UCOMMON_NULLPTR, unsigned rounds = 1);
+     };
+ 
+     typedef Key *key_t;
+@@ -417,7 +421,7 @@
+ public:
+     Cipher();
+ 
+-    Cipher(const key_t key, mode_t mode, uint8_t *address = NULL, size_t size = 0);
++    Cipher(const key_t key, mode_t mode, uint8_t *address = UCOMMON_NULLPTR, size_t size = 0);
+ 
+     virtual ~Cipher();
+ 
+@@ -596,11 +600,11 @@
+     }
+ 
+     inline bool operator!() const {
+-        return !bufsize && context == NULL;
++        return !bufsize && context == UCOMMON_NULLPTR;
+     }
+ 
+     inline operator bool() const {
+-        return bufsize > 0 || context != NULL;
++        return bufsize > 0 || context != UCOMMON_NULLPTR;
+     }
+ 
+     /**
+@@ -622,7 +626,7 @@
+      */
+     static bool has(const char *name);
+ 
+-    static secure::string uuid(const char *name, const uint8_t *ns = NULL);
++    static secure::string uuid(const char *name, const uint8_t *ns = UCOMMON_NULLPTR);
+ 
+     /**
+      * Shortcut for short md5 digests if supported...
+@@ -738,11 +742,11 @@
+     }
+ 
+     inline bool operator!() const {
+-        return !bufsize && context == NULL;
++        return !bufsize && context == UCOMMON_NULLPTR;
+     }
+ 
+     inline operator bool() const {
+-        return bufsize > 0 || context != NULL;
++        return bufsize > 0 || context != UCOMMON_NULLPTR;
+     }
+ 
+     /**
+@@ -971,7 +975,7 @@
+ 
+     /**
+      * Get peer (x509) certificate for current stream if present.
+-     * @return certificate of peer or nullptr if none.
++     * @return certificate of peer or NULL if none.
+      */
+     inline secure::cert_t certificate(void) const {
+         return cert;
+@@ -982,7 +986,7 @@
+      * @return true if ssl session.
+      */
+     inline bool is_secure(void) const {
+-        return bio != NULL;
++        return bio != UCOMMON_NULLPTR;
+     }
+ 
+     /**
+@@ -990,7 +994,7 @@
+      * @return true if peer certificate.
+      */
+     inline bool is_certificate(void) const {
+-        return cert != NULL;
++        return cert != UCOMMON_NULLPTR;
+     }
+ 
+     /**
 --- inc/ucommon/shared.h
 +++ inc/ucommon/shared.h
 @@ -236,7 +236,7 @@
