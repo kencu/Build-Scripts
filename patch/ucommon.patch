@@ -1880,17 +1880,6 @@
      return ptr;
 --- inc/ucommon/secure.h
 +++ inc/ucommon/secure.h
-@@ -971,7 +971,7 @@
- 
-     /**
-      * Get peer (x509) certificate for current stream if present.
--     * @return certificate of peer or nullptr if none.
-+     * @return certificate of peer or UCOMMON_NULLPTR if none.
-      */
-     inline secure::cert_t certificate(void) const {
-         return cert;
---- inc/ucommon/secure.h
-+++ inc/ucommon/secure.h
 @@ -50,6 +50,10 @@
  #include <ucommon/ucommon.h>
  #endif
@@ -2199,7 +2188,107 @@
      inline void next(void) {
 --- inc/ucommon/string.h
 +++ inc/ucommon/string.h
-@@ -1774,11 +1774,11 @@
+@@ -52,6 +52,10 @@
+ #include <ucommon/object.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdarg.h>
+@@ -123,11 +127,11 @@
+         bool operator*=(const char *string);
+ 
+         operator bool() const {
+-            return object != NULL;
++            return object != UCOMMON_NULLPTR;
+         }
+ 
+         bool operator!() const {
+-            return object == NULL;
++            return object == UCOMMON_NULLPTR;
+         }
+     };
+ 
+@@ -584,9 +588,9 @@
+ 
+     const char *search(regex& expr, unsigned instance = 0, unsigned flags = 0) const;
+ 
+-    unsigned replace(const char *string, const char *text = NULL, unsigned flags = 0);
++    unsigned replace(const char *string, const char *text = UCOMMON_NULLPTR, unsigned flags = 0);
+ 
+-    unsigned replace(regex& expr, const char *text = NULL, unsigned flags = 0);
++    unsigned replace(regex& expr, const char *text = UCOMMON_NULLPTR, unsigned flags = 0);
+ 
+     /**
+      * Find a character in the string.
+@@ -983,7 +987,7 @@
+      * @param end of line marker characters or NULL if not used.
+      * @return token extracted from string or NULL if no more tokens found.
+      */
+-    static char *token(char *text, char **last, const char *list, const char *quote = NULL, const char *end = NULL);
++    static char *token(char *text, char **last, const char *list, const char *quote = UCOMMON_NULLPTR, const char *end = UCOMMON_NULLPTR);
+ 
+     /**
+      * Skip after lead characters in a null terminated string.
+@@ -1259,7 +1263,7 @@
+      * @param end of line marker characters or NULL if not used.
+      * @return token extracted from string or NULL if no more tokens found.
+      */
+-    inline char *token(char **last, const char *list, const char *quote = NULL, const char *end = NULL) {
++    inline char *token(char **last, const char *list, const char *quote = UCOMMON_NULLPTR, const char *end = UCOMMON_NULLPTR) {
+         return token(data(), last, list, quote, end);
+     }
+ 
+@@ -1269,7 +1273,7 @@
+      * @param pointer to update with end of parsed value.
+      * @return double value of object.
+      */
+-    inline double tod(char **pointer = NULL) {
++    inline double tod(char **pointer = UCOMMON_NULLPTR) {
+         return strtod(data(), pointer);
+     }
+ 
+@@ -1279,7 +1283,7 @@
+      * @param pointer to update with end of parsed value.
+      * @return long value of object.
+      */
+-    inline long tol(char **pointer = NULL) {
++    inline long tol(char **pointer = UCOMMON_NULLPTR) {
+         return strtol(data(), pointer, 0);
+     }
+ 
+@@ -1289,7 +1293,7 @@
+      * @param pointer to update with end of parsed value.
+      * @return double value of object.
+      */
+-    inline static double tod(const char *text, char **pointer = NULL) {
++    inline static double tod(const char *text, char **pointer = UCOMMON_NULLPTR) {
+         return strtod(text, pointer);
+     }
+ 
+@@ -1299,7 +1303,7 @@
+      * @param pointer to update with end of parsed value.
+      * @return long value of object.
+      */
+-    inline static long tol(const char *text, char **pointer = NULL) {
++    inline static long tol(const char *text, char **pointer = UCOMMON_NULLPTR) {
+         return strtol(text, pointer, 0);
+     }
+ 
+@@ -1754,7 +1758,7 @@
+ 
+ public:
+     inline strdup_t() {
+-        data = NULL;
++        data = UCOMMON_NULLPTR;
+     }
+ 
+     inline strdup_t(char *str) {
+@@ -1774,11 +1778,11 @@
      }
  
      inline operator bool() const {
