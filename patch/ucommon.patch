@@ -1594,8 +1594,8 @@
 +
 +/**
 + * Provides UCOMMON_NULLPTR. UCOMMON_NULLPTR is nullptr for C++11 and above,
-+ * NULL otherwise. std::nullptr_t and nullptr is too new for some older
-+ * distributions.
++ * and NULL otherwise. std::nullptr_t and nullptr are too new for some older
++ * distributions still found in the field.
 + * @file ucommon/nullptr.h
 + */
 +
