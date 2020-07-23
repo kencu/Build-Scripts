@@ -1,0 +1,35 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with GNU SIP Witch.
+#
+# libeXosip2 does not provide eXosip_enable_ipv6()
+--- common/voip.cpp
++++ common/voip.cpp
+@@ -436,7 +436,7 @@
+ 
+     family = f;
+ 
+-#ifdef  AF_INET6
++#ifdef AF_INET6 && 0
+     if(family == AF_INET6)
+         eXosip_enable_ipv6(1);
+ #endif
+@@ -868,7 +868,7 @@
+ 
+     family = f;
+ 
+-#ifdef  AF_INET6
++#ifdef AF_INET6 && 0
+     if(family == AF_INET6)
+         eXosip_enable_ipv6(1);
+ #endif
+--- utils/sipquery.cpp
++++ utils/sipquery.cpp
+@@ -224,7 +224,7 @@
+     if(eXosip_init(EXOSIP_CONTEXT))
+         shell::errexit(3, "*** sipuser: failed exosip init\n");
+ 
+-#ifdef  AF_INET6
++#ifdef AF_INET6 && 0
+     if(family == AF_INET6) {
+         eXosip_enable_ipv6(1);
+         if(binding == NULL)
