@@ -44,6 +44,365 @@
      if(family == AF_INET6) {
          eXosip_enable_ipv6(1);
          if(binding == NULL)
+--- server/stack.cpp
++++ server/stack.cpp
+@@ -16,6 +16,17 @@
+ 
+ #include "server.h"
+ 
++namespace {
++     // printf family does not add termiating NULL if data fills buffer
++     inline void printf_term(void* buffer, size_t size, int written)
++     {
++          // printf family returns -1 on error
++          char * p = (char *) buffer;
++          size_t w = (size_t) written;
++          written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++     }
++}
++
+ namespace sipwitch {
+ 
+ static volatile unsigned allocated_segments = 0;
+@@ -505,6 +516,7 @@
+     voip::body_t body = NULL;
+     session *target = NULL;
+     call *cr = source->parent;
++     int rc;
+ 
+     if(cr->source == source)
+         target = cr->target;
+@@ -522,10 +534,14 @@
+     osip_message_get_body(sevent->request, 0, &body);
+     if(!voip::make_dialog_info(target->context, did, &msg))
+         return;
+-    if(ct->subtype)
+-        snprintf(type, sizeof(type), "%s/%s", ct->type, ct->subtype);
+-    else
+-        snprintf(type, sizeof(type), "%s", ct->type);
++    if(ct->subtype) {
++        rc = snprintf(type, sizeof(type), "%s/%s", ct->type, ct->subtype);
++          printf_term(type, sizeof(type), rc);
++     }
++    else {
++        rc = snprintf(type, sizeof(type), "%s", ct->type);
++          printf_term(type, sizeof(type), rc);
++     }
+     voip::attach(msg, type, body->body);
+     voip::server_allows(msg);
+     voip::send_dialog_message(target->context, did, msg);
+@@ -1043,6 +1059,7 @@
+     assert(user == NULL || *user != 0);
+     assert(size > 0);
+ 
++     int rc;
+     char pbuf[10];
+     bool ipv6 = false;
+ 
+@@ -1068,10 +1085,14 @@
+         String::add(buf, size, "[");
+ 
+     String::add(buf, size, sip.published);
+-    if(ipv6)
+-        snprintf(pbuf, sizeof(pbuf), "]:%u", sip_port);
+-    else
+-        snprintf(pbuf, sizeof(pbuf), ":%u", sip_port);
++    if(ipv6) {
++        rc = snprintf(pbuf, sizeof(pbuf), "]:%u", sip_port);
++          printf_term(pbuf, sizeof(pbuf), rc);
++     }
++    else {
++        rc = snprintf(pbuf, sizeof(pbuf), ":%u", sip_port);
++          printf_term(pbuf, sizeof(pbuf), rc);
++     }
+     String::add(buf, size, pbuf);
+     return buf;
+ }
+@@ -1085,6 +1106,7 @@
+ 
+     char pbuf[10];
+     unsigned port = 0;
++     int rc;
+     bool ipv6 = false;
+     const char *defaddr = NULL;
+ 
+@@ -1135,10 +1157,14 @@
+ 
+     len = strlen(buf);
+     Socket::query((struct sockaddr *)addr, buf + len, size - len);
+-    if(ipv6)
+-        snprintf(pbuf, sizeof(pbuf), "]:%u", port);
+-    else
+-        snprintf(pbuf, sizeof(pbuf), ":%u", port);
++    if(ipv6) {
++        rc = snprintf(pbuf, sizeof(pbuf), "]:%u", port);
++          printf_term(pbuf, sizeof(pbuf), rc);
++     }
++    else {
++        rc = snprintf(pbuf, sizeof(pbuf), ":%u", port);
++          printf_term(pbuf, sizeof(pbuf), rc);
++     }
+     String::add(buf, size, pbuf);
+     return buf;
+ }
+@@ -1217,6 +1243,7 @@
+ {
+     char route[MAX_URI_SIZE];
+     char touri[MAX_URI_SIZE];
++     int rc;
+ 
+     if(!call->diverting)
+         return;
+@@ -1224,23 +1251,28 @@
+     uri::publish(call->request, route, call->divert, sizeof(route));
+ 
+     if(String::equal(call->diverting, "all")) {
+-        snprintf(touri, sizeof(touri), "<%s>;reason=unconditional", route);
++        rc = snprintf(touri, sizeof(touri), "<%s>;reason=unconditional", route);
++          printf_term(touri, sizeof(touri), rc);
+         voip::header(invite, "Diversion", touri);
+     }
+     else if(String::equal(call->diverting, "na")) {
+-        snprintf(touri, sizeof(touri), "<%s>;reason=no-answer", route);
++        rc = snprintf(touri, sizeof(touri), "<%s>;reason=no-answer", route);
++          printf_term(touri, sizeof(touri), rc);
+         voip::header(invite, "Diversion", touri);
+     }
+     else if(String::equal(call->diverting, "busy")) {
+-        snprintf(touri, sizeof(touri), "<%s>;reason=user-busy", route);
++        rc = snprintf(touri, sizeof(touri), "<%s>;reason=user-busy", route);
++          printf_term(touri, sizeof(touri), rc);
+         voip::header(invite, "Diversion", touri);
+     }
+     else if(String::equal(call->diverting, "dnd")) {
+-        snprintf(touri, sizeof(touri), "<%s>;reason=do-not-disturb", route);
++        rc = snprintf(touri, sizeof(touri), "<%s>;reason=do-not-disturb", route);
++          printf_term(touri, sizeof(touri), rc);
+         voip::header(invite, "Diversion", touri);
+     }
+     else if(String::equal(call->diverting, "away")) {
+-        snprintf(touri, sizeof(touri), "<%s>;reason=away", route);
++        rc = snprintf(touri, sizeof(touri), "<%s>;reason=away", route);
++          printf_term(touri, sizeof(touri), rc);
+         voip::header(invite, "Diversion", touri);
+     }
+ }
+@@ -1260,7 +1292,7 @@
+     voip::msg_t invite = NULL;
+     char expheader[32];
+     char seqid[64];
+-    int cid;
++    int cid, rc;
+     unsigned icount = 0;
+     time_t now;
+     srv resolv;
+@@ -1290,7 +1322,8 @@
+     }
+ 
+     if(schema) {
+-        snprintf(rewrite, sizeof(rewrite), "%s:%s", schema, uri_target);
++        rc = snprintf(rewrite, sizeof(rewrite), "%s:%s", schema, uri_target);
++          printf_term(rewrite, sizeof(rewrite), rc);
+         uri_target = rewrite;
+     }
+ 
+@@ -1316,7 +1349,8 @@
+         sp.next();
+     }
+ 
+-    snprintf(touri, sizeof(touri), "<%s>", uri_target);
++    rc = snprintf(touri, sizeof(touri), "<%s>", uri_target);
++     printf_term(touri, sizeof(touri), rc);
+ 
+     invite = NULL;
+ 
+@@ -1337,7 +1371,8 @@
+         char nounce[64];
+         char *req = NULL;
+         osip_uri_to_str(invite->req_uri, &req);
+-        snprintf(authbuf, 1024, "%s:%s", invite->sip_method, req);
++        rc = snprintf(authbuf, 1024, "%s:%s", invite->sip_method, req);
++          printf_term(authbuf, 1024, rc);
+         Random::uuid(nounce);
+ 
+         digest_t auth("md5");
+@@ -1346,11 +1381,12 @@
+         auth = registry::getDigest();
+         auth.puts(authbuf);
+         response = *auth;
+-        snprintf(authbuf, 1024, "%s:%s:%s", digest, *once, *response);
++        rc = snprintf(authbuf, 1024, "%s:%s:%s", digest, *once, *response);
++          printf_term(authbuf, 1024, rc);
+         auth.reset();
+         auth.puts(authbuf);
+         response = *auth;
+-        snprintf(authbuf, 1024,
++        rc = snprintf(authbuf, 1024,
+             "Digest username=\"%s\""
+             ",realm=\"%s\""
+             ",uri=\"%s\""
+@@ -1358,6 +1394,7 @@
+             ",nonce=\"%s\""
+             ",algorithm=%s"
+             ,s->reg->userid, registry::getRealm(), req, *response, *once, registry::getDigest());
++          printf_term(authbuf, 1024, rc);
+         voip::header(invite, AUTHORIZATION, authbuf);
+         delete[] authbuf;
+         osip_free(req);
+@@ -1366,7 +1403,8 @@
+         voip::header(invite, P_SIPWITCH_NODE, "no");
+ 
+     if(call->expires) {
+-        snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
++        rc = snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
++          printf_term(expheader, sizeof(expheader), rc);
+         voip::header(invite, SESSION_EXPIRES, expheader);
+     }
+ 
+@@ -1383,7 +1421,8 @@
+     stack::siplog(invite);
+     cid = voip::send_invite_request(context, invite);
+     if(cid > 0) {
+-        snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
++        rc = snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
++          printf_term(seqid, sizeof(seqid), rc);
+         uri::publish(call->request, route, seqid, sizeof(route));
+         voip::call_reference(context, cid, route);
+         ++icount;
+@@ -1398,7 +1437,8 @@
+     registry::incUse(NULL, stats::OUTGOING);
+     String::set(invited->identity, sizeof(invited->identity), uri_target);
+     String::set(invited->display, sizeof(invited->display), username);
+-    snprintf(invited->from, sizeof(invited->from), "<%s>", uri_target);
++    rc = snprintf(invited->from, sizeof(invited->from), "<%s>", uri_target);
++     printf_term(invited->from, sizeof(invited->from), rc);
+     String::set(invited->network, sizeof(invited->network), network);
+     invited->nat = nat;
+     uri::identity(*resolv, invited->sysident, username, sizeof(invited->sysident));
+@@ -1419,6 +1459,7 @@
+     const char *target;
+     char buffer[MAX_URI_SIZE];
+     registry::mapped *rr = NULL;
++     int rc;
+ 
+     String::set(cr->divert, sizeof(cr->divert), cr->forward);
+     cr->forwarding = NULL;
+@@ -1468,8 +1509,10 @@
+     goto test;
+ 
+ remote:
+-    if(!String::equal(target, "sip:", 4) && !String::equal(target, "sips:", 5))
+-        snprintf(buffer, sizeof(buffer), "%s:%s", getScheme(), target);
++    if(!String::equal(target, "sip:", 4) && !String::equal(target, "sips:", 5)) {
++        rc = snprintf(buffer, sizeof(buffer), "%s:%s", getScheme(), target);
++          printf_term(buffer, sizeof(buffer), rc);
++     }
+     else
+         String::set(buffer, sizeof(buffer), target);
+     target = buffer;
+@@ -1507,7 +1550,7 @@
+     char seqid[64];
+     char route[MAX_URI_SIZE];
+     char touri[MAX_URI_SIZE];
+-    int cid;
++    int cid, rc;
+     unsigned icount = 0;
+ 
+     time(&now);
+@@ -1540,12 +1583,17 @@
+ 
+         if(dest == ROUTED) {
+             stack::sipPublish(&tp->address, route, call->dialed, sizeof(route));
+-            snprintf(touri, sizeof(touri), "\"%s\" <%s;user=phone>", call->dialed, route);
++            rc = snprintf(touri, sizeof(touri), "\"%s\" <%s;user=phone>", call->dialed, route);
++               printf_term(touri, sizeof(touri), rc);
+         }
+-        else if(call->phone)
+-            snprintf(touri, sizeof(touri), "<%s;user=phone>", tp->contact);
+-        else
+-            snprintf(touri, sizeof(touri), "<%s>", tp->contact);
++        else if(call->phone) {
++            rc = snprintf(touri, sizeof(touri), "<%s;user=phone>", tp->contact);
++               printf_term(touri, sizeof(touri), rc);
++          }
++        else {
++            rc = snprintf(touri, sizeof(touri), "<%s>", tp->contact);
++               printf_term(touri, sizeof(touri), rc);
++          }
+ 
+         stack::sipPublish(&tp->address, route + 1, NULL, sizeof(route) - 5);
+         route[0] = '<';
+@@ -1562,7 +1610,8 @@
+             stack::sipPublish(&tp->address, route, call->dialed, sizeof(route));
+             if(call->phone)
+                 String::add(route, sizeof(route), ";user=phone");
+-            snprintf(touri, sizeof(touri), "\"%s\" <%s>", call->dialed, route);
++            rc = snprintf(touri, sizeof(touri), "\"%s\" <%s>", call->dialed, route);
++               printf_term(touri, sizeof(touri), rc);
+             if(invite->to) {
+                 osip_to_free(invite->to);
+                 invite->to = NULL;
+@@ -1576,7 +1625,8 @@
+         voip::server_supports(invite, "100rel,replaces,timer");
+ 
+         if(call->expires) {
+-            snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
++            rc = snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
++               printf_term(expheader, sizeof(expheader), rc);
+             voip::header(invite, SESSION_EXPIRES, expheader);
+         }
+ 
+@@ -1592,7 +1642,8 @@
+         stack::siplog(invite);
+         cid = voip::send_invite_request(tp->context, invite);
+         if(cid > 0) {
+-            snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
++            rc = snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
++               printf_term(seqid, sizeof(seqid), rc);
+             stack::sipAddress((struct sockaddr_internet *)&tp->peering, route, seqid, sizeof(route));
+             voip::call_reference(tp->context, cid, route);
+             ++icount;
+@@ -1610,8 +1661,10 @@
+         invited->peering = tp->peering;
+         invited->nat = nat;
+ 
+-        if(rr->ext)
+-            snprintf(invited->sysident, sizeof(invited->sysident), "%u", rr->ext);
++        if(rr->ext) {
++            rc = snprintf(invited->sysident, sizeof(invited->sysident), "%u", rr->ext);
++               printf_term(invited->sysident, sizeof(invited->sysident), rc);
++          }
+         else
+             String::set(invited->sysident, sizeof(invited->sysident), rr->userid);
+         if(rr->display[0])
+@@ -1619,15 +1672,21 @@
+         else
+             String::set(invited->display, sizeof(invited->display), invited->sysident);
+         stack::sipPublish((struct sockaddr_internet *)&tp->peering, invited->identity, invited->sysident, sizeof(invited->identity));
+-        if(rr->ext && !rr->display[0])
+-            snprintf(invited->from, sizeof(invited->from),
++        if(rr->ext && !rr->display[0]) {
++            rc = snprintf(invited->from, sizeof(invited->from),
+                 "\"%s\" <%s;user=phone>", invited->sysident, invited->identity);
+-        else if(rr->display[0])
+-            snprintf(invited->from, sizeof(invited->from),
++               printf_term(invited->from, sizeof(invited->from), rc);
++          }
++        else if(rr->display[0]) {
++            rc = snprintf(invited->from, sizeof(invited->from),
+                 "\"%s\" <%s>", rr->display, invited->identity);
+-        else
+-            snprintf(invited->from, sizeof(invited->from),
++               printf_term(invited->from, sizeof(invited->from), rc);
++          }
++        else {
++            rc = snprintf(invited->from, sizeof(invited->from),
+                 "<%s>", invited->identity);
++               printf_term(invited->from, sizeof(invited->from), rc);
++          }
+         registry::incUse(rr, stats::OUTGOING);
+         invited->reg = rr;
+ 
 --- server/thread.cpp
 +++ server/thread.cpp
 @@ -16,6 +16,17 @@
@@ -655,362 +1014,3 @@
              osip_message_set_contact(reply, buftemp);
          }
          voip::server_allows(reply);
---- server/stack.cpp
-+++ server/stack.cpp
-@@ -16,6 +16,17 @@
- 
- #include "server.h"
- 
-+namespace {
-+     // printf family does not add termiating NULL if data fills buffer
-+     inline void printf_term(void* buffer, size_t size, int written)
-+     {
-+          // printf family returns -1 on error
-+          char * p = (char *) buffer;
-+          size_t w = (size_t) written;
-+          written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
-+     }
-+}
-+
- namespace sipwitch {
- 
- static volatile unsigned allocated_segments = 0;
-@@ -505,6 +516,7 @@
-     voip::body_t body = NULL;
-     session *target = NULL;
-     call *cr = source->parent;
-+     int rc;
- 
-     if(cr->source == source)
-         target = cr->target;
-@@ -522,10 +534,14 @@
-     osip_message_get_body(sevent->request, 0, &body);
-     if(!voip::make_dialog_info(target->context, did, &msg))
-         return;
--    if(ct->subtype)
--        snprintf(type, sizeof(type), "%s/%s", ct->type, ct->subtype);
--    else
--        snprintf(type, sizeof(type), "%s", ct->type);
-+    if(ct->subtype) {
-+        rc = snprintf(type, sizeof(type), "%s/%s", ct->type, ct->subtype);
-+          printf_term(type, sizeof(type), rc);
-+     }
-+    else {
-+        rc = snprintf(type, sizeof(type), "%s", ct->type);
-+          printf_term(type, sizeof(type), rc);
-+     }
-     voip::attach(msg, type, body->body);
-     voip::server_allows(msg);
-     voip::send_dialog_message(target->context, did, msg);
-@@ -1043,6 +1059,7 @@
-     assert(user == NULL || *user != 0);
-     assert(size > 0);
- 
-+     int rc;
-     char pbuf[10];
-     bool ipv6 = false;
- 
-@@ -1068,10 +1085,14 @@
-         String::add(buf, size, "[");
- 
-     String::add(buf, size, sip.published);
--    if(ipv6)
--        snprintf(pbuf, sizeof(pbuf), "]:%u", sip_port);
--    else
--        snprintf(pbuf, sizeof(pbuf), ":%u", sip_port);
-+    if(ipv6) {
-+        rc = snprintf(pbuf, sizeof(pbuf), "]:%u", sip_port);
-+          printf_term(pbuf, sizeof(pbuf), rc);
-+     }
-+    else {
-+        rc = snprintf(pbuf, sizeof(pbuf), ":%u", sip_port);
-+          printf_term(pbuf, sizeof(pbuf), rc);
-+     }
-     String::add(buf, size, pbuf);
-     return buf;
- }
-@@ -1085,6 +1106,7 @@
- 
-     char pbuf[10];
-     unsigned port = 0;
-+     int rc;
-     bool ipv6 = false;
-     const char *defaddr = NULL;
- 
-@@ -1135,10 +1157,14 @@
- 
-     len = strlen(buf);
-     Socket::query((struct sockaddr *)addr, buf + len, size - len);
--    if(ipv6)
--        snprintf(pbuf, sizeof(pbuf), "]:%u", port);
--    else
--        snprintf(pbuf, sizeof(pbuf), ":%u", port);
-+    if(ipv6) {
-+        rc = snprintf(pbuf, sizeof(pbuf), "]:%u", port);
-+          printf_term(pbuf, sizeof(pbuf), rc);
-+     }
-+    else {
-+        rc = snprintf(pbuf, sizeof(pbuf), ":%u", port);
-+          printf_term(pbuf, sizeof(pbuf), rc);
-+     }
-     String::add(buf, size, pbuf);
-     return buf;
- }
-@@ -1217,6 +1243,7 @@
- {
-     char route[MAX_URI_SIZE];
-     char touri[MAX_URI_SIZE];
-+     int rc;
- 
-     if(!call->diverting)
-         return;
-@@ -1224,23 +1251,28 @@
-     uri::publish(call->request, route, call->divert, sizeof(route));
- 
-     if(String::equal(call->diverting, "all")) {
--        snprintf(touri, sizeof(touri), "<%s>;reason=unconditional", route);
-+        rc = snprintf(touri, sizeof(touri), "<%s>;reason=unconditional", route);
-+          printf_term(touri, sizeof(touri), rc);
-         voip::header(invite, "Diversion", touri);
-     }
-     else if(String::equal(call->diverting, "na")) {
--        snprintf(touri, sizeof(touri), "<%s>;reason=no-answer", route);
-+        rc = snprintf(touri, sizeof(touri), "<%s>;reason=no-answer", route);
-+          printf_term(touri, sizeof(touri), rc);
-         voip::header(invite, "Diversion", touri);
-     }
-     else if(String::equal(call->diverting, "busy")) {
--        snprintf(touri, sizeof(touri), "<%s>;reason=user-busy", route);
-+        rc = snprintf(touri, sizeof(touri), "<%s>;reason=user-busy", route);
-+          printf_term(touri, sizeof(touri), rc);
-         voip::header(invite, "Diversion", touri);
-     }
-     else if(String::equal(call->diverting, "dnd")) {
--        snprintf(touri, sizeof(touri), "<%s>;reason=do-not-disturb", route);
-+        rc = snprintf(touri, sizeof(touri), "<%s>;reason=do-not-disturb", route);
-+          printf_term(touri, sizeof(touri), rc);
-         voip::header(invite, "Diversion", touri);
-     }
-     else if(String::equal(call->diverting, "away")) {
--        snprintf(touri, sizeof(touri), "<%s>;reason=away", route);
-+        rc = snprintf(touri, sizeof(touri), "<%s>;reason=away", route);
-+          printf_term(touri, sizeof(touri), rc);
-         voip::header(invite, "Diversion", touri);
-     }
- }
-@@ -1260,7 +1292,7 @@
-     voip::msg_t invite = NULL;
-     char expheader[32];
-     char seqid[64];
--    int cid;
-+    int cid, rc;
-     unsigned icount = 0;
-     time_t now;
-     srv resolv;
-@@ -1290,7 +1322,8 @@
-     }
- 
-     if(schema) {
--        snprintf(rewrite, sizeof(rewrite), "%s:%s", schema, uri_target);
-+        rc = snprintf(rewrite, sizeof(rewrite), "%s:%s", schema, uri_target);
-+          printf_term(rewrite, sizeof(rewrite), rc);
-         uri_target = rewrite;
-     }
- 
-@@ -1316,7 +1349,8 @@
-         sp.next();
-     }
- 
--    snprintf(touri, sizeof(touri), "<%s>", uri_target);
-+    rc = snprintf(touri, sizeof(touri), "<%s>", uri_target);
-+     printf_term(touri, sizeof(touri), rc);
- 
-     invite = NULL;
- 
-@@ -1337,7 +1371,8 @@
-         char nounce[64];
-         char *req = NULL;
-         osip_uri_to_str(invite->req_uri, &req);
--        snprintf(authbuf, 1024, "%s:%s", invite->sip_method, req);
-+        rc = snprintf(authbuf, 1024, "%s:%s", invite->sip_method, req);
-+          printf_term(authbuf, 1024, rc);
-         Random::uuid(nounce);
- 
-         digest_t auth("md5");
-@@ -1346,11 +1381,12 @@
-         auth = registry::getDigest();
-         auth.puts(authbuf);
-         response = *auth;
--        snprintf(authbuf, 1024, "%s:%s:%s", digest, *once, *response);
-+        rc = snprintf(authbuf, 1024, "%s:%s:%s", digest, *once, *response);
-+          printf_term(authbuf, 1024, rc);
-         auth.reset();
-         auth.puts(authbuf);
-         response = *auth;
--        snprintf(authbuf, 1024,
-+        rc = snprintf(authbuf, 1024,
-             "Digest username=\"%s\""
-             ",realm=\"%s\""
-             ",uri=\"%s\""
-@@ -1358,6 +1394,7 @@
-             ",nonce=\"%s\""
-             ",algorithm=%s"
-             ,s->reg->userid, registry::getRealm(), req, *response, *once, registry::getDigest());
-+          printf_term(authbuf, 1024, rc);
-         voip::header(invite, AUTHORIZATION, authbuf);
-         delete[] authbuf;
-         osip_free(req);
-@@ -1366,7 +1403,8 @@
-         voip::header(invite, P_SIPWITCH_NODE, "no");
- 
-     if(call->expires) {
--        snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
-+        rc = snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
-+          printf_term(expheader, sizeof(expheader), rc);
-         voip::header(invite, SESSION_EXPIRES, expheader);
-     }
- 
-@@ -1383,7 +1421,8 @@
-     stack::siplog(invite);
-     cid = voip::send_invite_request(context, invite);
-     if(cid > 0) {
--        snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
-+        rc = snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
-+          printf_term(seqid, sizeof(seqid), rc);
-         uri::publish(call->request, route, seqid, sizeof(route));
-         voip::call_reference(context, cid, route);
-         ++icount;
-@@ -1398,7 +1437,8 @@
-     registry::incUse(NULL, stats::OUTGOING);
-     String::set(invited->identity, sizeof(invited->identity), uri_target);
-     String::set(invited->display, sizeof(invited->display), username);
--    snprintf(invited->from, sizeof(invited->from), "<%s>", uri_target);
-+    rc = snprintf(invited->from, sizeof(invited->from), "<%s>", uri_target);
-+     printf_term(invited->from, sizeof(invited->from), rc);
-     String::set(invited->network, sizeof(invited->network), network);
-     invited->nat = nat;
-     uri::identity(*resolv, invited->sysident, username, sizeof(invited->sysident));
-@@ -1419,6 +1459,7 @@
-     const char *target;
-     char buffer[MAX_URI_SIZE];
-     registry::mapped *rr = NULL;
-+     int rc;
- 
-     String::set(cr->divert, sizeof(cr->divert), cr->forward);
-     cr->forwarding = NULL;
-@@ -1468,8 +1509,10 @@
-     goto test;
- 
- remote:
--    if(!String::equal(target, "sip:", 4) && !String::equal(target, "sips:", 5))
--        snprintf(buffer, sizeof(buffer), "%s:%s", getScheme(), target);
-+    if(!String::equal(target, "sip:", 4) && !String::equal(target, "sips:", 5)) {
-+        rc = snprintf(buffer, sizeof(buffer), "%s:%s", getScheme(), target);
-+          printf_term(buffer, sizeof(buffer), rc);
-+     }
-     else
-         String::set(buffer, sizeof(buffer), target);
-     target = buffer;
-@@ -1507,7 +1550,7 @@
-     char seqid[64];
-     char route[MAX_URI_SIZE];
-     char touri[MAX_URI_SIZE];
--    int cid;
-+    int cid, rc;
-     unsigned icount = 0;
- 
-     time(&now);
-@@ -1540,12 +1583,17 @@
- 
-         if(dest == ROUTED) {
-             stack::sipPublish(&tp->address, route, call->dialed, sizeof(route));
--            snprintf(touri, sizeof(touri), "\"%s\" <%s;user=phone>", call->dialed, route);
-+            rc = snprintf(touri, sizeof(touri), "\"%s\" <%s;user=phone>", call->dialed, route);
-+               printf_term(touri, sizeof(touri), rc);
-         }
--        else if(call->phone)
--            snprintf(touri, sizeof(touri), "<%s;user=phone>", tp->contact);
--        else
--            snprintf(touri, sizeof(touri), "<%s>", tp->contact);
-+        else if(call->phone) {
-+            rc = snprintf(touri, sizeof(touri), "<%s;user=phone>", tp->contact);
-+               printf_term(touri, sizeof(touri), rc);
-+          }
-+        else {
-+            rc = snprintf(touri, sizeof(touri), "<%s>", tp->contact);
-+               printf_term(touri, sizeof(touri), rc);
-+          }
- 
-         stack::sipPublish(&tp->address, route + 1, NULL, sizeof(route) - 5);
-         route[0] = '<';
-@@ -1562,7 +1610,8 @@
-             stack::sipPublish(&tp->address, route, call->dialed, sizeof(route));
-             if(call->phone)
-                 String::add(route, sizeof(route), ";user=phone");
--            snprintf(touri, sizeof(touri), "\"%s\" <%s>", call->dialed, route);
-+            rc = snprintf(touri, sizeof(touri), "\"%s\" <%s>", call->dialed, route);
-+               printf_term(touri, sizeof(touri), rc);
-             if(invite->to) {
-                 osip_to_free(invite->to);
-                 invite->to = NULL;
-@@ -1576,7 +1625,8 @@
-         voip::server_supports(invite, "100rel,replaces,timer");
- 
-         if(call->expires) {
--            snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
-+            rc = snprintf(expheader, sizeof(expheader), "%ld", (long)(call->expires - now));
-+               printf_term(expheader, sizeof(expheader), rc);
-             voip::header(invite, SESSION_EXPIRES, expheader);
-         }
- 
-@@ -1592,7 +1642,8 @@
-         stack::siplog(invite);
-         cid = voip::send_invite_request(tp->context, invite);
-         if(cid > 0) {
--            snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
-+            rc = snprintf(seqid, sizeof(seqid), "%08x-%d", s->sequence, s->cid);
-+               printf_term(seqid, sizeof(seqid), rc);
-             stack::sipAddress((struct sockaddr_internet *)&tp->peering, route, seqid, sizeof(route));
-             voip::call_reference(tp->context, cid, route);
-             ++icount;
-@@ -1610,8 +1661,10 @@
-         invited->peering = tp->peering;
-         invited->nat = nat;
- 
--        if(rr->ext)
--            snprintf(invited->sysident, sizeof(invited->sysident), "%u", rr->ext);
-+        if(rr->ext) {
-+            rc = snprintf(invited->sysident, sizeof(invited->sysident), "%u", rr->ext);
-+               printf_term(invited->sysident, sizeof(invited->sysident), rc);
-+          }
-         else
-             String::set(invited->sysident, sizeof(invited->sysident), rr->userid);
-         if(rr->display[0])
-@@ -1619,15 +1672,21 @@
-         else
-             String::set(invited->display, sizeof(invited->display), invited->sysident);
-         stack::sipPublish((struct sockaddr_internet *)&tp->peering, invited->identity, invited->sysident, sizeof(invited->identity));
--        if(rr->ext && !rr->display[0])
--            snprintf(invited->from, sizeof(invited->from),
-+        if(rr->ext && !rr->display[0]) {
-+            rc = snprintf(invited->from, sizeof(invited->from),
-                 "\"%s\" <%s;user=phone>", invited->sysident, invited->identity);
--        else if(rr->display[0])
--            snprintf(invited->from, sizeof(invited->from),
-+               printf_term(invited->from, sizeof(invited->from), rc);
-+          }
-+        else if(rr->display[0]) {
-+            rc = snprintf(invited->from, sizeof(invited->from),
-                 "\"%s\" <%s>", rr->display, invited->identity);
--        else
--            snprintf(invited->from, sizeof(invited->from),
-+               printf_term(invited->from, sizeof(invited->from), rc);
-+          }
-+        else {
-+            rc = snprintf(invited->from, sizeof(invited->from),
-                 "<%s>", invited->identity);
-+               printf_term(invited->from, sizeof(invited->from), rc);
-+          }
-         registry::incUse(rr, stats::OUTGOING);
-         invited->reg = rr;
- 
