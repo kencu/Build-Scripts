@@ -1574,7 +1574,7 @@
  /**
 --- /dev/null
 +++ inc/ucommon/nullptr.h
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,76 @@
 +// Copyright (C) 2020 Jeffrey Walton
 +//
 +// This file is part of GNU uCommon C++.
@@ -1626,6 +1626,30 @@
 +# define UCOMMON_NULLPTR NULL
 +#endif
 +
++// uCommon C++ provided the following class for non-C++11 implementations
++// Unfortunately, we need more than a class file since one of the features
++// of nullptr is to distinguish between ints, longs and pointers while
++// still being convertible to bool. That requires compiler support.
++#if 0
++const class nullptr_t 
++{
++public:
++    template<class T>
++    inline operator T*() const {
++        return 0; 
++    }
++
++    template<class C, class T>
++    inline operator T C::*() const {
++        return 0; 
++    }
++
++private:
++    void operator&() const;
++
++} nullptr = {};
++#endif
++
 +#endif
 
 --- inc/ucommon/platform.h
@@ -1641,7 +1665,7 @@
  #ifndef _UCOMMON_PLATFORM_H_
  #define _UCOMMON_PLATFORM_H_
  #define UCOMMON_ABI 7
-@@ -50,16 +71,16 @@
+@@ -50,16 +54,16 @@
  #define __THROW_RANGE(x)      throw std::out_of_range(x)
  #define __THROW_RUNTIME(x)    throw std::runtime_error(x)
  #define __THROW_ALLOC()       throw std::bad_alloc()
@@ -1662,7 +1686,7 @@
  #endif
  
  /**
-@@ -90,7 +111,7 @@
+@@ -90,7 +94,7 @@
  #endif
  #endif
  
@@ -1671,7 +1695,7 @@
  #define UCOMMON_RTTI    1
  #endif
  
-@@ -102,11 +123,9 @@
+@@ -102,11 +106,9 @@
  #define UCOMMON_RTTI    1
  #endif
  
@@ -1683,7 +1707,7 @@
  
  #ifdef  UCOMMON_RTTI
  #define __PROTOCOL   virtual
-@@ -171,30 +190,6 @@
+@@ -171,30 +173,6 @@
                                  __DELETE_COPY(x)
  #endif
  
@@ -1714,7 +1738,7 @@
  #ifndef __MALLOC
  #define __PRINTF(x, y)
  #define __SCANF(x, y)
-@@ -392,13 +387,13 @@
+@@ -392,13 +370,13 @@
      {};
  
  inline void pthread_mutex_lock(pthread_mutex_t *mutex)
@@ -1730,7 +1754,7 @@
  
  inline void pthread_cond_signal(pthread_cond_t *cond)
      {pth_cond_notify(cond, FALSE);};
-@@ -549,7 +544,7 @@
+@@ -549,7 +527,7 @@
   */
  template<class T>
  inline T *init(T *memory)
@@ -1739,7 +1763,7 @@
  
  typedef long Integer;
  typedef unsigned long Unsigned;
-@@ -567,8 +562,8 @@
+@@ -567,8 +545,8 @@
  inline T polypointer_cast(S *s)
  {
  #if defined(DEBUG) && defined(UCOMMON_RTTI)
