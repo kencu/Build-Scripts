@@ -1,5 +1,10 @@
 # Written and placed in public domain by Jeffrey Walton.
 # This patch fixes some issues with uCommon C/C++ libraries.
+#
+# This patch includes at least two other fixes and patches.
+# - https://lists.gnu.org/archive/html/bug-commoncpp/2020-05/msg00000.html
+# - https://lists.gnu.org/archive/html/bug-commoncpp/2019-05/msg00000.html
+# - https://lists.gnu.org/archive/html/bug-commoncpp/2017-10/msg00000.html
 --- openssl/digest.cpp
 +++ openssl/digest.cpp
 @@ -18,6 +18,21 @@
