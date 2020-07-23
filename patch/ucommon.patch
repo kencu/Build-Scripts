@@ -493,6 +493,19 @@
  #endif
  }
  
+--- inc/ucommon/arrayref.h
++++ inc/ucommon/arrayref.h
+@@ -33,6 +33,10 @@
+ #include <ucommon/atomic.h>
+ #endif
+ 
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
++
+ #ifndef _UCOMMON_PROTOCOLS_H_
+ #include <ucommon/protocols.h>
+ #endif
 --- corelib/arrayref.cpp
 +++ corelib/arrayref.cpp
 @@ -23,6 +23,10 @@
