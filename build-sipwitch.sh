@@ -80,6 +80,8 @@ rm -rf "$SIPW_DIR" &>/dev/null
 gzip -d < "$SIPW_TAR" | tar xf -
 cd "$SIPW_DIR" || exit 1
 
+cp server/stack.cpp server/stack.cpp.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/sipwitch.patch ]]; then
     patch -u -p0 < ../patch/sipwitch.patch
@@ -104,9 +106,12 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --sysconfdir="$INSTX_PREFIX/etc" \
+    --localstatedir="$INSTX_PREFIX/var" \
     --with-pkg-config \
-    --with-default="$INSTX_PREFIX/etc/sipwitch" \
     --with-libeXosip2=libeXosip2
+    #INITRDDIR="$INSTX_PREFIX/etc/init.d" \
+    #DEFAULTDIR="$INSTX_PREFIX/etc/sipwitch"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure SIP Witch"
@@ -183,7 +188,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
+if false; then
 
     ARTIFACTS=("$SIPW_TAR" "$SIPW_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
