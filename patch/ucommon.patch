@@ -1572,12 +1572,39 @@
  }
  
  /**
---- inc/ucommon/platform.h
-+++ inc/ucommon/platform.h
-@@ -40,6 +40,27 @@
- #define _UCOMMON_PLATFORM_H_
- #define UCOMMON_ABI 7
- 
+--- /dev/null
++++ inc/ucommon/nullptr.h
+@@ -0,0 +1,52 @@
++// Copyright (C) 2020 Jeffrey Walton
++//
++// This file is part of GNU uCommon C++.
++//
++// GNU uCommon C is free software: you can redistribute it and/or modify
++// it under the terms of the GNU Lesser General Public License as published
++// by the Free Software Foundation, either version 3 of the License, or
++// (at your option) any later version.
++//
++// GNU uCommon C is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU Lesser General Public License for more details.
++//
++// You should have received a copy of the GNU Lesser General Public License
++// along with GNU uCommon C.  If not, see <http://www.gnu.org/licenses/>.
++
++/**
++ * Provides UCOMMON_NULLPTR. UCOMMON_NULLPTR is nullptr for C++11 and above,
++ * NULL otherwise. std::nullptr_t and nullptr is too new for some older
++ * distributions.
++ * @file ucommon/nullptr.h
++ */
++
++#ifndef _UCOMMON_NULLPTR_H_
++#define _UCOMMON_NULLPTR_H_
++
++// std::nullptr_t, nullptr and NULL
++#include <cstddef>
++
 +// https://clang.llvm.org/docs/LanguageExtensions.html
 +#ifndef __has_feature
 +# define __has_feature(x) 0
@@ -1599,6 +1626,18 @@
 +# define UCOMMON_NULLPTR NULL
 +#endif
 +
++#endif
+
+--- inc/ucommon/platform.h
++++ inc/ucommon/platform.h
+@@ -40,3 +40,6 @@
+ #define _UCOMMON_PLATFORM_H_
+ #define UCOMMON_ABI 7
+
++#ifndef _UCOMMON_NULLPTR_H_
++#include <ucommon/nullptr.h>
++#endif
+
  #ifndef UCOMMON_SYSRUNTIME
  #ifndef NEW_STDCPP
  #define NEW_STDCPP
