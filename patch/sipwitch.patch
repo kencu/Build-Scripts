@@ -9,7 +9,7 @@
      family = f;
  
 -#ifdef  AF_INET6
-+#ifdef AF_INET6 && 0
++#if defined(AF_INET6) && 0
      if(family == AF_INET6)
          eXosip_enable_ipv6(1);
  #endif
@@ -18,7 +18,7 @@
      family = f;
  
 -#ifdef  AF_INET6
-+#ifdef AF_INET6 && 0
++#if defined(AF_INET6) && 0
      if(family == AF_INET6)
          eXosip_enable_ipv6(1);
  #endif
@@ -29,7 +29,7 @@
          shell::errexit(3, "*** sipuser: failed exosip init\n");
  
 -#ifdef  AF_INET6
-+#ifdef AF_INET6 && 0
++#if defined(AF_INET6) && 0
      if(family == AF_INET6) {
          eXosip_enable_ipv6(1);
          if(binding == NULL)
