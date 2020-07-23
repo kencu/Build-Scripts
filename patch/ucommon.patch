@@ -1310,18 +1310,15 @@
  
 --- corelib/shared.cpp
 +++ corelib/shared.cpp
-@@ -23,6 +23,10 @@
- #include <ucommon/shared.h>
- #include <cstdlib>
+@@ -17,6 +17,7 @@
  
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
-+#endif
-+
- namespace ucommon {
- 
- SharedRef::SharedRef() : TypeRef()
-@@ -97,7 +101,7 @@
+ #include <ucommon-config.h>
+ #include <ucommon/export.h>
++#include <ucommon/nullptr.h>
+ #include <ucommon/typeref.h>
+ #include <ucommon/string.h>
+ #include <ucommon/thread.h>
+@@ -97,7 +98,7 @@
  
  void MappedPointer::release(void *object)
  {
