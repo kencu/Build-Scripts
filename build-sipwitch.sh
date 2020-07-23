@@ -110,8 +110,6 @@ echo "**********************"
     --localstatedir="$INSTX_PREFIX/var" \
     --with-pkg-config \
     --with-libeXosip2=libeXosip2
-    #INITRDDIR="$INSTX_PREFIX/etc/init.d" \
-    #DEFAULTDIR="$INSTX_PREFIX/etc/sipwitch"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure SIP Witch"
