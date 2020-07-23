@@ -1926,7 +1926,18 @@
  #ifndef DEBUG
  #define DEBUG
  #endif
-@@ -188,7 +192,7 @@
+@@ -24,6 +28,10 @@
+ 
+ #include <stdio.h>
+ 
++#ifndef UCOMMON_NULLPTR
++# define UCOMMON_NULLPTR NULL
++#endif
++
+ using namespace ucommon;
+ 
+ static int tval = 100;
+@@ -188,7 +196,7 @@
      stringref_t sr = map(3);
      assert(eq(*sr, "hello"));
      sr = map(2);
@@ -1935,7 +1946,7 @@
      typeref<int> ki(3);
      sr = "goodbye";
      map(ki, sr);
-@@ -213,7 +217,7 @@
+@@ -213,7 +221,7 @@
      map(9, "9");
      assert(map.used() == 2);
      sr = map(7);
@@ -1944,7 +1955,7 @@
  
      listref<int> intlist;
      intlist << 3 << 5 << 7 << 9;
-@@ -228,7 +232,7 @@
+@@ -228,7 +236,7 @@
  
      mapped_pointer<char, maptest> pmap;
      maptest *out = pmap.get("bye");
@@ -1953,7 +1964,7 @@
      pmap.release(out);
      pmap.set(mt[0].key, &mt[0]);
      pmap.set(mt[1].key, &mt[1]);
-@@ -237,7 +241,7 @@
+@@ -237,7 +245,7 @@
      pmap.release(out);
      pmap.remove("bye");
      out = pmap.get("bye");
