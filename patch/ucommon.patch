@@ -506,6 +506,33 @@
  #ifndef _UCOMMON_PROTOCOLS_H_
  #include <ucommon/protocols.h>
  #endif
+@@ -151,7 +155,7 @@
+ 	}
+ 
+ 	inline void release(void) {
+-		TypeRef::set(nullptr);
++		TypeRef::set(UCOMMON_NULLPTR);
+ 	}
+ 
+ 	inline typeref<T> pull() {
+@@ -219,7 +223,7 @@
+ 	}
+ 
+ 	inline void release(void) {
+-		TypeRef::set(nullptr);
++		TypeRef::set(UCOMMON_NULLPTR);
+ 	}
+ 
+ 	inline typeref<T> pull() {
+@@ -325,7 +329,7 @@
+ 	}
+ 
+ 	inline void release(void) {
+-		TypeRef::set(nullptr);
++		TypeRef::set(UCOMMON_NULLPTR);
+ 	}
+ };
+ 
 --- corelib/arrayref.cpp
 +++ corelib/arrayref.cpp
 @@ -17,6 +17,7 @@
