@@ -560,15 +560,15 @@
  
 --- corelib/linked.cpp
 +++ corelib/linked.cpp
-@@ -22,11 +22,15 @@
+@@ -18,6 +18,7 @@
+ 
+ #include <ucommon-config.h>
+ #include <ucommon/export.h>
++#include <ucommon/nullptr.h>
+ #include <ucommon/linked.h>
  #include <ucommon/string.h>
  #include <ucommon/thread.h>
- 
-+#ifndef UCOMMON_NULLPTR
-+# define UCOMMON_NULLPTR NULL
-+#endif
-+
- namespace ucommon {
+@@ -26,7 +27,7 @@
  
  LinkedObject::LinkedObject(LinkedObject **root)
  {
@@ -577,7 +577,7 @@
      enlist(root);
  }
  
-@@ -38,7 +42,7 @@
+@@ -38,7 +39,7 @@
  {
      LinkedObject *after;
  
@@ -586,7 +586,7 @@
  
      while(root) {
          after = root->Next;
-@@ -49,7 +53,7 @@
+@@ -49,7 +50,7 @@
  
  bool LinkedObject::is_member(LinkedObject *list) const
  {
@@ -595,7 +595,7 @@
  
      while(list) {
          if(list == this)
-@@ -61,7 +65,7 @@
+@@ -61,7 +62,7 @@
  
  void LinkedObject::enlist(LinkedObject **root)
  {
@@ -604,7 +604,7 @@
  
      Next = *root;
      *root = this;
-@@ -69,9 +73,9 @@
+@@ -69,9 +70,9 @@
  
  void LinkedObject::delist(LinkedObject **root)
  {
@@ -616,7 +616,7 @@
  
      while(node && node != this) {
          prior = node;
-@@ -89,22 +93,22 @@
+@@ -89,22 +90,22 @@
  
  void ReusableObject::release(void)
  {
@@ -644,7 +644,7 @@
  
      while(node) {
          if(node->equal(nid)) {
-@@ -118,7 +122,7 @@
+@@ -118,7 +119,7 @@
          prior = node;
          node = node->getNext();
      }
@@ -653,7 +653,7 @@
      Id = nid;
      if(!root->head)
          root->head = this;
-@@ -135,23 +139,23 @@
+@@ -135,23 +136,23 @@
  NamedObject::NamedObject(NamedObject **root, char *nid, unsigned max) :
  OrderedObject()
  {
@@ -683,7 +683,7 @@
  
      if(max < 2)
          max = 0;
-@@ -185,7 +189,7 @@
+@@ -185,7 +186,7 @@
  {
      if(Id) {
          free(Id);
@@ -692,7 +692,7 @@
      }
  }
  
-@@ -217,7 +221,7 @@
+@@ -217,7 +218,7 @@
  
  LinkedObject *LinkedObject::getIndexed(LinkedObject *root, unsigned index)
  {
@@ -701,7 +701,7 @@
          root = root->Next;
  
      return root;
-@@ -225,7 +229,7 @@
+@@ -225,7 +226,7 @@
  
  unsigned LinkedObject::count(const LinkedObject *root)
  {
@@ -710,7 +710,7 @@
  
      unsigned c = 0;
      while(root) {
-@@ -237,7 +241,7 @@
+@@ -237,7 +238,7 @@
  
  unsigned NamedObject::keyindex(const char *id, unsigned max)
  {
@@ -719,7 +719,7 @@
      assert(max > 1);
  
      unsigned val = 0;
-@@ -250,7 +254,7 @@
+@@ -250,7 +251,7 @@
  
  int NamedObject::compare(const char *cid) const
  {
@@ -728,7 +728,7 @@
  
  #ifdef  HAVE_STRCOLL
      return strcoll(Id, cid);
-@@ -263,17 +267,17 @@
+@@ -263,17 +264,17 @@
  
      static int ncompare(const void *o1, const void *o2)
      {
@@ -750,7 +750,7 @@
  
      if(!size) {
          while(list[size])
-@@ -286,23 +290,23 @@
+@@ -286,23 +287,23 @@
  
  NamedObject **NamedObject::index(NamedObject **idx, unsigned max)
  {
@@ -778,7 +778,7 @@
      assert(max > 0);
  
      unsigned key = 0;
-@@ -313,7 +317,7 @@
+@@ -313,7 +314,7 @@
          while(key < max && !idx[key])
              ++key;
          if(key >= max)
@@ -787,7 +787,7 @@
          return idx[key];
      }
  
-@@ -322,7 +326,7 @@
+@@ -322,7 +323,7 @@
  
  void NamedObject::purge(NamedObject **idx, unsigned max)
  {
@@ -796,7 +796,7 @@
      assert(max > 0);
  
      LinkedObject *root;
-@@ -338,7 +342,7 @@
+@@ -338,7 +339,7 @@
  
  unsigned NamedObject::count(NamedObject **idx, unsigned max)
  {
@@ -805,7 +805,7 @@
      assert(max > 0);
  
      unsigned count = 0;
-@@ -359,8 +363,8 @@
+@@ -359,8 +360,8 @@
  
  NamedObject *NamedObject::remove(NamedObject **idx, const char *id, unsigned max)
  {
@@ -816,7 +816,7 @@
      assert(max > 0);
  
      if(max < 2)
-@@ -371,8 +375,8 @@
+@@ -371,8 +372,8 @@
  
  NamedObject *NamedObject::map(NamedObject **idx, const char *id, unsigned max)
  {
@@ -827,7 +827,7 @@
      assert(max > 0);
  
      if(max < 2)
-@@ -383,7 +387,7 @@
+@@ -383,7 +384,7 @@
  
  NamedObject *NamedObject::find(NamedObject *root, const char *id)
  {
@@ -836,7 +836,7 @@
  
      while(root) {
          if(root->equal(id))
-@@ -395,10 +399,10 @@
+@@ -395,10 +396,10 @@
  
  NamedObject *NamedObject::remove(NamedObject **root, const char *id)
  {
@@ -850,7 +850,7 @@
      NamedObject *node = *root;
  
      while(node) {
-@@ -409,9 +413,9 @@
+@@ -409,9 +410,9 @@
      }
  
      if(!node)
@@ -862,7 +862,7 @@
          *root = node->getNext();
      else
          prior->Next = node->getNext();
-@@ -427,21 +431,21 @@
+@@ -427,21 +428,21 @@
  NamedObject(), Child()
  {
      Id = nid;
@@ -888,7 +888,7 @@
  
      enlistTail(&p->Child);
      Id = nid;
-@@ -450,13 +454,13 @@
+@@ -450,13 +451,13 @@
  
  NamedTree::~NamedTree()
  {
@@ -904,7 +904,7 @@
  
      linked_pointer<NamedTree> node = Child.begin();
  
-@@ -465,7 +469,7 @@
+@@ -465,7 +466,7 @@
              return *node;
          node.next();
      }
@@ -913,7 +913,7 @@
  }
  
  void NamedTree::relistTail(NamedTree *trunk)
-@@ -495,7 +499,7 @@
+@@ -495,7 +496,7 @@
  
  NamedTree *NamedTree::path(const char *tid) const
  {
@@ -922,7 +922,7 @@
  
      const char *np;
      char buf[65];
-@@ -507,7 +511,7 @@
+@@ -507,7 +508,7 @@
  
      while(*tid == '.') {
          if(!node->Parent)
@@ -931,7 +931,7 @@
          node = node->Parent;
  
          ++tid;
-@@ -522,7 +526,7 @@
+@@ -522,7 +523,7 @@
          if(np)
              tid = ++np;
          else
@@ -940,7 +940,7 @@
          node = node->getChild(buf);
      }
      return node;
-@@ -530,7 +534,7 @@
+@@ -530,7 +531,7 @@
  
  NamedTree *NamedTree::getLeaf(const char *tid) const
  {
@@ -949,7 +949,7 @@
  
      linked_pointer<NamedTree> node = Child.begin();
  
-@@ -539,12 +543,12 @@
+@@ -539,12 +540,12 @@
              return *node;
          node.next();
      }
@@ -964,7 +964,7 @@
  
      linked_pointer<NamedTree> node = Child.begin();
      NamedTree *obj;
-@@ -552,19 +556,19 @@
+@@ -552,19 +553,19 @@
      while(node) {
          if(node->is_leaf() && eq(node->Id, tid))
              return *node;
@@ -987,7 +987,7 @@
  
      linked_pointer<NamedTree> node = Child.begin();
      NamedTree *obj;
-@@ -579,12 +583,12 @@
+@@ -579,12 +580,12 @@
          }
          node.next();
      }
@@ -1002,7 +1002,7 @@
  
      Id = nid;
  }
-@@ -597,7 +601,7 @@
+@@ -597,7 +598,7 @@
      if(Parent)
          delist(&Parent->Child);
  
@@ -1011,7 +1011,7 @@
  }
  
  void NamedTree::purge(void)
-@@ -612,7 +616,7 @@
+@@ -612,7 +613,7 @@
          obj = *node;
  		if (!obj)
  			break;
@@ -1020,7 +1020,7 @@
          node = obj->getNext();
          delete obj;
      }
-@@ -624,12 +628,12 @@
+@@ -624,12 +625,12 @@
  
  LinkedObject::LinkedObject()
  {
@@ -1035,7 +1035,7 @@
  }
  
  OrderedObject::OrderedObject() : LinkedObject()
-@@ -643,16 +647,16 @@
+@@ -643,16 +644,16 @@
  OrderedObject::OrderedObject(OrderedIndex *root) :
  LinkedObject()
  {
@@ -1056,7 +1056,7 @@
  
      node = root->head;
  
-@@ -675,17 +679,17 @@
+@@ -675,17 +676,17 @@
  
  void OrderedObject::enlist(OrderedIndex *root)
  {
@@ -1078,7 +1078,7 @@
          root->head = this;
      else if(root->tail)
          root->tail->Next = this;
-@@ -695,10 +699,10 @@
+@@ -695,10 +696,10 @@
  
  void OrderedObject::enlistHead(OrderedIndex *root)
  {
@@ -1092,7 +1092,7 @@
          root->tail = this;
      else if(root->head)
          Next = root->head;
-@@ -708,43 +712,43 @@
+@@ -708,43 +709,43 @@
  
  DLinkedObject::DLinkedObject()
  {
@@ -1147,7 +1147,7 @@
  
      if(o->Root)
          o->delist();
-@@ -755,7 +759,7 @@
+@@ -755,7 +756,7 @@
      }
      else {
          Root->head = o;
@@ -1156,7 +1156,7 @@
      }
      o->Root = Root;
      o->Next = this;
-@@ -764,7 +768,7 @@
+@@ -764,7 +765,7 @@
  
  void DLinkedObject::insertTail(DLinkedObject *o)
  {
@@ -1165,7 +1165,7 @@
  
      if(o->Root)
          o->delist();
-@@ -775,7 +779,7 @@
+@@ -775,7 +776,7 @@
      }
      else {
          Root->tail = o;
@@ -1174,7 +1174,7 @@
      }
      o->Root = Root;
      o->Prev = this;
-@@ -784,14 +788,14 @@
+@@ -784,14 +785,14 @@
  
  void DLinkedObject::enlistHead(OrderedIndex *r)
  {
@@ -1192,7 +1192,7 @@
  
      if(!Root->tail) {
          Root->tail = Root->head = static_cast<OrderedObject *>(this);
-@@ -806,13 +810,13 @@
+@@ -806,13 +807,13 @@
  
  void DLinkedObject::enlistTail(OrderedIndex *r)
  {
@@ -1208,7 +1208,7 @@
  
      if(!Root->head) {
          Root->head = Root->tail = static_cast<OrderedObject *>(this);
-@@ -839,8 +843,8 @@
+@@ -839,8 +840,8 @@
      else if(Root->tail == static_cast<OrderedObject *>(this))
          Root->tail = static_cast<OrderedObject *>(Prev);
  
@@ -1219,7 +1219,7 @@
  }
  
  DLinkedObject::~DLinkedObject()
-@@ -850,12 +854,12 @@
+@@ -850,12 +851,12 @@
  
  OrderedIndex::OrderedIndex()
  {
@@ -1234,7 +1234,7 @@
  }
  
  void OrderedIndex::copy(const OrderedIndex& source)
-@@ -866,14 +870,14 @@
+@@ -866,14 +867,14 @@
  
  void OrderedIndex::operator*=(OrderedObject *object)
  {
@@ -1251,7 +1251,7 @@
  
      object->enlist(this);
  }
-@@ -883,12 +887,12 @@
+@@ -883,12 +884,12 @@
      LinkedObject *node;
  
      if(!head)
@@ -1266,7 +1266,7 @@
  
      return static_cast<LinkedObject *>(node);
  }
-@@ -897,13 +901,13 @@
+@@ -897,13 +898,13 @@
  {
      if(head) {
          LinkedObject::purge((LinkedObject *)head);
@@ -1282,7 +1282,7 @@
  }
  
  void OrderedIndex::lock_index(void)
-@@ -925,7 +929,7 @@
+@@ -925,7 +926,7 @@
          op[idx++] = node;
          node = node->Next;
      }
