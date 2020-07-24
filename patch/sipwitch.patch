@@ -1753,3 +1753,52 @@
  
      mediacount = align(mediacount);
  }
+--- server/subscriber.cpp
++++ server/subscriber.cpp
+@@ -19,6 +19,17 @@
+ #include <ucommon/secure.h>
+ #include <stddef.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static class __LOCAL subscriber : private modules::sipwitch
+@@ -71,19 +82,24 @@
+     char uri[MAX_URI_SIZE];
+     char reg[MAX_URI_SIZE];
+     unsigned len;
++    int rc = 0;
+     Socket::address dest = server;
+ 
+     Random::uuid(provider.remote);
+-    snprintf(uri, sizeof(uri), "%s:%s@%s", schema, userid, server);
+-    snprintf(reg, sizeof(reg), "%s:%s", schema, server);
+-    snprintf(contact, sizeof(contact), "%s:%s@", schema, provider.remote);
++    rc = snprintf(uri, sizeof(uri), "%s:%s@%s", schema, userid, server);
++    printf_term(uri, sizeof(uri), rc);
++    rc = snprintf(reg, sizeof(reg), "%s:%s", schema, server);
++    printf_term(reg, sizeof(reg), rc);
++    rc = snprintf(contact, sizeof(contact), "%s:%s@", schema, provider.remote);
++    printf_term(contact, sizeof(contact), rc);
+ 
+     changed = false;
+     len = strlen(contact);
+     Socket::via((struct sockaddr *)&provider.contact, dest.getAddr());
+     Socket::query((struct sockaddr *)&provider.contact, contact + len, sizeof(contact) - len);
+     len = strlen(contact);
+-    snprintf(contact + len, sizeof(contact) - len, ":%u", sip_port);
++    rc = snprintf(contact + len, sizeof(contact) - len, ":%u", sip_port);
++    printf_term(contact + len, sizeof(contact) - len, rc);
+     shell::debug(3, "registering %s with %s", contact, server);
+ 
+     voip::msg_t msg = NULL;
