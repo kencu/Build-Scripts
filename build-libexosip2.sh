@@ -63,6 +63,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-c-ares.sh
+then
+    echo "Failed to build c-ares"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-ucommon.sh
 then
     echo "Failed to build uCommon"
