@@ -4,6 +4,8 @@ This GitHub is a collection of build scripts useful for building and testing pro
 
 The general idea of the scripts are, you run `./build-wget.sh`, `./build-ssh.sh`, `./build-git.sh` or some other script to get a fresh tool. The script for the program will download and build the dependent libraries for the program. When the script completes you have a working tool in `/usr/local` or `/opt/local` on the BSDs.
 
+Some recipes only work on modern platforms. For example, GNU SIP Witch may not build on a PowerMac G5. It is a small loss since most organizations will not run a SIP server on antique hardware.
+
 ## Setup
 
 Once you clone the repo you should perform a one-time setup. The setup installs updated CA certificates and builds a modern Wget. `setup-cacerts.sh` installs a local copy of 10 certificates in `$HOME/.build-scripts/cacerts`. They are used to download source code packages for programs and libraries. `setup-wget.sh` installs a local copy of `wget` in `$HOME/.build-scripts/wget`. It is a reduced-functionality version of Wget built to download packages over HTTPS.
