@@ -62,7 +62,7 @@ fi
 
 if ! ./build-mpfr.sh
 then
-    echo "Failed to build MPFRss"
+    echo "Failed to build MPFR"
     exit 1
 fi
 
