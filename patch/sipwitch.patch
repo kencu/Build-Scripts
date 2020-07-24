@@ -866,7 +866,7 @@
 -        snprintf(buffer, sizeof(buffer), "%s:%s:%s", leaf->getPointer(), auth->nonce, *digest);
 +    if(hash) {
 +        rc = snprintf(buffer, sizeof(buffer), "%s:%s:%s", hash, auth->nonce, *digest);
-+          printf_term(buffer, sizeof(buffer), rc);
++        printf_term(buffer, sizeof(buffer), rc);
 +     }
 +    else {
 +        rc = snprintf(buffer, sizeof(buffer), "%s:%s:%s", leaf->getPointer(), auth->nonce, *digest);
