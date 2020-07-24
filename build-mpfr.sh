@@ -115,8 +115,6 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared \
-    --enable-static \
     --with-gmp-include="$INSTX_PREFIX/include" \
     --with-gmp-lib="$INSTX_LIBDIR"
 

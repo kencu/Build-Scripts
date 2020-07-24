@@ -29,8 +29,13 @@ then
 fi
 
 # Verify system uses ELF
-magic=$(cut -b 2-4 /bin/ls | head -n 1)
-if [[ "$magic" != "ELF" ]]; then
+#magic=$(cut -b 2-4 /bin/ls | head -n 1)
+#if [[ "$magic" != "ELF" ]]; then
+#    exit 0
+#fi
+
+# Patchelf only builds on Linux. Solaris is trouble.
+if [[ "$IS_LINUX" -eq 0 ]]; then
     exit 0
 fi
 
