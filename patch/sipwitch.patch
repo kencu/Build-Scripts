@@ -1802,3 +1802,95 @@
      shell::debug(3, "registering %s with %s", contact, server);
  
      voip::msg_t msg = NULL;
+--- server/forward.cpp
++++ server/forward.cpp
+@@ -17,6 +17,17 @@
+ #include <sipwitch-config.h>
+ #include <sipwitch/sipwitch.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ #define INDEX_SIZE  177
+@@ -302,19 +313,24 @@
+     char uri[MAX_URI_SIZE];
+     char reg[MAX_URI_SIZE];
+     unsigned len;
++    int rc = 0;
+ 
+     if(!enabled || rr->rid != -1)
+         return;
+ 
+     // must also have extension to forward...
+     if(rr->remote[0] && rr->ext && rr->type == MappedRegistry::USER) {
+-        snprintf(uri, sizeof(uri), "%s:%s@%s", schema, rr->userid, server);
+-        snprintf(reg, sizeof(reg), "%s:%s", schema, server);
+-        snprintf(contact, sizeof(contact), "%s:%s@", schema, rr->remote);
++        rc = snprintf(uri, sizeof(uri), "%s:%s@%s", schema, rr->userid, server);
++        printf_term(uri, sizeof(uri), rc);
++        rc = snprintf(reg, sizeof(reg), "%s:%s", schema, server);
++        printf_term(reg, sizeof(reg), rc);
++        rc = snprintf(contact, sizeof(contact), "%s:%s@", schema, rr->remote);
++        printf_term(contact, sizeof(contact), rc);
+         len = strlen(contact);
+         Socket::query((struct sockaddr *)&rr->contact, contact + len, sizeof(contact) - len);
+         len = strlen(contact);
+-        snprintf(contact + len, sizeof(contact) - len, ":%d", Socket::address::getPort((struct sockaddr *)&rr->contact));
++        rc = snprintf(contact + len, sizeof(contact) - len, ":%d", Socket::address::getPort((struct sockaddr *)&rr->contact));
++        printf_term(contact + len, sizeof(contact) - len, rc);
+         shell::debug(3, "registering %s with %s", contact, server);
+         voip::msg_t msg = NULL;
+         rr->rid = voip::make_registry_request(context, uri, reg, contact, (unsigned)expires, &msg);
+@@ -333,16 +349,20 @@
+     char uri_to[MAX_URI_SIZE];
+     char contact[MAX_URI_SIZE];
+     size_t len;
++    int rc = 0;
+ 
+     if(!isActive(rr->rid) || !rr->remote[0])
+         return false;
+ 
+-    snprintf(uri_to, sizeof(uri_to), "sip:%s@%s", rr->userid, server);
+-    snprintf(contact, sizeof(contact), "sip:%s@", rr->remote);
++    rc = snprintf(uri_to, sizeof(uri_to), "sip:%s@%s", rr->userid, server);
++    printf_term(uri_to, sizeof(uri_to), rc);
++    rc = snprintf(contact, sizeof(contact), "sip:%s@", rr->remote);
++    printf_term(contact, sizeof(contact), rc);
+     len = strlen(contact);
+     Socket::query((struct sockaddr *)&rr->contact, contact + len, sizeof(contact) - len);
+     len = strlen(contact);
+-    snprintf(contact + len, sizeof(contact) - len, ":%d", Socket::address::getPort((struct sockaddr *)&rr->contact));
++    rc = snprintf(contact + len, sizeof(contact) - len, ":%d", Socket::address::getPort((struct sockaddr *)&rr->contact));
++    printf_term(contact + len, sizeof(contact) - len, rc);
+     shell::debug(3, "publishing %s with %s", contact, server);
+ 
+     voip::publish(context, uri_to, contact, event, expiration, msgtype, body);
+@@ -372,10 +392,14 @@
+     if(!isActive(rr->rid))
+         return NULL;
+ 
+-    if(sip_tlsmode)
+-        snprintf(buffer, size, "sips:%s@%s", target, refer);
+-    else
+-        snprintf(buffer, size, "sip:%s@%s", target, refer);
++    if(sip_tlsmode) {
++        rc = snprintf(buffer, size, "sips:%s@%s", target, refer);
++        printf_term(buffer, size, rc);
++    }
++    else {
++        rc = snprintf(buffer, size, "sip:%s@%s", target, refer);
++        printf_term(buffer, size, rc);
++    }
+     return buffer;
+ }
+ 
