@@ -63,6 +63,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-ucommon.sh
+then
+    echo "Failed to build uCommon"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-libosip2.sh
 then
     echo "Failed to build libosip2"
