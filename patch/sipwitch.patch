@@ -1561,3 +1561,195 @@
      len = strlen(buf);
      if(buf[len - 1] != '\n')
          buf[len++] = '\n';
+--- server/scripting.cpp
++++ server/scripting.cpp
+@@ -17,6 +17,17 @@
+ #include <sipwitch-config.h>
+ #include <sipwitch/sipwitch.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static const char *dirpath = NULL;
+@@ -70,13 +81,15 @@
+ 
+     static char buf[256];
+     const char *home = control::env("HOME");
++    int rc = 0;
+ 
+     if(fsys::is_dir(DEFAULT_CFGPATH "/sysconfig/sipwitch-scripts"))
+         dirpath = DEFAULT_CFGPATH "/sysconfig/sipwitch-scripts";
+     else if(fsys::is_dir(DEFAULT_LIBEXEC "/sipwitch"))
+         dirpath = DEFAULT_LIBEXEC "/sipwitch";
+     else if(home) {
+-        snprintf(buf, sizeof(buf), "%s/.sipwitch-scripts", home);
++        rc = snprintf(buf, sizeof(buf), "%s/.sipwitch-scripts", home);
++        printf_term(buf, sizeof(buf), rc);
+         if(fsys::is_dir(buf))
+             dirpath = buf;
+     }
+--- server/zeroconf.cpp
++++ server/zeroconf.cpp
+@@ -17,6 +17,17 @@
+ #include <sipwitch-config.h>
+ #include <sipwitch/sipwitch.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ #ifdef  ZEROCONF_AVAHI
+@@ -113,8 +124,8 @@
+ 
+ void zeroconf::setClient(AvahiClientState state)
+ {
+-    int ret;
+     AvahiProtocol avifamily = AVAHI_PROTO_UNSPEC;
++    int ret = 0, rc;
+ 
+     switch(state) {
+     case AVAHI_CLIENT_S_RUNNING:
+@@ -145,10 +156,14 @@
+         char range[32];
+         char uuid[64];
+ 
+-        snprintf(domain, sizeof(domain), "domain=%s", sip_domain);
+-        snprintf(prefix, sizeof(prefix), "prefix=%u", sip_prefix);
+-        snprintf(range, sizeof(range), "range=%u", sip_range);
+-        snprintf(uuid, sizeof(uuid), "uuid=%s", session_uuid);
++        rc = snprintf(domain, sizeof(domain), "domain=%s", sip_domain);
++        printf_term(domain, sizeof(domain), rc);
++        rc = snprintf(prefix, sizeof(prefix), "prefix=%u", sip_prefix);
++        printf_term(prefix, sizeof(prefix), rc);
++        rc = snprintf(range, sizeof(range), "range=%u", sip_range);
++        printf_term(range, sizeof(range), rc);
++        rc = snprintf(uuid, sizeof(uuid), "uuid=%s", session_uuid);
++        printf_term(uuid, sizeof(uuid), rc);
+         ret = avahi_entry_group_add_service(group, AVAHI_IF_UNSPEC, avifamily,
+             (AvahiPublishFlags)0, name, protocol, NULL, NULL, sip_port,
+             "type=sipwitch", domain, prefix, range, uuid, NULL);
+@@ -218,13 +233,17 @@
+ 
+     static bool started = false;
+     AvahiProtocol avifamily = AVAHI_PROTO_UNSPEC;
+-    int ret = 0;
++    int ret = 0, rc;
+ 
+     if(started && group && sip_domain) {
+-        snprintf(domain, sizeof(domain), "domain=%s", sip_domain);
+-        snprintf(prefix, sizeof(prefix), "prefix=%u", sip_prefix);
+-        snprintf(range, sizeof(range), "range=%u", sip_range);
+-        snprintf(uuid, sizeof(uuid), "uuid=%s", session_uuid);
++        rc = snprintf(domain, sizeof(domain), "domain=%s", sip_domain);
++        printf_term(domain, sizeof(domain), rc);
++        rc = snprintf(prefix, sizeof(prefix), "prefix=%u", sip_prefix);
++        printf_term(prefix, sizeof(prefix), rc);
++        rc = snprintf(range, sizeof(range), "range=%u", sip_range);
++        printf_term(range, sizeof(range), rc);
++        rc = snprintf(uuid, sizeof(uuid), "uuid=%s", session_uuid);
++        printf_term(uuid, sizeof(uuid), rc);
+         ret = avahi_entry_group_update_service_txt(group, AVAHI_IF_UNSPEC, avifamily,
+             (AvahiPublishFlags)0, name, protocol, NULL,
+             "type=sipwitch", domain, prefix, range, uuid, NULL);
+--- server/history.cpp
++++ server/history.cpp
+@@ -16,6 +16,17 @@
+ 
+ #include "server.h"
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static mutex_t histlock;
+@@ -34,10 +45,12 @@
+ {
+     Time now;
+     char buf[20];
++    int rc;
+ 
+     now.put(buf);
+-    snprintf(text, sizeof(text), "%s %02d %s",
++    rc = snprintf(text, sizeof(text), "%s %02d %s",
+         buf, (int)lid, msg);
++    printf_term(text, sizeof(text), rc);
+ 
+     char *cp = strchr(text, '\n');
+     if(cp)
+--- server/media.cpp
++++ server/media.cpp
+@@ -16,6 +16,17 @@
+ 
+ #include "server.h"
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static unsigned tpriority = 0;
+@@ -305,6 +316,7 @@
+     char mtype[32];
+     unsigned tport;
+     unsigned tcount = 1;
++    int rc = 0;
+     media::proxy *pp;
+ 
+     if(strnicmp(buffer, "m=", 2))
+@@ -360,12 +372,16 @@
+ 
+     *sp = 0;
+     String::set(mtype, sizeof(mtype), buffer);
+-    if(mediacount > 1)
+-        snprintf(buffer, len, "%s %u/%u %s",
++    if(mediacount > 1) {
++        rc = snprintf(buffer, len, "%s %u/%u %s",
+             mtype, tport, mediacount, tmp);
+-    else
+-        snprintf(buffer, len, "%s %u %s",
++        printf_term(buffer, len, rc);
++    }
++    else {
++        rc = snprintf(buffer, len, "%s %u %s",
+             mtype, tport, tmp);
++        printf_term(buffer, len, rc);
++    }
+ 
+     mediacount = align(mediacount);
+ }
