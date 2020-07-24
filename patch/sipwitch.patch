@@ -51,14 +51,14 @@
  #include "server.h"
  
 +namespace {
-+     // printf family does not add terminating NULL if data fills buffer
-+     inline void printf_term(void* buffer, size_t size, int written)
-+     {
-+          // printf family returns -1 on error
-+          char * p = (char *) buffer;
-+          size_t w = (size_t) written;
-+          written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
-+     }
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
 +}
 +
  namespace sipwitch {
@@ -410,14 +410,14 @@
  #include "server.h"
  
 +namespace {
-+     // printf family does not add terminating NULL if data fills buffer
-+     inline void printf_term(void* buffer, size_t size, int written)
-+     {
-+          // printf family returns -1 on error
-+          char * p = (char *) buffer;
-+          size_t w = (size_t) written;
-+          written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
-+     }
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
 +}
 +
  namespace sipwitch {
@@ -1014,3 +1014,388 @@
              osip_message_set_contact(reply, buftemp);
          }
          voip::server_allows(reply);
+--- common/uri.cpp
++++ common/uri.cpp
+@@ -20,6 +20,17 @@
+ #include <sipwitch/uri.h>
+ #include <sipwitch/service.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ void uri::serviceid(const char *addr, char *buf, size_t size)
+@@ -133,6 +144,7 @@
+ 
+     const char *schema = "sip";
+     const char *cp;
++    int rc = 0;
+ 
+     if(String::equal(uri, "sip:", 4)) {
+         uri += 4;
+@@ -147,10 +159,14 @@
+     if(cp && user != NULL)
+         uri = ++cp;
+ 
+-    if(user)
+-        snprintf(buf, size, "%s:%s@%s", schema, user, uri);
+-    else
+-        snprintf(buf, size, "%s:%s", schema, uri);
++    if(user) {
++        rc = snprintf(buf, size, "%s:%s@%s", schema, user, uri);
++        printf_term(buf, size, rc);
++    }
++    else {
++        rc = snprintf(buf, size, "%s:%s", schema, uri);
++        printf_term(buf, size, rc);
++    }
+ }
+ 
+ voip::context_t uri::route(const char *uri, char *buf, size_t size)
+@@ -158,7 +174,8 @@
+     buf[0] = 0;
+     const char *schema="sip:";
+     voip::context_t ctx = service::callback::out_context;
+-    
++    int rc = 0;
++
+     if(eq(uri, "sips:", 5)) {
+         ctx = service::callback::tls_context;
+         schema="sips:";
+@@ -179,7 +196,9 @@
+     if(sp)
+         uri = ++sp;
+ 
+-    snprintf(buf, size, "%s%s", schema, uri);
++    rc = snprintf(buf, size, "%s%s", schema, uri);    
++    printf_term(buf, size, rc);
++
+     return ctx;
+ }
+ 
+@@ -190,6 +209,7 @@
+     assert(size > 0);
+ 
+     char host[256];
++    int rc = 0;
+ 
+     buf[0] = 0;
+ 
+@@ -197,11 +217,17 @@
+         return false;
+ 
+ #ifdef  AF_INET6
+-    if(addr->sa_family == AF_INET6)
+-        snprintf(buf, size, "sip:[%s]:%u", host, (unsigned)ntohs(((struct sockaddr_in6 *)(addr))->sin6_port) & 0xffff);
++    if(addr->sa_family == AF_INET6) {
++        rc = snprintf(buf, size, "sip:[%s]:%u", host, (unsigned)ntohs(((struct sockaddr_in6 *)(addr))->sin6_port) & 0xffff);
++        printf_term(buf, size, rc);
++    }
+     else
+ #endif
+-        snprintf(buf, size, "sip:%s:%u", host, (unsigned)ntohs(((struct sockaddr_in *)(addr))->sin_port) & 0xffff);
++    {
++        rc = snprintf(buf, size, "sip:%s:%u", host, (unsigned)ntohs(((struct sockaddr_in *)(addr))->sin_port) & 0xffff);
++        printf_term(buf, size, rc);
++    }
++
+     return true;
+ }
+ 
+--- common/control.cpp
++++ common/control.cpp
+@@ -26,6 +26,17 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static const char *replytarget = NULL;
+@@ -222,6 +233,7 @@
+     char *sid;
+     fsys fd;
+     char buffer[256];
++    int rc = 0;
+ 
+     if(msg)
+         shell::log(shell::ERR, "control failed; %s", msg);
+@@ -245,10 +257,14 @@
+ 
+         else
+             sid = (char *)"-";
+-        if(msg)
+-            snprintf(buffer, sizeof(buffer), "%s msg %s\n", sid, msg);
+-        else
+-            snprintf(buffer, sizeof(buffer), "%s ok\n", sid);
++        if(msg) {
++            rc = snprintf(buffer, sizeof(buffer), "%s msg %s\n", sid, msg);
++            printf_term(buffer, sizeof(buffer), rc);
++        }
++        else {
++            rc = snprintf(buffer, sizeof(buffer), "%s ok\n", sid);
++            printf_term(buffer, sizeof(buffer), rc);
++        }
+         fd.open(replytarget, fsys::WRONLY);
+         if(is(fd)) {
+             fd.write(buffer, strlen(buffer));
+@@ -264,10 +280,13 @@
+ 
+     va_list vargs;
+     char buf[256];
++    int rc = 0;
+ 
+     va_start(vargs, fmt);
+-    if(fmt)
+-        vsnprintf(buf, sizeof(buf), fmt, vargs);
++    if(fmt) {
++        rc = vsnprintf(buf, sizeof(buf), fmt, vargs);
++        printf_term(buf, sizeof(buf), rc);
++    }
+     va_end(vargs);
+ 
+     shell::debug(5, "executing %s", buf);
+@@ -312,7 +331,7 @@
+ 
+     char buf[512];
+     fd_t fd;
+-    int len;
++    int len, rc;
+     bool rtn = true;
+     va_list vargs;
+ 
+@@ -332,7 +351,8 @@
+     }
+ #endif
+ 
+-    vsnprintf(buf, sizeof(buf) - 1, fmt, vargs);
++    rc = vsnprintf(buf, sizeof(buf) - 1, fmt, vargs);
++    printf_term(buf, sizeof(buf) - 1, rc);
+     va_end(vargs);
+     len = strlen(buf);
+     if(buf[len - 1] != '\n')
+--- common/srv.cpp
++++ common/srv.cpp
+@@ -48,6 +48,17 @@
+ 
+ #endif
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ srv::srv(const char *uri) : Socket::address()
+@@ -121,6 +132,7 @@
+ {
+     int protocol = IPPROTO_UDP;
+     int port = uri::portid(uri);
++    int rc = 0;
+     char host[256], svc[10];
+     struct addrinfo hint;
+ 
+@@ -139,7 +151,8 @@
+ #ifdef  HAVE_RESOLV_H
+         nosrv = true;
+ #endif
+-        snprintf(svc, sizeof(svc), "%d", port);
++        rc = snprintf(svc, sizeof(svc), "%d", port);
++        printf_term(svc, sizeof(svc), rc);
+     }
+     else if(eq(uri, "sips:", 5)) {
+         protocol = IPPROTO_TCP;
+@@ -213,11 +226,15 @@
+ 
+     query reply;
+     char zone[256];
+-    
+-    if(hint.ai_protocol == IPPROTO_TCP)
+-        snprintf(zone, sizeof(zone), "_%s._tcp.%s", svc, host);
+-    else
+-        snprintf(zone, sizeof(zone), "_%s._udp.%s", svc, host);
++
++    if(hint.ai_protocol == IPPROTO_TCP) {
++        rc = snprintf(zone, sizeof(zone), "_%s._tcp.%s", svc, host);
++        printf_term(zone, sizeof(zone), rc);
++    }
++    else {
++        rc = snprintf(zone, sizeof(zone), "_%s._udp.%s", svc, host);
++        printf_term(zone, sizeof(zone), rc);
++    }
+ 
+     result = res_query(zone, C_IN, T_SRV, (unsigned char *)&reply, sizeof(reply));
+     if(result < (int)sizeof(HEADER))
+@@ -379,6 +396,7 @@
+     const char *sid = uri;
+     unsigned short port = uri::portid(uri);
+     voip::context_t ctx = service::callback::out_context;
++    int rc = 0;
+ 
+     if(!uri::hostid(uri, host, sizeof(host)))
+         return NULL;
+@@ -403,10 +421,14 @@
+             else
+                 port = 5060;
+         }
+-        if(strchr(host, ':'))
+-            snprintf(buf, size, "%s:[%s]:%u", schema, host, port);
+-        else
+-            snprintf(buf, size, "%s:%s:%u", schema, host, port);
++        if(strchr(host, ':')) {
++            rc = snprintf(buf, size, "%s:[%s]:%u", schema, host, port);
++            printf_term(buf, size, rc);
++        }
++        else {
++            rc = snprintf(buf, size, "%s:%s:%u", schema, host, port);
++            printf_term(buf, size, rc);
++        }
+         sid = buf;
+     }
+     set(sid);
+@@ -415,11 +437,17 @@
+     if(!Socket::query(entry, host, sizeof(host)))
+         return NULL;
+ #ifdef	AF_INET6
+-	if(entry->sa_family == AF_INET6)
+-		snprintf(buf, size, "%s:[%s]:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in6 *)(entry))->sin6_port) & 0xffff);
+-	else
++    if(entry->sa_family == AF_INET6) {
++        rc = snprintf(buf, size, "%s:[%s]:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in6 *)(entry))->sin6_port) & 0xffff);
++        printf_term(buf, size, rc);
++    }
++    else
+ #endif
+-		snprintf(buf, size, "%s:%s:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in *)(entry))->sin_port) & 0xffff);
++    {
++        rc = snprintf(buf, size, "%s:%s:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in *)(entry))->sin_port) & 0xffff);
++        printf_term(buf, size, rc);
++    }
++
+     return ctx;
+ }
+ 
+--- common/stats.cpp
++++ common/stats.cpp
+@@ -20,6 +20,17 @@
+ #include <sipwitch/stats.h>
+ #include <sipwitch/control.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static unsigned used = 0, total = 7;
+@@ -59,12 +70,15 @@
+ stats *stats::request(const char *id)
+ {
+     assert(id && *id);
++    int rc = 0;
+ 
+     if(used >= total)
+         return NULL;
+ 
+     stats *node = shm(used++);
+-    snprintf(node->id, sizeof(node->id), "%s", id);
++    rc = snprintf(node->id, sizeof(node->id), "%s", id);
++    printf_term(node->id, sizeof(node->id), rc);
++
+     return node;
+ }
+ 
+@@ -120,6 +134,7 @@
+     char text[80];
+     size_t len;
+     time_t last;
++    int rc = 0;
+ 
+     while(pos < total) {
+         stats *node = shm(pos++);
+@@ -127,7 +142,8 @@
+             continue;
+ 
+         if(fp) {
+-            snprintf(text, sizeof(text), " %-12s", node->id);
++            rc = snprintf(text, sizeof(text), " %-12s", node->id);
++            printf_term(text, sizeof(text), rc);
+             len = strlen(text);
+         }
+         else
+@@ -136,8 +152,10 @@
+         Mutex::protect(node);
+         for(unsigned entry = 0; entry < 2; ++entry) {
+             if(fp) {
+-                snprintf(text + len, sizeof(text) - len, " %09lu %05hu %05hu",
+-                node->data[entry].period, node->data[entry].min, node->data[entry].max);
++                rc = snprintf(text + len, sizeof(text) - len, " %09lu %05hu %05hu",
++                    node->data[entry].period, node->data[entry].min, node->data[entry].max);
++                // I don't quite follow this loop. Play it safe.
++                // printf_term(text + len, sizeof(text) - len, rc);
+                 len = strlen(text);
+             }
+             node->data[entry].pperiod = node->data[entry].period;
+@@ -146,6 +164,9 @@
+             node->data[entry].min = node->data[entry].max = node->data[entry].current;
+             node->data[entry].period = 0;
+         }
++        // Terminate text buffer at full buffer size.
++        printf_term(text, sizeof(text), (int)sizeof(text));
++
+         last = node->lastcall;
+         Mutex::release(node);
+         if(fp)
+--- server/registry.cpp
++++ server/registry.cpp
+@@ -16,6 +16,17 @@
+ 
+ #include "server.h"
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static volatile unsigned active_routes = 0;
