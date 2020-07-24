@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds SIP Witch from sources.
+# This script builds MPC from sources.
 
-SIPW_TAR=sipwitch-1.9.15.tar.gz
-SIPW_DIR=sipwitch-1.9.15
+MPC_VER=1.1.0
+MPC_TAR=mpc-${MPC_VER}.tar.gz
+MPC_DIR=mpc-${MPC_VER}
+PKG_NAME=mpc
 
 ###############################################################################
 
@@ -26,6 +28,12 @@ then
     exit 1
 fi
 
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
+fi
+
 # The password should die when this subshell goes out of scope
 if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
     if ! source ./setup-password.sh
@@ -45,45 +53,48 @@ fi
 
 ###############################################################################
 
-if ! ./build-libexosip2.sh
+if ! ./build-gmp.sh
 then
-    echo "Failed to build libosip2"
+    echo "Failed to build GMP"
     exit 1
 fi
 
 ###############################################################################
 
-if ! ./build-ucommon.sh
+if ! ./build-mpfr.sh
 then
-    echo "Failed to build ucommon"
+    echo "Failed to build MPFRss"
     exit 1
 fi
 
 ###############################################################################
 
 echo
-echo "********** SIP Witch **********"
+echo "********** MPC **********"
 echo
 
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$SIPW_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/sipwitch/$SIPW_TAR"
+if ! "$WGET" -q -O "$MPC_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://ftp.gnu.org/gnu/mpc/$MPC_TAR"
 then
-    echo "Failed to download SIP Witch"
+    echo "Failed to download MPC"
     exit 1
 fi
 
-rm -rf "$SIPW_DIR" &>/dev/null
-gzip -d < "$SIPW_TAR" | tar xf -
-cd "$SIPW_DIR" || exit 1
+rm -rf "$MPC_DIR" &>/dev/null
+gzip -d < "$MPC_TAR" | tar xf -
+cd "$MPC_DIR" || exit 1
 
-# Patches are created with 'diff -u' from the pkg root directory.
-if [[ -e ../patch/sipwitch.patch ]]; then
-    patch -u -p0 < ../patch/sipwitch.patch
-    echo ""
+# Per INSTALL
+if "$WGET" -q -O allpatches --ca-certificate="$CA_ZOO" \
+     "https://www.mpc.org/mpc-${MPC_VER}/allpatches"
+then
+    patch -N -Z -p1 < allpatches
+else
+    echo "Failed to download MPC patches"
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -104,35 +115,17 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --sysconfdir="$INSTX_PREFIX/etc" \
-    --localstatedir="$INSTX_PREFIX/var" \
-    --with-pkg-config \
-    --with-libeXosip2=libeXosip2
+    --with-gmp="$INSTX_PREFIX" \
+    --with-mpfr="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure SIP Witch"
+    echo "Failed to configure MPC"
     exit 1
 fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
-
-# Fix makefiles again
-IFS="" find "./" -iname 'Makefile' -print | while read -r file
-do
-    echo "$file" | sed 's/^\.\///g'
-
-    touch -a -m -r "$file" "$file.timestamp.saved"
-    chmod a+w "$file"
-    sed -e "s/ libosip2/ -leXosip2/g" \
-        -e "s/ libeXosip2/ -leXosip2/g" \
-        "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
-    chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
-done
 
 echo "**********************"
 echo "Building package"
@@ -141,7 +134,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build SIP Witch"
+    echo "Failed to build MPC"
     exit 1
 fi
 
@@ -155,9 +148,7 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "**********************"
-    echo "Failed to test SIP Witch"
-    echo "**********************"
+    echo "Failed to test MPC"
     exit 1
 fi
 
@@ -174,26 +165,22 @@ fi
 
 cd "$CURR_DIR" || exit 1
 
-###############################################################################
-
-echo ""
-echo "*****************************************************************************"
-echo "Please run Bash's 'hash -r' to update program cache in the current shell"
-echo "*****************************************************************************"
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
-    ARTIFACTS=("$SIPW_TAR" "$SIPW_DIR")
+    ARTIFACTS=("$MPC_TAR" "$MPC_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
 
-    # ./build-sipwitch.sh 2>&1 | tee build-sipwitch.log
-    if [[ -e build-sipwitch.log ]]; then
-        rm -f build-sipwitch.log
+    # ./build-mpc.sh 2>&1 | tee build-mpc.log
+    if [[ -e build-mpc.log ]]; then
+        rm -f build-mpc.log
     fi
 fi
 

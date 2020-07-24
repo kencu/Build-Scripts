@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds MPFR from sources.
 
-MPFR_TAR=mpfr-4.1.0.tar.gz
-MPFR_DIR=mpfr-4.1.0
+MPFR_VER=4.1.0
+MPFR_TAR=mpfr-${MPFR_VER}.tar.gz
+MPFR_DIR=mpfr-${MPFR_VER}
 PKG_NAME=mpfr
 
 ###############################################################################
@@ -89,7 +90,7 @@ cd "$MPFR_DIR" || exit 1
 
 # Per INSTALL
 if "$WGET" -q -O allpatches --ca-certificate="$CA_ZOO" \
-     https://www.mpfr.org/mpfr-4.0.2/allpatches
+    "https://www.mpfr.org/mpfr-${MPFR_VER}/allpatches"
 then
     patch -N -Z -p1 < allpatches
 else

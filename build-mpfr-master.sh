@@ -87,15 +87,6 @@ rm -rf "$MPFR_DIR" &>/dev/null
 gzip -d < "$MPFR_TAR" | tar xf -
 cd "$MPFR_DIR" || exit 1
 
-# Per INSTALL
-if "$WGET" -q -O allpatches --ca-certificate="$CA_ZOO" \
-     https://www.mpfr.org/mpfr-4.1.0/allpatches
-then
-    patch -N -Z -p1 < allpatches
-else
-    echo "Failed to download MPFR patches"
-fi
-
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
