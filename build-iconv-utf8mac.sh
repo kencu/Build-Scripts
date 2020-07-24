@@ -104,7 +104,7 @@ cd "$ICONV_DIR" || exit 1
 #fi
 
 # https://github.com/fumiyas/libiconv-utf8mac/commit/561d8c83506f
-if ! "$WGET" -O lib/utf8mac.h --ca-certificate="$GITHUB_ROOT" \
+if ! "$WGET" -q -O lib/utf8mac.h --ca-certificate="$GITHUB_ROOT" \
     https://raw.githubusercontent.com/fumiyas/libiconv-utf8mac/utf-8-mac-51.200.6.libiconv-1.16/lib/utf8mac.h
 then
     echo echo "Failed to patch iConv"
