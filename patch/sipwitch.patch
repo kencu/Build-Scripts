@@ -1420,3 +1420,144 @@
              else
                  String::set(buffer, sizeof(buffer), "none");
              if(rr->type == MappedRegistry::USER)
+--- server/server.cpp
++++ server/server.cpp
+@@ -37,6 +37,17 @@
+ #include <sys/sockio.h>
+ #endif
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ namespace sipwitch {
+ 
+ static mempager mempool(PAGING_SIZE);
+@@ -243,6 +254,7 @@
+     const char *dirpath = ".";
+     const char *fn;
+     digest_t digest(registry::getDigest());
++    int rc = 0;
+ 
+     // add any missing keys
+     getPath("devices");
+@@ -311,13 +323,15 @@
+         if(!ext || !String::equal(ext, ".xml"))
+             continue;
+         if(state) {
+-            snprintf(buf, sizeof(buf), "%s/%s/%s", dirpath, state, filename);
++            rc = snprintf(buf, sizeof(buf), "%s/%s/%s", dirpath, state, filename);
++            printf_term(buf, sizeof(buf), rc);
+             fp = fopen(buf, "r");
+         }
+         else
+             fp = NULL;
+         if(!fp) {
+-            snprintf(buf, sizeof(buf), "%s/%s", dirpath, filename);
++            rc = snprintf(buf, sizeof(buf), "%s/%s", dirpath, filename);
++            printf_term(buf, sizeof(buf), rc);
+             fp = fopen(buf, "r");
+         }
+         fn = strrchr(buf, '/');
+@@ -369,7 +383,8 @@
+         if(ifr->ifr_addr.sa_family != AF_INET)
+             continue;
+         struct sockaddr_in *saddr = (struct sockaddr_in *)&(ifr->ifr_addr);
+-        snprintf(buf, sizeof(buf), "%s/", inet_ntoa(saddr->sin_addr));
++        rc = snprintf(buf, sizeof(buf), "%s/", inet_ntoa(saddr->sin_addr));
++        printf_term(buf, sizeof(buf), rc);
+         if(ioctl(ifd, SIOCGIFNETMASK, ifr) == 0) {
+             saddr = (struct sockaddr_in *)&(ifr->ifr_addr);
+             String::add(buf, sizeof(buf), inet_ntoa(saddr->sin_addr));
+@@ -533,7 +548,8 @@
+                 extmap[number - prefix] = *node;
+ 
+             if(number) {
+-                snprintf(buf, 16, "%d", number);
++                rc = snprintf(buf, 16, "%d", number);
++                printf_term(buf, 16, rc);
+                 addNode(*node, "extension", buf);
+             }
+         }
+@@ -915,14 +931,17 @@
+     FILE *state = NULL;
+     const char *cp;
+     keynode *node;
++    int rc = 0;
+ 
+ #ifdef _MSWINDOWS_
+     GetEnvironmentVariable("APPDATA", buf, 192);
+     unsigned len = strlen(buf);
+-    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\state.xml");
++    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\state.xml");
++    printf_term(buf + len, sizeof(buf) - len, rc);
+     state = fopen(buf, "r");
+ #else
+-    snprintf(buf, sizeof(buf), DEFAULT_VARPATH "/run/sipwitch/state.xml");
++    rc = snprintf(buf, sizeof(buf), DEFAULT_VARPATH "/run/sipwitch/state.xml");
++    printf_term(buf, sizeof(buf), rc);
+     state = fopen(buf, "r");
+ #endif
+ 
+@@ -990,7 +1009,8 @@
+             continue;
+         if(!String::equal(filename, "user-", 5))
+             continue; 
+-        snprintf(buf, sizeof(buf), "%s/%s", dirpath, filename);
++        rc = snprintf(buf, sizeof(buf), "%s/%s", dirpath, filename);
++        printf_term(buf, sizeof(buf), rc);
+         fp = fopen(buf, "r");
+         if(!fp)
+             continue;
+@@ -1060,6 +1080,7 @@
+     dir_t   dir;
+     char *ep;
+     unsigned el;
++    int rc = 0;
+ 
+     if(!list || !*list || eq(list, "none"))
+         return;
+@@ -1074,7 +1095,8 @@
+                 continue;
+             if(eq(buffer, "lib", 3))
+                 continue;
+-            snprintf(path + el, sizeof(path) - el, "/%s", buffer);
++            rc = snprintf(path + el, sizeof(path) - el, "/%s", buffer);
++            printf_term(path + el, sizeof(path) - el, rc);
+             shell::log(shell::INFO, "loading %s%s", buffer, MODULE_EXT);
+             if(fsys::load(path))
+                 shell::log(shell::ERR, "failed loading %s", path);
+@@ -1084,7 +1106,8 @@
+     else {
+         String::set(buffer, sizeof(buffer), list);
+         while(NULL != (cp = String::token(buffer, &tp, ", ;:\r\n"))) {
+-            snprintf(path, sizeof(path), "%s/%s%s", prefix, cp, MODULE_EXT);
++            rc = snprintf(path, sizeof(path), "%s/%s%s", prefix, cp, MODULE_EXT);
++            printf_term(path, sizeof(path), rc);
+             shell::log(shell::INFO, "loading %s" MODULE_EXT, cp);
+             if(fsys::load(path))
+                 shell::log(shell::ERR, "failed loading %s", path);
+@@ -1377,13 +1400,14 @@
+     fsys_t log;
+     va_list vargs;
+     char buf[1024];
+-    int len;
++    int len, rc;
+     char *cp;
+ 
+     va_start(vargs, fmt);
+ 
+     log.open(control::env("logfile"), fsys::GROUP_PRIVATE, fsys::APPEND);
+-    vsnprintf(buf, sizeof(buf) - 1, fmt, vargs);
++    rc = vsnprintf(buf, sizeof(buf) - 1, fmt, vargs);
++    printf_term(buf, sizeof(buf) - 1, rc);
+     len = strlen(buf);
+     if(buf[len - 1] != '\n')
+         buf[len++] = '\n';
