@@ -51,7 +51,7 @@
  #include "server.h"
  
 +namespace {
-+     // printf family does not add termiating NULL if data fills buffer
++     // printf family does not add terminating NULL if data fills buffer
 +     inline void printf_term(void* buffer, size_t size, int written)
 +     {
 +          // printf family returns -1 on error
@@ -68,7 +68,7 @@
      voip::body_t body = NULL;
      session *target = NULL;
      call *cr = source->parent;
-+    int rc;
++    int rc = 0;
  
      if(cr->source == source)
          target = cr->target;
@@ -95,7 +95,7 @@
      assert(user == NULL || *user != 0);
      assert(size > 0);
  
-+    int rc;
++    int rc = 0;
      char pbuf[10];
      bool ipv6 = false;
  
@@ -122,7 +122,7 @@
  
      char pbuf[10];
      unsigned port = 0;
-+    int rc;
++    int rc = 0;
      bool ipv6 = false;
      const char *defaddr = NULL;
  
@@ -149,7 +149,7 @@
  {
      char route[MAX_URI_SIZE];
      char touri[MAX_URI_SIZE];
-+    int rc;
++    int rc = 0;
  
      if(!call->diverting)
          return;
@@ -283,7 +283,7 @@
      const char *target;
      char buffer[MAX_URI_SIZE];
      registry::mapped *rr = NULL;
-+    int rc;
++    int rc = 0;
  
      String::set(cr->divert, sizeof(cr->divert), cr->forward);
      cr->forwarding = NULL;
@@ -410,7 +410,7 @@
  #include "server.h"
  
 +namespace {
-+     // printf family does not add termiating NULL if data fills buffer
++     // printf family does not add terminating NULL if data fills buffer
 +     inline void printf_term(void* buffer, size_t size, int written)
 +     {
 +          // printf family returns -1 on error
@@ -449,7 +449,7 @@
  {
      voip::ctype_t ct;
      voip::body_t body = NULL;
-+    int rc;
++    int rc = 0;
      char address[MAX_URI_SIZE];
      char fromhdr[MAX_URI_SIZE];
      char target[MAX_URI_SIZE];
@@ -512,7 +512,7 @@
      stack::call *call = session->parent;
 +    cdr *cdrnode = NULL;
      unsigned toext = 0;
-+    int rc;
++    int rc = 0;
      voip::hdr_t msgheader = NULL;
 -    char fromext[32];
 -    cdr *cdrnode = NULL;
@@ -722,7 +722,7 @@
  
  const char *thread::getIdent(void)
  {
-+    int rc;
++    int rc = 0;
 +
      if(!extension)
          return identity;
@@ -734,7 +734,7 @@
 -        snprintf(identbuf, sizeof(identbuf), "%s(%u)", identity, extension);
 +    if(!identbuf[0]) {
 +        rc = snprintf(identbuf, sizeof(identbuf), "%s(%u)", identity, extension);
-+        printf_term(session->from, sizeof(session->from), rc);
++        printf_term(identbuf, sizeof(identbuf), rc);
 +    }
  
      return identbuf;
@@ -844,7 +844,7 @@
      service::keynode *node = NULL, *leaf;
      stringbuf<64> digest;
      int error = SIP_PROXY_AUTHENTICATION_REQUIRED;
-+    int rc;
++    int rc = 0;
      const char *cp;
      const char *hash = NULL;
      digest_t calc(registry::getDigest());
@@ -854,7 +854,7 @@
      // compute service request digest string
 -    snprintf(buffer, sizeof(buffer), "%s:%s", sevent->request->sip_method, auth->uri);
 +    rc = snprintf(buffer, sizeof(buffer), "%s:%s", sevent->request->sip_method, auth->uri);
-+     printf_term(buffer, sizeof(buffer), rc);
++    printf_term(buffer, sizeof(buffer), rc);
  
      calc.puts(buffer);
      digest = *calc;
@@ -879,7 +879,7 @@
  void thread::challenge(void)
  {
      voip::msg_t reply = NULL;
-+    int rc;
++    int rc = 0;
      char nonce[32];
      time_t now;
  
@@ -899,7 +899,7 @@
      service::keynode *node = NULL, *leaf;
      stringbuf<64> digest;
      int error = SIP_PROXY_AUTHENTICATION_REQUIRED;
-+    int rc;
++    int rc = 0;
      const char *cp;
      char temp[64];
      voip::msg_t reply = NULL;
@@ -948,7 +948,7 @@
      int interval = -1;
      int pos = 0;
      int error = SIP_ADDRESS_INCOMPLETE;
-+    int rc;
++    int rc = 0;
      voip::msg_t reply = NULL;
      struct sockaddr_internet iface;
  
@@ -992,7 +992,7 @@
      unsigned count = 0;
      voip::contact_t c = NULL;
      int pos = 0;
-+    int rc;
++    int rc = 0;
      bool refresh;
  
      if(extension && (extension < registry::getPrefix() || extension >= registry::getPrefix() + registry::getRange())) {
