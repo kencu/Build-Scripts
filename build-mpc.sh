@@ -141,6 +141,9 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
+# Fix runpaths
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
@@ -151,6 +154,9 @@ then
     echo "Failed to test MPC"
     exit 1
 fi
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Installing package"

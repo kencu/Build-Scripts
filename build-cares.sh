@@ -121,16 +121,22 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
+# Fix runpaths
+bash ../fix-runpath.sh
+
 echo "**********************"
 echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("check" "V=1")
-if ! LD_LIBRARY_PATH=./.libs "${MAKE}" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test c-ares"
     exit 1
 fi
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Installing package"
