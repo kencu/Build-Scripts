@@ -34,8 +34,8 @@ fi
 #    exit 0
 #fi
 
-# Patchelf only builds on Linux. Solaris is trouble.
-if [[ "$IS_LINUX" -eq 0 ]]; then
+# Patchelf only builds on Linux and HURD. Solaris is trouble.
+if [[ "$IS_LINUX" -eq 0 && "$IS_HURD" -eq 0 ]]; then
     exit 0
 fi
 

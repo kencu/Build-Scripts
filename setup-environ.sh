@@ -82,6 +82,7 @@ trap finish EXIT INT
 ###############################################################################
 
 THIS_SYSTEM=$(uname -s 2>&1)
+IS_HURD=$(grep -i -c 'gnu' <<< "$THIS_SYSTEM")
 IS_LINUX=$(grep -i -c 'linux' <<< "$THIS_SYSTEM")
 IS_SOLARIS=$(grep -i -c 'sunos' <<< "$THIS_SYSTEM")
 IS_DARWIN=$(grep -i -c 'darwin' <<< "$THIS_SYSTEM")
