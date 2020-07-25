@@ -63,7 +63,7 @@ fi
 
 ###############################################################################
 
-if ! ./build-c-ares.sh
+if ! ./build-cares.sh
 then
     echo "Failed to build c-ares"
     exit 1

@@ -2684,7 +2684,7 @@
 +            dp[count++] = ch;
          }
      }
-+    count < max ? dp[count] = '\0' : dp[max - 1] = '\0';
++    count < max ? dp[count] = '\0' : count = max-1, dp[max-1] = '\0';
      return count;
  }
  
