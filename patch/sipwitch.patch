@@ -2584,7 +2584,7 @@
 +
 +    inline unsigned int min_length(int a, size_t b)
 +    {
-+        static_cast<unsigned int>(a < 0 ? 0 : a < b ? a : b);
++        return static_cast<unsigned int>(a < 0 ? 0 : a < b ? a : b);
 +    }
 +}
 +
