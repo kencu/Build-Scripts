@@ -2621,7 +2621,7 @@
 +    unsigned elems;
      while(*src && count < max) {
 -        switch(*src) {
-+        char ch = *(src++); 
++        char ch = *src++;
 +        switch(ch) {
          case '&':
 -            snprintf(dp + count, max - count, "&amp;");
