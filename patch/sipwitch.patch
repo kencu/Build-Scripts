@@ -2590,7 +2590,7 @@
  static size_t xmlformat(char *dp, size_t max, const char *fmt, ...)
  {
      va_list args;
-+	int rc;
++    int rc;
  
      if(max < 1)
          return 0;
@@ -2599,7 +2599,7 @@
 -    vsnprintf(dp, max, fmt, args);
 +    rc = vsnprintf(dp, max, fmt, args);
      va_end(args);
-+	printf_term(dp, max, rc);
++    printf_term(dp, max, rc);
      return strlen(dp);
  }
  
@@ -2607,7 +2607,7 @@
  static size_t xmltext(char *dp, size_t max, const char *src)
  {
      unsigned count = 0;
-+	int rc = 0;
++    int rc = 0;
 +
      while(*src && count < max) {
          switch(*src) {
@@ -2645,97 +2645,175 @@
              dp[count++] = *(src++);
          }
      }
-+	printf_term(dp, max, max);
++    printf_term(dp, max, (int)max);
      return count;
  }
  
-@@ -481,7 +497,7 @@
+@@ -464,6 +480,7 @@
+     pid_t opid;
+     fd_t fd;
+     char buf[65];
++    int rc = 0;
+ 
+ retry:
+     fd = open(DEFAULT_VARPATH "/run/sipwitch/cgilock", O_CREAT|O_WRONLY|O_TRUNC|O_EXCL, fsys::OWNER_PUBLIC);
+@@ -481,7 +498,8 @@
              error(408, "Lock timed out");
      }
  
 -    snprintf(buf, sizeof(buf), "%ld\n", (long)getpid());
 +    rc = snprintf(buf, sizeof(buf), "%ld\n", (long)getpid());
++    printf_term(buf, sizeof(buf), rc);
      if(write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
          error(500, "Failed Lock");
      close(fd);
-@@ -504,12 +520,12 @@
+@@ -495,6 +513,7 @@
+     unsigned len = 0;
+     va_list args;
+     FILE *fp;
++    int rc = 0;
+ 
+ #ifndef _MSWINDOWS_
+     int signo;
+@@ -504,13 +523,16 @@
      sigaddset(&sigs, SIGUSR2);
      sigaddset(&sigs, SIGALRM);
      sigprocmask(SIG_BLOCK, &sigs, NULL);
 -    snprintf(buf, sizeof(buf), "%ld ", (long)getpid());
 +    rc = snprintf(buf, sizeof(buf), "%ld ", (long)getpid());
++    printf_term(buf, sizeof(buf), rc);
      len = strlen(buf);
  #endif
  
      va_start(args, fmt);
 -    vsnprintf(buf + len, sizeof(buf) - len, fmt, args);
-+    vrc = snprintf(buf + len, sizeof(buf) - len, fmt, args);
++    rc = vsnprintf(buf + len, sizeof(buf) - len, fmt, args);
      va_end(args);
++    printf_term(buf + len, sizeof(buf) - len, rc);
++
      if(!strchr(buf, '\n'))
          String::add(buf, sizeof(buf), "\n");
-@@ -966,9 +982,9 @@
+ 
+@@ -965,10 +987,14 @@
+ {
      char buffer[512];
      FILE *fp;
++    int rc = 0;
++
  #ifdef  _MSWINDOWS_
 -    snprintf(buffer, sizeof(buffer), "%s\n", cmd);
 +    rc = snprintf(buffer, sizeof(buffer), "%s\n", cmd);
++    printf_term(buffer, sizeof(buffer), rc);
  #else
 -    snprintf(buffer, sizeof(buffer), "%ld %s\n", (long)getpid(), cmd);
 +    rc = snprintf(buffer, sizeof(buffer), "%ld %s\n", (long)getpid(), cmd);
++    printf_term(buffer, sizeof(buffer), rc);
  #endif
      char *ep = strchr(buffer, '\n');
      if(ep)
-@@ -1048,7 +1064,7 @@
+@@ -1029,6 +1055,7 @@
+     char buffer[1024];
+     rpcint_t diff = 0;
+     time_t now;
++    int rc = 0;
+ 
+     if(params.argc != 1)
+         fault(3, "Invalid Parameters");
+@@ -1048,7 +1075,8 @@
          if(!map.created)
              continue;
  
 -        snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
 +        rc = snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
++        printf_term(id, sizeof(id), rc);
          if(!eq(id, cid))
              continue;
  
-@@ -1091,7 +1107,7 @@
+@@ -1062,6 +1090,8 @@
+             map.source, map.target, map.display, diff);
+         reply(buffer);
+     }
++    printf_term(id, sizeof(id), (int)sizeof(id));
++
+     fault(6, "Unknown Call");
+     reset_unsafe<MappedCall>(map);
+ }
+@@ -1073,6 +1103,7 @@
+     unsigned index = 0;
+     char id[32];
+     MappedCall map;
++    int rc = 0;
+ 
+     if(params.argc != 0)
+         fault(3, "Invalid Parameters");
+@@ -1091,7 +1122,8 @@
          if(!map.created)
              continue;
  
 -        snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
 +        rc = snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
++        printf_term(id, sizeof(id), rc);
          response(buffer, size, "!s", buffer);
      }
      response(buffer, size, "]");
-@@ -1230,7 +1246,7 @@
+@@ -1204,6 +1236,7 @@
+     char buffer[2048];
+     time_t now;
+     const char *status = "idle";
++    int rc = 0;
+ 
+     if(params.argc != 1)
+         fault(3, "Invalid Parameters");
+@@ -1229,8 +1262,10 @@
+         if(!eq(map.userid, id))
              continue;
  
-         if(map.ext)
+-        if(map.ext)
 -            snprintf(ext, sizeof(ext), "%u", map.ext);
++        if(map.ext) {
 +            rc = snprintf(ext, sizeof(ext), "%u", map.ext);
++            printf_term(ext, sizeof(ext), rc);
++        }
          else
              String::set(ext, sizeof(ext), map.userid);
  
-@@ -1674,7 +1690,7 @@
+@@ -1656,6 +1691,7 @@
+     MappedCall buffer;
+     char idbuf[32];
+     time_t now;
++    int rc = 0;
+ 
+     if(!count)
+         error(405, "Server unavailable");
+@@ -1674,7 +1710,8 @@
          if(!buffer.created)
              continue;
  
 -        snprintf(idbuf, sizeof(idbuf), "%08x:%u", buffer.sequence, buffer.cid);
 +        rc = snprintf(idbuf, sizeof(idbuf), "%08x:%u", buffer.sequence, buffer.cid);
++        printf_term(idbuf, sizeof(idbuf), rc);
          if(id && !String::equal(id, idbuf))
              continue;
          printf(" <call id=\"%s\">\n", idbuf);
-@@ -1834,13 +1850,13 @@
+@@ -1834,13 +1871,17 @@
      char buf[256];
      GetEnvironmentVariable("APPDATA", buf, 192);
      unsigned len = strlen(buf);
 -    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.xml");
 +    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.xml");
++    printf_term(buf + len, sizeof(buf) - len, rc);
      save_file = strdup(buf);
 -    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.tmp");
 +    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.tmp");
++    printf_term(buf + len, sizeof(buf) - len, rc);
      temp_file = strdup(buf);
 -    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\snapshot.log");
 +    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\snapshot.log");
++    printf_term(buf + len, sizeof(buf) - len, rc);
      snapshot_file = strdup(buf);
 -    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\dumpfile.log");
 +    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\dumpfile.log");
++    printf_term(buf + len, sizeof(buf) - len, rc);
      dump_file = strdup(buf);
      if(GetEnvironmentVariable("GATEWAY_INTERFACE", buf, sizeof(buf)) > 0)
          cgi_version = strdup(buf);
