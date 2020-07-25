@@ -1875,7 +1875,15 @@
      shell::debug(3, "publishing %s with %s", contact, server);
  
      voip::publish(context, uri_to, contact, event, expiration, msgtype, body);
-@@ -372,10 +392,14 @@
+@@ -366,16 +386,22 @@
+ 
+ char *forward::referLocal(MappedRegistry *rr, const char *target, char *buffer, size_t size)
+ {
++    int rc = 0;
++
+     if(!refer)
+         return NULL;
+ 
      if(!isActive(rr->rid))
          return NULL;
  
@@ -1894,3 +1902,83 @@
      return buffer;
  }
  
+--- utils/sipquery.cpp
++++ utils/sipquery.cpp
+@@ -56,9 +56,20 @@
+ static Socket::address localhost("127.0.0.1");
+ #endif
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ PROGRAM_MAIN(argc, argv)
+ {
+-    int error = 2;
++    int error = 2, rc;
+     eXosip_event_t *sevent;
+     const char *cp, *user;
+     char buffer[256];
+@@ -277,21 +288,33 @@
+         proxy = server;
+ 
+     if(strncmp(proxy, "sip:", 4) && strncmp(proxy, "sips:", 5)) {
+-        if(tls)
+-            snprintf(pbuffer, sizeof(pbuffer), "sips:%s", proxy);
+-        else
+-            snprintf(pbuffer, sizeof(pbuffer), "sip:%s", proxy);
++        if(tls) {
++            rc = snprintf(pbuffer, sizeof(pbuffer), "sips:%s", proxy);
++            printf_term(pbuffer, sizeof(pbuffer), rc);
++        }
++        else {
++            rc = snprintf(pbuffer, sizeof(pbuffer), "sip:%s", proxy);
++            printf_term(pbuffer, sizeof(pbuffer), rc);
++        }
+         proxy = pbuffer;
+     }
+ 
+-    if(tls && !strchr(user, '@'))
+-        snprintf(buffer, sizeof(buffer), "sips:%s@%s", user, server);
+-    else if(!strchr(user, '@'))
+-        snprintf(buffer, sizeof(buffer), "sip:%s@%s", user, server);
+-    else if(tls)
+-        snprintf(buffer, sizeof(buffer), "sips:%s", user);
+-    else
+-        snprintf(buffer, sizeof(buffer), "sip:%s", user);
++    if(tls && !strchr(user, '@')) {
++        rc = snprintf(buffer, sizeof(buffer), "sips:%s@%s", user, server);
++        printf_term(buffer, sizeof(buffer), rc);
++    }
++    else if(!strchr(user, '@')) {
++        rc = snprintf(buffer, sizeof(buffer), "sip:%s@%s", user, server);
++        printf_term(buffer, sizeof(buffer), rc);
++    }
++    else if(tls) {
++        rc = snprintf(buffer, sizeof(buffer), "sips:%s", user);
++        printf_term(buffer, sizeof(buffer), rc);
++    }
++    else {
++        rc = snprintf(buffer, sizeof(buffer), "sip:%s", user);
++        printf_term(buffer, sizeof(buffer), rc);
++    }
+ 
+ 
+     EXOSIP_LOCK
+@@ -300,7 +323,8 @@
+         EXOSIP_UNLOCK
+         shell::errexit(3, "*** sipuser: cannot create query for %s\n", user);
+     }
+-    snprintf(tbuffer, sizeof(tbuffer), "<%s>", buffer);
++    rc = snprintf(tbuffer, sizeof(tbuffer), "<%s>", buffer);
++    printf_term(tbuffer, sizeof(tbuffer), rc);
+     osip_message_set_to(msg, tbuffer);
+     osip_list_ofchar_free(&msg->contacts);
+     eXosip_register_send_register(OPTION_CONTEXT rid, msg);
