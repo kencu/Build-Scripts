@@ -156,7 +156,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-true}"
 if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$XZ_TAR" "$XZ_DIR")

@@ -175,7 +175,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-true}"
 if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$GREP_XZ" "$GREP_TAR" "$GREP_DIR")
