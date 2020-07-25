@@ -184,7 +184,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$SIPW_TAR" "$SIPW_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
