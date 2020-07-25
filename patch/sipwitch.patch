@@ -2371,3 +2371,41 @@
          fsys::erase(target);
      }
      exit(0);
+--- utils/sippasswd.cpp
++++ utils/sippasswd.cpp
+@@ -22,6 +22,17 @@
+ #include <pwd.h>
+ #endif
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ using namespace sipwitch;
+ 
+ #ifdef  _MSWINDOWS_
+@@ -56,6 +67,7 @@
+     string_t digestbuf;
+     fpos_t pos;
+     FILE *fp;
++    int rc = 0;
+ 
+ #ifdef  _MSWINDOWS_
+     const char *control = "\\\\.\\mailslot\\sipwitch_ctrl";
+@@ -137,7 +149,8 @@
+     else
+         digestbuf = *digest;
+ 
+-    snprintf(replace, sizeof(replace), "%s:%s\n", user, *digestbuf);
++    rc = snprintf(replace, sizeof(replace), "%s:%s\n", user, *digestbuf);
++    printf_term(replace, sizeof(replace), rc);
+ 
+     // create work directory if it does not exist
+     dir::create(DEFAULT_VARPATH "/lib/sipwitch", fsys::GROUP_PRIVATE);
