@@ -2070,7 +2070,15 @@
  extern "C" {
      struct addrinfo;
  }
-@@ -391,7 +395,7 @@
+@@ -55,6 +59,7 @@
+ typedef uint32_t in_addr_t;
+ #else
+ #include <unistd.h>
++#include <sys/types.h>
+ #include <sys/socket.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+@@ -391,7 +396,7 @@
           * @param hostname or ip address.  The socket family is used for hostnames.
           * @param service port or name we are referencing or NULL.
           */
@@ -2079,7 +2087,7 @@
  
          /**
           * Construct a socket address list for a service.
-@@ -423,14 +427,14 @@
+@@ -423,14 +428,14 @@
          /**
           * Construct a socket address from a sockaddr object.
           */
@@ -2096,7 +2104,7 @@
              insert(address);
          }
  
-@@ -603,15 +607,15 @@
+@@ -603,15 +608,15 @@
           * @return true if we have an address list.
           */
          inline operator bool() const {
@@ -2115,7 +2123,7 @@
          }
  
          /**
-@@ -619,7 +623,7 @@
+@@ -619,7 +624,7 @@
           * @return true if we have no address list.
           */
          inline bool operator!() const {
@@ -2124,7 +2132,7 @@
          }
  
          /**
-@@ -675,7 +679,7 @@
+@@ -675,7 +680,7 @@
           * @param service name or port number, or NULL if not used.
           * @param type of socket (stream or dgram) to filter list by.
           */
@@ -2133,7 +2141,7 @@
  
          /**
           * Append additional host addresses to our list.
-@@ -683,7 +687,7 @@
+@@ -683,7 +688,7 @@
           * @param service name or port number, or NULL if not used.
           * @param type of socket (stream or dgram).
           */
@@ -2142,7 +2150,7 @@
  
          /**
           * Set an entry for host binding.
-@@ -1194,7 +1198,7 @@
+@@ -1194,7 +1199,7 @@
       * @param address of peer data was received from.
       * @return number of bytes actually read, 0 if none, -1 if error.
       */
@@ -2151,7 +2159,7 @@
  
      /**
       * Write data to the socket send buffer.  This will be used in abi 4.
-@@ -1203,7 +1207,7 @@
+@@ -1203,7 +1208,7 @@
       * @param address of peer to send data to if not connected.
       * @return number of bytes actually sent, 0 if none, -1 if error.
       */
@@ -2160,7 +2168,7 @@
  
      /**
       * Read a newline of text data from the socket and save in NULL terminated
-@@ -1482,7 +1486,7 @@
+@@ -1482,7 +1487,7 @@
       * @param address of source.
       * @return number of bytes received, -1 if error.
       */
@@ -2169,7 +2177,7 @@
  
      /**
       * Send data on socket.
-@@ -1493,7 +1497,7 @@
+@@ -1493,7 +1498,7 @@
       * @param address of destination, NULL if connected.
       * @return number of bytes sent, -1 if error.
       */
@@ -2178,7 +2186,7 @@
  
      /**
       * Send reply on socket.  Used to reply to a recvfrom message.
-@@ -1541,7 +1545,7 @@
+@@ -1541,7 +1546,7 @@
       * @param address of socket accepting.
       * @return new socket accepted.
       */
@@ -2187,7 +2195,7 @@
  
      /**
       * Create a socket object unbound.
-@@ -1851,7 +1855,7 @@
+@@ -1851,7 +1856,7 @@
       * @param address to save peer connecting.
       * @return socket descriptor of connected socket.
       */
@@ -2196,7 +2204,7 @@
  
      /**
       * Wait for a pending connection.
-@@ -1959,7 +1963,7 @@
+@@ -1959,7 +1964,7 @@
      }
  
      inline linked_pointer() {
@@ -2205,7 +2213,7 @@
      }
  
      inline linked_pointer(Socket::address& list) {
-@@ -2012,7 +2016,7 @@
+@@ -2012,7 +2017,7 @@
       * @return true if we have an address list.
       */
      inline operator bool() const {
@@ -2214,7 +2222,7 @@
      }
  
      /**
-@@ -2063,7 +2067,7 @@
+@@ -2063,7 +2068,7 @@
       * @return true if we have no address list.
       */
      inline bool operator!() const {
