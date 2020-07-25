@@ -513,25 +513,6 @@
  }
  
  } // namespace ucommon
---- commoncpp/tcp.cpp
-+++ commoncpp/tcp.cpp
-@@ -482,10 +482,13 @@
- TCPStream::~TCPStream()
- {
- #ifdef  CCXX_EXCEPTIONS
--        try { endStream(); }
--        catch( ... ) { if ( ! std::uncaught_exception()) throw;};
-+    try { endStream(); }
-+    catch( ... ) {  // ugh...
-+        if (! std::uncaught_exception())
-+            throw;  // rethrow
-+    };
- #else
--        endStream();
-+    endStream();
- #endif
- }
- 
 --- corelib/arrayref.cpp
 +++ corelib/arrayref.cpp
 @@ -17,6 +17,7 @@
@@ -2074,6 +2055,24 @@
      /**
 --- inc/ucommon/shared.h
 +++ inc/ucommon/shared.h
+@@ -188,7 +188,7 @@
+ }
+ 
+ template<>
+-inline size_t mapped_keypath<struct sockaddr>(const struct sockaddr *addr)
++inline size_t mapped_keypath<sockaddr>(const sockaddr *addr)
+ {
+ 	if(!addr)
+ 		return 0;
+@@ -197,7 +197,7 @@
+ }
+ 
+ template<>
+-inline bool mapped_keyequal<struct sockaddr>(const struct sockaddr *s1, const struct sockaddr *s2)
++inline bool mapped_keyequal<sockaddr>(const sockaddr *s1, const sockaddr *s2)
+ {
+ 	if(!s1 || !s2)
+ 		return false;
 @@ -236,7 +236,7 @@
  			ip.next();
  		}
