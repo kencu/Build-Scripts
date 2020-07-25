@@ -1195,7 +1195,22 @@
      if(buf[len - 1] != '\n')
 --- common/srv.cpp
 +++ common/srv.cpp
-@@ -48,6 +48,17 @@
+@@ -35,19 +35,30 @@
+ #define MAXPACKET PACKETSZ
+ #else
+ #define MAXPACKET 1024
+-#endif 
++#endif
+ 
+ typedef union {
+         HEADER hdr;
+         char buf[MAXPACKET];
+ } query;
+ 
+-#ifndef T_SRV 
++#ifndef T_SRV
+ #define T_SRV           33
+ #endif
  
  #endif
  
@@ -1213,6 +1228,15 @@
  namespace sipwitch {
  
  srv::srv(const char *uri) : Socket::address()
+@@ -98,7 +109,7 @@
+         ++index;
+     }
+     return result;
+-}        
++}
+ 
+ struct sockaddr *srv::find(uint16_t priority, uint32_t weight)
+ {
 @@ -121,6 +132,7 @@
  {
      int protocol = IPPROTO_UDP;
@@ -1231,6 +1255,20 @@
      }
      else if(eq(uri, "sips:", 5)) {
          protocol = IPPROTO_TCP;
+@@ -147,11 +160,11 @@
+     }
+     else if(eq(uri, "tcp:", 4)) {
+         protocol = IPPROTO_TCP;
+-        uri += 4;    
++        uri += 4;
+     }
+     else if(eq(uri, "udp:", 4)) {
+         protocol = IPPROTO_UDP;
+-        uri += 4;    
++        uri += 4;
+     }
+ 
+     uri::hostid(uri, host, sizeof(host));
 @@ -213,11 +226,15 @@
  
      query reply;
@@ -1252,6 +1290,124 @@
  
      result = res_query(zone, C_IN, T_SRV, (unsigned char *)&reply, sizeof(reply));
      if(result < (int)sizeof(HEADER))
+@@ -245,38 +262,38 @@
+         result = dn_expand(mp, ep, cp, hbuf, sizeof(hbuf));
+         if(result < 0)
+             goto nosrv;
+-        
++
+         cp += result;
+ 
+         type = ntohs(*((uint16_t *)cp));
+         cp += sizeof(uint16_t);
+ 
+-		// class
+-		cp += sizeof(uint16_t);
++        // class
++        cp += sizeof(uint16_t);
+ 
+         // ttl
+         cp += sizeof(uint32_t);
+ 
+         dlen = ntohs(*((uint16_t *)cp));
+         cp += sizeof(uint16_t);
+-        
+-		if(type != T_SRV) {
+-	        cp += dlen;
+-			continue;
+-		}
+-		
++
++        if(type != T_SRV) {
++            cp += dlen;
++            continue;
++        }
++
+         priority = ntohs(*((uint16_t *)cp));
+-		cp += sizeof(uint16_t);
+-	
+-		weight = ntohs(*((uint16_t *)cp));
+-		cp += sizeof(uint16_t);
+-
+-		hport = ntohs(*((uint16_t *)cp));
+-		cp += sizeof(uint16_t);
+-
+-		result = dn_expand(mp, ep, cp, hbuf, sizeof(hbuf));
+-		if(result < 0)
+-			break;
++        cp += sizeof(uint16_t);
++
++        weight = ntohs(*((uint16_t *)cp));
++        cp += sizeof(uint16_t);
++
++        hport = ntohs(*((uint16_t *)cp));
++        cp += sizeof(uint16_t);
++
++        result = dn_expand(mp, ep, cp, hbuf, sizeof(hbuf));
++        if(result < 0)
++            break;
+ 
+         Socket::address resolv(hbuf, hport);
+         const struct sockaddr *sp = resolv.getAddr();
+@@ -288,7 +305,7 @@
+             rand &= 0x7fff;
+             if(weight)
+                 weight = (1 + rand) % ( 10000 * weight);
+-        
++
+             srvlist[count].weight = weight;
+             srvlist[count].priority = priority;
+             Socket::store(&srvlist[count].addr, sp);
+@@ -299,10 +316,10 @@
+             }
+             ++count;
+         }
+-		cp += result;
++        cp += result;
+     }
+-	
+-	return;
++
++    return;
+ nosrv:
+     if(srvlist) {
+         delete[] srvlist;
+@@ -315,15 +332,15 @@
+     else if(eq(svc, "sip"))
+         String::set(svc, sizeof(svc), "5060");
+     getaddrinfo(host, svc, &hint, &list);
+-	struct addrinfo *ap = list;
++    struct addrinfo *ap = list;
+     count = 0;
+ 
+     if(ap)
+         entry = ap->ai_addr;
+-	while(ap) {
+-		++count;
+-		ap = ap->ai_next;
+-	}
++    while(ap) {
++        ++count;
++        ap = ap->ai_next;
++    }
+ }
+ 
+ srv::~srv()
+@@ -341,11 +358,11 @@
+     if(list) {
+         freeaddrinfo(list);
+         list = NULL;
+-    } 
++    }
+ 
+     entry = NULL;
+-	count = 0;
+-}       
++    count = 0;
++}
+ 
+ struct sockaddr *srv::next(void)
+ {
 @@ -379,6 +396,7 @@
      const char *sid = uri;
      unsigned short port = uri::portid(uri);
@@ -1279,25 +1435,26 @@
          sid = buf;
      }
      set(sid);
-@@ -415,11 +437,17 @@
+@@ -414,12 +436,17 @@
+         return NULL;
      if(!Socket::query(entry, host, sizeof(host)))
          return NULL;
- #ifdef    AF_INET6
--    if(entry->sa_family == AF_INET6)
--        snprintf(buf, size, "%s:[%s]:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in6 *)(entry))->sin6_port) & 0xffff);
--    else
+-#ifdef	AF_INET6
+-	if(entry->sa_family == AF_INET6)
+-		snprintf(buf, size, "%s:[%s]:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in6 *)(entry))->sin6_port) & 0xffff);
+-	else
++#ifdef  AF_INET6
 +    if(entry->sa_family == AF_INET6) {
 +        rc = snprintf(buf, size, "%s:[%s]:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in6 *)(entry))->sin6_port) & 0xffff);
 +        printf_term(buf, size, rc);
 +    }
 +    else
  #endif
--        snprintf(buf, size, "%s:%s:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in *)(entry))->sin_port) & 0xffff);
+-		snprintf(buf, size, "%s:%s:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in *)(entry))->sin_port) & 0xffff);
 +    {
 +        rc = snprintf(buf, size, "%s:%s:%u", schema, host, (unsigned)ntohs(((struct sockaddr_in *)(entry))->sin_port) & 0xffff);
 +        printf_term(buf, size, rc);
 +    }
-+
      return ctx;
  }
  
