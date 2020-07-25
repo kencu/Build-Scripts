@@ -2177,7 +2177,7 @@
                  map->data[entry].pmin,
                  map->data[entry].pmax);
          }
-+        printf_term(text, sizeof(text), rc);
++        printf_term(text, sizeof(text), (int)sizeof(text));
          printf("%s\n", text);
      }
      exit(0);
@@ -2232,7 +2232,7 @@
                  map.data[entry].current,
                  map.data[entry].peak);
          }
-+        printf_term(text, sizeof(text), rc);
++        printf_term(text, sizeof(text), (int)sizeof(text));
 +
          current = map.data[0].current + map.data[1].current;
          if(current)
@@ -2314,7 +2314,7 @@
 -        snprintf(buffer + len, sizeof(buffer) - len - 1, " %s", *(argv++));
 +        rc = snprintf(buffer + len, sizeof(buffer) - len - 1, " %s", *(argv++));
      }
-+    printf_term(buffer, sizeof(buffer), rc);
++    printf_term(buffer, sizeof(buffer), (int)sizeof(buffer));
  
  #ifdef  _MSWINDOWS_
      if(!WriteFile(fd, buffer, (DWORD)strlen(buffer) + 1, NULL, NULL))
@@ -2409,3 +2409,176 @@
  
      // create work directory if it does not exist
      dir::create(DEFAULT_VARPATH "/lib/sipwitch", fsys::GROUP_PRIVATE);
+--- utils/cgiserver.cpp
++++ utils/cgiserver.cpp
+@@ -19,6 +19,17 @@
+ #include <ctype.h>
+ #include <sys/stat.h>
+ 
++namespace {
++    // printf family does not add terminating NULL if data fills buffer
++    inline void printf_term(void* buffer, size_t size, int written)
++    {
++        // printf family returns -1 on error
++        char * p = (char *) buffer;
++        size_t w = (size_t) written;
++        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
++    }
++}
++
+ using namespace sipwitch;
+ 
+ #define RPC_MAX_PARAMS 96
+@@ -96,13 +107,15 @@
+ static size_t xmlformat(char *dp, size_t max, const char *fmt, ...)
+ {
+     va_list args;
++	int rc;
+ 
+     if(max < 1)
+         return 0;
+ 
+     va_start(args, fmt);
+-    vsnprintf(dp, max, fmt, args);
++    rc = vsnprintf(dp, max, fmt, args);
+     va_end(args);
++	printf_term(dp, max, rc);
+     return strlen(dp);
+ }
+ 
+@@ -184,30 +197,32 @@
+ static size_t xmltext(char *dp, size_t max, const char *src)
+ {
+     unsigned count = 0;
++	int rc = 0;
++
+     while(*src && count < max) {
+         switch(*src) {
+         case '&':
+-            snprintf(dp + count, max - count, "&amp;");
++            rc = snprintf(dp + count, max - count, "&amp;");
+             count += strlen(dp + count);
+             ++src;
+             break;
+         case '<':
+-            snprintf(dp + count, max - count, "&lt;");
++            rc = snprintf(dp + count, max - count, "&lt;");
+             count += strlen(dp + count);
+             ++src;
+             break;
+         case '>':
+-            snprintf(dp + count, max - count, "&gt;");
++            rc = snprintf(dp + count, max - count, "&gt;");
+             count += strlen(dp + count);
+             ++src;
+             break;
+         case '\"':
+-            snprintf(dp + count, max - count, "&quot;");
++            rc = snprintf(dp + count, max - count, "&quot;");
+             count += strlen(dp + count);
+             ++src;
+             break;
+          case '\'':
+-            snprintf(dp + count, max - count, "&apos;");
++            rc = snprintf(dp + count, max - count, "&apos;");
+             count = strlen(dp + count);
+             ++src;
+             break;
+@@ -215,6 +230,7 @@
+             dp[count++] = *(src++);
+         }
+     }
++	printf_term(dp, max, max);
+     return count;
+ }
+ 
+@@ -481,7 +497,7 @@
+             error(408, "Lock timed out");
+     }
+ 
+-    snprintf(buf, sizeof(buf), "%ld\n", (long)getpid());
++    rc = snprintf(buf, sizeof(buf), "%ld\n", (long)getpid());
+     if(write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
+         error(500, "Failed Lock");
+     close(fd);
+@@ -504,12 +520,12 @@
+     sigaddset(&sigs, SIGUSR2);
+     sigaddset(&sigs, SIGALRM);
+     sigprocmask(SIG_BLOCK, &sigs, NULL);
+-    snprintf(buf, sizeof(buf), "%ld ", (long)getpid());
++    rc = snprintf(buf, sizeof(buf), "%ld ", (long)getpid());
+     len = strlen(buf);
+ #endif
+ 
+     va_start(args, fmt);
+-    vsnprintf(buf + len, sizeof(buf) - len, fmt, args);
++    vrc = snprintf(buf + len, sizeof(buf) - len, fmt, args);
+     va_end(args);
+     if(!strchr(buf, '\n'))
+         String::add(buf, sizeof(buf), "\n");
+@@ -966,9 +982,9 @@
+     char buffer[512];
+     FILE *fp;
+ #ifdef  _MSWINDOWS_
+-    snprintf(buffer, sizeof(buffer), "%s\n", cmd);
++    rc = snprintf(buffer, sizeof(buffer), "%s\n", cmd);
+ #else
+-    snprintf(buffer, sizeof(buffer), "%ld %s\n", (long)getpid(), cmd);
++    rc = snprintf(buffer, sizeof(buffer), "%ld %s\n", (long)getpid(), cmd);
+ #endif
+     char *ep = strchr(buffer, '\n');
+     if(ep)
+@@ -1048,7 +1064,7 @@
+         if(!map.created)
+             continue;
+ 
+-        snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
++        rc = snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
+         if(!eq(id, cid))
+             continue;
+ 
+@@ -1091,7 +1107,7 @@
+         if(!map.created)
+             continue;
+ 
+-        snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
++        rc = snprintf(id, sizeof(id), "%08x:%d", map.sequence, map.cid);
+         response(buffer, size, "!s", buffer);
+     }
+     response(buffer, size, "]");
+@@ -1230,7 +1246,7 @@
+             continue;
+ 
+         if(map.ext)
+-            snprintf(ext, sizeof(ext), "%u", map.ext);
++            rc = snprintf(ext, sizeof(ext), "%u", map.ext);
+         else
+             String::set(ext, sizeof(ext), map.userid);
+ 
+@@ -1674,7 +1690,7 @@
+         if(!buffer.created)
+             continue;
+ 
+-        snprintf(idbuf, sizeof(idbuf), "%08x:%u", buffer.sequence, buffer.cid);
++        rc = snprintf(idbuf, sizeof(idbuf), "%08x:%u", buffer.sequence, buffer.cid);
+         if(id && !String::equal(id, idbuf))
+             continue;
+         printf(" <call id=\"%s\">\n", idbuf);
+@@ -1834,13 +1850,13 @@
+     char buf[256];
+     GetEnvironmentVariable("APPDATA", buf, 192);
+     unsigned len = strlen(buf);
+-    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.xml");
++    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.xml");
+     save_file = strdup(buf);
+-    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.tmp");
++    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\config.tmp");
+     temp_file = strdup(buf);
+-    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\snapshot.log");
++    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\snapshot.log");
+     snapshot_file = strdup(buf);
+-    snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\dumpfile.log");
++    rc = snprintf(buf + len, sizeof(buf) - len, "\\sipwitch\\dumpfile.log");
+     dump_file = strdup(buf);
+     if(GetEnvironmentVariable("GATEWAY_INTERFACE", buf, sizeof(buf)) > 0)
+         cgi_version = strdup(buf);
