@@ -2568,7 +2568,7 @@
      dir::create(DEFAULT_VARPATH "/lib/sipwitch", fsys::GROUP_PRIVATE);
 --- utils/cgiserver.cpp
 +++ utils/cgiserver.cpp
-@@ -19,6 +19,17 @@
+@@ -19,6 +19,22 @@
  #include <ctype.h>
  #include <sys/stat.h>
  
@@ -2581,12 +2581,17 @@
 +        size_t w = (size_t) written;
 +        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
 +    }
++
++    inline unsigned int min_length(int a, size_t b)
++    {
++        static_cast<unsigned int>(a < b ? a : b);
++    }
 +}
 +
  using namespace sipwitch;
  
  #define RPC_MAX_PARAMS 96
-@@ -96,13 +107,15 @@
+@@ -96,13 +112,15 @@
  static size_t xmlformat(char *dp, size_t max, const char *fmt, ...)
  {
      va_list args;
@@ -2603,53 +2608,92 @@
      return strlen(dp);
  }
  
-@@ -184,30 +197,32 @@
+@@ -183,38 +201,60 @@
+ 
  static size_t xmltext(char *dp, size_t max, const char *src)
  {
-     unsigned count = 0;
-+    int rc = 0;
++    // GCC analyzer findings
++    if (! dp) return 0;
++    dp[0] = '\0';
++    if (! src) return 0;
 +
+     unsigned count = 0;
++    unsigned elems;
      while(*src && count < max) {
          switch(*src) {
          case '&':
 -            snprintf(dp + count, max - count, "&amp;");
-+            rc = snprintf(dp + count, max - count, "&amp;");
-             count += strlen(dp + count);
-             ++src;
+-            count += strlen(dp + count);
+-            ++src;
++            //rc = snprintf(dp + count, max - count, "&amp;");
++            //count += strlen(dp + count);
++            //++src;
++            elems = min_length(5, max - count);
++            memcpy(dp + count, "&amp;", elems);
++            count += elems; src++;
              break;
          case '<':
 -            snprintf(dp + count, max - count, "&lt;");
-+            rc = snprintf(dp + count, max - count, "&lt;");
-             count += strlen(dp + count);
-             ++src;
+-            count += strlen(dp + count);
+-            ++src;
++            //rc = snprintf(dp + count, max - count, "&lt;");
++            //count += strlen(dp + count);
++            //++src;
++            elems = min_length(4, max - count);
++            memcpy(dp + count, "&lt;", elems);
++            count += elems; src++;
              break;
          case '>':
 -            snprintf(dp + count, max - count, "&gt;");
-+            rc = snprintf(dp + count, max - count, "&gt;");
-             count += strlen(dp + count);
-             ++src;
+-            count += strlen(dp + count);
+-            ++src;
++            //rc = snprintf(dp + count, max - count, "&gt;");
++            //count += strlen(dp + count);
++            //++src;
++            elems = min_length(4, max - count);
++            memcpy(dp + count, "&gt;", elems);
++            count += elems; src++;
              break;
          case '\"':
 -            snprintf(dp + count, max - count, "&quot;");
-+            rc = snprintf(dp + count, max - count, "&quot;");
-             count += strlen(dp + count);
-             ++src;
+-            count += strlen(dp + count);
+-            ++src;
++            //rc = snprintf(dp + count, max - count, "&quot;");
++            //count += strlen(dp + count);
++            //++src;
++            elems = min_length(6, max - count);
++            memcpy(dp + count, "&quot;", elems);
++            count += elems; src++;
              break;
           case '\'':
 -            snprintf(dp + count, max - count, "&apos;");
-+            rc = snprintf(dp + count, max - count, "&apos;");
-             count = strlen(dp + count);
-             ++src;
+-            count = strlen(dp + count);
+-            ++src;
++            //rc = snprintf(dp + count, max - count, "&apos;");
++            //count = strlen(dp + count);
++            //++src;
++            elems = min_length(6, max - count);
++            memcpy(dp + count, "&apos;", elems);
++            count += elems; src++;
              break;
-@@ -215,6 +230,7 @@
+         default:
              dp[count++] = *(src++);
          }
      }
-+    printf_term(dp, max, (int)max);
++    count < max ? dp[count] = '\0' : dp[max - 1] = '\0';
      return count;
  }
  
-@@ -464,6 +480,7 @@
+@@ -276,7 +316,7 @@
+         if(*cp != '&') {
+             *(dp++) = *(cp++);
+             continue;
+-            }
++        }
+         if(!strncmp(cp, "&amp;", 5)) {
+                     *(dp++) = '&';
+             cp += 5;
+@@ -464,6 +504,7 @@
      pid_t opid;
      fd_t fd;
      char buf[65];
@@ -2657,7 +2701,7 @@
  
  retry:
      fd = open(DEFAULT_VARPATH "/run/sipwitch/cgilock", O_CREAT|O_WRONLY|O_TRUNC|O_EXCL, fsys::OWNER_PUBLIC);
-@@ -481,7 +498,8 @@
+@@ -481,7 +522,8 @@
              error(408, "Lock timed out");
      }
  
@@ -2667,7 +2711,7 @@
      if(write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
          error(500, "Failed Lock");
      close(fd);
-@@ -495,6 +513,7 @@
+@@ -495,6 +537,7 @@
      unsigned len = 0;
      va_list args;
      FILE *fp;
@@ -2675,7 +2719,7 @@
  
  #ifndef _MSWINDOWS_
      int signo;
-@@ -504,13 +523,16 @@
+@@ -504,13 +547,16 @@
      sigaddset(&sigs, SIGUSR2);
      sigaddset(&sigs, SIGALRM);
      sigprocmask(SIG_BLOCK, &sigs, NULL);
@@ -2694,7 +2738,7 @@
      if(!strchr(buf, '\n'))
          String::add(buf, sizeof(buf), "\n");
  
-@@ -965,10 +987,14 @@
+@@ -965,10 +1011,14 @@
  {
      char buffer[512];
      FILE *fp;
@@ -2711,7 +2755,7 @@
  #endif
      char *ep = strchr(buffer, '\n');
      if(ep)
-@@ -1029,6 +1055,7 @@
+@@ -1029,6 +1079,7 @@
      char buffer[1024];
      rpcint_t diff = 0;
      time_t now;
@@ -2719,7 +2763,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1048,7 +1075,8 @@
+@@ -1048,7 +1099,8 @@
          if(!map.created)
              continue;
  
@@ -2729,7 +2773,7 @@
          if(!eq(id, cid))
              continue;
  
-@@ -1062,6 +1090,8 @@
+@@ -1062,6 +1114,8 @@
              map.source, map.target, map.display, diff);
          reply(buffer);
      }
@@ -2738,7 +2782,7 @@
      fault(6, "Unknown Call");
      reset_unsafe<MappedCall>(map);
  }
-@@ -1073,6 +1103,7 @@
+@@ -1073,6 +1127,7 @@
      unsigned index = 0;
      char id[32];
      MappedCall map;
@@ -2746,7 +2790,7 @@
  
      if(params.argc != 0)
          fault(3, "Invalid Parameters");
-@@ -1091,7 +1122,8 @@
+@@ -1091,7 +1146,8 @@
          if(!map.created)
              continue;
  
@@ -2756,7 +2800,7 @@
          response(buffer, size, "!s", buffer);
      }
      response(buffer, size, "]");
-@@ -1204,6 +1236,7 @@
+@@ -1204,6 +1260,7 @@
      char buffer[2048];
      time_t now;
      const char *status = "idle";
@@ -2764,7 +2808,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1229,8 +1262,10 @@
+@@ -1229,8 +1286,10 @@
          if(!eq(map.userid, id))
              continue;
  
@@ -2777,7 +2821,7 @@
          else
              String::set(ext, sizeof(ext), map.userid);
  
-@@ -1656,6 +1691,7 @@
+@@ -1656,6 +1715,7 @@
      MappedCall buffer;
      char idbuf[32];
      time_t now;
@@ -2785,7 +2829,7 @@
  
      if(!count)
          error(405, "Server unavailable");
-@@ -1674,7 +1710,8 @@
+@@ -1674,7 +1734,8 @@
          if(!buffer.created)
              continue;
  
@@ -2795,7 +2839,7 @@
          if(id && !String::equal(id, idbuf))
              continue;
          printf(" <call id=\"%s\">\n", idbuf);
-@@ -1834,13 +1871,17 @@
+@@ -1834,13 +1895,17 @@
      char buf[256];
      GetEnvironmentVariable("APPDATA", buf, 192);
      unsigned len = strlen(buf);
