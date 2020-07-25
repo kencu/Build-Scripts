@@ -2584,7 +2584,7 @@
 +
 +    inline unsigned int min_length(int a, size_t b)
 +    {
-+        static_cast<unsigned int>(a < 0 ? 0 : a < b ? a : b);
++        static_cast<unsigned int>(a < b ? a : b);
 +    }
 +}
 +
@@ -2608,7 +2608,7 @@
      return strlen(dp);
  }
  
-@@ -183,38 +201,61 @@
+@@ -183,38 +201,62 @@
  
  static size_t xmltext(char *dp, size_t max, const char *src)
  {
@@ -2680,6 +2680,7 @@
              break;
          default:
 -            dp[count++] = *(src++);
++            //dp[count++] = *(src++);
 +            dp[count++] = ch;
          }
      }
@@ -2687,7 +2688,7 @@
      return count;
  }
  
-@@ -276,7 +317,7 @@
+@@ -276,7 +318,7 @@
          if(*cp != '&') {
              *(dp++) = *(cp++);
              continue;
@@ -2696,7 +2697,7 @@
          if(!strncmp(cp, "&amp;", 5)) {
                      *(dp++) = '&';
              cp += 5;
-@@ -464,6 +505,7 @@
+@@ -464,6 +506,7 @@
      pid_t opid;
      fd_t fd;
      char buf[65];
@@ -2704,7 +2705,7 @@
  
  retry:
      fd = open(DEFAULT_VARPATH "/run/sipwitch/cgilock", O_CREAT|O_WRONLY|O_TRUNC|O_EXCL, fsys::OWNER_PUBLIC);
-@@ -481,7 +523,8 @@
+@@ -481,7 +524,8 @@
              error(408, "Lock timed out");
      }
  
@@ -2714,7 +2715,7 @@
      if(write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
          error(500, "Failed Lock");
      close(fd);
-@@ -495,6 +538,7 @@
+@@ -495,6 +539,7 @@
      unsigned len = 0;
      va_list args;
      FILE *fp;
@@ -2722,7 +2723,7 @@
  
  #ifndef _MSWINDOWS_
      int signo;
-@@ -504,13 +548,16 @@
+@@ -504,13 +549,16 @@
      sigaddset(&sigs, SIGUSR2);
      sigaddset(&sigs, SIGALRM);
      sigprocmask(SIG_BLOCK, &sigs, NULL);
@@ -2741,7 +2742,7 @@
      if(!strchr(buf, '\n'))
          String::add(buf, sizeof(buf), "\n");
  
-@@ -965,10 +1012,14 @@
+@@ -965,10 +1013,14 @@
  {
      char buffer[512];
      FILE *fp;
@@ -2758,7 +2759,7 @@
  #endif
      char *ep = strchr(buffer, '\n');
      if(ep)
-@@ -1029,6 +1080,7 @@
+@@ -1029,6 +1081,7 @@
      char buffer[1024];
      rpcint_t diff = 0;
      time_t now;
@@ -2766,7 +2767,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1048,7 +1100,8 @@
+@@ -1048,7 +1101,8 @@
          if(!map.created)
              continue;
  
@@ -2776,7 +2777,7 @@
          if(!eq(id, cid))
              continue;
  
-@@ -1062,6 +1115,8 @@
+@@ -1062,6 +1116,8 @@
              map.source, map.target, map.display, diff);
          reply(buffer);
      }
@@ -2785,7 +2786,7 @@
      fault(6, "Unknown Call");
      reset_unsafe<MappedCall>(map);
  }
-@@ -1073,6 +1128,7 @@
+@@ -1073,6 +1129,7 @@
      unsigned index = 0;
      char id[32];
      MappedCall map;
@@ -2793,7 +2794,7 @@
  
      if(params.argc != 0)
          fault(3, "Invalid Parameters");
-@@ -1091,7 +1147,8 @@
+@@ -1091,7 +1148,8 @@
          if(!map.created)
              continue;
  
@@ -2803,7 +2804,7 @@
          response(buffer, size, "!s", buffer);
      }
      response(buffer, size, "]");
-@@ -1204,6 +1261,7 @@
+@@ -1204,6 +1262,7 @@
      char buffer[2048];
      time_t now;
      const char *status = "idle";
@@ -2811,7 +2812,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1229,8 +1287,10 @@
+@@ -1229,8 +1288,10 @@
          if(!eq(map.userid, id))
              continue;
  
@@ -2824,7 +2825,7 @@
          else
              String::set(ext, sizeof(ext), map.userid);
  
-@@ -1656,6 +1716,7 @@
+@@ -1656,6 +1717,7 @@
      MappedCall buffer;
      char idbuf[32];
      time_t now;
@@ -2832,7 +2833,7 @@
  
      if(!count)
          error(405, "Server unavailable");
-@@ -1674,7 +1735,8 @@
+@@ -1674,7 +1736,8 @@
          if(!buffer.created)
              continue;
  
@@ -2842,7 +2843,7 @@
          if(id && !String::equal(id, idbuf))
              continue;
          printf(" <call id=\"%s\">\n", idbuf);
-@@ -1834,13 +1896,17 @@
+@@ -1834,13 +1897,17 @@
      char buf[256];
      GetEnvironmentVariable("APPDATA", buf, 192);
      unsigned len = strlen(buf);
