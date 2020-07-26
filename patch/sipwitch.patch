@@ -2595,10 +2595,10 @@
 +
 +    // This is a short memcpy for escaped XML characters. It only needs to
 +    // handle 6 chars. This version produces the shortest code on x86. A
-+    // switch statement is 70 bytes longer. A memcpy is 42 bytes longer.
++    // switch statement is 120 bytes longer. A memcpy is 42 bytes longer.
 +    inline void copy_bytes(char* dest, const char* src, unsigned int count) {
-+        assert(count <= 6);
-+        if (count == 6) dest[5] = src[5];
++        assert(count > 0 && count <= 6);
++        if (count >= 6) dest[5] = src[5];
 +        if (count >= 5) dest[4] = src[4];
 +        if (count >= 4) dest[3] = src[3];
 +        if (count >= 3) dest[2] = src[2];
