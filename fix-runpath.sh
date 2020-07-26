@@ -104,8 +104,12 @@ do
     then
         chrpath -r "$FIXED_RUNPATH" "$file" 2>/dev/null
 
-    else
+    elif [[ "$IS_LINUX" -eq 1 ]]
+    then
         echo "Unable to find elf editor"
+
+    else
+        :
     fi
 
     chmod a+x "$file"; chmod go-w "$file"
