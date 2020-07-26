@@ -294,6 +294,7 @@ fi
 # RPATH's and their history at https://lekensteyn.nl/rpath.html.
 # $ORIGIN on Linux should be available back to about 1998.
 # We feature test for INSTX_OPATH and INSTX_RPATH below.
+# AIX also needs -bsvr4; while HP-UX uses -Wl,+b. 
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib"
