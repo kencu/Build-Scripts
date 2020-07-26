@@ -291,12 +291,9 @@ if [[ -z "$INSTX_PREFIX" ]]; then
     INSTX_PREFIX="$DEF_PREFIX"
 fi
 
-#if [[ "$IS_64BIT" -ne 0 ]] && [[ "$IS_SOLARIS" -ne 0 ]]; then
-#    DEF_LIBDIR="$INSTX_PREFIX/lib/64"
-#    DEF_OPATH="'""\$\$ORIGIN/../lib/64""'"
-#elif [[ "$IS_SOLARIS" -ne 0 ]]; then
-#    DEF_LIBDIR="$INSTX_PREFIX/lib/32"
-#    DEF_OPATH="'""\$\$ORIGIN/../lib/32""'"
+# RPATH's and their history at https://lekensteyn.nl/rpath.html.
+# $ORIGIN on Linux should be available back to about 1998.
+# We feature test for INSTX_OPATH and INSTX_RPATH below.
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     DEF_LIBDIR="$INSTX_PREFIX/lib"
