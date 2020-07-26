@@ -412,8 +412,16 @@ CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' '
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPATH="-Wl,-R,$INSTX_OPATH"
 fi
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_OPATH="-Wl,-R,$INSTX_OPATH -bsvr4"
+fi
+CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_OPATH="-Wl,+b,$INSTX_OPATH"
+fi
 
-# See if -Wl,-rpath,${libdir} works. This is a RPATH.
+# See if -Wl,-rpath,${libdir} works.
 CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,-rpath,$INSTX_RPATH"
@@ -421,6 +429,14 @@ fi
 CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,-R,$INSTX_RPATH"
+fi
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_RPATH="-Wl,-R,$INSTX_RPATH -bsvr4"
+fi
+CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    OPT_RPATH="-Wl,+b,$INSTX_RPATH"
 fi
 
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
