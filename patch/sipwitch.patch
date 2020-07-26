@@ -2568,10 +2568,15 @@
      dir::create(DEFAULT_VARPATH "/lib/sipwitch", fsys::GROUP_PRIVATE);
 --- utils/cgiserver.cpp
 +++ utils/cgiserver.cpp
-@@ -19,6 +19,22 @@
- #include <ctype.h>
- #include <sys/stat.h>
+@@ -16,8 +16,39 @@
  
+ #include <sipwitch-config.h>
+ #include <sipwitch/sipwitch.h>
+-#include <ctype.h>
+ #include <sys/stat.h>
++#include <ctype.h>
++#include <assert.h>
++
 +namespace {
 +    // printf family does not add terminating NULL if data fills buffer
 +    inline void printf_term(void* buffer, size_t size, int written)
@@ -2582,16 +2587,29 @@
 +        written == -1 ? p[0] = '\0' : size >= w ? p[w-1] = '\0' : p[w] = '\0';
 +    }
 +
++    // This is a std::min function for {int, size_t}
 +    inline unsigned int min_length(int a, size_t b)
 +    {
 +        return static_cast<unsigned int>(a < 0 ? 0 : a < b ? a : b);
 +    }
-+}
 +
++    // This is a short memcpy for escaped XML characters. It only needs to
++    // handle 6 chars. This version produces the shortest code on x86. A
++    // switch statement is 70 bytes longer. A memcpy is 42 bytes longer.
++    inline void copy_bytes(char* dest, const char* src, unsigned int count) {
++        assert(count <= 6);
++        if (count == 6) dest[5] = src[5];
++        if (count >= 5) dest[4] = src[4];
++        if (count >= 4) dest[3] = src[3];
++        if (count >= 3) dest[2] = src[2];
++        if (count >= 2) dest[1] = src[1];
++        if (count >= 1) dest[0] = src[0];
++    }
++}
+ 
  using namespace sipwitch;
  
- #define RPC_MAX_PARAMS 96
-@@ -96,13 +112,15 @@
+@@ -96,13 +127,15 @@
  static size_t xmlformat(char *dp, size_t max, const char *fmt, ...)
  {
      va_list args;
@@ -2608,8 +2626,17 @@
      return strlen(dp);
  }
  
-@@ -183,38 +201,62 @@
+@@ -181,40 +214,72 @@
  
+ */
+ 
++/**
++ * Adds XML escaping to a text string. xmltext() provides full data
++ * escaping, but it does not handle comments properly. xmltext()
++ * returns the strlen() of the C-string in dp. The C-string is
++ * always NULL-terminated, and may truncate the original string.
++ * @author David Sugar <dyfet@gnutelephony.org>
++ */
  static size_t xmltext(char *dp, size_t max, const char *src)
  {
 +    // GCC analyzer findings
@@ -2617,11 +2644,14 @@
 +    dp[0] = '\0';
 +    if (! src) return 0;
 +
++    char ch;
      unsigned count = 0;
-+    unsigned elems;
-     while(*src && count < max) {
+-    while(*src && count < max) {
 -        switch(*src) {
-+        char ch = *src++;
++    unsigned elems = 0;
++    const char* escaped;
++
++    while((ch = *src++) && count < max) {
 +        switch(ch) {
          case '&':
 -            snprintf(dp + count, max - count, "&amp;");
@@ -2631,8 +2661,7 @@
 +            //count += strlen(dp + count);
 +            //++src;
 +            elems = min_length(5, max - count);
-+            memcpy(dp + count, "&amp;", elems);
-+            count += elems;
++            escaped = "&amp;";
              break;
          case '<':
 -            snprintf(dp + count, max - count, "&lt;");
@@ -2642,8 +2671,7 @@
 +            //count += strlen(dp + count);
 +            //++src;
 +            elems = min_length(4, max - count);
-+            memcpy(dp + count, "&lt;", elems);
-+            count += elems;
++            escaped = "&lt;";
              break;
          case '>':
 -            snprintf(dp + count, max - count, "&gt;");
@@ -2653,8 +2681,7 @@
 +            //count += strlen(dp + count);
 +            //++src;
 +            elems = min_length(4, max - count);
-+            memcpy(dp + count, "&gt;", elems);
-+            count += elems;
++            escaped = "&gt;";
              break;
          case '\"':
 -            snprintf(dp + count, max - count, "&quot;");
@@ -2664,8 +2691,7 @@
 +            //count += strlen(dp + count);
 +            //++src;
 +            elems = min_length(6, max - count);
-+            memcpy(dp + count, "&quot;", elems);
-+            count += elems;
++            escaped = "&quot;";
              break;
           case '\'':
 -            snprintf(dp + count, max - count, "&apos;");
@@ -2675,20 +2701,23 @@
 +            //count = strlen(dp + count);
 +            //++src;
 +            elems = min_length(6, max - count);
-+            memcpy(dp + count, "&apos;", elems);
-+            count += elems;
++            escaped = "&apos;";
              break;
          default:
 -            dp[count++] = *(src++);
 +            //dp[count++] = *(src++);
 +            dp[count++] = ch;
++            continue; // don't fallthrough
          }
++
++        copy_bytes(dp + count, escaped, elems);
++        count += elems;
      }
-+    count < max ? dp[count] = '\0' : count = max-1, dp[max-1] = '\0';
++    count < max ? dp[count] = '\0' : count = max-1, dp[count] = '\0';
      return count;
  }
  
-@@ -276,7 +318,7 @@
+@@ -276,7 +341,7 @@
          if(*cp != '&') {
              *(dp++) = *(cp++);
              continue;
@@ -2697,7 +2726,7 @@
          if(!strncmp(cp, "&amp;", 5)) {
                      *(dp++) = '&';
              cp += 5;
-@@ -464,6 +506,7 @@
+@@ -464,6 +529,7 @@
      pid_t opid;
      fd_t fd;
      char buf[65];
@@ -2705,7 +2734,7 @@
  
  retry:
      fd = open(DEFAULT_VARPATH "/run/sipwitch/cgilock", O_CREAT|O_WRONLY|O_TRUNC|O_EXCL, fsys::OWNER_PUBLIC);
-@@ -481,7 +524,8 @@
+@@ -481,7 +547,8 @@
              error(408, "Lock timed out");
      }
  
@@ -2715,7 +2744,7 @@
      if(write(fd, buf, strlen(buf)) < (ssize_t)strlen(buf))
          error(500, "Failed Lock");
      close(fd);
-@@ -495,6 +539,7 @@
+@@ -495,6 +562,7 @@
      unsigned len = 0;
      va_list args;
      FILE *fp;
@@ -2723,7 +2752,7 @@
  
  #ifndef _MSWINDOWS_
      int signo;
-@@ -504,13 +549,16 @@
+@@ -504,13 +572,16 @@
      sigaddset(&sigs, SIGUSR2);
      sigaddset(&sigs, SIGALRM);
      sigprocmask(SIG_BLOCK, &sigs, NULL);
@@ -2742,7 +2771,7 @@
      if(!strchr(buf, '\n'))
          String::add(buf, sizeof(buf), "\n");
  
-@@ -965,10 +1013,14 @@
+@@ -965,10 +1036,14 @@
  {
      char buffer[512];
      FILE *fp;
@@ -2759,7 +2788,7 @@
  #endif
      char *ep = strchr(buffer, '\n');
      if(ep)
-@@ -1029,6 +1081,7 @@
+@@ -1029,6 +1104,7 @@
      char buffer[1024];
      rpcint_t diff = 0;
      time_t now;
@@ -2767,7 +2796,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1048,7 +1101,8 @@
+@@ -1048,7 +1124,8 @@
          if(!map.created)
              continue;
  
@@ -2777,7 +2806,7 @@
          if(!eq(id, cid))
              continue;
  
-@@ -1062,6 +1116,8 @@
+@@ -1062,6 +1139,8 @@
              map.source, map.target, map.display, diff);
          reply(buffer);
      }
@@ -2786,7 +2815,7 @@
      fault(6, "Unknown Call");
      reset_unsafe<MappedCall>(map);
  }
-@@ -1073,6 +1129,7 @@
+@@ -1073,6 +1152,7 @@
      unsigned index = 0;
      char id[32];
      MappedCall map;
@@ -2794,7 +2823,7 @@
  
      if(params.argc != 0)
          fault(3, "Invalid Parameters");
-@@ -1091,7 +1148,8 @@
+@@ -1091,7 +1171,8 @@
          if(!map.created)
              continue;
  
@@ -2804,7 +2833,7 @@
          response(buffer, size, "!s", buffer);
      }
      response(buffer, size, "]");
-@@ -1204,6 +1262,7 @@
+@@ -1204,6 +1285,7 @@
      char buffer[2048];
      time_t now;
      const char *status = "idle";
@@ -2812,7 +2841,7 @@
  
      if(params.argc != 1)
          fault(3, "Invalid Parameters");
-@@ -1229,8 +1288,10 @@
+@@ -1229,8 +1311,10 @@
          if(!eq(map.userid, id))
              continue;
  
@@ -2825,7 +2854,7 @@
          else
              String::set(ext, sizeof(ext), map.userid);
  
-@@ -1656,6 +1717,7 @@
+@@ -1656,6 +1740,7 @@
      MappedCall buffer;
      char idbuf[32];
      time_t now;
@@ -2833,7 +2862,7 @@
  
      if(!count)
          error(405, "Server unavailable");
-@@ -1674,7 +1736,8 @@
+@@ -1674,7 +1759,8 @@
          if(!buffer.created)
              continue;
  
@@ -2843,7 +2872,7 @@
          if(id && !String::equal(id, idbuf))
              continue;
          printf(" <call id=\"%s\">\n", idbuf);
-@@ -1834,13 +1897,17 @@
+@@ -1834,13 +1920,17 @@
      char buf[256];
      GetEnvironmentVariable("APPDATA", buf, 192);
      unsigned len = strlen(buf);

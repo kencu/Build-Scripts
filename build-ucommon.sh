@@ -174,7 +174,7 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
+if true; then
 
     ARTIFACTS=("$UCOMMON_TAR" "$UCOMMON_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
