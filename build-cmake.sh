@@ -28,7 +28,7 @@ then
 fi
 
 # The password should die when this subshell goes out of scope
-if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+if [[ "$SUDO_PASSWORD_DONE" != "yes" ]]; then
     if ! source ./setup-password.sh
     then
         echo "Failed to process password"
@@ -111,7 +111,7 @@ echo "Installing package"
 echo "**********************"
 
 MAKE_FLAGS=("install")
-if [[ ! ("$SUDO_PASSWORD_SET" != "yes") ]]; then
+if [[ ! ("$SUDO_PASSWORD_DONE" != "yes") ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
     "${MAKE}" "${MAKE_FLAGS[@]}"

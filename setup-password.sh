@@ -3,9 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script prompts for credentials for other scripts to use
 
-# AIX lacks sudo. Only prompt if SUDO_PASSWORD_SET is not set in the environment.
+# AIX lacks sudo. Only prompt if SUDO_PASSWORD_DONE is not set in the environment.
 # https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash
-if [[ $(command -v sudo 2>/dev/null) ]] && [[ -z "${SUDO_PASSWORD_SET+x}" ]]
+if [[ $(command -v sudo 2>/dev/null) ]] && [[ -z "${SUDO_PASSWORD_DONE+x}" ]]
 then
 
     # Some sudo are too old and can't handle -E option. Check for it now.
@@ -55,7 +55,7 @@ then
     export SUDO_PASSWORD
 
     # Don't prompt for future passwords
-    export SUDO_PASSWORD_SET=yes
+    export SUDO_PASSWORD_DONE=yes
 fi
 
 # Sneak this in here

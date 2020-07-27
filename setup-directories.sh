@@ -13,7 +13,7 @@ then
 fi
 
 # The password should die when this subshell goes out of scope
-if [[ "$SUDO_PASSWORD_SET" != "yes" ]]; then
+if [[ "$SUDO_PASSWORD_DONE" != "yes" ]]; then
     if ! source ./setup-password.sh
     then
         echo "Failed to process password"
