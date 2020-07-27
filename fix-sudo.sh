@@ -3,10 +3,10 @@
 # Older sudo programs, like on OS X 10.5, lack -E option
 # This script will remove the option for old systems.
 
-(IFS="" find "$PWD" -name '*.sh' -print | while read -r file
+IFS="" find "$PWD" -name '*.sh' -print | while read -r file
 do
-    # Don't dix this script
-    if [ "$file" = "fix-sudo.sh" ]; then
+    # Don't fix this script
+    if [[ "$file" == "fix-sudo.sh" ]]; then
         continue
     fi
 
@@ -15,7 +15,7 @@ do
     chmod u+w "$file" && cp -p "$file" "$file.fixed"
     sed 's/sudo -E/sudo/g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done)
+done
 
 echo "The -E option has been removed from sudo. This may cause some unexpected"
 echo "results, especially for packages that build stuff during 'sudo make"

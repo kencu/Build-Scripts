@@ -22,7 +22,7 @@ count=$(sudo -E -h 2>&1 | grep -i -c illegal)
 if [ "$count" -ne 0 ]
 then
     # sudo does not accept -E
-    count=$(grep -i -c 'sudo -E' build-bc.sh)
+    count=$(grep -i -c 'sudo -E' build-*.sh)
     if [ "$count" -ne 0 ]
     then
         printf "\n"
