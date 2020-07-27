@@ -292,24 +292,9 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-# Run in a subshell to isolate path changes
-(
-# Add .libs/ to LD_LIBRARY_PATH and DYLD_LIBRARY_PATH.
-# This is needed for some packages on some BSDs.
-source ../fix-runtime-path.sh
-
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    # Still can't pass all the self-tests, even after OpenSSL 1.1.1 cutover.
-    # There will be one failure due to test-ciphers-api.
-    # exit 1
-    :
-fi
-)
-
-# Get subshell result
-if [ "$?" = "1" ]; then
     echo "**********************"
     echo "Failed to test GnuTLS"
     echo "**********************"
