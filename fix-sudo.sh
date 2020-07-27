@@ -10,11 +10,9 @@ do
         continue
     fi
 
-	# 'cp -p' copies all permissions and timestamps
-	# https://pubs.opengroup.org/onlinepubs/9699919799/utilities/cp.html
-    chmod u+w "$file" && cp -p "$file" "$file.fixed"
+    chmod a+w "$file" && cp "$file" "$file.fixed"
     sed 's/sudo -E/sudo/g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+    mv "$file.fixed" "$file" && chmod go-w "$file"
 done
 
 echo "The -E option has been removed from sudo. This may cause some unexpected"
