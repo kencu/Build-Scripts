@@ -33,7 +33,17 @@ if [[ ! -e "$HOME/.build-scripts/cacert/cacert.pem" ]]; then
     ./setup-cacerts.sh &>/dev/null
 fi
 
-if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+# Line 4 is a date/time stamp
+bootstrap_cacert=$(sed '4!d' "bootstrap/cacert.pem")
+installed_cacert=$(sed '4!d' "$OPT_CACERT_FILE" 2>/dev/null)
+
+# The bootstrap cacert.pem is the latest
+if [[ "x$bootstrap_cacert" != "x$installed_cacert" ]]; then
+    echo ""
+    echo "Updating cacert.pem"
+    echo "  installed: $installed_cacert"
+    echo "  available: $bootstrap_cacert"
+else
     #echo ""
     #echo "$PKG_NAME is already installed."
     exit 0
@@ -66,9 +76,9 @@ CACERT_FILE="bootstrap/cacert.pem"
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_CACERT_PATH"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$CACERT_FILE" "$OPT_CACERT_FILE"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_CACERT_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR:$ROOT_GRP" "$OPT_CACERT_PATH"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_CACERT_FILE"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR:$ROOT_GRP" "$OPT_CACERT_FILE"
 else
     mkdir -p "$OPT_CACERT_PATH"
     cp "$CACERT_FILE" "$OPT_CACERT_FILE"
