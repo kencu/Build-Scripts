@@ -41,8 +41,8 @@ installed_cacert=$(sed '4!d' "$OPT_CACERT_FILE" 2>/dev/null)
 if [[ "x$bootstrap_cacert" != "x$installed_cacert" ]]; then
     echo ""
     echo "Updating cacert.pem"
-    echo "  installed: $installed_cacert"
-    echo "  available: $bootstrap_cacert"
+    echo "  installed: $(cut -f 2-5 -d ':' <<< $installed_cacert)"
+    echo "  available: $(cut -f 2-5 -d ':' <<< $bootstrap_cacert)"
 else
     #echo ""
     #echo "$PKG_NAME is already installed."
