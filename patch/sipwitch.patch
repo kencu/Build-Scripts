@@ -11,7 +11,7 @@
  
  bool voip::publish(voip::context_t ctx, const char *uri, const char *contact, const char *event, const char *duration, const char *type, const char *body)
  {
-@@ -140,7 +140,16 @@
+@@ -140,7 +140,17 @@
  
      *msg = NULL;
      eXosip_lock(ctx);
@@ -20,6 +20,7 @@
 +    // TODO: verify this change to fix compile error
 +    // eXosip_call_build_prack(ctx, tid, msg);
 +    osip_message_t resp;  // unused
++    memset(&resp, 0x00, sizeof(osip_message_t));
 +    eXosip_call_build_prack(ctx, tid, &resp, msg);
 +
 +    // TODO: verify this change to fix compile error
