@@ -1,0 +1,70 @@
+# Written and placed in public domain by Jeffrey Walton.
+# This patch fixes some issues with GNU SIP Witch.
+#
+# libeXosip2 does not provide eXosip_enable_ipv6()
+--- common/voip.cpp
++++ common/voip.cpp
+@@ -140,7 +140,9 @@
+ 
+     *msg = NULL;
+     eXosip_lock(ctx);
+-    eXosip_call_build_prack(ctx, tid, msg);
++    // TODO: verify this change to fix compil error
++    // eXosip_call_build_prack(ctx, tid, msg);
++    eXosip_call_build_prack(ctx, tid, NULL, msg);
+     if(!*msg) {
+         eXosip_unlock(ctx);
+         return false;
+@@ -436,7 +436,7 @@
+ 
+     family = f;
+ 
+-#ifdef  AF_INET6
++#if defined(AF_INET6) && 0
+     if(family == AF_INET6)
+         eXosip_enable_ipv6(1);
+ #endif
+@@ -868,7 +868,7 @@
+ 
+     family = f;
+ 
+-#ifdef  AF_INET6
++#if defined(AF_INET6) && 0
+     if(family == AF_INET6)
+         eXosip_enable_ipv6(1);
+ #endif
+--- utils/sipquery.cpp
++++ utils/sipquery.cpp
+@@ -224,7 +224,7 @@
+     if(eXosip_init(EXOSIP_CONTEXT))
+         shell::errexit(3, "*** sipuser: failed exosip init\n");
+ 
+-#ifdef  AF_INET6
++#if defined(AF_INET6) && 0
+     if(family == AF_INET6) {
+         eXosip_enable_ipv6(1);
+         if(binding == NULL)
+--- server/stack.cpp
++++ server/stack.cpp
+@@ -16,6 +16,11 @@
+ 
+ #include "server.h"
+ 
++#ifdef  HAVE_TLS
++#include <eXosip2/eX_setup.h>
++extern "C" int eXosip_set_tls_ctx(eXosip_tls_ctx_t*);
++#endif
++
+ namespace sipwitch {
+ 
+ static volatile unsigned allocated_segments = 0;
+@@ -774,7 +779,8 @@
+     }
+ 
+ #ifdef  HAVE_TLS
+-    voip::create(&tls_context, agent, family);
++    // voip::create(&tls_context, agent, family);
++    voip::create(&tls_context, agent, sip_family);
+ #endif
+ 
+ #if defined(EXOSIP2_OPTION_SEND_101) && !defined(EXOSIP_API4)
