@@ -96,7 +96,9 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
-    --enable-shared
+    --enable-static \
+    --enable-shared \
+    --enable-tests
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure c-ares"
