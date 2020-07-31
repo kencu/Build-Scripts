@@ -7,22 +7,23 @@
  static int family = AF_INET;
  
 -#ifdef	EXOSIP_API4
-+#ifdef    EXOSIP_API4
++#ifdef	EXOSIP_API4
  
  bool voip::publish(voip::context_t ctx, const char *uri, const char *contact, const char *event, const char *duration, const char *type, const char *body)
  {
-@@ -140,7 +140,9 @@
+@@ -140,7 +140,10 @@
  
      *msg = NULL;
      eXosip_lock(ctx);
 -    eXosip_call_build_prack(ctx, tid, msg);
 +    // TODO: verify this change to fix compile error
 +    // eXosip_call_build_prack(ctx, tid, msg);
-+    eXosip_call_build_prack(ctx, tid, NULL, msg);
++    osip_message_t response;  // unused
++    eXosip_call_build_prack(ctx, tid, &response, msg);
      if(!*msg) {
          eXosip_unlock(ctx);
          return false;
-@@ -359,7 +361,7 @@
+@@ -359,7 +362,7 @@
  void voip::send_registry_request(context_t c, reg_t r, msg_t msg) 
  {
      if(!msg)
@@ -31,7 +32,7 @@
      eXosip_register_send_register(c, r, msg);
      eXosip_unlock(c);
  }
-@@ -417,7 +419,7 @@
+@@ -417,7 +420,7 @@
      port = port & 0xfffe;
      if(tls) {
          tlsmode = 1;
@@ -40,7 +41,7 @@
      }
  
      if(eXosip_listen_addr(ctx, proto, addr, port, family, tlsmode))
-@@ -438,7 +440,15 @@
+@@ -438,7 +441,15 @@
  
  #ifdef  AF_INET6
      if(family == AF_INET6)
@@ -56,7 +57,7 @@
  #endif
  }
  
-@@ -844,7 +854,7 @@
+@@ -844,7 +855,7 @@
      port = port & 0xfffe;
      if(tls) {
          tlsmode = 1;
@@ -65,7 +66,7 @@
      }
  
      if(eXosip_listen_addr(proto, addr, port, family, tlsmode))
-@@ -870,7 +880,15 @@
+@@ -870,7 +881,15 @@
  
  #ifdef  AF_INET6
      if(family == AF_INET6)
@@ -97,7 +98,7 @@
          eXosip_enable_ipv6(1);
 +#else
 +        int val = 1;
-+        eXosip_set_option(*ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
++        eXosip_set_option(context, EXOSIP_OPT_ENABLE_IPV6, &val);
 +#endif
          if(binding == NULL)
              binding = "::0";
