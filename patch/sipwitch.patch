@@ -52,7 +52,7 @@
          eXosip_enable_ipv6(1);
 +#else
 +        int val = 1;
-+        eXosip_set_option(ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
++        eXosip_set_option(*ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
 +#endif
 +    }
  #endif
@@ -77,7 +77,7 @@
          eXosip_enable_ipv6(1);
 +#else
 +        int val = 1;
-+        eXosip_set_option(ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
++        eXosip_set_option(*ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
 +#endif
 +    }
  #endif
