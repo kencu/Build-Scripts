@@ -1,7 +1,5 @@
 # Written and placed in public domain by Jeffrey Walton.
 # This patch fixes some issues with GNU SIP Witch.
-#
-# libeXosip2 does not provide eXosip_enable_ipv6()
 --- common/voip.cpp
 +++ common/voip.cpp
 @@ -23,7 +23,7 @@
@@ -9,7 +7,7 @@
  static int family = AF_INET;
  
 -#ifdef	EXOSIP_API4
-+#ifdef    EXOSIP_API4
++#ifdef	EXOSIP_API4
  
  bool voip::publish(voip::context_t ctx, const char *uri, const char *contact, const char *event, const char *duration, const char *type, const char *body)
  {
