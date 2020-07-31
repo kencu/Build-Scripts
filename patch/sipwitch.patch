@@ -91,7 +91,7 @@
  
 -#ifdef  AF_INET6
 -    if(family == AF_INET6) {
-+#if defined(AF_INET6) && 0
++#ifdef  AF_INET6
 +    if(family == AF_INET6)
 +    {
 +#ifdef HAVE_EXOSIP_ENABLE_IPV6
