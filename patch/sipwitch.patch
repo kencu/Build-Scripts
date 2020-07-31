@@ -4,6 +4,15 @@
 # libeXosip2 does not provide eXosip_enable_ipv6()
 --- common/voip.cpp
 +++ common/voip.cpp
+@@ -23,7 +23,7 @@
+ 
+ static int family = AF_INET;
+ 
+-#ifdef	EXOSIP_API4
++#ifdef    EXOSIP_API4
+ 
+ bool voip::publish(voip::context_t ctx, const char *uri, const char *contact, const char *event, const char *duration, const char *type, const char *body)
+ {
 @@ -140,7 +140,9 @@
  
      *msg = NULL;
@@ -15,24 +24,65 @@
      if(!*msg) {
          eXosip_unlock(ctx);
          return false;
-@@ -436,7 +436,7 @@
+@@ -359,7 +361,7 @@
+ void voip::send_registry_request(context_t c, reg_t r, msg_t msg) 
+ {
+     if(!msg)
+-	    return;
++        return;
+     eXosip_register_send_register(c, r, msg);
+     eXosip_unlock(c);
+ }
+@@ -417,7 +419,7 @@
+     port = port & 0xfffe;
+     if(tls) {
+         tlsmode = 1;
+-        ++port;	// tls always next odd port...
++        ++port;    // tls always next odd port...
+     }
  
-     family = f;
+     if(eXosip_listen_addr(ctx, proto, addr, port, family, tlsmode))
+@@ -438,7 +440,15 @@
  
--#ifdef  AF_INET6
-+#if defined(AF_INET6) && 0
+ #ifdef  AF_INET6
      if(family == AF_INET6)
++    {
++#ifdef HAVE_EXOSIP_ENABLE_IPV6
++        // eXosip_enable_ipv6 deprecated in 2013 at commit ff8d5b5c073d.
          eXosip_enable_ipv6(1);
++#else
++        int val = 1;
++        eXosip_set_option(ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
++#endif
++    }
  #endif
-@@ -868,7 +868,7 @@
+ }
  
-     family = f;
+@@ -844,7 +854,7 @@
+     port = port & 0xfffe;
+     if(tls) {
+         tlsmode = 1;
+-        ++port;	// tls always next odd port...
++        ++port;    // tls always next odd port...
+     }
  
--#ifdef  AF_INET6
-+#if defined(AF_INET6) && 0
+     if(eXosip_listen_addr(proto, addr, port, family, tlsmode))
+@@ -870,7 +880,15 @@
+ 
+ #ifdef  AF_INET6
      if(family == AF_INET6)
++    {
++#ifdef HAVE_EXOSIP_ENABLE_IPV6
++        // eXosip_enable_ipv6 deprecated in 2013 at commit ff8d5b5c073d.
          eXosip_enable_ipv6(1);
++#else
++        int val = 1;
++        eXosip_set_option(ctx, EXOSIP_OPT_ENABLE_IPV6, &val);
++#endif
++    }
  #endif
+ }
+ 
 --- utils/sipquery.cpp
 +++ utils/sipquery.cpp
 @@ -224,7 +224,7 @@
