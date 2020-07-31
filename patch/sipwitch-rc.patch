@@ -2,16 +2,26 @@
 # This patch fixes some issues with GNU SIP Witch.
 --- common/voip.cpp
 +++ common/voip.cpp
-@@ -23,7 +23,7 @@
+@@ -19,6 +19,9 @@
+ #include <ucommon/export.h>
+ #include <sipwitch/voip.h>
+ 
++// For voip::make_prack_message
++#include <cassert>
++
+ namespace sipwitch {
  
  static int family = AF_INET;
+@@ -133,6 +136,8 @@
+     eXosip_unlock(ctx);
+ }
  
--#ifdef	EXOSIP_API4
-+#ifdef	EXOSIP_API4
- 
- bool voip::publish(voip::context_t ctx, const char *uri, const char *contact, const char *event, const char *duration, const char *type, const char *body)
++// Documentation of data structures and macros at
++// https://www.gnu.org/software/osip/doc/html/osip__message_8h-source.html
+ bool voip::make_prack_message(context_t ctx, tid_t tid, msg_t *msg)
  {
-@@ -140,7 +140,17 @@
+     if(!msg)
+@@ -140,7 +145,18 @@
  
      *msg = NULL;
      eXosip_lock(ctx);
@@ -25,12 +35,13 @@
 +
 +    // TODO: verify this change to fix compile error
 +    int code = osip_message_get_status_code(&resp);
++    assert(MSG_IS_STATUS_1XX(&resp));
 +    osip_message_free(&resp);
 +
      if(!*msg) {
          eXosip_unlock(ctx);
          return false;
-@@ -359,7 +368,7 @@
+@@ -359,7 +375,7 @@
  void voip::send_registry_request(context_t c, reg_t r, msg_t msg) 
  {
      if(!msg)
@@ -39,7 +50,7 @@
      eXosip_register_send_register(c, r, msg);
      eXosip_unlock(c);
  }
-@@ -417,7 +426,7 @@
+@@ -417,7 +433,7 @@
      port = port & 0xfffe;
      if(tls) {
          tlsmode = 1;
@@ -48,7 +59,7 @@
      }
  
      if(eXosip_listen_addr(ctx, proto, addr, port, family, tlsmode))
-@@ -438,7 +447,15 @@
+@@ -438,7 +454,15 @@
  
  #ifdef  AF_INET6
      if(family == AF_INET6)
@@ -64,7 +75,7 @@
  #endif
  }
  
-@@ -844,7 +861,7 @@
+@@ -844,7 +868,7 @@
      port = port & 0xfffe;
      if(tls) {
          tlsmode = 1;
@@ -73,7 +84,7 @@
      }
  
      if(eXosip_listen_addr(proto, addr, port, family, tlsmode))
-@@ -870,7 +887,15 @@
+@@ -870,7 +894,15 @@
  
  #ifdef  AF_INET6
      if(family == AF_INET6)
