@@ -326,6 +326,13 @@ if [[ -z "$INSTX_OPATH" ]]; then
     INSTX_OPATH="$DEF_OPATH"
 fi
 
+# Remove duplicate slashes. Despite my best effort
+# I have not been able to locate where it comes from
+INSTX_PREFIX="$(tr -s '/' <<< "${INSTX_PREFIX}")"
+INSTX_LIBDIR="$(tr -s '/' <<< "${INSTX_LIBDIR}")"
+INSTX_RPATH="$(tr -s '/' <<< "${INSTX_RPATH}")"
+INSTX_OPATH="$(tr -s '/' <<< "${INSTX_OPATH}")"
+
 export INSTX_PREFIX
 export INSTX_LIBDIR
 export INSTX_RPATH

@@ -38,10 +38,10 @@
    if (strcmp (logbuf, "t-logging: first log\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* The second line should not have a LF.  */
 @@ -109,7 +118,10 @@
@@ -50,10 +50,10 @@
                         "t-logging: third log line")))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* Now a multi line log.  */
 @@ -118,14 +130,20 @@
@@ -62,10 +62,10 @@
                         "and 3\n")))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* With arguments.  */
    log_info ("file '%s' line %d: %s\n", "/foo/bar.txt", 20, "not found");
@@ -73,10 +73,10 @@
    if (strcmp (logbuf, "t-logging: file '/foo/bar.txt' line 20: not found\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* With arguments and a control char in the string arg.  */
 @@ -133,7 +151,10 @@
@@ -85,10 +85,10 @@
                "t-logging: file '/foo/bar.txt\\b' line 20: not found\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* With arguments and the prefix in a string arg.  */
 @@ -141,7 +162,10 @@
@@ -97,10 +97,10 @@
                "t-logging: file '/foo/bar.txt\\nt-logging': not \\x01 found\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    /* With arguments and byte with bit 7 set in a string arg.  */
 @@ -149,9 +173,11 @@
@@ -109,12 +109,12 @@
                "t-logging: file '/foo/bar.txt\\n': not \x81 found\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
    /* show ("===>%s<===\n", logbuf); */
 -
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  }
  
 @@ -160,7 +186,7 @@
@@ -132,10 +132,10 @@
        || strcmp (logbuf+strlen (testbuf), "first log\n"))
 -    fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  
    log_info ("This is log line 1\nand 2\nand 3\n");
 @@ -178,7 +207,10 @@
@@ -144,10 +144,10 @@
                                             "and 3\n")))
 -    fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
  }
  
 @@ -186,18 +218,29 @@
@@ -160,7 +160,7 @@
    if (log_get_errorcount (0))
 -    fail ("log_get_errorcount() != 0 at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_get_errorcount() != 0 at line %d\n", __LINE__);
 +    }
  
@@ -168,7 +168,7 @@
    if (log_get_errorcount (0) != 1)
 -    fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
 +    }
 +
@@ -176,10 +176,10 @@
    if (strcmp (logbuf, "t-logging: Hola, something went wrong\n"))
 -    fail ("log_info test failed at line %d\n", __LINE__);
 +    {
-+      free (logbuf);
++      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf);
+   free (logbuf); logbuf = NULL;
 +
    if (log_get_errorcount (0) != 1)
      fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
