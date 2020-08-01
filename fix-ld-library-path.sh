@@ -4,6 +4,7 @@
 # This script converts LD_LIBRARY_PATH to DYLD_LIBRARY_PATH
 # for OS X. Autotools authors don't need to worry about it.
 
+echo ""
 echo "**********************"
 echo "Fixing LD_LIBRARY_PATH"
 echo "**********************"

@@ -15,6 +15,7 @@ do
     mv "$file.fixed" "$file" && chmod go-w "$file"
 done
 
+echo ""
 echo "The -E option has been removed from sudo. This may cause some unexpected"
 echo "results, especially for packages that build stuff during 'sudo make"
 echo "install'. For example, Perl will create a .cpan folder in the user's home"

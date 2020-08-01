@@ -9,6 +9,7 @@
 # Zile can find the libraries when using:
 #     Libs: -L<path> -lncurses -ltinfo
 
+echo ""
 echo "************************"
 echo "Fixing configure scripts"
 echo "************************"

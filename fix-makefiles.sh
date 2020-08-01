@@ -10,6 +10,7 @@
 # runpath handling cannot be fixed with makefile patching. Also see
 # https://github.com/Perl/perl5/issues/17978.
 
+echo ""
 echo "**********************"
 echo "Fixing Makefiles"
 echo "**********************"

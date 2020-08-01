@@ -14,6 +14,7 @@
 # Related issues are https://github.com/NixOS/patchelf/issues/44
 # and https://sourceware.org/bugzilla/show_bug.cgi?id=25087.
 
+echo ""
 echo "**********************"
 echo "Fixing runpaths"
 echo "**********************"
