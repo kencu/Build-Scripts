@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Emacs and its dependencies from sources.
 
-EMACS_TAR=emacs-26.3.tar.gz
-EMACS_DIR=emacs-26.3
+EMACS_TAR=emacs-27.1-rc1.tar.gz
+EMACS_DIR=emacs-27.1-rc1
 
 ###############################################################################
 
@@ -88,7 +88,7 @@ echo "**********************"
 echo ""
 
 if ! "$WGET" -q -O "$EMACS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://ftp.gnu.org/gnu/emacs/$EMACS_TAR"
+     "https://alpha.gnu.org/gnu/emacs/pretest/$EMACS_TAR"
 then
     echo "Failed to download Emacs"
     exit 1
