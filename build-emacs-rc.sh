@@ -170,7 +170,7 @@ echo "**********************"
 MAKE_FLAGS=("V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-   echo "Failed to test Emacs"
+   echo "Failed to build Emacs"
    exit 1
 fi
 
@@ -186,7 +186,8 @@ if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
    echo "Failed to test Emacs"
    bash ../collect-logs.sh
-   exit 1
+   RETAIN_ARTIFACTS=true
+   # exit 1
 fi
 
 echo "**********************"
