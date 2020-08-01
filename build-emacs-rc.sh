@@ -138,7 +138,7 @@ CONFIG_OPTS=('--with-xml2' '--with-libgmp' '--with-gnutls=no'
     '--without-makeinfo' '--without-compress-install')
 
 if [[ ! -e "/usr/include/selinux/context.h" ]]; then
-    CONFIG_OPTS+=('--without-selinux ')
+    CONFIG_OPTS+=('--without-selinux')
 fi
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
