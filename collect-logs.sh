@@ -29,4 +29,10 @@ do
     zip -9 "test-suite.log.zip" "$file"
 done
 
+# And Emacs test logs
+IFS="" find . -name '*-tests.log' -print | while read -r file
+do
+    zip -9 "test-suite.log.zip" "$file"
+done
+
 exit 0
