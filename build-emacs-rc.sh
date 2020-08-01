@@ -152,9 +152,9 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-#echo "**********************"
-#echo "Testing package"
-#echo "**********************"
+echo "**********************"
+echo "Testing package"
+echo "**********************"
 
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"

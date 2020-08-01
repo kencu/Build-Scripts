@@ -9,21 +9,24 @@ then
     exit 1
 fi
 
+echo ""
+echo "**********************"
 echo "Saving log files"
+echo "**********************"
 
 rm -f "config.log.zip"
 rm -f "test-suite.log.zip"
 
 # Collect all config.log files
-(IFS="" find . -name 'config.log' -print | while read -r file
+IFS="" find . -name 'config.log' -print | while read -r file
 do
     zip -9 "config.log.zip" "$file"
-done)
+done
 
 # Collect all test-suite.log files
-(IFS="" find . -name 'test*.log' -print | while read -r file
+IFS="" find . -name 'test*.log' -print | while read -r file
 do
     zip -9 "test-suite.log.zip" "$file"
-done)
+done
 
 exit 0
