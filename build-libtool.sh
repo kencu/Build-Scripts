@@ -80,6 +80,11 @@ if [[ "$IS_DARWIN" -ne 0 ]]; then
     CONFIG_OPTS+=("--program-prefix=g")
 fi
 
+CONFIG_LIBTOOL=$(command -v glibtool 2>/dev/null)
+if [[ -z "$CONFIG_LIBTOOL" ]]; then
+    CONFIG_LIBTOOL=$(command -v libtool 2>/dev/null)
+fi
+
 CONFIG_M4=$(command -v m4 2>/dev/null)
 if [[ -e "$INSTX_PREFIX/bin/m4" ]]; then
     CONFIG_M4="$INSTX_PREFIX/bin/m4"
@@ -93,6 +98,7 @@ fi
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
     M4="${CONFIG_M4}" \
+    LIBTOOL="${CONFIG_LIBTOOL}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
