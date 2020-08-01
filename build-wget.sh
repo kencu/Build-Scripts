@@ -264,6 +264,9 @@ then
         echo "Failed to test Wget"
         echo "Installing anyway..."
         echo "**********************"
+
+        RETAIN_ARTIFACTS=true
+        bash ../collect-logs.sh
         # exit 1
     fi
 else
@@ -314,8 +317,9 @@ echo "**************************************************************************
 
 ###############################################################################
 
-# Set to false to retain artifacts
-if true; then
+# Set to true to retain artifacts
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$WGET_TAR" "$WGET_DIR")
     for artifact in "${ARTIFACTS[@]}"; do

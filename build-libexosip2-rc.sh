@@ -151,6 +151,7 @@ MAKE_FLAGS=("-k" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build libeXosip2"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -195,8 +196,9 @@ echo "**************************************************************************
 
 ###############################################################################
 
-# Set to false to retain artifacts
-if true; then
+# Set to true to retain artifacts
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$OSIP2_TAR" "$OSIP2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do

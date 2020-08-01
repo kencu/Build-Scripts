@@ -67,9 +67,9 @@ echo "============== SIP Witch ==============="
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "***************************"
 echo "Downloading package"
-echo "**********************"
+echo "***************************"
 
 if ! "$WGET" -q -O "$SIPW_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/sipwitch/$SIPW_TAR"
@@ -95,9 +95,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "***************************"
 echo "Configuring package"
-echo "**********************"
+echo "***************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -141,9 +141,9 @@ do
     rm "$file.timestamp.saved"
 done
 
-echo "**********************"
+echo "***************************"
 echo "Building package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("-k" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -155,22 +155,24 @@ fi
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-echo "**********************"
+echo "***************************"
 echo "Testing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "**********************"
+    echo "***************************"
     echo "Failed to test SIP Witch"
-    echo "**********************"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
-echo "**********************"
+echo "***************************"
 echo "Installing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
@@ -190,8 +192,9 @@ echo "**************************************************************************
 
 ###############################################################################
 
-# Set to false to retain artifacts
-if true; then
+# Set to true to retain artifacts
+RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
+if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
     ARTIFACTS=("$SIPW_TAR" "$SIPW_DIR")
     for artifact in "${ARTIFACTS[@]}"; do

@@ -294,6 +294,8 @@ then
         echo "**********************"
         echo "Failed to test Wget2"
         echo "**********************"
+
+        bash ../collect-logs.sh
         exit 1
     fi
 else
@@ -346,7 +348,7 @@ echo "**************************************************************************
 
 ###############################################################################
 
-# Set to false to retain artifacts
+# Set to true to retain artifacts
 RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
 if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
 
