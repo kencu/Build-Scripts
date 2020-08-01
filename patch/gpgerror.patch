@@ -8,7 +8,7 @@
        if (nread < NCHUNK && gpgrt_ferror (stream))
 -        die ("fread failed at line %d: %s\n", __LINE__,
 +        {
-+          free (buffer);
++          free (buffer); buffer = NULL;
 +          die ("fread failed at line %d: %s\n", __LINE__,
               gpg_strerror (gpg_err_code_from_syserror ()));
 +        }
@@ -20,7 +20,7 @@
    if (strlen (buffer) != buflen)
 -    fail ("stream_to_string detected an embedded nul");
 +    {
-+      free (buffer);
++      free (buffer); buffer = NULL;
 +      fail ("stream_to_string detected an embedded nul");
 +    }
  
@@ -41,7 +41,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* The second line should not have a LF.  */
 @@ -109,7 +118,10 @@
@@ -53,7 +53,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* Now a multi line log.  */
 @@ -118,14 +130,20 @@
@@ -65,7 +65,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* With arguments.  */
    log_info ("file '%s' line %d: %s\n", "/foo/bar.txt", 20, "not found");
@@ -76,7 +76,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* With arguments and a control char in the string arg.  */
 @@ -133,7 +151,10 @@
@@ -88,7 +88,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* With arguments and the prefix in a string arg.  */
 @@ -141,7 +162,10 @@
@@ -100,7 +100,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    /* With arguments and byte with bit 7 set in a string arg.  */
 @@ -149,9 +173,11 @@
@@ -114,7 +114,7 @@
 +    }
    /* show ("===>%s<===\n", logbuf); */
 -
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  }
  
 @@ -160,7 +186,7 @@
@@ -135,7 +135,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  
    log_info ("This is log line 1\nand 2\nand 3\n");
 @@ -178,7 +207,10 @@
@@ -147,7 +147,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_with_pid test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
  }
  
 @@ -186,18 +218,29 @@
@@ -179,7 +179,7 @@
 +      free (logbuf); logbuf = NULL;
 +      fail ("log_info test failed at line %d\n", __LINE__);
 +    }
-   free (logbuf); logbuf = NULL;
+   free (logbuf);
 +
    if (log_get_errorcount (0) != 1)
      fail ("log_get_errorcount() != 1 at line %d\n", __LINE__);
