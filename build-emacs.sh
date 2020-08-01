@@ -77,6 +77,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-gmp.sh
+then
+    echo "Failed to build GMP"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-gpgerror.sh
 then
     echo "Failed to build Libgpg-error"
@@ -121,15 +129,16 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
-CONFIG_OPTS=('--with-xml2' '--without-x' '--without-sound' '--without-xpm'
+CONFIG_OPTS=('--with-xml2' '--with-libgmp' '--with-gnutls=no'
+    '--without-x' '--without-sound' '--without-xpm'
     '--without-jpeg' '--without-tiff' '--without-gif' '--without-png'
     '--without-rsvg' '--without-imagemagick' '--without-xft' '--without-libotf'
     '--without-m17n-flt' '--without-xaw3d' '--without-toolkit-scroll-bars'
     '--without-gpm' '--without-dbus' '--without-gconf' '--without-gsettings'
-    '--without-makeinfo' '--without-compress-install' '--with-gnutls=no')
+    '--without-makeinfo' '--without-compress-install')
 
-if [[ -e "/usr/include/selinux/context.h" ]]; then
-    CONFIG_OPTS+=('--with-selinux')
+if [[ ! -e "/usr/include/selinux/context.h" ]]; then
+    CONFIG_OPTS+=('--without-selinux ')
 fi
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
