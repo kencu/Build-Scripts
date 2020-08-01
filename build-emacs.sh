@@ -77,15 +77,15 @@ fi
 
 ###############################################################################
 
+echo ""
 echo "========================================"
 echo "================ Emacs ================="
 echo "========================================"
-echo ""
 
+echo ""
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
-echo ""
 
 if ! "$WGET" -q -O "$EMACS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/emacs/$EMACS_TAR"

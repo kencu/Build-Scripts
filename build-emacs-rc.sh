@@ -4,7 +4,7 @@
 # This script builds Emacs and its dependencies from sources.
 
 EMACS_TAR=emacs-27.1-rc1.tar.gz
-EMACS_DIR=emacs-27.1-rc1
+EMACS_DIR=emacs-27.1
 
 ###############################################################################
 
@@ -77,15 +77,15 @@ fi
 
 ###############################################################################
 
+echo ""
 echo "========================================"
 echo "================ Emacs ================="
 echo "========================================"
-echo ""
 
+echo ""
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
-echo ""
 
 if ! "$WGET" -q -O "$EMACS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://alpha.gnu.org/gnu/emacs/pretest/$EMACS_TAR"
@@ -156,12 +156,12 @@ bash ../fix-pkgconfig.sh
 #echo "Testing package"
 #echo "**********************"
 
-#MAKE_FLAGS=("check" "V=1")
-#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
-#then
-#   echo "Failed to test Emacs"
-#   exit 1
-#fi
+MAKE_FLAGS=("check" "V=1")
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
+then
+   echo "Failed to test Emacs"
+   exit 1
+fi
 
 echo "**********************"
 echo "Installing package"
