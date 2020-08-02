@@ -66,13 +66,15 @@ fi
 
 ###############################################################################
 
-echo
-echo "********** Gnulib **********"
-echo
+echo ""
+echo "========================================"
+echo "================ Gnulib ================"
+echo "========================================"
 
 # Cleanup old artifacts in case of early out
 rm -rf "$GNULIB_DIR" "$GNULIB_TEST_DIR" 2>/dev/null
 
+echo ""
 echo "**********************"
 echo "Cloning package"
 echo "**********************"
