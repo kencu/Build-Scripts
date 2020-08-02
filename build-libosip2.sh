@@ -60,15 +60,15 @@ fi
 
 ###############################################################################
 
+echo ""
 echo "========================================"
 echo "=============== libosip2 ==============="
 echo "========================================"
-echo ""
 
+echo ""
 echo "***************************"
 echo "Downloading package"
 echo "***************************"
-echo ""
 
 if ! "$WGET" -q -O "$OSIP2_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/gnu/osip/$OSIP2_TAR"
