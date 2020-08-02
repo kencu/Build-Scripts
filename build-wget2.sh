@@ -173,9 +173,10 @@ fi
 
 ###############################################################################
 
-echo
-echo "********** Wget2 **********"
-echo
+echo ""
+echo "========================================"
+echo "================= Wget2 ================"
+echo "========================================"
 
 #if ! "$WGET" -q -O "$WGET_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
 #     "https://ftp.gnu.org/pub/gnu/wget/$WGET_TAR"
@@ -190,6 +191,7 @@ echo
 
 rm -rf "$WGET_DIR" &>/dev/null
 
+echo ""
 echo "**********************"
 echo "Cloning package"
 echo "**********************"
