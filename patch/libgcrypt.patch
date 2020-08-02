@@ -54,7 +54,7 @@
    return 0;
  }
  
-@@ -737,7 +730,5 @@
+@@ -737,7 +731,5 @@
  {
    if ((int)no < 0 || no > MPI_NUMBER_OF_CONSTANTS)
      log_bug("invalid mpi_const selector %d\n", no);
