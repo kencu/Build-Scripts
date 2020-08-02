@@ -14,8 +14,8 @@ echo "**********************"
 echo "Saving log files"
 echo "**********************"
 
-rm -f "config.log.zip" "../config.log.zip"
-rm -f "test-suite.log.zip" "../test-suite.log.zip"
+rm -f "config.log.zip" "../config.log.zip" "../../config.log.zip"
+rm -f "test-suite.log.zip" "../test-suite.log.zip" "../../test-suite.log.zip"
 
 # Collect all config.log files
 IFS="" find . -name 'config.log' -print | while read -r file
