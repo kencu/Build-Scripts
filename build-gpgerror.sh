@@ -135,7 +135,10 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to test libgpg-error"
+    echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds npth from sources.
+# This script builds nPth from sources.
 
 NPTH_TAR=npth-1.6.tar.bz2
 NPTH_DIR=npth-1.6
@@ -65,7 +65,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$NPTH_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/npth/$NPTH_TAR"
 then
-    echo "Failed to download npth"
+    echo "Failed to download nPth"
     exit 1
 fi
 
@@ -98,7 +98,7 @@ fi
     --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure npth"
+    echo "Failed to configure nPth"
     exit 1
 fi
 
@@ -113,7 +113,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build npth"
+    echo "Failed to build nPth"
     exit 1
 fi
 
@@ -127,7 +127,10 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test npth"
+    echo "**********************"
+    echo "Failed to test nPth"
+    echo "**********************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
