@@ -87,6 +87,7 @@ echo "Configuring package"
 echo "**********************"
 
 CONFIG_OPTS=()
+CONFIG_OPTS+=("--with-ncurses")
 CONFIG_OPTS+=("--enable-debug=no")
 CONFIG_OPTS+=("HELP2MAN=true")
 
@@ -134,6 +135,7 @@ MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build Zile"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -144,12 +146,15 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-#MAKE_FLAGS=("check")
-#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
-#then
-#    echo "Failed to test Zile"
-#    exit 1
-#fi
+MAKE_FLAGS=("check")
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
+then
+    echo "**********************"
+    echo "Failed to test Zile"
+    echo "**********************"
+    bash ../collect-logs.sh
+    exit 1
+fi
 
 echo "**********************"
 echo "Installing package"
