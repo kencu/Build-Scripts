@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Written and placed in public domain by Jeffrey Walton
-# This script builds ntbtls from sources.
+# This script builds ntbTLS from sources.
 
 NTBTLS_TAR=ntbtls-0.1.2.tar.bz2
 NTBTLS_DIR=ntbtls-0.1.2
@@ -84,10 +84,12 @@ fi
 
 ###############################################################################
 
-echo
-echo "********** ntbtls **********"
-echo
+echo ""
+echo "========================================"
+echo "================ ntbTLS ================"
+echo "========================================"
 
+echo ""
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
@@ -95,7 +97,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$NTBTLS_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/ntbtls/$NTBTLS_TAR"
 then
-    echo "Failed to download ntbtls"
+    echo "Failed to download ntbTLS"
     exit 1
 fi
 
@@ -132,7 +134,7 @@ fi
     --with-ksba-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
-    echo "Failed to configure ntbtls"
+    echo "Failed to configure ntbTLS"
     exit 1
 fi
 
@@ -147,7 +149,7 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build ntbtls"
+    echo "Failed to build ntbTLS"
     exit 1
 fi
 
@@ -161,7 +163,7 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to test ntbtls"
+    echo "Failed to test ntbTLS"
     exit 1
 fi
 
