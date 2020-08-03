@@ -136,6 +136,14 @@ do
     mv "$file.fixed" "$file"
 done
 
+echo "patching source files..."
+if true; then
+    file="src/term_curses.c"
+    cp -p "$file" "$file.fixed"
+    sed 's/<term.h>/"ncurses\/term.h"/g' "$file" > "$file.fixed"
+    mv "$file.fixed" "$file"
+fi
+
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -155,15 +163,20 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check")
-if ! "${MAKE}" "${MAKE_FLAGS[@]}"
-then
-    echo "**********************"
-    echo "Failed to test Zile"
-    echo "**********************"
-    bash ../collect-logs.sh
-    exit 1
-fi
+#MAKE_FLAGS=("check")
+#if ! "${MAKE}" "${MAKE_FLAGS[@]}"
+#then
+#    echo "**********************"
+#    echo "Failed to test Zile"
+#    echo "**********************"
+#    bash ../collect-logs.sh
+#    exit 1
+#fi
+
+# Zile is impossible to test. It breaks the current terminal.
+echo "**********************"
+echo "Zile not tested"
+echo "**********************"
 
 echo "**********************"
 echo "Installing package"
