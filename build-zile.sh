@@ -59,6 +59,13 @@ echo "================= Zile ================="
 echo "========================================"
 
 echo ""
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "@@ Warning: Zile is in maintenance    @@"
+echo "@@ mode and no longer recommended for @@"
+echo "@@ use by its maintainer.             @@"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+echo ""
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
