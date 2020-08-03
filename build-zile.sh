@@ -79,6 +79,15 @@ if [[ -e ../patch/zile.patch ]]; then
     echo ""
 fi
 
+if ! "$WGET" -q -O m4/pkg.m4 --ca-certificate="$GITHUB_ROOT" \
+     https://raw.githubusercontent.com/pkgconf/pkgconf/master/pkg.m4
+then
+    echo "Failed to update pkg.m4"
+else
+    chmod u+rw m4/pkg.m4
+    chmod go+r m4/pkg.m4
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
@@ -120,12 +129,12 @@ fi
 bash ../fix-makefiles.sh
 
 echo "patching Makefiles..."
-(IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
+IFS="" find "$PWD" -name 'Makefile' -print | while read -r file
 do
     cp -p "$file" "$file.fixed"
-    sed 's|-lncurses|-lncurses -ltinfo|g' "$file" > "$file.fixed"
+    sed 's/-lncurses/-lncurses -ltinfo/g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done)
+done
 
 echo "**********************"
 echo "Building package"
