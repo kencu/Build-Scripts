@@ -99,6 +99,13 @@ echo "================= Perl ================="
 echo "========================================"
 
 echo ""
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "@@ Warning: Perl does not handle rpaths @@"
+echo "@@ and runpaths properly. It could load @@"
+echo "@@ the wrong libraries at runtime.      @@"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
+echo ""
 echo "**********************"
 echo "Downloading package"
 echo "**********************"
