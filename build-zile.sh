@@ -88,7 +88,7 @@ echo "**********************"
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--with-ncurses")
-CONFIG_OPTS+=("--enable-debug=no")
+CONFIG_OPTS+=("--disable-valgrind-tests")
 CONFIG_OPTS+=("HELP2MAN=true")
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
