@@ -38,6 +38,18 @@ fi
 
 ###############################################################################
 
+# Use C++11 support as a proxy. If the compiler does not support
+# C++11, then the platform is really old. LDNS dependencies
+# will probably fail to build, like GMP on Fedora 1 on OS X 10.5.
+
+if [[ "$INSTX_CXX11" -eq 1 ]]; then
+    #if [[ "$IS_DARWIN" -eq 0 || ("$IS_DARWIN" -eq 1 && "$OSX_1010_OR_ABOVE" -eq 1) ]]; then
+        ENABLE_LDNS=1
+    #fi
+fi
+
+###############################################################################
+
 if ! ./build-cacert.sh
 then
     echo "Failed to install CA Certs"
@@ -63,7 +75,7 @@ fi
 ###############################################################################
 
 # On OS X, requires OS X 10.10 or above
-if [[ "$IS_DARWIN" -eq 0 || ("$IS_DARWIN" -eq 1 && "$OSX_1010_OR_ABOVE" -eq 1) ]]
+if [[ "$ENABLE_LDNS" -eq 1 ]]
 then
     if ! ./build-ldns.sh
     then
@@ -113,7 +125,7 @@ CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ssl-dir=$INSTX_PREFIX"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-pie"
 CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--disable-strip"
 
-if [[ "$IS_DARWIN" -eq 0 || ("$IS_DARWIN" -eq 1 && "$OSX_1010_OR_ABOVE" -eq 1) ]]
+if [[ "$ENABLE_LDNS" -eq 1 ]]
 then
     CONFIG_OPTS[${#CONFIG_OPTS[@]}]="--with-ldns=$INSTX_PREFIX"
 fi
