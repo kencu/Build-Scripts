@@ -232,11 +232,11 @@ MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 
 # Disables message translation if msgfmt is missing.
 if [[ -z $(command -v msgfmt) ]]; then
-    MAKE_FLAGS+=("NO_GETTEXT=Yes")
+    MAKE_FLAGS[${#MAKE_FLAGS[@]}]="NO_GETTEXT=Yes"
 fi
 # Disables GUI if TCL is missing.
 if [[ -z $(command -v tclsh) ]]; then
-    MAKE_FLAGS+=("NO_TCLTK=Yes")
+    MAKE_FLAGS[${#MAKE_FLAGS[@]}]="NO_TCLTK=Yes"
 fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
