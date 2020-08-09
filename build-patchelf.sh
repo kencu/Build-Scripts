@@ -39,12 +39,19 @@ if [[ "$IS_LINUX" -eq 0 && "$IS_HURD" -eq 0 ]]; then
     exit 0
 fi
 
-# patchelf is a program and it is suppoed to be rebuilt
+# patchelf is a program and it is supposed to be rebuilt
 # on demand. However, this recipe can be called for each
 # build recipe, so build it only once.
 if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
     echo ""
     echo "$PKG_NAME is already installed."
+    exit 0
+fi
+
+# patchelf needs c++11
+if [[ "$HAS_CXX11" -eq 0 ]]; then
+    echo ""
+    echo "$PKG_NAME needs a C++11 compiler."
     exit 0
 fi
 

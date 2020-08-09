@@ -368,6 +368,10 @@ else
     fi
 fi
 
+# patchelf needs C++11 support
+HAS_CXX11="${HAS_CXX11:-0}"
+export HAS_CXX11
+
 # For the benefit of the programs and libraries. Make them run faster.
 CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
