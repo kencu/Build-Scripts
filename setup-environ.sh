@@ -353,24 +353,24 @@ fi
 # Ugh... C++11 support as required. Things may still break.
 CC_RESULT=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
 if [[ "$CC_RESULT" -eq 0 ]]; then
-    HAS_CXX11=1
+    INSTX_CXX11=1
 else
     CC_RESULT=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_CXX11="-std=gnu++11"
-        HAS_CXX11=1
+        INSTX_CXX11=1
     else
         CC_RESULT=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
         if [[ "$CC_RESULT" -eq 0 ]]; then
             OPT_CXX11="-std=c++11"
-            HAS_CXX11=1
+            INSTX_CXX11=1
         fi
     fi
 fi
 
 # patchelf needs C++11 support
-HAS_CXX11="${HAS_CXX11:-0}"
-export HAS_CXX11
+INSTX_CXX11="${INSTX_CXX11:-0}"
+export INSTX_CXX11
 
 # For the benefit of the programs and libraries. Make them run faster.
 CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)

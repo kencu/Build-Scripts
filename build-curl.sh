@@ -109,7 +109,7 @@ fi
 ###############################################################################
 
 # Needs real C++11 support
-if [[ "$HAS_CXX11" -eq 1 ]]
+if [[ "$INSTX_CXX11" -eq 1 ]]
 then
     if ! ./build-nghttp2.sh
     then
@@ -211,7 +211,7 @@ CONFIG_OPTS+=("--without-nss")
 CONFIG_OPTS+=("--without-libssh2")
 CONFIG_OPTS+=("--with-ca-bundle=$OPT_CACERT_FILE")
 
-if [[ "$HAS_CXX11" -eq 1 ]]; then
+if [[ "$INSTX_CXX11" -eq 1 ]]; then
     CONFIG_OPTS+=("--with-nghttp2")
 else
     CONFIG_OPTS+=("--without-nghttp2")

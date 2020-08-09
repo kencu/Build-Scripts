@@ -49,7 +49,7 @@ if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
 fi
 
 # patchelf needs c++11
-if [[ "$HAS_CXX11" -eq 0 ]]; then
+if [[ "$INSTX_CXX11" -eq 0 ]]; then
     echo ""
     echo "$PKG_NAME needs a C++11 compiler."
     exit 0
