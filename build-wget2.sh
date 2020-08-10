@@ -204,6 +204,12 @@ fi
 
 cd "$WGET_DIR" || exit 1
 
+# Patches are created with 'diff -u' from the pkg root directory.
+if [[ -e ../patch/wget2.patch ]]; then
+    patch -u -p0 < ../patch/wget2.patch
+    echo ""
+fi
+
 # Hack for distro tools
 export MAKEINFO=true
 
@@ -215,12 +221,6 @@ if ! ./bootstrap;
 then
     echo "Failed to bootstrap Wget2"
     exit 1
-fi
-
-# Patches are created with 'diff -u' from the pkg root directory.
-if [[ -e ../patch/wget2.patch ]]; then
-    patch -u -p0 < ../patch/wget2.patch
-    echo ""
 fi
 
 # Fix sys_lib_dlsearch_path_spec
