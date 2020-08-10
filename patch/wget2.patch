@@ -4,7 +4,7 @@
        # presented with env variables to set to find the right version
        ($2 --version </dev/null)
      fi
-+  elif test "$1" = "-V"; then
++  if test "$1" = "-V"; then
 +    ($2 -V </dev/null) >/dev/null 2>&1
 +    if test $? -ge 126; then
 +      # If not found, run with diagnostics as one may be
@@ -14,16 +14,18 @@
    else
      ($1 --version </dev/null) >/dev/null 2>&1
    fi
-@@ -469,6 +476,8 @@
+@@ -467,6 +474,10 @@
+ get_version() {
+   app=$1
  
++  if [ "x$app" = "xpython" ]; then
++    $app -V >/dev/null 2>&1 || { $app -V; return 1; }
++  fi
++
    $app --version >/dev/null 2>&1 || { $app --version; return 1; }
  
-+  $app -V >/dev/null 2>&1 || { $app -V; return 1; }
-+
    $app --version 2>&1 | sed -n "$get_version_sed"
- }
- 
-@@ -523,8 +532,10 @@
+@@ -523,8 +534,10 @@
        # Merely require app to exist; not all prereq apps are well-behaved
        # so we have to rely on $? rather than get_version.
        if ! check_exists --verbose $app; then
