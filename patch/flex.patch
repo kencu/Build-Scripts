@@ -1,16 +1,5 @@
 # Written and placed in public domain by Jeffrey Walton.
 # This patch fixes some issues with Flex.
-#--- configure.ac
-#+++ configure.ac
-#@@ -28,7 +28,7 @@
-# AC_CONFIG_SRCDIR([src/scan.l])
-# AC_CONFIG_AUX_DIR([build-aux])
-# LT_INIT
-#-AM_INIT_AUTOMAKE([1.11.3 -Wno-portability foreign check-news std-options dist-lzip parallel-tests subdir-objects])
-#+AM_INIT_AUTOMAKE([1.11.2 -Wno-portability foreign check-news std-options parallel-tests subdir-objects])
-# AC_CONFIG_HEADER([src/config.h])
-# AC_CONFIG_LIBOBJ_DIR([lib])
-# AC_CONFIG_MACRO_DIR([m4])
 --- src/misc.c
 +++ src/misc.c
 @@ -338,6 +338,10 @@
