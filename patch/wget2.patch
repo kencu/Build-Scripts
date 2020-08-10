@@ -19,7 +19,7 @@
    app=$1
  
 +  if [ "x$app" = "xpython" ]; then
-+    $app -V >/dev/null 2>&1 || { $app -V; return 1; }
++    $app -V; return 1;
 +  fi
 +
    $app --version >/dev/null 2>&1 || { $app --version; return 1; }
