@@ -23,7 +23,7 @@
      else
        # Require app to produce a new enough version string.
 -      inst_ver=$(get_version $app)
-+      inst_ver=$(get_version $app 2>/dev/null)
++      inst_ver=$(get_version $app)
        if [ ! "$inst_ver" ]; then
          warn_ "Error: '$app' not found"
          ret=1
