@@ -369,6 +369,7 @@ else
 fi
 
 # patchelf needs C++11 support
+# echo "INSTX_CXX11: $INSTX_CXX11"
 INSTX_CXX11="${INSTX_CXX11:-0}"
 export INSTX_CXX11
 
@@ -792,10 +793,10 @@ if [[ -z "$PRINT_ONCE" ]]; then
 
     printf "%s\n" " WGET: $WGET"
     if [[ -n "$OPT_CACERT_PATH" ]]; then
-        printf "%s\n" " OPT_CACERT_PATH: $OPT_CACERT_PATH"
+        printf " OPT_CACERT_PATH: %s\n" "$OPT_CACERT_PATH"
     fi
     if [[ -n "$OPT_CACERT_FILE" ]]; then
-        printf "%s\n" " OPT_CACERT_FILE: $OPT_CACERT_FILE"
+        printf " OPT_CACERT_FILE: %s\n" "$OPT_CACERT_FILE"
     fi
 
     export PRINT_ONCE="TRUE"
