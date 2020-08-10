@@ -4,7 +4,7 @@
        # presented with env variables to set to find the right version
        ($2 --version </dev/null)
      fi
-+  if test "$1" = "-V"; then
++  elif test "$1" = "-V"; then
 +    ($2 -V </dev/null) >/dev/null 2>&1
 +    if test $? -ge 126; then
 +      # If not found, run with diagnostics as one may be
