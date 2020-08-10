@@ -45,6 +45,16 @@ fi
 
 ###############################################################################
 
+# c-ares needs a C++11 compiler
+if [[ "$INSTX_CXX11" -ne 0 ]]
+then
+    ENABLE_CARES=1
+else
+    ENABLE_CARES=0
+fi
+
+###############################################################################
+
 if ! ./build-cacert.sh
 then
     echo "Failed to install CA Certs"
@@ -69,10 +79,13 @@ fi
 
 ###############################################################################
 
-if ! ./build-cares.sh
+if [[ "$ENABLE_CARES" -eq 1 ]]
 then
-    echo "Failed to install c-ares"
-    exit 1
+    if ! ./build-cares.sh
+    then
+        echo "Failed to build c-ares"
+        exit 1
+    fi
 fi
 
 ###############################################################################

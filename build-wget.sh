@@ -37,6 +37,16 @@ fi
 
 ###############################################################################
 
+# c-ares needs a C++11 compiler
+if [[ "$INSTX_CXX11" -ne 0 ]]
+then
+    ENABLE_CARES=1
+else
+    ENABLE_CARES=0
+fi
+
+###############################################################################
+
 if ! ./build-cacert.sh
 then
     echo "Failed to install CA Certs"
@@ -101,10 +111,13 @@ fi
 
 ###############################################################################
 
-if ! ./build-cares.sh
+if [[ "$ENABLE_CARES" -eq 1 ]]
 then
-    echo "Failed to build c-ares"
-    exit 1
+    if ! ./build-cares.sh
+    then
+        echo "Failed to build c-ares"
+        exit 1
+    fi
 fi
 
 ###############################################################################
@@ -204,6 +217,12 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
+CONFIG_OPTS=()
+if [[ "$ENABLE_CARES" -eq 1 ]]
+then
+    CONFIG_OPTS+=("--with-cares")
+fi
+
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
@@ -220,7 +239,7 @@ echo "**********************"
     --with-libssl-prefix="$INSTX_PREFIX" \
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libiconv-prefix="$INSTX_PREFIX" \
-    --with-cares
+    "${CONFIG_OPTS[@]}"
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure Wget"
