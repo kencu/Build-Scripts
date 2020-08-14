@@ -6,9 +6,9 @@
    export WINEPATH
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -23,9 +23,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -39,9 +39,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -55,9 +55,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -71,9 +71,9 @@
  
  set -e
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -87,9 +87,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -103,9 +103,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
@@ -119,9 +119,9 @@
    srcdir=`pwd`
  fi
  
-+nettle_lib_dir=`dirname $PWD`/.lib
-+LD_LIBRARY_PATH=$nettle_lib_dir
-+DYLD_LIBRARY_PATH=$nettle_lib_dir
++nettle_libdir=`dirname $PWD`/.lib
++LD_LIBRARY_PATH=$nettle_libdir
++DYLD_LIBRARY_PATH=$nettle_libdir
 +
 +export LD_LIBRARY_PATH
 +export DYLD_LIBRARY_PATH
