@@ -66,14 +66,16 @@ echo "=============== libassuan =============="
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "*****************************"
 echo "Downloading package"
-echo "**********************"
+echo "*****************************"
 
 if ! "$WGET" -q -O "$LIBASSUAN_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/libassuan/$LIBASSUAN_TAR"
 then
+    echo "*****************************"
     echo "Failed to download libassuan"
+    echo "*****************************"
     exit 1
 fi
 
@@ -84,9 +86,9 @@ cd "$LIBASSUAN_DIR"
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Configuring package"
-echo "**********************"
+echo "*****************************"
 
 if [[ "$IS_SOLARIS" -ne 0 ]]; then
     INSTX_STD="-std=c99"
@@ -107,7 +109,9 @@ fi
     --with-libgpg-error-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "*****************************"
     echo "Failed to configure libassuan"
+    echo "*****************************"
     exit 1
 fi
 
@@ -115,14 +119,16 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Building package"
-echo "**********************"
+echo "*****************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "*****************************"
     echo "Failed to build libassuan"
+    echo "*****************************"
     exit 1
 fi
 
@@ -132,16 +138,16 @@ bash ../fix-pkgconfig.sh
 # Fix runpaths
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Testing package"
-echo "**********************"
+echo "*****************************"
 
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "***************************"
+    echo "*****************************"
     echo "Failed to test libassuan"
-    echo "***************************"
+    echo "*****************************"
     bash ../collect-logs.sh
     exit 1
 fi
@@ -149,9 +155,9 @@ fi
 # Fix runpaths
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Installing package"
-echo "**********************"
+echo "*****************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then

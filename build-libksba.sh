@@ -73,7 +73,9 @@ echo "**********************"
 if ! "$WGET" -q -O "$LIBKSBA_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://www.gnupg.org/ftp/gcrypt/libksba/$LIBKSBA_TAR"
 then
+    echo "***************************"
     echo "Failed to download libksba"
+    echo "***************************"
     exit 1
 fi
 
@@ -114,7 +116,9 @@ fi
     --with-libgpg-error-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "***************************"
     echo "Failed to configure libksba"
+    echo "***************************"
     exit 1
 fi
 
@@ -129,7 +133,9 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to build libksba"
+    echo "***************************"
     exit 1
 fi
 
@@ -146,7 +152,10 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to test libksba"
+    echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 

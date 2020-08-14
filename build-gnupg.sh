@@ -140,7 +140,9 @@ echo "**********************"
 if ! "$WGET" -q -O "$GNUPG_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/gnupg/$GNUPG_TAR"
 then
+    echo "***************************"
     echo "Failed to download GnuPG"
+    echo "***************************"
     exit 1
 fi
 
@@ -190,7 +192,9 @@ fi
     --with-libintl-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "***************************"
     echo "Failed to configure GnuPG"
+    echo "***************************"
     exit 1
 fi
 
@@ -205,7 +209,10 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to build GnuPG"
+    echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
