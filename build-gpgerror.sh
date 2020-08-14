@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libgpg-error from sources.
 
-LIBERR_TAR=libgpg-error-1.38.tar.bz2
-LIBERR_DIR=libgpg-error-1.38
+GPGERR_TAR=libgpg-error-1.38.tar.bz2
+GPGERR_DIR=libgpg-error-1.38
 PKG_NAME=gpgerror
 
 ###############################################################################
@@ -62,16 +62,16 @@ echo "**********************"
 echo "Downloading package"
 echo "**********************"
 
-if ! "$WGET" -q -O "$LIBERR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
-     "https://gnupg.org/ftp/gcrypt/libgpg-error/$LIBERR_TAR"
+if ! "$WGET" -q -O "$GPGERR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
+     "https://gnupg.org/ftp/gcrypt/libgpg-error/$GPGERR_TAR"
 then
     echo "Failed to download libgpg-error"
     exit 1
 fi
 
-rm -rf "$LIBERR_DIR" &>/dev/null
-tar xjf "$LIBERR_TAR"
-cd "$LIBERR_DIR"
+rm -rf "$GPGERR_DIR" &>/dev/null
+tar xjf "$GPGERR_TAR"
+cd "$GPGERR_DIR"
 
 #cp tests/Makefile.in tests/Makefile.in.orig
 #cp tests/t-logging.c tests/t-logging.c.orig
@@ -175,7 +175,7 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 # Set to false to retain artifacts
 if true; then
 
-    ARTIFACTS=("$LIBERR_TAR" "$LIBERR_DIR")
+    ARTIFACTS=("$GPGERR_TAR" "$GPGERR_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
