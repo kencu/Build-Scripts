@@ -199,7 +199,7 @@
  check-TESTS: $(TESTS)
  	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
  	srcdir=$(srcdir); export srcdir; \
-+	gpgerror_libdir=`dirname $$PWD/../src/.libs`; \
++	gpgerror_libdir="$$PWD/../src/.libs"; \
 +	LD_LIBRARY_PATH=`echo "$$gpgerror_libdir:$$LD_LIBRARY_PATH" | $(SED) 's/:*$$//g'`; \
 +	DYLD_LIBRARY_PATH=`echo "$$gpgerror_libdir:$$DYLD_LIBRARY_PATH" | $(SED) 's/:*$$//g'`; \
 +	export LD_LIBRARY_PATH; export DYLD_LIBRARY_PATH; \
