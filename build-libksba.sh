@@ -81,6 +81,13 @@ rm -rf "$LIBKSBA_DIR" &>/dev/null
 tar xjf "$LIBKSBA_TAR"
 cd "$LIBKSBA_DIR"
 
+#cp tests/Makefile.in tests/Makefile.in.orig
+
+if [[ -e ../patch/libksba.patch ]]; then
+    patch -u -p0 < ../patch/libksba.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
