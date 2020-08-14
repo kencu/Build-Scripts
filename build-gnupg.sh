@@ -195,6 +195,7 @@ if [[ "$?" -ne 0 ]]; then
     echo "***************************"
     echo "Failed to configure GnuPG"
     echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 

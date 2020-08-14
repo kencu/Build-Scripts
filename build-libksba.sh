@@ -119,6 +119,7 @@ if [[ "$?" -ne 0 ]]; then
     echo "***************************"
     echo "Failed to configure libksba"
     echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -136,6 +137,7 @@ then
     echo "***************************"
     echo "Failed to build libksba"
     echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 

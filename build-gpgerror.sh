@@ -106,7 +106,10 @@ fi
     --enable-shared
 
 if [[ "$?" -ne 0 ]]; then
+    echo "********************************"
     echo "Failed to configure libgpg-error"
+    echo "********************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -121,7 +124,10 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "********************************"
     echo "Failed to build libgpg-error"
+    echo "********************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -138,9 +144,9 @@ echo "**********************"
 MAKE_FLAGS=("check" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "***************************"
+    echo "********************************"
     echo "Failed to test libgpg-error"
-    echo "***************************"
+    echo "********************************"
     bash ../collect-logs.sh
     exit 1
 fi
