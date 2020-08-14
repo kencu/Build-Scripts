@@ -88,14 +88,10 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
-if [[ "$IS_SOLARIS" -ne 0 ]]; then
-    INSTX_STD="-std=c99"
-fi
-
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
-    CFLAGS="${INSTX_CFLAGS[*]} $INSTX_STD" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
