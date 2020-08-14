@@ -73,6 +73,9 @@ rm -rf "$LIBERR_DIR" &>/dev/null
 tar xjf "$LIBERR_TAR"
 cd "$LIBERR_DIR"
 
+#cp tests/Makefile.in tests/Makefile.in.orig
+#cp tests/t-logging.c tests/t-logging.c.orig
+
 if [[ -e ../patch/gpgerror.patch ]]; then
     patch -u -p0 < ../patch/gpgerror.patch
     echo ""
