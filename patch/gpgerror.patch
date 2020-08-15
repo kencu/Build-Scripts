@@ -11,6 +11,15 @@
  
  /* Special short options which are auto-inserterd.  Must fit into an
   * unsigned short.  */
+@@ -1905,7 +1905,7 @@
+   int argc;
+   char **argv;
+   char *s, *s2;
+-  int i;
++  int i = 0;
+ 
+   if (no_init)
+     ;
 --- tests/t-logging.c
 +++ tests/t-logging.c
 @@ -76,15 +76,21 @@
