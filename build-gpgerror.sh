@@ -73,6 +73,7 @@ rm -rf "$GPGERR_DIR" &>/dev/null
 tar xjf "$GPGERR_TAR"
 cd "$GPGERR_DIR"
 
+#cp src/argparse.c src/argparse.c.orig
 #cp tests/Makefile.in tests/Makefile.in.orig
 #cp tests/t-logging.c tests/t-logging.c.orig
 

@@ -1,5 +1,16 @@
 # Written and placed in public domain by Jeffrey Walton.
 # This patch fixes some issues with GnuPG.
+--- src/argparse.c
++++ src/argparse.c
+@@ -56,7 +56,7 @@
+ 
+ 
+ /* Hidden argparse flag used to mark the object as initialized.  */
+-#define ARGPARSE_FLAG__INITIALIZED  (1<< ((8*SIZEOF_INT)-1))
++#define ARGPARSE_FLAG__INITIALIZED  (1U<< ((8*SIZEOF_INT)-1))
+ 
+ /* Special short options which are auto-inserterd.  Must fit into an
+  * unsigned short.  */
 --- tests/t-logging.c
 +++ tests/t-logging.c
 @@ -76,15 +76,21 @@
