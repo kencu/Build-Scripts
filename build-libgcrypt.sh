@@ -90,6 +90,8 @@ rm -rf "$GCRYPT_DIR" &>/dev/null
 tar xjf "$GCRYPT_TAR"
 cd "$GCRYPT_DIR"
 
+# cp tests/Makefile.in tests/Makefile.in.orig
+
 if [[ -e ../patch/libgcrypt.patch ]]; then
     patch -u -p0 < ../patch/libgcrypt.patch
     echo ""
