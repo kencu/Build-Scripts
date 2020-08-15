@@ -113,8 +113,8 @@ then
     PATH="$SOLARIS_PATH:$PATH"
 fi
 
-# Strip leading and trailing semi-colons
-PATH=$(echo "$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
+# Strip leading, duplicate and trailing colons
+PATH=$(echo "$PATH" | tr -s ':' | sed 's/^:\(.*\)/\1/' | sed 's/:$//g')
 export PATH
 
 # echo "New PATH: $PATH"
@@ -326,12 +326,11 @@ if [[ -z "$INSTX_OPATH" ]]; then
     INSTX_OPATH="$DEF_OPATH"
 fi
 
-# Remove duplicate slashes. Despite my best effort
-# I have not been able to locate where it comes from
-INSTX_PREFIX="$(tr -s '/' <<< "${INSTX_PREFIX}")"
-INSTX_LIBDIR="$(tr -s '/' <<< "${INSTX_LIBDIR}")"
-INSTX_RPATH="$(tr -s '/' <<< "${INSTX_RPATH}")"
-INSTX_OPATH="$(tr -s '/' <<< "${INSTX_OPATH}")"
+# Remove duplicate and trailing slashes.
+INSTX_PREFIX="$(echo ${INSTX_PREFIX} | tr -s '/' | $SED 's/\/$//g')"
+INSTX_LIBDIR="$(echo ${INSTX_LIBDIR} | tr -s '/' | $SED 's/\/$//g')"
+INSTX_RPATH="$(echo ${INSTX_RPATH} | tr -s '/' | $SED 's/\/$//g')"
+INSTX_OPATH="$(echo ${INSTX_OPATH} | tr -s '/' | $SED 's/\/$//g')"
 
 export INSTX_PREFIX
 export INSTX_LIBDIR
@@ -339,8 +338,8 @@ export INSTX_RPATH
 export INSTX_OPATH
 
 # Add our path since we know we are using the latest binaries.
-# Strip leading and trailing semi-colons
-PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | sed 's/::/:/g' | sed 's/^:\(.*\)/\1/')
+# Strip leading, duplicate and trailing colons
+PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | tr -s ':' | $SED 's/^:\(.*\)/\1/' | $SED 's/:$//g')
 export PATH
 
 ###############################################################################
