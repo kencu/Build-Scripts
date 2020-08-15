@@ -83,6 +83,13 @@ rm -rf "$LIBASSUAN_DIR" &>/dev/null
 tar xjf "$LIBASSUAN_TAR"
 cd "$LIBASSUAN_DIR"
 
+# cp tests/Makefile.in tests/Makefile.in.orig
+
+if [[ -e ../patch/libassuan.patch ]]; then
+    patch -u -p0 < ../patch/libassuan.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
