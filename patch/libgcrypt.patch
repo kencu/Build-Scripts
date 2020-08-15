@@ -86,7 +86,7 @@
  check-TESTS: $(TESTS)
  	@failed=0; all=0; xfail=0; xpass=0; skip=0; \
  	srcdir=$(srcdir); export srcdir; \
-+	gcrypt_libdir=`dirname $$PWD`/src/.libs:$$gcrypt_libdir; \
++	gcrypt_libdir=`dirname $$PWD`/src/.libs; \
 +	LD_LIBRARY_PATH=`echo "$$gcrypt_libdir:$$LD_LIBRARY_PATH" | $(SED) 's/:*$$//g'`; \
 +	DYLD_LIBRARY_PATH=`echo "$$gcrypt_libdir:$$DYLD_LIBRARY_PATH" | $(SED) 's/:*$$//g'`; \
 +	export LD_LIBRARY_PATH; export DYLD_LIBRARY_PATH; \
