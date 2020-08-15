@@ -32,7 +32,7 @@ do
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
-        "$file" > "$file.fixed"
+        "$file" > "$file.fixed" && \
     mv "$file.fixed" "$file"
     chmod go-w "$file"
     touch -a -m -r "$file.timestamp.saved" "$file"
@@ -48,7 +48,7 @@ do
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
         -e "s/GZIP_ENV = --best/GZIP_ENV = -9/g" \
-        "$file" > "$file.fixed"
+        "$file" > "$file.fixed" && \
     mv "$file.fixed" "$file"
     chmod go-w "$file"
     touch -a -m -r "$file.timestamp.saved" "$file"
