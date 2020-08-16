@@ -39,33 +39,38 @@ then
     fi
 fi
 
-IFS="" find . -name 'configure.ac' -print | while read -r file
+IFS="" find "./" -name 'configure.ac' -print | while read -r file
 do
-    echo "patching $file..."
-    touch -a -m -r "$file" "$file.timestamp.saved"
+    # Display filename, strip leading "./"
+    this_file=$(echo "$file" | cut -c 3-)
+    echo "patching ${this_file}..."
+
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
     chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
-    # touch -t 197001010000 "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
-IFS="" find . -name 'configure' -print | while read -r file
+IFS="" find "./" -name 'configure' -print | while read -r file
 do
-    echo "patching $file..."
-    touch -a -m -r "$file" "$file.timestamp.saved"
+    # Display filename, strip leading "./"
+    this_file=$(echo "$file" | cut -c 3-)
+    echo "patching ${this_file}..."
+
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"; chmod a+x "$file"
     ./fix-configure.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file";
     chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 echo "patching config.sub..."
-IFS="" find . -name 'config.sub' -print | while read -r file
+IFS="" find "./" -name 'config.sub' -print | while read -r file
 do
     chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.sub" "$file"
@@ -73,7 +78,7 @@ do
 done
 
 echo "patching config.guess..."
-IFS="" find . -name 'config.guess' -print | while read -r file
+IFS="" find "./" -name 'config.guess' -print | while read -r file
 do
     chmod a+w "$file"; chmod a+x "$file"
     cp -p "$PROG_PATH/config.guess" "$file"

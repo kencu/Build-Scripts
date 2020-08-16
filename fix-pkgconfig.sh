@@ -39,15 +39,19 @@ then
     fi
 fi
 
-IFS="" find . -iname '*.pc' -print | while read -r file
+IFS="" find "./" -iname '*.pc' -print | while read -r file
 do
-    echo "patching $file..."
-    chmod a+w "$file"
-    touch -a -m -r "$file" "file.timestamp"
+    # Display filename, strip leading "./"
+    this_file=$(echo "$file" | cut -c 3-)
+    echo "patching ${this_file}..."
+
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod a+rw "$file"
     ./fix-pkgconfig.exe "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-    touch -a -m -r "file.timestamp" "$file"
     chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 exit 0

@@ -83,10 +83,12 @@ do
     magic=$(./file-magic.exe "$file")
     if [[ "$magic" != "7F454C46" ]]; then continue; fi
 
-    echo "$file" | sed 's/^\.\///g'
+    # Display filename, strip leading "./"
+    this_file=$(echo "$file" | cut -c 3-)
+    echo "patching ${this_file}..."
 
-    touch -a -m -r "$file" "$file.timestamp.saved"
-    chmod a+w "$file"; chmod a+x "$file"
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod a+rw "$file"
 
     # https://blogs.oracle.com/solaris/avoiding-ldlibrarypath%3a-the-options-v2
     if [[ "$IS_SOLARIS" -ne 0 && -e /usr/bin/elfedit ]]
@@ -113,9 +115,9 @@ do
         :
     fi
 
-    chmod a+x "$file"; chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
+    chmod a+rx "$file"; chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 exit 0
