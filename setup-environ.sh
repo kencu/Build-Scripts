@@ -66,7 +66,7 @@ CA_ZOO="$HOME/.build-scripts/cacert/cacert.pem"
 
 CURR_DIR=$(pwd)
 
-# `gcc ... -o /dev/null` does not work on Solaris due to LD bug.
+# `gcc ... -o /dev/null` does not work on Solaris.
 # `mktemp` is not available on AIX or Git Windows shell...
 infile="in.$RANDOM$RANDOM.c"
 outfile="out.$RANDOM$RANDOM"
@@ -131,6 +131,8 @@ if [[ -z "$WGET" ]]; then
         WGET=wget
     fi
 fi
+
+export WGET
 
 ###############################################################################
 
@@ -204,11 +206,18 @@ fi
 export MAKE
 export MAKEOPTS
 
-# If CC and CXX are not set, then use default or assume GCC
-if [[ -z "${CC}" ]] && [[ -n "$(command -v gcc)" ]]; then export CC='gcc'; fi
-if [[ -z "${CC}" ]] && [[ -n "$(command -v cc)" ]]; then export CC='cc'; fi
-if [[ -z "${CXX}" ]] && [[ -n "$(command -v g++)" ]]; then export CXX='g++'; fi
-if [[ -z "${CXX}" ]] && [[ -n "$(command -v CC)" ]]; then export CXX='CC'; fi
+# If CC and CXX are not set, then use default or assume GCC, except on Darwin
+if [[ "$IS_DARWIN" -ne 0 ]]; then
+    if [[ -z "${CC}" ]] && [[ -n "$(command -v clang)" ]]; then CC='clang'; fi
+    if [[ -z "${CXX}" ]] && [[ -n "$(command -v clang++)" ]]; then CXX='clang++'; fi
+fi
+if [[ -z "${CC}" ]] && [[ -n "$(command -v gcc)" ]]; then CC='gcc'; fi
+if [[ -z "${CC}" ]] && [[ -n "$(command -v cc)" ]]; then CC='cc'; fi
+if [[ -z "${CXX}" ]] && [[ -n "$(command -v g++)" ]]; then CXX='g++'; fi
+if [[ -z "${CXX}" ]] && [[ -n "$(command -v CC)" ]]; then CXX='CC'; fi
+
+export CC
+export CXX
 
 IS_GCC=$(${CC} --version 2>&1 | ${GREP} -i -c 'gcc')
 IS_CLANG=$(${CC} --version 2>&1 | ${EGREP} -i -c 'clang|llvm')
@@ -312,10 +321,10 @@ if [[ -z "$INSTX_OPATH" ]]; then
 fi
 
 # Remove duplicate and trailing slashes.
-INSTX_PREFIX="$(echo ${INSTX_PREFIX} | tr -s '/' | $SED 's/\/$//g')"
-INSTX_LIBDIR="$(echo ${INSTX_LIBDIR} | tr -s '/' | $SED 's/\/$//g')"
-INSTX_RPATH="$(echo ${INSTX_RPATH} | tr -s '/' | $SED 's/\/$//g')"
-INSTX_OPATH="$(echo ${INSTX_OPATH} | tr -s '/' | $SED 's/\/$//g')"
+INSTX_PREFIX="$(echo ${INSTX_PREFIX} | tr -s '/' | $SED -e 's/\/$//g')"
+INSTX_LIBDIR="$(echo ${INSTX_LIBDIR} | tr -s '/' | $SED -e 's/\/$//g')"
+INSTX_RPATH="$(echo ${INSTX_RPATH} | tr -s '/' | $SED -e 's/\/$//g')"
+INSTX_OPATH="$(echo ${INSTX_OPATH} | tr -s '/' | $SED -e 's/\/$//g')"
 
 export INSTX_PREFIX
 export INSTX_LIBDIR
@@ -714,17 +723,19 @@ if [[ -z "$INSTX_PKG_CACHE" ]]; then
     mkdir -p "$INSTX_PKG_CACHE"
 fi
 
+export INSTX_PKG_CACHE
+
 ###############################################################################
 
 # If the package is older than 7 days, then rebuild it. This sidesteps the
 # problem of continually rebuilding the same package when installing a
 # program like Git and SSH. It also avoids version tracking by automatically
 # building a package after 7 days (even if it is the same version).
-(IFS="" find "$INSTX_PKG_CACHE" -type f -mtime +7 -print | while read -r pkg
+IFS="" find "$INSTX_PKG_CACHE" -type f -mtime +7 -print | while read -r pkg
 do
     # printf "Setting %s for rebuild\n" "$pkg"
     rm -f "$pkg" 2>/dev/null
-done)
+done
 
 ###############################################################################
 
@@ -732,9 +743,9 @@ done)
 if [[ -z "$PRINT_ONCE" ]]; then
 
     if [[ "$IS_SOLARIS" -ne 0 ]]; then
-        printf "%s\n" ""
+        printf "\n"
         printf "%s\n" "Solaris tools:"
-        printf "%s\n" ""
+        printf "\n"
         printf "%s\n" "     sed: $(command -v sed)"
         printf "%s\n" "     awk: $(command -v awk)"
         printf "%s\n" "    grep: $(command -v grep)"
@@ -752,15 +763,15 @@ if [[ -z "$PRINT_ONCE" ]]; then
         fi
     fi
 
-    printf "%s\n" ""
+    printf "\n"
     printf "%s\n" "Common flags and options:"
-    printf "%s\n" ""
+    printf "\n"
     printf "%s\n" "  INSTX_BITNESS: $INSTX_BITNESS-bits"
     printf "%s\n" "   INSTX_PREFIX: $INSTX_PREFIX"
     printf "%s\n" "   INSTX_LIBDIR: $INSTX_LIBDIR"
     printf "%s\n" "    INSTX_OPATH: $INSTX_OPATH"
     printf "%s\n" "    INSTX_RPATH: $INSTX_RPATH"
-    printf "%s\n" ""
+    printf "\n"
     printf "%s\n" " AUTOCONF_BUILD: $AUTOCONF_BUILD"
     printf "%s\n" "PKG_CONFIG_PATH: ${INSTX_PKGCONFIG[*]}"
     printf "%s\n" "       CPPFLAGS: ${INSTX_CPPFLAGS[*]}"
@@ -773,9 +784,13 @@ if [[ -z "$PRINT_ONCE" ]]; then
     printf "%s\n" "       CXXFLAGS: ${INSTX_CXXFLAGS[*]}"
     printf "%s\n" "        LDFLAGS: ${INSTX_LDFLAGS[*]}"
     printf "%s\n" "         LDLIBS: ${INSTX_LIBS[*]}"
-    printf "%s\n" ""
+    printf "\n"
 
+    printf "%s\n" "   CC: $(command -v $CC)"
+    printf "%s\n" "  CXX: $(command -v $CXX)"
     printf "%s\n" " WGET: $WGET"
+    printf "\n"
+
     if [[ -n "$OPT_CACERT_PATH" ]]; then
         printf " OPT_CACERT_PATH: %s\n" "$OPT_CACERT_PATH"
     fi
