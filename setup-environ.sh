@@ -97,29 +97,23 @@ IS_ALPINE=$(grep -i -c 'alpine' <<< "$THIS_SYSTEM")
 
 ###############################################################################
 
-# Paths are awful on Solaris. An unmodified environment only
-# has /usr/bin and /usr/sbin with anemic tools.
-if [ "$IS_SOLARIS" -ne 0 ]
-then
-    for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /usr/xpg4/bin /bin /usr/bin /sbin /usr/sbin
-    do
-        if [ -d "$path" ]; then
-            SOLARIS_PATH="$SOLARIS_PATH:$path"
-        fi
-    done
+GREP="${GREP:-"$(command -v grep)"}"
+EGREP="${EGREP:-"$(command -v grep) -E"}"
+SED="${SED:-"$(command -v sed)"}"
+AWK="${AWK:-"$(command -v awk)"}"
 
-    # Add user's path in case a binary is in a non-standard location, like /opt/local
-    # Place the PATH after SOLARIS_PATH so the anemic tools are last in the list.
-    PATH="$SOLARIS_PATH:$PATH"
+# Non-anemic tools on Solaris
+if [[ -d /usr/gnu/bin ]]; then
+    GREP="/usr/gnu/bin/grep"
+    EGREP="/usr/gnu/bin/grep -E"
+    SED="/usr/gnu/bin/sed"
+    AWK="/usr/gnu/bin/awk"
+elif [[ -d /usr/sfw/bin ]]; then
+    GREP="/usr/sfw/bin/grep"
+    EGREP="/usr/sfw/bin/grep -E"
+    SED="/usr/sfw/bin/sed"
+    AWK="/usr/sfw/bin/awk"
 fi
-
-# Strip leading, duplicate and trailing colons
-PATH=$(echo "$PATH" | tr -s ':' | sed 's/^:\(.*\)/\1/' | sed 's/:$//g')
-export PATH
-
-# echo "New PATH: $PATH"
-
-###############################################################################
 
 # Wget is special. We have to be able to bootstrap it and
 # use a modern version throughout these scripts. The Wget
@@ -138,39 +132,30 @@ if [[ -z "$WGET" ]]; then
     fi
 fi
 
-if [[ -z "$GREP" ]]; then
-    if [[ -n "$(command -v grep)" ]]; then
-        GREP="$(command -v grep)"
-    else
-        GREP=grep
-    fi
+###############################################################################
+
+# Paths are awful on Solaris. An unmodified environment only
+# has /usr/bin and /usr/sbin with anemic tools.
+if [ "$IS_SOLARIS" -ne 0 ]
+then
+    for path in /usr/gnu/bin /usr/sfw/bin /usr/ucb/bin /usr/xpg4/bin /bin /usr/bin /sbin /usr/sbin
+    do
+        if [ -d "$path" ]; then
+            SOLARIS_PATH="$SOLARIS_PATH:$path"
+        fi
+    done
+
+    # Add user's path in case a binary is in a non-standard location,
+    # like /opt/local. Place the PATH after SOLARIS_PATH so the anemic
+    # tools are last in the list.
+    PATH="$SOLARIS_PATH:$PATH"
 fi
 
-if [[ -z "$EGREP" ]]; then
-    if [[ -n "$(command -v egrep)" ]]; then
-        EGREP="$(command -v egrep)"
-    elif [[ -n "$(command -v grep)" ]]; then
-        EGREP="grep -E"
-    else
-        EGREP=egrep
-    fi
-fi
+# Strip leading, duplicate and trailing colons
+PATH=$(echo "$PATH" | tr -s ':' | $SED -e 's/^:\(.*\)/\1/' | $SED -e 's/:$//g')
+export PATH
 
-if [[ -z "$SED" ]]; then
-    if [[ -n "$(command -v sed)" ]]; then
-        SED="$(command -v sed)"
-    else
-        SED=sed
-    fi
-fi
-
-if [[ -z "$AWK" ]]; then
-    if [[ -n "$(command -v awk)" ]]; then
-        AWK="$(command -v awk)"
-    else
-        AWK=awk
-    fi
-fi
+# echo "New PATH: $PATH"
 
 ###############################################################################
 
@@ -186,7 +171,7 @@ IS_DRAGONFLY=$(uname -s | $GREP -i -c DragonFly 2>/dev/null)
 OSX_VERSION=$(system_profiler SPSoftwareDataType 2>&1 | ${GREP} 'System Version:' | ${AWK} '{print $6}')
 OSX_1010_OR_ABOVE=$(printf "%s" "$OSX_VERSION" | ${EGREP} -i -c "(^10.10|^1[1-9].|^[2-9][0-9])")
 
-if [[ "$IS_REDHAT" -ne 0 ]] || [[ "$IS_CENTOS" -ne 0 ]] || [[ "$IS_FEDORA" -ne 0 ]]
+if [[ "$IS_REDHAT" -ne 0 || "$IS_CENTOS" -ne 0 || "$IS_FEDORA" -ne 0 ]]
 then
     IS_RH_FAMILY=1
 else
@@ -257,9 +242,9 @@ IS_SUN_SPARCv9=$(isainfo -v 2>/dev/null | ${EGREP} -i -c 'sparcv9')
 # Solaris Fixup
 if [[ "$IS_SUN_AMD64" -eq 1 ]]; then
     IS_AMD64=1
-    AUTOCONF_BUILD="x86_64-sun-solaris"
+    AUTOCONF_BUILD=$($SED 's/i386/x86_64/g' <<< "$AUTOCONF_BUILD")
 elif [[ "$IS_SUN_SPARCv9" -eq 1 ]]; then
-    AUTOCONF_BUILD="sparcv9-sun-solaris"
+    AUTOCONF_BUILD=$($SED 's/sparc/sparcv9/g' <<< "$AUTOCONF_BUILD")
 fi
 
 ###############################################################################
@@ -339,27 +324,27 @@ export INSTX_OPATH
 
 # Add our path since we know we are using the latest binaries.
 # Strip leading, duplicate and trailing colons
-PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | tr -s ':' | $SED 's/^:\(.*\)/\1/' | $SED 's/:$//g')
+PATH=$(echo "$INSTX_PREFIX/bin:$PATH" | tr -s ':' | $SED -e 's/^:\(.*\)/\1/' | $SED -e 's/:$//g')
 export PATH
 
 ###############################################################################
 
-CC_RESULT=$(${TEST_CC} -fPIC -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -fPIC -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_PIC="-fPIC"
 fi
 
 # Ugh... C++11 support as required. Things may still break.
-CC_RESULT=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CXX} -o "$outfile" programs/test-cxx11.cpp 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     INSTX_CXX11=1
 else
-    CC_RESULT=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CXX} -std=gnu++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_CXX11="-std=gnu++11"
         INSTX_CXX11=1
     else
-        CC_RESULT=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | tr ' ' '\n' | wc -l)
+        CC_RESULT=$(${TEST_CXX} -std=c++11 -o "$outfile" programs/test-cxx11.cpp 2>&1 | wc -w)
         if [[ "$CC_RESULT" -eq 0 ]]; then
             OPT_CXX11="-std=c++11"
             INSTX_CXX11=1
@@ -373,34 +358,34 @@ INSTX_CXX11="${INSTX_CXX11:-0}"
 export INSTX_CXX11
 
 # For the benefit of the programs and libraries. Make them run faster.
-CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_NATIVE="-march=native"
 fi
 
 # PowerMac's with 128-bit long double. Gnulib and GetText expect 64-bit long double.
-CC_RESULT=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -o "$outfile" programs/test-128bit-double.c 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     if [[ $("./$outfile") == "106" ]]; then
         OPT_64BIT_DBL="-mlong-double-64"
     fi
 fi
 
-CC_RESULT=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -pthread -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_PTHREAD="-pthread"
 fi
 
 # Switch from -march=native to something more appropriate
 if [[ $($EGREP -i -c 'armv7' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    CC_RESULT=$(${TEST_CC} -march=armv7-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -march=armv7-a -o "$outfile" "$infile" 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_ARMV7="-march=armv7-a"
     fi
 fi
 # See if we can upgrade to ARMv7+NEON
 if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
-    CC_RESULT=$(${TEST_CC} -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -march=armv7-a -mfpu=neon -o "$outfile" "$infile" 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         IS_ARM_NEON=1
         OPT_ARMV7="-march=armv7-a -mfpu=neon"
@@ -408,83 +393,83 @@ if [[ $($EGREP -i -c 'neon' /proc/cpuinfo 2>/dev/null) -ne 0 ]]; then
 fi
 # See if we can upgrade to ARMv8
 if [[ $(uname -m 2>&1 | ${EGREP} -i -c 'aarch32|aarch64') -ne 0 ]]; then
-    CC_RESULT=$(${TEST_CC} -march=armv8-a -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -march=armv8-a -o "$outfile" "$infile" 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_ARMV8="-march=armv8-a"
     fi
 fi
 
 # See if -Wl,-rpath,$ORIGIN/../lib works
-CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPATH="-Wl,-rpath,$INSTX_OPATH"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPATH="-Wl,-R,$INSTX_OPATH"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_OPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPATH="-Wl,-R,$INSTX_OPATH -bsvr4"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_OPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPATH="-Wl,+b,$INSTX_OPATH"
 fi
 
 # See if -Wl,-rpath,${libdir} works.
-CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-rpath,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,-rpath,$INSTX_RPATH"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,-R,$INSTX_RPATH"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,-R,$INSTX_RPATH -bsvr4 -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,-R,$INSTX_RPATH -bsvr4"
 fi
-CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,+b,$INSTX_RPATH -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_RPATH="-Wl,+b,$INSTX_RPATH"
 fi
 
 # See if RUNPATHs are available. new-dtags convert a RPATH to a RUNPATH.
-CC_RESULT=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,--enable-new-dtags -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_NEW_DTAGS="-Wl,--enable-new-dtags"
 fi
 
 # http://www.sco.com/developers/gabi/latest/ch5.dynamic.html#shobj_dependencies
-CC_RESULT=$(${TEST_CC} ${OPT_OPATH} -Wl,-z,origin -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} ${OPT_OPATH} -Wl,-z,origin -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_ORIGIN="-Wl,-z,origin"
 fi
 
-CC_RESULT=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -fopenmp -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_OPENMP="-fopenmp"
 fi
 
-CC_RESULT=$(${TEST_CC} -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -Wl,--no-as-needed -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_NO_AS_NEEDED="-Wl,--no-as-needed"
 fi
 
 # OS X linker and install names
-CC_RESULT=$(${TEST_CC} -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+CC_RESULT=$(${TEST_CC} -headerpad_max_install_names -o "$outfile" "$infile" 2>&1 | wc -w)
 if [[ "$CC_RESULT" -eq 0 ]]; then
     OPT_INSTNAME="-headerpad_max_install_names"
 fi
 
 # Debug symbols
 if [[ -z "$OPT_SYM" ]]; then
-    CC_RESULT=$(${TEST_CC} -g2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -g2 -o "$outfile" "$infile" 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_SYM="-g2"
     else
-        CC_RESULT=$(${TEST_CC} -g -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        CC_RESULT=$(${TEST_CC} -g -o "$outfile" "$infile" 2>&1 | wc -w)
         if [[ "$CC_RESULT" -eq 0 ]]; then
             OPT_SYM="-g"
         fi
@@ -493,11 +478,11 @@ fi
 
 # Optimizations symbols
 if [[ -z "$OPT_OPT" ]]; then
-    CC_RESULT=$(${TEST_CC} -O2 -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -O2 -o "$outfile" "$infile" 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_OPT="-O2"
     else
-        CC_RESULT=$(${TEST_CC} -O -o "$outfile" "$infile" 2>&1 | tr ' ' '\n' | wc -l)
+        CC_RESULT=$(${TEST_CC} -O -o "$outfile" "$infile" 2>&1 | wc -w)
         if [[ "$CC_RESULT" -eq 0 ]]; then
             OPT_OPT="-O"
         fi
@@ -506,14 +491,14 @@ fi
 
 # OpenBSD does not have -ldl
 if [[ -z "$OPT_DL" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -ldl 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -ldl 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_DL="-ldl"
     fi
 fi
 
 if [[ -z "$OPT_LIBPTHREAD" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -lpthread 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -lpthread 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_LIBPTHREAD="-lpthread"
     fi
@@ -522,11 +507,11 @@ fi
 # -fno-sanitize-recover causes an abort(). Useful for test
 # programs that swallow UBsan output and pretty print "OK"
 if [[ -z "$OPT_SAN_NORECOVER" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover=all 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover=all 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_SAN_NORECOVER="-fno-sanitize-recover=all"
     else
-        CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover 2>&1 | tr ' ' '\n' | wc -l)
+        CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize=undefined -fno-sanitize-recover 2>&1 | wc -w)
         if [[ "$CC_RESULT" -eq 0 ]]; then
             OPT_SAN_NORECOVER="-fno-sanitize-recover"
         fi
@@ -535,7 +520,7 @@ fi
 
 # Msan option
 if [[ -z "$OPT_MSAN_ORIGIN" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -fsanitize-memory-track-origins 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_MSAN_ORIGIN=1
     fi
@@ -543,14 +528,14 @@ fi
 
 # GOT and PLT hardening
 if [[ -z "$OPT_RELRO" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,relro 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,relro 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_RELRO="-Wl,-z,relro"
     fi
 fi
 
 if [[ -z "$OPT_NOW" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,now 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,now 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_NOW="-Wl,-z,now"
     fi
@@ -558,14 +543,14 @@ fi
 
 # NX stacks
 if [[ -z "$OPT_AS_NXSTACK" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wa,--noexecstack 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wa,--noexecstack 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_AS_NXSTACK="-Wa,--noexecstack"
     fi
 fi
 
 if [[ -z "$OPT_LD_NXSTACK" ]]; then
-    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,noexecstack 2>&1 | tr ' ' '\n' | wc -l)
+    CC_RESULT=$(${TEST_CC} -o "$outfile" "$infile" -Wl,-z,noexecstack 2>&1 | wc -w)
     if [[ "$CC_RESULT" -eq 0 ]]; then
         OPT_LD_NXSTACK="-Wl,-z,noexecstack"
     fi
