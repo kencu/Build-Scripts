@@ -84,7 +84,7 @@ do
     if [[ "$magic" != "7F454C46" ]]; then continue; fi
 
     # Display filename, strip leading "./"
-    this_file=$(echo "$file" | cut -c 3-)
+    this_file=$(echo "$file" | tr -s '/' | cut -c 3-)
     echo "patching ${this_file}..."
 
     touch -a -m -r "$file" "$file.timestamp"

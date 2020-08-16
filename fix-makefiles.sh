@@ -26,7 +26,7 @@ origin2b=$(echo "'"'$${ORIGIN}/' | sed -e 's/[\/&]/\\&/g')
 IFS="" find "./" -iname 'Makefile' -print | while read -r file
 do
     # Display filename, strip leading "./"
-    echo "$file" | cut -c 3-
+    echo "$file" | tr -s '/' | cut -c 3-
 
     touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"
@@ -43,7 +43,7 @@ done
 IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
 do
     # Display filename, strip leading "./"
-    echo "$file" | cut -c 3-
+    echo "$file" | tr -s '/' | cut -c 3-
 
     touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"

@@ -42,7 +42,7 @@ fi
 IFS="" find "./" -name 'configure.ac' -print | while read -r file
 do
     # Display filename, strip leading "./"
-    this_file=$(echo "$file" | cut -c 3-)
+    this_file=$(echo "$file" | tr -s '/' | cut -c 3-)
     echo "patching ${this_file}..."
 
     touch -a -m -r "$file" "$file.timestamp"
@@ -57,7 +57,7 @@ done
 IFS="" find "./" -name 'configure' -print | while read -r file
 do
     # Display filename, strip leading "./"
-    this_file=$(echo "$file" | cut -c 3-)
+    this_file=$(echo "$file" | tr -s '/' | cut -c 3-)
     echo "patching ${this_file}..."
 
     touch -a -m -r "$file" "$file.timestamp"

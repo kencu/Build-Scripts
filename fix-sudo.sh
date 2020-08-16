@@ -12,7 +12,7 @@ do
 
     chmod a+w "$file" && cp "$file" "$file.fixed"
     sed 's/sudo -E/sudo/g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file" && chmod go-w "$file"
+    mv "$file.fixed" "$file" && chmod a+x "$file" && chmod go-w "$file"
 done
 
 echo ""
