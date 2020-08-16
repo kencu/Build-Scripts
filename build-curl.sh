@@ -108,8 +108,8 @@ fi
 
 ###############################################################################
 
-# Needs real C++11 support
-if [[ "$INSTX_CXX11" -eq 1 ]]
+# Needs real C++14 support
+if [[ "$INSTX_CXX14" -eq 1 ]]
 then
     if ! ./build-nghttp2.sh
     then

@@ -361,10 +361,30 @@ else
     fi
 fi
 
+# Ugh... C++14 support as required. Things may still break.
+CC_RESULT=$(${TEST_CXX} -o "$outfile" programs/test-cxx14.cpp 2>&1 | wc -w)
+if [[ "$CC_RESULT" -eq 0 ]]; then
+    INSTX_CXX14=1
+else
+    CC_RESULT=$(${TEST_CXX} -std=gnu++14 -o "$outfile" programs/test-cxx14.cpp 2>&1 | wc -w)
+    if [[ "$CC_RESULT" -eq 0 ]]; then
+        OPT_CXX14="-std=gnu++14"
+        INSTX_CXX14=1
+    else
+        CC_RESULT=$(${TEST_CXX} -std=c++14 -o "$outfile" programs/test-cxx14.cpp 2>&1 | wc -w)
+        if [[ "$CC_RESULT" -eq 0 ]]; then
+            OPT_CXX14="-std=c++14"
+            INSTX_CXX14=1
+        fi
+    fi
+fi
+
 # patchelf needs C++11 support
 # echo "INSTX_CXX11: $INSTX_CXX11"
 INSTX_CXX11="${INSTX_CXX11:-0}"
+INSTX_CXX14="${INSTX_CXX14:-0}"
 export INSTX_CXX11
+export INSTX_CXX14
 
 # For the benefit of the programs and libraries. Make them run faster.
 CC_RESULT=$(${TEST_CC} -march=native -o "$outfile" "$infile" 2>&1 | wc -w)
