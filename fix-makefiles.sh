@@ -28,7 +28,7 @@ do
     # Display filename, strip leading "./"
     echo "$file" | cut -c 3-
 
-    touch -a -m -r "$file" "$file.timestamp.saved"
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
@@ -36,8 +36,8 @@ do
         "$file" > "$file.fixed" && \
     mv "$file.fixed" "$file"
     chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 IFS="" find "./" -iname 'GNUmakefile' -print | while read -r file
@@ -45,7 +45,7 @@ do
     # Display filename, strip leading "./"
     echo "$file" | cut -c 3-
 
-    touch -a -m -r "$file" "$file.timestamp.saved"
+    touch -a -m -r "$file" "$file.timestamp"
     chmod a+w "$file"
     sed -e "s/$origin1/$origin2/g" \
         -e "s/$origin1b/$origin2b/g" \
@@ -53,8 +53,8 @@ do
         "$file" > "$file.fixed" && \
     mv "$file.fixed" "$file"
     chmod go-w "$file"
-    touch -a -m -r "$file.timestamp.saved" "$file"
-    rm "$file.timestamp.saved"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 exit 0
