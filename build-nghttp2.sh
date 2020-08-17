@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds NGHTTP2 from sources.
 
-NGHTTP2_VER=1.40.0
+NGHTTP2_VER=1.41.0
 NGHTTP2_TAR=nghttp2-$NGHTTP2_VER.tar.gz
 NGHTTP2_DIR=nghttp2-$NGHTTP2_VER
 PKG_NAME=nghttp2
