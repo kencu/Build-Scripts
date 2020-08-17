@@ -36,7 +36,7 @@
  PROGNAME = apg
  CS_PROGNAME = apgd
  BFM_PROGNAME = apgbfm
-@@ -96,13 +83,13 @@
+@@ -96,36 +83,37 @@
  cygwin: standalone
  
  apg:
@@ -53,7 +53,11 @@
  
  strip:
  	strip ${PROGNAME}
-@@ -113,19 +100,19 @@
+ 	strip ${CS_PROGNAME}
+ 	strip ${BFM_PROGNAME}
+ 
++.PHONY: install
+ install:
  	if test -x ./apg; then \
  ./mkinstalldirs ${INSTALL_PREFIX}${APG_BIN_DIR}; \
  ./mkinstalldirs ${INSTALL_PREFIX}${APG_MAN_DIR}; \
@@ -76,3 +80,10 @@
  ./install-sh -c -m 0444 ./doc/man/apgbfm.1 ${INSTALL_PREFIX}${APG_MAN_DIR}; \
  fi
  
+@@ -143,5 +131,6 @@
+ ./install-sh -c -m 0444 ./doc/man/apgbfm.1 ${INSTALL_PREFIX}${APG_MAN_DIR}; \
+ fi
+ 
++.PHONY: clean
+ clean:
+ 	rm -f ${CS_PROGNAME} ${PROGNAME} ${BFM_PROGNAME} ${OBJECTS} *core*
