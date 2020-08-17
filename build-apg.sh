@@ -103,7 +103,6 @@ LIBS="${INSTX_LIBS[*]}"
 
 MAKE_FLAGS=("standalone" "-j" "$INSTX_JOBS")
 if ! CPPFLAGS="${CPPFLAGS}" \
-     ASFLAGS="${ASFLAGS}" \
      CFLAGS="${CFLAGS}" \
      CXXFLAGS="${CXXFLAGS}" \
      LDFLAGS="${LDFLAGS}" \
