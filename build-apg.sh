@@ -75,16 +75,14 @@ rm -rf "$APG_DIR" &>/dev/null
 gzip -d < "$APG_TAR" | tar xf -
 cd "$APG_DIR" || exit 1
 
-cp Makefile Makefile.orig
-cp apg.c apg.c.orig
+#cp Makefile Makefile.orig
+#cp apg.c apg.c.orig
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/apg.patch ]]; then
     patch -u -p0 < ../patch/apg.patch
     echo ""
 fi
-
-exit 1
 
 # Only Linux need -lcrypt. BSDs and OS X do not.
 if [[ "$IS_LINUX" -eq 0 ]]; then
