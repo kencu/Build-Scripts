@@ -84,12 +84,6 @@ if [[ -e ../patch/apg.patch ]]; then
     echo ""
 fi
 
-# Only Linux need -lcrypt. BSDs and OS X do not.
-if [[ "$IS_LINUX" -eq 0 ]]; then
-    sed 's/LIBS = -lcrypt/LIBS =/g' Makefile > Makefile.fixed
-    mv Makefile.fixed Makefile
-fi
-
 echo "**********************"
 echo "Building package"
 echo "**********************"
@@ -100,6 +94,10 @@ CFLAGS=$(echo "${INSTX_CFLAGS[*]}" | sed 's/\$/\$\$/g')
 CXXFLAGS=$(echo "${INSTX_CXXFLAGS[*]}" | sed 's/\$/\$\$/g')
 LDFLAGS=$(echo "${INSTX_LDFLAGS[*]}" | sed 's/\$/\$\$/g')
 LIBS="${INSTX_LIBS[*]}"
+
+if [[ "$IS_LINUX" -ne 0 ]]; then
+    LIBS="-lcrypt ${LIBS}"
+fi
 
 MAKE_FLAGS=("standalone" "-j" "$INSTX_JOBS")
 if ! CPPFLAGS="${CPPFLAGS}" \
@@ -125,7 +123,7 @@ echo "**********************"
 echo "Installing package"
 echo "**********************"
 
-MAKE_FLAGS=("install" "INSTALL_PREFIX=$INSTX_PREFIX")
+MAKE_FLAGS=("install" "APG_PREFIX=$INSTX_PREFIX")
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S "${MAKE}" "${MAKE_FLAGS[@]}"
 else
