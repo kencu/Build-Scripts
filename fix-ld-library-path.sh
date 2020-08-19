@@ -19,6 +19,7 @@ then
         touch -a -m -r "$file" "$file.timestamp"
         chmod a+w "$file"
         sed 's/LD_LIBRARY_PATH/DYLD_LIBRARY_PATH/g' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
 
         chmod go-w "$file"
         touch -a -m -r "$file.timestamp" "$file"
