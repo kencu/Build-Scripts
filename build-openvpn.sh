@@ -177,10 +177,19 @@ bash ../fix-configure.sh
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
-    CFLAGS="${INSTX_CFLAGS[*]}" CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
-    LDFLAGS="${INSTX_LDFLAGS[*]}" LIBS="${INSTX_LIBS[*]}" \
-./configure --prefix="$INSTX_PREFIX" --libdir="$INSTX_LIBDIR" \
-    --with-crypto-library=openssl --disable-lzo --disable-lz4 --disable-plugin-auth-pam
+    ASFLAGS="${INSTX_ASFLAGS[*]}" \
+    CFLAGS="${INSTX_CFLAGS[*]}" \
+    CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
+    LDFLAGS="${INSTX_LDFLAGS[*]}" \
+    LIBS="${INSTX_LIBS[*]}" \
+./configure \
+    --build="$AUTOCONF_BUILD" \
+    --prefix="$INSTX_PREFIX" \
+    --libdir="$INSTX_LIBDIR" \
+    --with-crypto-library=openssl \
+    --disable-lzo \
+    --disable-lz4 \
+    --disable-plugin-auth-pam
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure OpenVPN"
