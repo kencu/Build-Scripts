@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds P11-Kit from sources.
 
-P11KIT_VER=0.23.20
+P11KIT_VER=0.23.21
 P11KIT_XZ=p11-kit-"$P11KIT_VER".tar.xz
 P11KIT_TAR=p11-kit-"$P11KIT_VER".tar
 P11KIT_DIR=p11-kit-"$P11KIT_VER"
