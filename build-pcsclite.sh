@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds PC/SC-Lite from sources.
 
-PCSC_VER=1.8.26
+PCSC_VER=1.9.0
 PCSC_TAR=pcsc-lite-"$PCSC_VER".tar.bz2
 PCSC_DIR=pcsc-lite-"$PCSC_VER"
 PKG_NAME=pcsc-lite
