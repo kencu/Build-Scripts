@@ -3,6 +3,10 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds ucommon from sources.
 
+# There's a hidden dependency on GetText and libintl. There
+# is no configure option for GetText or libintl, but there
+# are linker errors for some libintl functions.
+
 UCOMMON_TAR=ucommon-7.0.0.tar.gz
 UCOMMON_DIR=ucommon-7.0.0
 PKG_NAME=ucommon
@@ -52,6 +56,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-iconv-gettext.sh
+then
+    echo "Failed to build iConv and GetText"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-openssl.sh
 then
     echo "Failed to build OpenSSL"
@@ -91,8 +103,9 @@ echo "******************************"
 echo "Fixing C++ throw specification"
 echo "******************************"
 
-IFS="" find "./" -name '*.h' -print | while read -r file
+IFS="" find "./" -type f -name '*.*' -print | while read -r file
 do
+
     if ! grep -q 'throw(PersistException)' "${file}"; then
         continue
     fi
