@@ -87,6 +87,29 @@ if [[ -e ../patch/ucommon.patch ]]; then
     echo ""
 fi
 
+echo "******************************"
+echo "Fixing C++ throw specification"
+echo "******************************"
+
+IFS="" find "./" -name '*.h' -print | while read -r file
+do
+    if ! grep -q 'throw(PersistException)' "${file}"; then
+        continue
+    fi
+
+    # Display filename, strip leading "./"
+    echo "$file" | tr -s '/' | cut -c 3-
+
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod a+w "$file"
+    sed -e 's/ throw(PersistException)//g' \
+        "$file" > "$file.fixed" && \
+    mv "$file.fixed" "$file"
+    chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
+done
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
@@ -100,7 +123,7 @@ echo "**********************"
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
-    LIBS="${INSTX_LIBS[*]}" \
+    LIBS="-lintl ${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
