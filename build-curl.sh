@@ -216,7 +216,7 @@ else
     CONFIG_OPTS+=("--without-nghttp2")
 fi
 
-# OpenSSL 1.1.1e does not have RAND_egd, but curl lacks --without-egd
+# OpenSSL 1.1.x does not have RAND_egd, but curl lacks --without-egd
 # We also want to disable the SSLv2 code paths. Hack it by providing
 # ac_cv_func_RAND_egd=no and ac_cv_func_SSLv2_client_method=no.
 
