@@ -108,12 +108,12 @@ cd build || exit 1
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-lto")
-CONFIG_OPTS+=("--with-mpc-include==$INSTX_PREFIX/include")
-CONFIG_OPTS+=("--with-mpc-lib==$INSTX_LIBDIR")
-CONFIG_OPTS+=("--with-mpfr-include==$INSTX_PREFIX/include")
-CONFIG_OPTS+=("--with-mpfr-lib==$INSTX_LIBDIR")
-CONFIG_OPTS+=("--with-gmp-include==$INSTX_PREFIX/include")
-CONFIG_OPTS+=("--with-gmp-lib==$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-mpc-include=$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-mpc-lib=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-mpfr-include=$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-mpfr-lib=$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-gmp-include=$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-gmp-lib=$INSTX_LIBDIR")
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
