@@ -3,8 +3,8 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GDB from sources.
 
-GDB_TAR=gdb-9.1.tar.gz
-GDB_DIR=gdb-9.1
+GDB_TAR=gdb-9.2.tar.gz
+GDB_DIR=gdb-9.2
 
 ###############################################################################
 
