@@ -44,6 +44,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-gmp.sh
+then
+    echo "Failed to build GMP"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-mpfr.sh
 then
     echo "Failed to build MPFR"
@@ -52,9 +60,9 @@ fi
 
 ###############################################################################
 
-if ! ./build-gmp.sh
+if ! ./build-mpc.sh
 then
-    echo "Failed to build GMP"
+    echo "Failed to build MPC"
     exit 1
 fi
 
@@ -100,8 +108,12 @@ cd build || exit 1
 
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-lto")
-CONFIG_OPTS+=("--with-mpfr=$INSTX_PREFIX")
-CONFIG_OPTS+=("--with-gmp=$INSTX_PREFIX")
+CONFIG_OPTS+=("--with-mpc-include==$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-mpc-lib==$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-mpfr-include==$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-mpfr-lib==$INSTX_LIBDIR")
+CONFIG_OPTS+=("--with-gmp-include==$INSTX_PREFIX/include")
+CONFIG_OPTS+=("--with-gmp-lib==$INSTX_LIBDIR")
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
