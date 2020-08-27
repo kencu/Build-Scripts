@@ -192,10 +192,6 @@ fi
 # https://lists.gnu.org/archive/html/bug-gnulib/2019-07/msg00058.html
 IFS="" find "$PWD" -name '*.h' -print | while read -r file
 do
-    if [[ ! -f "$file" ]]; then
-        continue
-    fi
-
     touch -a -m -r "$file" "$file.timestamp"
     chmod u+w "$file" && cp -p "$file" "$file.fixed"
 
