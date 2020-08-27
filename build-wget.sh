@@ -196,17 +196,28 @@ do
         continue
     fi
 
-    sed -e 's|__GNUC_PREREQ (3, 3)|__GNUC_PREREQ (4, 0)|g' "$file" > "$file.fixed"
+    touch -a -m -r "$file" "$file.timestamp"
+    chmod u+w "$file" && cp -p "$file" "$file.fixed"
+
+    sed -e 's/__GNUC_PREREQ (3, 3)/__GNUC_PREREQ (4, 0)/g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
+
+    chmod a+r "$file" && chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 # https://lists.gnu.org/archive/html/bug-wget/2019-05/msg00064.html
 IFS="" find "$PWD" -name '*.px' -print | while read -r file
 do
+    touch -a -m -r "$file" "$file.timestamp"
     chmod u+w "$file" && cp -p "$file" "$file.fixed"
-    sed -e 's|env -S perl -I .|env perl|g' "$file" > "$file.fixed"
-    mv "$file.fixed" "$file"
+
+    sed -e 's/env -S perl -I ./env perl/g' "$file" > "$file.fixed"
+
     chmod a+x "$file" && chmod go-w "$file"
+    touch -a -m -r "$file.timestamp" "$file"
+    rm "$file.timestamp"
 done
 
 # Fix sys_lib_dlsearch_path_spec
@@ -262,6 +273,9 @@ fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Testing package"

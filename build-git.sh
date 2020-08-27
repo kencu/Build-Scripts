@@ -172,17 +172,21 @@ fi
 # Solaris 11.3 no longer has /usr/ucb/install
 if [[ "$IS_SOLARIS" -ne 0 ]]
 then
-    (IFS="" find "$PWD" -name 'config*' -print | while read -r file
-    do
-        if [[ ! -f "$file" ]]; then
-            continue
-        fi
 
-        sed -e 's|/usr/ucb/install|install|g' "$file" > "$file.fixed"
+    IFS="" find "$PWD" -iname 'config*' -print | while read -r file
+    do
+        if [[ ! -f "$file" ]]; then continue; fi
+
+        touch -a -m -r "$file" "$file.timestamp"
+        chmod u+w "$file" && cp -p "$file" "$file.fixed"
+
+        sed -e 's/\/usr\/ucb//g' "$file" > "$file.fixed"
         mv "$file.fixed" "$file"
-        chmod a+x "$file"
-        touch -t 197001010000 "$file"
-    done)
+
+        chmod a+x "$file" && chmod go-w "$file"
+        touch -a -m -r "$file.timestamp" "$file"
+        rm "$file.timestamp"
+    done
 fi
 
 if [[ -e /usr/local/bin/perl ]]; then
@@ -254,6 +258,9 @@ fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Testing package"

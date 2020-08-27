@@ -111,10 +111,6 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
-if [[ "$IS_SOLARIS" -ne 0 ]]; then
-    INSTX_STD="-std=c99"
-fi
-
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
@@ -154,6 +150,9 @@ fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
+
+# Fix runpaths
+bash ../fix-runpath.sh
 
 echo "**********************"
 echo "Testing package"
