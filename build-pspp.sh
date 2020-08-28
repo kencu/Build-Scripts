@@ -44,6 +44,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-readline.sh
+then
+    echo "Failed to build Readline"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-iconv-gettext.sh
 then
     echo "Failed to build iConv and GetText"
@@ -52,9 +60,17 @@ fi
 
 ###############################################################################
 
+if ! ./build-libxml2.sh
+then
+    echo "Failed to build libxml2"
+    exit 1
+fi
+
+###############################################################################
+
 echo ""
 echo "========================================"
-echo "================== PSPP =================="
+echo "================= PSPP ================="
 echo "========================================"
 
 echo ""
@@ -96,7 +112,12 @@ echo "**********************"
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --with-libiconv-prefix="$INSTX_PREFIX" \
+    --with-libintl-prefix="$INSTX_PREFIX" \
+    --with-libreadline-prefix="$INSTX_PREFIX" \
+    --with-libhistory-prefix="$INSTX_PREFIX" \
+    --disable-assert
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure PSPP"
@@ -111,7 +132,7 @@ echo "**********************"
 echo "Building package"
 echo "**********************"
 
-MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build PSPP"
