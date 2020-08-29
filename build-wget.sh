@@ -287,7 +287,7 @@ then
     # WgetFeature.pm which is located in the same directory.
     # I fail to see the difference in risk. How is
     # Test-https-pfs.px safe, but WgetFeature.pm dangerous?
-    MAKE_FLAGS=("check" "V=1")
+    MAKE_FLAGS=("check" "-k" "V=1")
     if ! PERL_USE_UNSAFE_INC=1 "${MAKE}" "${MAKE_FLAGS[@]}"
     then
         echo "**********************"

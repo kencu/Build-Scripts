@@ -190,7 +190,7 @@ echo "Testing package"
 echo "**********************"
 
 # Can't pass self tests on ARM
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test OpenLDAP"

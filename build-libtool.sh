@@ -134,7 +134,7 @@ bash ../fix-pkgconfig.sh
 #echo "**********************"
 
 # https://lists.gnu.org/archive/html/bug-libtool/2017-10/msg00009.html
-# MAKE_FLAGS=("check" "V=1")
+# MAKE_FLAGS=("check" "-k" "V=1")
 # if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 # then
 #     echo "Failed to test libtool and libltdl"

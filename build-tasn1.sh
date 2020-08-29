@@ -129,7 +129,7 @@ LD_LIBRARY_PATH="$PWD/lib/.libs:$LD_LIBRARY_PATH"
 LD_LIBRARY_PATH=$(echo -n "$LD_LIBRARY_PATH" | sed 's/:$//')
 export LD_LIBRARY_PATH
 
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test libtasn1"

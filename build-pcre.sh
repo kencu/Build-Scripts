@@ -147,7 +147,7 @@ echo "Testing package"
 echo "**********************"
 
 if [[ "$IS_LINUX" -ne 0 ]]; then
-    MAKE_FLAGS=("check" "V=1")
+    MAKE_FLAGS=("check" "-k" "V=1")
     if ! "${MAKE}" "${MAKE_FLAGS[@]}"
     then
         echo "**********************"

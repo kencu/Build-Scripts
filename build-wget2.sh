@@ -289,7 +289,7 @@ echo "**********************"
 
 if [[ "$SKIP_WGET_TESTS" -eq 0 ]]
 then
-    MAKE_FLAGS=("check" "V=1")
+    MAKE_FLAGS=("check" "-k" "V=1")
     if ! PERL_USE_UNSAFE_INC=1 "${MAKE}" "${MAKE_FLAGS[@]}"
     then
         echo "**********************"

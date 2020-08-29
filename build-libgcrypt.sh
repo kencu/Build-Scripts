@@ -151,7 +151,7 @@ echo "**********************"
 # libgcrypt fails random tests on OS X. Allow one failure
 # in random due to SIP. Also see https://dev.gnupg.org/T5009.
 
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}" 2>&1 | tee ${LOG_NAME}
 then
     echo "****************************"

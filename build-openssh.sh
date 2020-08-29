@@ -175,7 +175,7 @@ echo
 
 # No way to test OpenSSH after build...
 # https://groups.google.com/forum/#!topic/mailing.unix.openssh-dev/srdwaPQQ_Aw
-#MAKE_FLAGS=("check" "V=1")
+#MAKE_FLAGS=("check" "-k" "V=1")
 #if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 #then
 #    echo "Failed to test SSH"

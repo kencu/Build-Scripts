@@ -72,6 +72,8 @@ rm -rf "$GSL_DIR" &>/dev/null
 gzip -d < "$GSL_TAR" | tar xf -
 cd "$GSL_DIR" || exit 1
 
+# cp spmatrix/test_complex_source.c spmatrix/test_complex_source.c.orig
+
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/libgsl.patch ]]; then
     patch -u -p0 < ../patch/libgsl.patch
@@ -125,7 +127,7 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"

@@ -142,7 +142,7 @@ echo "************************"
 
 # Unistring fails one self test on older systems, like Fedora 1
 # and Ubuntu 4. Allow the failure but print the result.
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "************************"

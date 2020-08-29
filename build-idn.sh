@@ -161,7 +161,7 @@ echo "**********************"
 echo "Testing package"
 echo "**********************"
 
-MAKE_FLAGS=("check" "V=1")
+MAKE_FLAGS=("check" "-k" "V=1")
 if ! LD_PRELOAD="$LIBASAB" "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to test IDN"
