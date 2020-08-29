@@ -163,6 +163,7 @@ MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build libeXosip2"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -179,6 +180,7 @@ then
     echo "***************************"
     echo "Failed to test libeXosip2"
     echo "***************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 

@@ -68,6 +68,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-libgsl.sh
+then
+    echo "Failed to build GSL"
+    exit 1
+fi
+
+###############################################################################
+
 echo ""
 echo "========================================"
 echo "================= PSPP ================="
@@ -117,7 +125,9 @@ echo "**********************"
     --with-libintl-prefix="$INSTX_PREFIX" \
     --with-libreadline-prefix="$INSTX_PREFIX" \
     --with-libhistory-prefix="$INSTX_PREFIX" \
-    --disable-assert
+    --disable-assert \
+    --without-gui \
+    --without-cairo
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure PSPP"
@@ -136,6 +146,7 @@ MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "Failed to build PSPP"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -152,6 +163,7 @@ then
     echo "**********************"
     echo "Failed to test PSPP"
     echo "**********************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
