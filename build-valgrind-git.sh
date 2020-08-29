@@ -69,6 +69,7 @@ then
 fi
 
 cd "$VALGRIND_DIR"
+git checkout master &>/dev/null
 
 if ! ./autogen.sh
 then
