@@ -116,7 +116,7 @@ if ! CPPFLAGS="${CPPFLAGS}" \
      LIBS="${LIBS}" \
      "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build Ghidra"
+    echo "Failed to build sslscan"
     exit 1
 fi
 
