@@ -116,7 +116,7 @@ if ! CPPFLAGS="${CPPFLAGS}" \
      LIBS="${LIBS}" \
      "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build Crypto++"
+    echo "Failed to build Ghidra"
     exit 1
 fi
 
