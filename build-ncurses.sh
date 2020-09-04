@@ -136,28 +136,18 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
+# We now always build the wide version of Ncurses
+
 CONFIG_OPTS=()
 CONFIG_OPTS+=("--disable-leaks")
 CONFIG_OPTS+=("--with-shared")
 CONFIG_OPTS+=("--with-cxx-shared")
+CONFIG_OPTS+=("--enable-widec")
 CONFIG_OPTS+=("--with-termlib")
 CONFIG_OPTS+=("--enable-pc-files")
 CONFIG_OPTS+=("--disable-root-environ")
 CONFIG_OPTS+=("--with-pkg-config-libdir=${INSTX_PKGCONFIG[*]}")
 CONFIG_OPTS+=("--with-default-terminfo-dir=$INSTX_PREFIX/share")
-
-# Ncurses can be built narrow or wide. There's no way to know for sure
-# which is needed, so we attempt to see what the distro is doing. If we
-# find wide version, then we configure for the wide version.
-COUNT=$(find /usr/lib/ /usr/lib64/ -name 'ncurses*w.*' 2>/dev/null | wc -l)
-if [[ "$COUNT" -ne 0 ]]; then
-    echo "Enabling wide character version"
-    echo ""
-    CONFIG_OPTS+=("--enable-widec")
-else
-    echo "Enabling narrow character version"
-    echo ""
-fi
 
     # Ncurses use PKG_CONFIG_LIBDIR, not PKG_CONFIG_PATH???
     PKG_CONFIG_LIBDIR="${INSTX_PKGCONFIG[*]}" \
