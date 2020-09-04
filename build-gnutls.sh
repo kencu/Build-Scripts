@@ -68,9 +68,9 @@ fi
 
 ###############################################################################
 
-if ! ./build-ncurses.sh
+if ! ./build-ncurses-readline.sh
 then
-    echo "Failed to build ncurses"
+    echo "Failed to build Ncurses and Readline"
     exit 1
 fi
 
