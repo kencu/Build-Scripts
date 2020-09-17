@@ -212,6 +212,10 @@ On new distros you should install Autotools from the distribution. The packages 
 
 The build scripts include `build-autotools.sh` but you should use it sparingly on old distros. Attempting to update Autotools creates a lot of incompatibility problems. For example, Aclocal and Acheader will complain about wrong versions. Autoconf won't be able to find its M4 macros even though M4, Autoconf, Automake and Libtool are freshly installed in `$prefix`. Libtool will fail to link a library that is present in the expected location. Etc, etc, etc.
 
+### GhostScript
+
+GhostScript is probably not going to build properly. The package needs its `configure.ac` and `Makefile.am` rewritten to handle user flags properly.
+
 ### GnuPG
 
 GnuPG may break Git and code signing. There seems to be an incompatibility in the way GnuPG prompts for a password and the way Git expects a user to provide a password.
