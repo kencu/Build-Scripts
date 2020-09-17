@@ -44,6 +44,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-zlib.sh
+then
+    echo "Failed to build zLib"
+    exit 1
+fi
+
+###############################################################################
+
 if ! ./build-iconv-gettext.sh
 then
     echo "Failed to build iConv and GetText"
@@ -52,9 +60,9 @@ fi
 
 ###############################################################################
 
-if ! ./build-idn2.sh
+if ! ./build-idn.sh
 then
-    echo "Failed to build IDN2"
+    echo "Failed to build IDN"
     exit 1
 fi
 
@@ -105,6 +113,7 @@ echo "**********************"
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
+    --without-local-zlib \
     --with-libiconv=native
 
 if [[ "$?" -ne 0 ]]; then
