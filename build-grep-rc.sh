@@ -6,7 +6,7 @@
 GREP_XZ=grep-ss.tar.xz
 GREP_TAR=grep-ss.tar
 GREP_DIR=grep-3.4-almost.19-ff30
-PKG_NAME=grep
+PKG_NAME=grep-rc
 
 ###############################################################################
 
