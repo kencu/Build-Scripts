@@ -27,11 +27,12 @@ then
     exit 1
 fi
 
-if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
-    echo ""
-    echo "$PKG_NAME is already installed."
-    exit 0
-fi
+# Always rebuild the RC
+#if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+#    echo ""
+#    echo "$PKG_NAME is already installed."
+#    exit 0
+#fi
 
 # The password should die when this subshell goes out of scope
 if [[ "$SUDO_PASSWORD_DONE" != "yes" ]]; then
