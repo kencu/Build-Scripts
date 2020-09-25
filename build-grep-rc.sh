@@ -3,9 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds grep from sources.
 
-GREP_XZ=grep-3.4-almost.31-fe6c.tar.xz
-GREP_TAR=grep-3.4-almost.31-fe6c.tar
-GREP_DIR=grep-3.4-almost.31-fe6c
+GREP_XZ=grep-3.4-almost.46-b2228.tar.xz
+GREP_TAR=grep-3.4-almost.46-b2228.tar
+GREP_DIR=grep-3.4-almost.46-b2228
 PKG_NAME=grep-rc
 
 ###############################################################################
@@ -183,11 +183,6 @@ if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-grep.sh 2>&1 | tee build-grep.log
-    if [[ -e build-grep.log ]]; then
-        rm -f build-grep.log
-    fi
 fi
 
 exit 0
