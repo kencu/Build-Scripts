@@ -90,6 +90,11 @@ rm -rf "$GREP_TAR" "$GREP_DIR" &>/dev/null
 unxz "$GREP_XZ" && tar -xf "$GREP_TAR"
 cd "$GREP_DIR" || exit 1
 
+if [[ -e ../patch/grep-rc.patch ]]; then
+    git apply ../patch/grep-rc.patch
+    echo ""
+fi
+
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
