@@ -730,6 +730,13 @@ fi
 #    INSTX_LDFLAGS[${#INSTX_LDFLAGS[@]}]="$OPT_INSTNAME"
 #fi
 
+if [[ -n "$INSTX_ASAN" ]]; then
+    # Too many GNU programs and libraries leak
+    echo "Disabling ASAN leak detection"
+    ASAN_OPTIONS=detect_leaks=0
+    export ASAN_OPTIONS
+fi
+
 # Used to track packages that have been built by these scripts.
 # The accounting is local to a user account. There is no harm
 # in rebuilding a package under another account. In April 2019
