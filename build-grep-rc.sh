@@ -3,9 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds grep from sources.
 
-GREP_XZ=grep-3.4-almost.46-b2228.tar.xz
-GREP_TAR=grep-3.4-almost.46-b2228.tar
-GREP_DIR=grep-3.4-almost.46-b2228
+GREP_XZ=grep-3.4-almost.50-2a4c.tar.xz
+GREP_TAR=grep-3.4-almost.50-2a4c.tar
+GREP_DIR=grep-3.4-almost.50-2a4c
 PKG_NAME=grep-rc
 
 ###############################################################################
