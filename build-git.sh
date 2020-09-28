@@ -180,7 +180,7 @@ then
         touch -a -m -r "$file" "$file.timestamp"
         chmod u+w "$file" && cp -p "$file" "$file.fixed"
 
-        sed -e 's/\/usr\/ucb//g' "$file" > "$file.fixed"
+        sed -e 's/\/usr\/ucb/\//g' "$file" > "$file.fixed"
         mv "$file.fixed" "$file"
 
         chmod a+x "$file" && chmod go-w "$file"
