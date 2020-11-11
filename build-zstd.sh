@@ -3,9 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Zstd from sources.
 
-ZSTD_TAR=zstd-1.4.5.tar.gz
-ZSTD_DIR=zstd-1.4.5
 ZSTD_VER=v1.4.5
+ZSTD_TAR="zstd-${ZSTD_VER}.tar.gz"
+ZSTD_DIR="zstd-${ZSTD_VER}"
 
 ###############################################################################
 
