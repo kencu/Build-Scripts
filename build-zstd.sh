@@ -66,7 +66,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$ZSTD_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/facebook/zstd/releases/download/$ZSTD_VER/$ZSTD_TAR"
 then
-    echo "Failed to download Flex"
+    echo "Failed to download Zstd"
     exit 1
 fi
 
