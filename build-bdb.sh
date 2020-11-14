@@ -81,7 +81,7 @@ cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR/dist" || exit 1
 
 # Fix sys_lib_dlsearch_path_spec
-bash ../fix-configure.sh
+bash ../../fix-configure.sh
 
 cd "$CURR_DIR" || exit 1
 cd "$BDB_DIR" || exit 1
@@ -90,7 +90,6 @@ echo "**********************"
 echo "Configuring package"
 echo "**********************"
 
-    # Add --with-tls=openssl back in the future
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
     ASFLAGS="${INSTX_ASFLAGS[*]}" \
