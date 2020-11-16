@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds c-ares from sources.
 
-CARES_TAR=c-ares-1.16.1.tar.gz
-CARES_DIR=c-ares-1.16.1
+CARES_VER=1.17.0
+CARES_TAR="c-ares-${CARES_VER}.tar.gz"
+CARES_DIR="c-ares-${CARES_VER}"
 PKG_NAME=c-ares
 
 ###############################################################################
@@ -160,17 +161,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
-
+if true;
+then
     ARTIFACTS=("$CARES_TAR" "$CARES_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-cares.sh 2>&1 | tee build-cares.log
-    if [[ -e build-cares.log ]]; then
-        rm -f build-cares.log
-    fi
 fi
 
 exit 0
