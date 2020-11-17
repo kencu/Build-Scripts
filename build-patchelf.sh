@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds patchelf from sources.
 
-PATCHELF_VER=0.11
+PATCHELF_VER=0.12
 PATCHELF_TAR=${PATCHELF_VER}.tar.gz
 PATCHELF_DIR=patchelf-${PATCHELF_VER}
 PKG_NAME=patchelf
