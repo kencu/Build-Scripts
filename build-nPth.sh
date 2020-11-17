@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds nPth from sources.
 
-NPTH_TAR=1.6
+NPTH_VER=1.6
 NPTH_TAR="npth-${NPTH_VER}.tar.bz2"
 NPTH_DIR="npth-${NPTH_VER}"
 PKG_NAME=npth
