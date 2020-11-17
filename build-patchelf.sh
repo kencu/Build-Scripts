@@ -190,17 +190,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$PATCHELF_TAR" "$PATCHELF_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-patchelf.sh 2>&1 | tee build-patchelf.log
-    if [[ -e build-patchelf.log ]]; then
-        rm -f build-patchelf.log
-    fi
 fi
 
 exit 0
