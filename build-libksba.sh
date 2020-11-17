@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libksba from sources.
 
-LIBKSBA_TAR=libksba-1.4.0.tar.bz2
-LIBKSBA_DIR=libksba-1.4.0
+LIBKSBA_VER=1.4.0
+LIBKSBA_TAR="libksba-${LIBKSBA_VER}.tar.bz2"
+LIBKSBA_DIR="libksba-${LIBKSBA_VER}"
 PKG_NAME=libksba
 
 ###############################################################################
@@ -178,17 +179,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$LIBKSBA_TAR" "$LIBKSBA_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-libksba.sh 2>&1 | tee build-libksba.log
-    if [[ -e build-libksba.log ]]; then
-        rm -f build-libksba.log
-    fi
 fi
 
 exit 0

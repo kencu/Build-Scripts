@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libassuan from sources.
 
-LIBASSUAN_TAR=libassuan-2.5.3.tar.bz2
-LIBASSUAN_DIR=libassuan-2.5.3
+LIBASSUAN_VER=2.5.4
+LIBASSUAN_TAR="libassuan-${LIBASSUAN_VER}.tar.bz2"
+LIBASSUAN_DIR="libassuan-${LIBASSUAN_VER}"
 PKG_NAME=libassuan
 
 ###############################################################################
@@ -178,17 +179,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$LIBASSUAN_TAR" "$LIBASSUAN_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-libassuan.sh 2>&1 | tee build-libassuan.log
-    if [[ -e build-libassuan.log ]]; then
-        rm -f build-libassuan.log
-    fi
 fi
 
 exit 0

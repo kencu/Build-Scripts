@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libgcrypt from sources.
 
-GCRYPT_TAR=libgcrypt-1.8.6.tar.bz2
-GCRYPT_DIR=libgcrypt-1.8.6
+GCRYPT_VER=1.8.7
+GCRYPT_TAR="libgcrypt-${GCRYPT_VER}.tar.bz2"
+GCRYPT_DIR="libgcrypt-${GCRYPT_VER}"
 PKG_NAME=libgcrypt
 LOG_NAME="${PKG_NAME}.log"
 
@@ -152,7 +153,7 @@ echo "**********************"
 # in random due to SIP. Also see https://dev.gnupg.org/T5009.
 
 MAKE_FLAGS=("check" "-k" "V=1")
-if ! "${MAKE}" "${MAKE_FLAGS[@]}" 2>&1 | tee ${LOG_NAME}
+if ! "${MAKE}" "${MAKE_FLAGS[@]}" 2>&1 | tee "${LOG_NAME}"
 then
     echo "****************************"
     echo "Failed to test libgcrypt (1)"
@@ -161,7 +162,7 @@ then
     exit 1
 fi
 
-errors=$(grep 'FAIL: ' ${LOG_NAME} | grep -c -v 'FAIL: random')
+errors=$(grep 'FAIL: ' "${LOG_NAME}" | grep -c -v 'FAIL: random')
 if [ "$errors" -gt 0 ];
 then
     echo "****************************"
@@ -193,17 +194,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$GCRYPT_TAR" "$GCRYPT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-libgcrypt.sh 2>&1 | tee build-libgcrypt.log
-    if [[ -e build-libgcrypt.log ]]; then
-        rm -f build-libgcrypt.log
-    fi
 fi
 
 exit 0

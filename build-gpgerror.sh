@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libgpg-error from sources.
 
-GPGERR_TAR=libgpg-error-1.38.tar.bz2
-GPGERR_DIR=libgpg-error-1.38
+GPGERR_VER=1.39
+GPGERR_TAR="libgpg-error-${GPGERR_VER}.tar.bz2"
+GPGERR_DIR="libgpg-error-${GPGERR_VER}"
 PKG_NAME=gpgerror
 
 ###############################################################################
@@ -169,17 +170,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$GPGERR_TAR" "$GPGERR_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-gpg-error.sh 2>&1 | tee build-gpg-error.log
-    if [[ -e build-gpg-error.log ]]; then
-        rm -f build-gpg-error.log
-    fi
 fi
 
 exit 0

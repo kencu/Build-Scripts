@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds ntbTLS from sources.
 
-NTBTLS_TAR=ntbtls-0.1.2.tar.bz2
-NTBTLS_DIR=ntbtls-0.1.2
+NTBTLS_VER=0.2.0
+NTBTLS_TAR="ntbtls-${NTBTLS_VER}.tar.bz2"
+NTBTLS_DIR="ntbtls-${NTBTLS_VER}"
 PKG_NAME=ntbtls
 
 ###############################################################################
@@ -129,7 +130,10 @@ echo "**********************"
     --with-ksba-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "**************************"
     echo "Failed to configure ntbTLS"
+    echo "**************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -144,7 +148,10 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**************************"
     echo "Failed to build ntbTLS"
+    echo "**************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -161,9 +168,9 @@ echo "**********************"
 MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "**********************"
+    echo "**************************"
     echo "Failed to test ntbTLS"
-    echo "**********************"
+    echo "**************************"
     bash ../collect-logs.sh
     exit 1
 fi
@@ -187,17 +194,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$NTBTLS_TAR" "$NTBTLS_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-ntbtls.sh 2>&1 | tee build-ntbtls.log
-    if [[ -e build-ntbtls.log ]]; then
-        rm -f build-ntbtls.log
-    fi
 fi
 
 exit 0

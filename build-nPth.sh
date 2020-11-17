@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds nPth from sources.
 
-NPTH_TAR=npth-1.6.tar.bz2
-NPTH_DIR=npth-1.6
+NPTH_TAR=1.6
+NPTH_TAR="npth-${NPTH_VER}.tar.bz2"
+NPTH_DIR="npth-${NPTH_VER}"
 PKG_NAME=npth
 
 ###############################################################################
@@ -151,17 +152,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$NPTH_TAR" "$NPTH_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-npth.sh 2>&1 | tee build-npth.log
-    if [[ -e build-npth.log ]]; then
-        rm -f build-npth.log
-    fi
 fi
 
 exit 0

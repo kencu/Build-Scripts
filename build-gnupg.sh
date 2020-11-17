@@ -4,8 +4,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GnuPG and its dependencies from sources.
 
-GNUPG_TAR=gnupg-2.2.23.tar.bz2
-GNUPG_DIR=gnupg-2.2.23
+GNUPG_VER=2.2.24
+GNUPG_TAR="gnupg-${GNUPG_VER}.tar.bz2"
+GNUPG_DIR="gnupg-${GNUPG_VER}"
 PKG_NAME=gnupg
 
 ###############################################################################
@@ -251,17 +252,12 @@ cd "$CURR_DIR" || exit 1
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$GNUPG_TAR" "$GNUPG_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-gnupg.sh 2>&1 | tee build-gnupg.log
-    if [[ -e build-gnupg.log ]]; then
-        rm -f build-gnupg.log
-    fi
 fi
 
 exit 0
