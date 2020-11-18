@@ -175,17 +175,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$GMP_TAR" "$GMP_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-gmp.sh 2>&1 | tee build-gmp.log
-    if [[ -e build-gmp.log ]]; then
-        rm -f build-gmp.log
-    fi
 fi
 
 exit 0
