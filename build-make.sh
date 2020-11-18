@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Make from sources.
 
-MAKE_TAR=make-4.2.1.tar.gz
-MAKE_DIR=make-4.2.1
+MAKE_VER=4.2.1
+MAKE_TAR=make-${MAKE_VER}.tar.gz
+MAKE_DIR=make-${MAKE_VER}
 PKG_NAME=make
 
 ###############################################################################
@@ -161,17 +162,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$MAKE_TAR" "$MAKE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-make.sh 2>&1 | tee build-make.log
-    if [[ -e build-make.log ]]; then
-        rm -f build-make.log
-    fi
 fi
 
 exit 0
