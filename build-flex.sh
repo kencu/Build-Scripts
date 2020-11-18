@@ -5,8 +5,9 @@
 # like a library rather then a program to avoid rebuilding
 # it in other recipes like Curl and Wget.
 
-FLEX_TAR=flex-2.6.4.tar.gz
-FLEX_DIR=flex-2.6.4
+FLEX_VER=2.6.4
+FLEX_TAR=flex-${FLEX_VER}.tar.gz
+FLEX_DIR=flex-${FLEX_VER}
 PKG_NAME=flex
 
 ###############################################################################
@@ -80,7 +81,7 @@ echo "Downloading package"
 echo "**********************"
 
 if ! "$WGET" -q -O "$FLEX_TAR" --ca-certificate="$GITHUB_ROOT" \
-     "https://github.com/westes/flex/releases/download/v2.6.4/$FLEX_TAR"
+     "https://github.com/westes/flex/releases/download/v${FLEX_VER}/$FLEX_TAR"
 then
     echo "Failed to download Flex"
     exit 1
@@ -177,17 +178,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$FLEX_TAR" "$FLEX_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-flex.sh 2>&1 | tee build-flex.log
-    if [[ -e build-flex.log ]]; then
-        rm -f build-flex.log
-    fi
 fi
 
 exit 0
