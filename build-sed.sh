@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Sed from sources.
 
-SED_TAR=sed-4.8.tar.gz
-SED_DIR=sed-4.8
+SED_VER=4.8
+SED_TAR="sed-${SED_VER}.tar.gz"
+SED_DIR="sed-${SED_VER}"
 PKG_NAME=sed
 
 ###############################################################################
