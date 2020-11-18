@@ -239,8 +239,6 @@ then
     # exit 1
 fi
 
-exit 1
-
 # Fix runpaths again
 bash ../fix-runpath.sh
 
