@@ -8,8 +8,9 @@
 # The loss of SSL/TLS in Berkeley DB means the Replication
 # Manager does not have SSL/TLS support.
 
-BDB_TAR=db-6.2.32.tar.gz
-BDB_DIR=db-6.2.32
+BDB_VER=6.2.32
+BDB_TAR=db-${BDB_VER}.tar.gz
+BDB_DIR=db-${BDB_VER}
 PKG_NAME=bdb
 
 ###############################################################################
@@ -183,17 +184,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$BDB_TAR" "$BDB_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-openldap.sh 2>&1 | tee build-openldap.log
-    if [[ -e build-openldap.log ]]; then
-        rm -f build-openldap.log
-    fi
 fi
 
 exit 0

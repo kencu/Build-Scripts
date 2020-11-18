@@ -4,8 +4,8 @@
 # This script builds Autogen from sources.
 
 AUTOGEN_VER=5.18.16
-AUTOGEN_TAR=autogen-${AUTOGEN_VER}.tar.gz
-AUTOGEN_DIR=autogen-${AUTOGEN_VER}
+AUTOGEN_TAR="autogen-${AUTOGEN_VER}.tar.gz"
+AUTOGEN_DIR="autogen-${AUTOGEN_VER}"
 
 ###############################################################################
 
@@ -164,17 +164,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$AUTOGEN_TAR" "$AUTOGEN_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-autogen.sh 2>&1 | tee build-autogen.log
-    if [[ -e build-autogen.log ]]; then
-        rm -f build-autogen.log
-    fi
 fi
 
 exit 0

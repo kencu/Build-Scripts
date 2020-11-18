@@ -8,14 +8,17 @@
 # worth. If the upgrade goes bad, then you can uninstall
 # it with the script clean-autotools.sh
 
-M4_TAR=m4-1.4.18.tar.gz
-M4_DIR=m4-1.4.18
+M4_VER=1.4.18
+M4_TAR="m4-${M4_VER}.tar.gz"
+M4_DIR="m4-${M4_VER}"
 
-AUTOCONF_TAR=autoconf-2.69.tar.gz
-AUTOCONF_DIR=autoconf-2.69
+AUTOCONF_VER=2.69
+AUTOCONF_TAR="autoconf-${AUTOCONF_VER}.tar.gz"
+AUTOCONF_DIR="autoconf-${AUTOCONF_VER}"
 
-AUTOMAKE_TAR=automake-1.16.2.tar.gz
-AUTOMAKE_DIR=automake-1.16.2
+AUTOMAKE_VER=1.16.2
+AUTOMAKE_TAR="automake-${AUTOMAKE_VER}.tar.gz"
+AUTOMAKE_DIR="automake-${AUTOMAKE_VER}"
 
 ###############################################################################
 
@@ -308,20 +311,14 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
-    ARTIFACTS=("$M4_TAR" "$M4_DIR"
-        "$AUTOCONF_TAR" "$AUTOCONF_DIR"
-        "$AUTOMAKE_TAR" "$AUTOMAKE_DIR")
+if true;
+then
+    ARTIFACTS=("$M4_TAR" "$M4_DIR" "$AUTOCONF_TAR"
+        "$AUTOCONF_DIR" "$AUTOMAKE_TAR" "$AUTOMAKE_DIR")
 
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-autotools.sh 2>&1 | tee build-autotools.log
-    if [[ -e build-autotools.log ]]; then
-        rm -f build-autotools.log
-    fi
 fi
 
 exit 0

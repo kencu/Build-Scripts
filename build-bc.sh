@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds BC from sources.
 
-BC_TAR=bc-1.07.1.tar.gz
-BC_DIR=bc-1.07.1
+BC_VER=1.07.1
+BC_TAR=bc-${BC_VER}.tar.gz
+BC_DIR=bc-${BC_VER}
 
 ###############################################################################
 
@@ -149,17 +150,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$BC_TAR" "$BC_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-bc.sh 2>&1 | tee build-bc.log
-    if [[ -e build-bc.log ]]; then
-        rm -f build-bc.log
-    fi
 fi
 
 exit 0

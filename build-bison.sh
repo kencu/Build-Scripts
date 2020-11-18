@@ -7,8 +7,9 @@
 # The 'make check' recipe tries to build the documentation even when the
 # tools are missing. Derp...
 
-BISON_TAR=bison-3.6.1.tar.gz
-BISON_DIR=bison-3.6.1
+BISON_VER=3.7.4
+BISON_TAR=bison-${BISON_VER}.tar.gz
+BISON_DIR=bison-${BISON_VER}
 
 ###############################################################################
 
@@ -163,17 +164,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$BISON_TAR" "$BISON_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-bison.sh 2>&1 | tee build-bison.log
-    if [[ -e build-bison.log ]]; then
-        rm -f build-bison.log
-    fi
 fi
 
 exit 0

@@ -7,9 +7,9 @@
 
 # Bzip lost its website. It is now located on Sourceware.
 
-BZIP2_TAR=bzip2-1.0.8.tar.gz
-BZIP2_DIR=bzip2-1.0.8
 BZIP2_VER=1.0.8
+BZIP2_TAR=bzip2-${BZIP2_VER}.tar.gz
+BZIP2_DIR=bzip2-${BZIP2_VER}
 PKG_NAME=bzip2
 
 ###############################################################################
@@ -297,17 +297,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$BZIP2_TAR" "$BZIP2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-bzip.sh 2>&1 | tee build-bzip.log
-    if [[ -e build-bzip.log ]]; then
-        rm -f build-bzip.log
-    fi
 fi
 
 exit 0

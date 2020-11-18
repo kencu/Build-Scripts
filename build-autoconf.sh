@@ -4,8 +4,9 @@
 # This script builds autoconf from sources. A separate
 # script is available for Autotools for brave souls.
 
-AUTOCONF_TAR=autoconf-2.69.tar.gz
-AUTOCONF_DIR=autoconf-2.69
+AUTOCONF_VER=2.69
+AUTOCONF_TAR="autoconf-${AUTOCONF_VER}.tar.gz"
+AUTOCONF_DIR="autoconf-${AUTOCONF_VER}"
 
 ###############################################################################
 
@@ -137,17 +138,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$AUTOCONF_TAR" "$AUTOCONF_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-autoconf.sh 2>&1 | tee build-autoconf.log
-    if [[ -e build-autoconf.log ]]; then
-        rm -f build-autoconf.log
-    fi
 fi
 
 exit 0

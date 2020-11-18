@@ -5,8 +5,9 @@
 # like a library rather then a program to avoid rebuilding
 # it in other recipes like Curl and Wget.
 
-APG_TAR=v2.2.3.tar.gz
-APG_DIR=apg-2.2.3
+APG_VER=2.2.3
+APG_TAR="v${APG_VER}.tar.gz"
+APG_DIR="apg-${APG_VER}"
 PKG_NAME=apg
 
 ###############################################################################
@@ -144,17 +145,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$APG_TAR" "$APG_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-apg.sh 2>&1 | tee build-apg.log
-    if [[ -e build-apg.log ]]; then
-        rm -f build-apg.log
-    fi
 fi
 
 exit 0

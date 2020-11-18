@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Bash from sources.
 
-BASH_TAR=bash-4.4.18.tar.gz
-BASH_DIR=bash-4.4.18
+BASH_VER=5.0
+BASH_TAR="bash-${BASH_VER}.tar.gz"
+BASH_DIR="bash-${BASH_VER}"
 PKG_NAME=bash
 
 ###############################################################################
@@ -160,17 +161,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$BASH_TAR" "$BASH_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-bash.sh 2>&1 | tee build-bash.log
-    if [[ -e build-bash.log ]]; then
-        rm -f build-bash.log
-    fi
 fi
 
 exit 0

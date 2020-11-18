@@ -4,8 +4,9 @@
 # This script builds Automake from sources. A separate
 # script is available for Autotools for brave souls.
 
-AUTOMAKE_TAR=automake-1.16.2.tar.gz
-AUTOMAKE_DIR=automake-1.16.2
+AUTOMAKE_VER=1.16.2
+AUTOMAKE_TAR="automake-${AUTOMAKE_VER}.tar.gz"
+AUTOMAKE_DIR="automake-${AUTOMAKE_VER}"
 
 ###############################################################################
 
@@ -137,17 +138,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$AUTOMAKE_TAR" "$AUTOMAKE_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-automake.sh 2>&1 | tee build-automake.log
-    if [[ -e build-automake.log ]]; then
-        rm -f build-automake.log
-    fi
 fi
 
 exit 0
