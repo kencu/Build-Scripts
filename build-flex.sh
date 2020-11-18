@@ -6,8 +6,8 @@
 # it in other recipes like Curl and Wget.
 
 FLEX_VER=2.6.4
-FLEX_TAR=flex-${FLEX_VER}.tar.gz
-FLEX_DIR=flex-${FLEX_VER}
+FLEX_TAR="flex-${FLEX_VER}.tar.gz"
+FLEX_DIR="flex-${FLEX_VER}"
 PKG_NAME=flex
 
 ###############################################################################
