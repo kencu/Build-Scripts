@@ -164,17 +164,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$SED_TAR" "$SED_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-sed.sh 2>&1 | tee build-sed.log
-    if [[ -e build-sed.log ]]; then
-        rm -f build-sed.log
-    fi
 fi
 
 exit 0

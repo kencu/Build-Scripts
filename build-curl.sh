@@ -306,17 +306,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$CURL_TAR" "$CURL_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-curl.sh 2>&1 | tee build-curl.log
-    if [[ -e build-curl.log ]]; then
-        rm -f build-curl.log
-    fi
 fi
 
 exit 0
