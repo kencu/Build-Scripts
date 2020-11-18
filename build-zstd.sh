@@ -141,8 +141,8 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if false; then
-
+if true;
+then
     ARTIFACTS=("$ZSTD_TAR" "$ZSTD_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
