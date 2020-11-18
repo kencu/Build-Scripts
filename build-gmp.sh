@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GMP from sources.
 
-GMP_TAR=gmp-6.2.0.tar.bz2
-GMP_DIR=gmp-6.2.0
+GMP_VER=6.2.1
+GMP_TAR="gmp-${GMP_VER}.tar.bz2"
+GMP_DIR="gmp-${GMP_VER}"
 PKG_NAME=gmp
 
 ###############################################################################
