@@ -3,8 +3,10 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds ICU from sources.
 
-# ICU 66.1 (formerly 60.2)
-ICU_TAR=icu4c-66_1-src.tgz
+# Formerly 66_1
+ICU_VER=68_1
+ICU_DVER=68.1
+ICU_TAR="cu4c-${ICU_VER}-src.tgz"
 ICU_DIR=icu
 PKG_NAME=icu
 
@@ -63,7 +65,7 @@ echo "Downloading package"
 echo "**********************"
 
 if ! "$WGET" -q -O "$ICU_TAR" --ca-certificate="$GITHUB_ROOT" \
-     "https://github.com/unicode-org/icu/releases/download/release-66-1/$ICU_TAR"
+     "https://github.com/unicode-org/icu/releases/download/release-${ICU_DVER}/${ICU_TAR}"
 then
     echo "Failed to download libicu"
     exit 1
@@ -157,17 +159,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$ICU_TAR" "$ICU_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-icu.sh 2>&1 | tee build-icu.log
-    if [[ -e build-icu.log ]]; then
-        rm -f build-icu.log
-    fi
 fi
 
 exit 0
