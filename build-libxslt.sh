@@ -68,6 +68,14 @@ fi
 
 ###############################################################################
 
+if ! ./build-libgcrypt.sh
+then
+    echo "Failed to build libgcrypt"
+    exit 1
+fi
+
+###############################################################################
+
 echo ""
 echo "========================================"
 echo "================ libxslt ==============="
@@ -116,8 +124,10 @@ echo "**********************"
     --enable-static --enable-shared \
     --with-libxml-prefix="$INSTX_PREFIX" \
     --with-libxml-include="$INSTX_PREFIX/include" \
-    --with-libxml-prefix="$INSTX_LIBDIR" \
-    --without-python
+    --with-libxml-libs-prefix="$INSTX_LIBDIR" \
+    --with-crypto \
+    --without-python \
+    --without-profiler
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libxslt"
