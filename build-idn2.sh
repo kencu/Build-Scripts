@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds IDN2 from sources.
 
-IDN2_TAR=libidn2-2.3.0.tar.gz
-IDN2_DIR=libidn2-2.3.0
+IDN2_VER=2.3.0
+IDN2_TAR="libidn2-${IDN2_VER}.tar.gz"
+IDN2_DIR="libidn2-${IDN2_VER}"
 PKG_NAME=libidn2
 
 ###############################################################################
@@ -141,7 +142,11 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build IDN2"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -158,7 +163,11 @@ echo "**********************"
 MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test IDN2"
+    echo "**********************"
+    bash ../collect-logs.sh
+
     echo "Installing IDN2 anyways..."
     #exit 1
 fi
@@ -185,17 +194,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$IDN2_TAR" "$IDN2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-idn2.sh 2>&1 | tee build-idn2.log
-    if [[ -e build-idn2.log ]]; then
-        rm -f build-idn2.log
-    fi
 fi
 
 exit 0

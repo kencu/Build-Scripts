@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds IDN from sources.
 
-IDN_TAR=libidn-1.36.tar.gz
-IDN_DIR=libidn-1.36
+IDN_VER=1.36
+IDN_TAR="libidn-${IDN_VER}.tar.gz"
+IDN_DIR="libidn-${IDN_VER}"
 PKG_NAME=libidn
 
 ###############################################################################
@@ -147,7 +148,11 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build IDN"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -162,9 +167,13 @@ echo "Testing package"
 echo "**********************"
 
 MAKE_FLAGS=("check" "-k" "V=1")
-if ! LD_PRELOAD="$LIBASAB" "${MAKE}" "${MAKE_FLAGS[@]}"
+if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test IDN"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -190,17 +199,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$IDN_TAR" "$IDN_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-idn.sh 2>&1 | tee build-idn.log
-    if [[ -e build-idn.log ]]; then
-        rm -f build-idn.log
-    fi
 fi
 
 exit 0
