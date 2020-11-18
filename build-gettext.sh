@@ -10,8 +10,9 @@
 # is build-iconv-gettext.sh. You should use build-iconv-gettext.sh
 # instead of build-gettext.sh directly
 
-GETTEXT_TAR=gettext-0.20.2.tar.gz
-GETTEXT_DIR=gettext-0.20.2
+GETTEXT_VER=0.20.2
+GETTEXT_TAR="gettext-${GETTEXT_VER}.tar.gz"
+GETTEXT_DIR="gettext-${GETTEXT_VER}"
 PKG_NAME=gettext
 
 ###############################################################################
@@ -230,8 +231,6 @@ then
     echo "**********************"
     echo "Failed to test GetText"
     echo "**********************"
-
-    RETAIN_ARTIFACTS=true
     bash ../collect-logs.sh
 
     # Solaris and some friends fails lang-gawk
@@ -264,18 +263,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$GETTEXT_TAR" "$GETTEXT_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-gettext.sh 2>&1 | tee build-gettext.log
-    if [[ -e build-gettext.log ]]; then
-        rm -f build-gettext.log
-    fi
 fi
 
 exit 0

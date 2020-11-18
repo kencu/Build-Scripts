@@ -20,8 +20,9 @@
 # the first method, clone libiconv-utf8mac, build a release tarball,
 # and then use it in place of the GNU package.
 
-ICONV_TAR=libiconv-utf8mac-1.16.tar.gz
-ICONV_DIR=libiconv-utf8mac-1.16
+ICONV_VER=1.16
+ICONV_TAR="libiconv-utf8mac-${ICONV_VER}.tar.gz"
+ICONV_DIR="libiconv-utf8mac-${ICONV_VER}"
 PKG_NAME=iconv
 
 ###############################################################################
@@ -106,7 +107,7 @@ cd "$ICONV_DIR" || exit 1
 
 # https://github.com/fumiyas/libiconv-utf8mac/commit/561d8c83506f
 if ! "$WGET" -q -O lib/utf8mac.h --ca-certificate="$GITHUB_ROOT" \
-    https://raw.githubusercontent.com/fumiyas/libiconv-utf8mac/utf-8-mac-51.200.6.libiconv-1.16/lib/utf8mac.h
+    https://raw.githubusercontent.com/fumiyas/libiconv-utf8mac/utf-8-mac-51.200.6.libiconv-${ICONV_VER}/lib/utf8mac.h
 then
     echo echo "Failed to patch iConv"
     exit 1
@@ -173,10 +174,7 @@ then
         echo "**********************"
         echo "Failed to test package"
         echo "**********************"
-
-        RETAIN_ARTIFACTS=true
         bash ../collect-logs.sh
-
         exit 1
     fi
 fi
@@ -203,18 +201,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$ICONV_TAR" "$ICONV_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-iconv.sh 2>&1 | tee build-iconv.log
-    if [[ -e build-iconv.log ]]; then
-        rm -f build-iconv.log
-    fi
 fi
 
 exit 0

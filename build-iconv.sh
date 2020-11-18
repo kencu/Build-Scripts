@@ -20,8 +20,9 @@
 # the first method, clone libiconv, build a release tarball,
 # and then use it in place of the GNU package.
 
-ICONV_TAR=libiconv-1.16.tar.gz
-ICONV_DIR=libiconv-1.16
+ICONV_VER=1.16
+ICONV_TAR=libiconv-${ICONV_VER}.tar.gz
+ICONV_DIR=libiconv-${ICONV_VER}
 PKG_NAME=iconv
 
 ###############################################################################
@@ -173,10 +174,7 @@ then
         echo "**********************"
         echo "Failed to test package"
         echo "**********************"
-
-        RETAIN_ARTIFACTS=true
         bash ../collect-logs.sh
-
         exit 1
     fi
 fi
@@ -203,18 +201,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$ICONV_TAR" "$ICONV_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-iconv.sh 2>&1 | tee build-iconv.log
-    if [[ -e build-iconv.log ]]; then
-        rm -f build-iconv.log
-    fi
 fi
 
 exit 0
