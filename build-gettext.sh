@@ -233,7 +233,7 @@ then
     echo "**********************"
     bash ../collect-logs.sh
 
-    # Solaris and some friends fails lang-gawk
+    # Solaris and some friends fail lang-gawk
     # Darwin fails copy-acl-2.sh
     # https://lists.gnu.org/archive/html/bug-gawk/2018-01/msg00026.html
     # exit 1
