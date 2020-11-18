@@ -4,8 +4,9 @@
 # This script builds ClamAV and its dependencies from sources.
 # Also see https://bugzilla.clamav.net/show_bug.cgi?id=11929
 
-CLAMAV_TAR=clamav-0.102.4.tar.gz
-CLAMAV_DIR=clamav-0.102.4
+CLAMAV_VER=0.103.0
+CLAMAV_TAR=clamav-${CLAMAV_VER}.tar.gz
+CLAMAV_DIR=clamav-${CLAMAV_VER}
 
 ###############################################################################
 
@@ -83,9 +84,9 @@ echo "================ ClamAV ================"
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "**************************"
 echo "Downloading package"
-echo "**********************"
+echo "**************************"
 
 if ! "$WGET" -q -O "$CLAMAV_TAR" --ca-certificate="$CA_ZOO" \
      "https://www.clamav.net/downloads/production/$CLAMAV_TAR"
@@ -101,9 +102,9 @@ cd "$CLAMAV_DIR" || exit 1
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "**************************"
 echo "Configuring package"
-echo "**********************"
+echo "**************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -120,42 +121,50 @@ echo "**********************"
     --with-zlib="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "**************************"
     echo "Failed to configure ClamAV"
-    exit 1
+    echo "**************************"
+    bash ../collect-logs.sh
 fi
 
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "**************************"
 echo "Building package"
-echo "**********************"
+echo "**************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**************************"
     echo "Failed to build ClamAV"
+    echo "**************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-echo "**********************"
+echo "**************************"
 echo "Testing package"
-echo "**********************"
+echo "**************************"
 
 MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**************************"
     echo "Failed to test ClamAV"
+    echo "**************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
-echo "**********************"
+echo "**************************"
 echo "Installing package"
-echo "**********************"
+echo "**************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
@@ -176,17 +185,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$CLAMAV_TAR" "$CLAMAV_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-clamav.sh 2>&1 | tee build-clamav.log
-    if [[ -e build-clamav.log ]]; then
-        rm -f build-clamav.log
-    fi
 fi
 
 exit 0
