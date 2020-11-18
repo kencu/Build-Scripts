@@ -81,9 +81,9 @@ echo "=============== GetText ================"
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "***************************"
 echo "Downloading package"
-echo "**********************"
+echo "***************************"
 
 if ! "$WGET" -q -O "$GETTEXT_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://ftp.gnu.org/pub/gnu/gettext/$GETTEXT_TAR"
@@ -157,9 +157,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "***************************"
 echo "Configuring package"
-echo "**********************"
+echo "***************************"
 
 # Some non-GNU systems have Gzip, but it is anemic.
 # GZIP_ENV = --best causes a autopoint-3 test failure.
@@ -193,8 +193,13 @@ fi
     --with-libiconv-prefix="$INSTX_PREFIX" \
     --with-libncurses-prefix="$INSTX_PREFIX"
 
-if [[ "$?" -ne 0 ]]; then
+if [[ "$?" -ne 0 ]]
+then
+    echo "***************************"
     echo "Failed to configure GetText"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -202,16 +207,18 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "***************************"
 echo "Building package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "***********************"
+    echo "***************************"
     echo "Failed to build GetText"
-    echo "***********************"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -221,16 +228,17 @@ bash ../fix-pkgconfig.sh
 # Fix runpaths
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "***************************"
 echo "Testing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "**********************"
+    echo "***************************"
     echo "Failed to test GetText"
-    echo "**********************"
+    echo "***************************"
+
     bash ../collect-logs.sh
 
     # Solaris and some friends fail lang-gawk
@@ -242,9 +250,9 @@ fi
 # Fix runpaths again
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "***************************"
 echo "Installing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
