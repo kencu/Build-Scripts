@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds GNU Awk from sources.
 
-GAWK_TAR=gawk-5.1.0.tar.gz
-GAWK_DIR=gawk-5.1.0
+GAWK_VER=5.1.0
+GAWK_TAR=gawk-${GAWK_VER}.tar.gz
+GAWK_DIR=gawk-${GAWK_VER}
 
 ###############################################################################
 
@@ -176,17 +177,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$GAWK_TAR" "$GAWK_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-awk.sh 2>&1 | tee build-awk.log
-    if [[ -e build-awk.log ]]; then
-        rm -f build-awk.log
-    fi
 fi
 
 exit 0
