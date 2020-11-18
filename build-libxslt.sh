@@ -60,17 +60,9 @@ fi
 
 ###############################################################################
 
-if ! ./build-zlib.sh
+if ! ./build-libxml2.sh
 then
-    echo "Failed to build zLib"
-    exit 1
-fi
-
-###############################################################################
-
-if ! ./build-iconv-gettext.sh
-then
-    echo "Failed to build iConv and GetText"
+    echo "Failed to build libxml2"
     exit 1
 fi
 
@@ -122,11 +114,10 @@ echo "**********************"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-static --enable-shared \
-    --with-fexceptions \
-    --with-iconv="$INSTX_PREFIX" \
-    --without-legacy \
-    --without-python \
-    --with-zlib="$INSTX_PREFIX"
+    --with-libxml-prefix="$INSTX_PREFIX" \
+    --with-libxml-include="$INSTX_PREFIX/include" \
+    --with-libxml-prefix="$INSTX_LIBDIR" \
+    --without-python
 
 if [[ "$?" -ne 0 ]]; then
     echo "Failed to configure libxslt"
