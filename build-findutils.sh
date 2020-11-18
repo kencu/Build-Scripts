@@ -3,9 +3,10 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds findutils from sources.
 
-FIND_XZ=findutils-4.7.0.tar.xz
-FIND_TAR=findutils-4.7.0.tar
-FIND_DIR=findutils-4.7.0
+FIND_VER=4.7.0
+FIND_XZ=findutils-${FIND_VER}.tar.xz
+FIND_TAR=findutils-${FIND_VER}.tar
+FIND_DIR=findutils-${FIND_VER}
 
 ###############################################################################
 
@@ -153,17 +154,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$FIND_XZ" "$FIND_TAR" "$FIND_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-findutils.sh 2>&1 | tee build-findutils.log
-    if [[ -e build-findutils.log ]]; then
-        rm -f build-findutils.log
-    fi
 fi
 
 exit 0
