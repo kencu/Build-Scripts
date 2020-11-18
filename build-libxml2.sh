@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libxml2 from sources.
 
-XML2_TAR=libxml2-2.9.10.tar.gz
-XML2_DIR=libxml2-2.9.10
+XML2_VER=2.9.10
+XML2_TAR=libxml2-${XML2_VER}.tar.gz
+XML2_DIR=libxml2-${XML2_VER}
 PKG_NAME=libxml2
 
 ###############################################################################
@@ -195,17 +196,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$XML2_TAR" "$XML2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-libxml2.sh 2>&1 | tee build-libxml2.log
-    if [[ -e build-libxml2.log ]]; then
-        rm -f build-libxml2.log
-    fi
 fi
 
 exit 0
