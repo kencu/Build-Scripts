@@ -123,7 +123,7 @@ echo "************************"
     --libdir="$INSTX_LIBDIR" \
     --enable-static --enable-shared \
     --with-libxml-prefix="$INSTX_PREFIX" \
-    --with-libxml-include="$INSTX_PREFIX/include" \
+    --with-libxml-include-prefix="$INSTX_PREFIX/include/libxml2" \
     --with-libxml-libs-prefix="$INSTX_LIBDIR" \
     --with-crypto \
     --without-python \
