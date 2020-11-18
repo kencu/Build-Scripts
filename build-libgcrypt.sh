@@ -75,9 +75,9 @@ echo "=============== libgcrypt =============="
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "*****************************"
 echo "Downloading package"
-echo "**********************"
+echo "*****************************"
 
 if ! "$WGET" -q -O "$GCRYPT_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://gnupg.org/ftp/gcrypt/libgcrypt/$GCRYPT_TAR"
@@ -100,9 +100,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Configuring package"
-echo "**********************"
+echo "*****************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -120,7 +120,10 @@ echo "**********************"
     --with-pth-prefix="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]; then
+    echo "*****************************"
     echo "Failed to configure libgcrypt"
+    echo "*****************************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -128,9 +131,9 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Building package"
-echo "**********************"
+echo "*****************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
@@ -145,9 +148,9 @@ bash ../fix-pkgconfig.sh
 # Fix runpaths
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Testing package"
-echo "**********************"
+echo "*****************************"
 
 # libgcrypt fails random tests on OS X. Allow one failure
 # in random due to SIP. Also see https://dev.gnupg.org/T5009.
@@ -155,9 +158,9 @@ echo "**********************"
 MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}" 2>&1 | tee "${LOG_NAME}"
 then
-    echo "****************************"
+    echo "*****************************"
     echo "Failed to test libgcrypt (1)"
-    echo "****************************"
+    echo "*****************************"
     bash ../collect-logs.sh
     exit 1
 fi
@@ -165,9 +168,9 @@ fi
 errors=$(grep 'FAIL: ' "${LOG_NAME}" | grep -c -v 'FAIL: random')
 if [ "$errors" -gt 0 ];
 then
-    echo "****************************"
+    echo "*****************************"
     echo "Failed to test libgcrypt (2)"
-    echo "****************************"
+    echo "*****************************"
     bash ../collect-logs.sh
     exit 1
 fi
@@ -175,9 +178,9 @@ fi
 # Fix runpaths
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "*****************************"
 echo "Installing package"
-echo "**********************"
+echo "*****************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
