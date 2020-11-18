@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds PCRE from sources.
 
-PCRE2_TAR=pcre2-10.35.tar.gz
-PCRE2_DIR=pcre2-10.35
+PCRE2_VER=10.35
+PCRE2_TAR="pcre2-${PCRE2_VER}.tar.gz"
+PCRE2_DIR="pcre2-${PCRE2_VER}"
 PKG_NAME=pcre2
 
 ###############################################################################
@@ -127,7 +128,10 @@ echo "**********************"
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build PCRE2"
+    echo "**********************"
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -150,10 +154,7 @@ if [[ "$IS_LINUX" -ne 0 ]]; then
         echo "**********************"
         echo "Failed to test pcre2"
         echo "**********************"
-
-        RETAIN_ARTIFACTS=true
         bash ../collect-logs.sh
-
         # exit 1
     fi
 fi
@@ -180,18 +181,12 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 ###############################################################################
 
 # Set to false to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$PCRE2_TAR" "$PCRE2_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-pcre2.sh 2>&1 | tee build-pcre.log
-    if [[ -e build-pcre2.log ]]; then
-        rm -f build-pcre2.log
-    fi
 fi
 
 exit 0
