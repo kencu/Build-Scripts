@@ -83,9 +83,9 @@ echo "============ iConv utf8mac ============="
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "*************************"
 echo "Downloading package"
-echo "**********************"
+echo "*************************"
 
 if ! "$WGET" -q -O "$ICONV_TAR" --ca-certificate="$GITHUB_ROOT" \
      "https://github.com/noloader/libiconv-utf8mac/releases/download/v1_16/$ICONV_TAR"
@@ -116,9 +116,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "*************************"
 echo "Configuring package"
-echo "**********************"
+echo "*************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -134,8 +134,13 @@ echo "**********************"
     --enable-shared \
     --with-libintl-prefix="$INSTX_PREFIX"
 
-if [[ "$?" -ne 0 ]]; then
+if [[ "$?" -ne 0 ]]
+then
+    echo "*************************"
     echo "Failed to configure iConv"
+    echo "*************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -143,14 +148,18 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "*************************"
 echo "Building package"
-echo "**********************"
+echo "*************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "*************************"
     echo "Failed to build iConv"
+    echo "*************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -164,16 +173,17 @@ bash ../fix-runpath.sh
 # The first build of iConv does not need 'make check'.
 if [[ "${INSTX_DISABLE_ICONV_TEST:-0}" -ne 1 ]]
 then
-    echo "**********************"
+    echo "*************************"
     echo "Testing package"
-    echo "**********************"
+    echo "*************************"
 
     MAKE_FLAGS=("check" "-k" "V=1")
     if ! "${MAKE}" "${MAKE_FLAGS[@]}"
     then
-        echo "**********************"
-        echo "Failed to test package"
-        echo "**********************"
+        echo "*************************"
+        echo "Failed to test iConv"
+        echo "*************************"
+
         bash ../collect-logs.sh
         exit 1
     fi
@@ -182,9 +192,9 @@ fi
 # Fix runpaths again
 bash ../fix-runpath.sh
 
-echo "**********************"
+echo "*************************"
 echo "Installing package"
-echo "**********************"
+echo "*************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
