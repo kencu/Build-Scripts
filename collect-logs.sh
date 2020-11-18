@@ -35,4 +35,7 @@ do
     zip -9 "test-suite.log.zip" "$file"
 done
 
+cp test-suite.log.zip ../test-suite.log.zip
+cp config.log.zip ../config.log.zip
+
 exit 0
