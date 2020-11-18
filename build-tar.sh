@@ -3,8 +3,9 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds Tar from sources.
 
-TAR_TAR=tar-1.32.tar.gz
-TAR_DIR=tar-1.32
+TAR_VER=1.32
+TAR_TAR=tar-${TAR_VER}.tar.gz
+TAR_DIR=tar-${TAR_VER}
 
 ###############################################################################
 
@@ -100,7 +101,11 @@ echo "**********************"
 MAKE_FLAGS=(V=1 "-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build Tar"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -114,7 +119,11 @@ echo "**********************"
 MAKE_FLAGS=("check")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to test Tar"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -141,17 +150,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$TAR_TAR" "$TAR_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-tar.sh 2>&1 | tee build-tar.log
-    if [[ -e build-tar.log ]]; then
-        rm -f build-tar.log
-    fi
 fi
 
 exit 0
