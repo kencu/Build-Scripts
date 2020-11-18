@@ -35,6 +35,7 @@ do
     zip -9 "test-suite.log.zip" "$file"
 done
 
+# Copy the zips to the build script directory
 cp test-suite.log.zip ../test-suite.log.zip
 cp config.log.zip ../config.log.zip
 
