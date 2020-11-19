@@ -3,7 +3,7 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds c-ares from sources.
 
-CARES_VER=1.17.0
+CARES_VER=1.17.1
 CARES_TAR="c-ares-${CARES_VER}.tar.gz"
 CARES_DIR="c-ares-${CARES_VER}"
 PKG_NAME=c-ares
