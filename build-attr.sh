@@ -93,7 +93,7 @@ echo "***************************"
     CFLAGS="${INSTX_CFLAGS[*]}" \
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
-    LIBS="${INSTX_LIBS[*]}" \
+    LIBS="-lintl ${INSTX_LIBS[*]}" \
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
