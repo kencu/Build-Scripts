@@ -108,10 +108,6 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "***************************"
-echo "Configuring package"
-echo "***************************"
-
 # Some non-GNU systems have Gzip, but it is anemic.
 # GZIP_ENV = --best causes an autopoint-3 test failure.
 IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
@@ -123,6 +119,10 @@ done
 if [ -e "$INSTX_PREFIX/bin/sed" ]; then
     export SED="$INSTX_PREFIX/bin/sed"
 fi
+
+echo "***************************"
+echo "Configuring package"
+echo "***************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
