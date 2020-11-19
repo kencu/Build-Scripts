@@ -113,7 +113,7 @@ echo "Configuring package"
 echo "***************************"
 
 # Some non-GNU systems have Gzip, but it is anemic.
-# GZIP_ENV = --best causes a autopoint-3 test failure.
+# GZIP_ENV = --best causes an autopoint-3 test failure.
 IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
 do
     sed -e 's/GZIP_ENV = --best/GZIP_ENV = -7/g' "$file" > "$file.fixed"
