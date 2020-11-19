@@ -36,7 +36,12 @@ do
 done
 
 # Copy the zips to the build script directory
-cp test-suite.log.zip ../test-suite.log.zip
-cp config.log.zip ../config.log.zip
+if [ -e config.log.zip ]; then
+    cp config.log.zip ../config.log.zip
+fi
+
+if [ -e test-suite.log.zip ]; then
+    cp test-suite.log.zip ../test-suite.log.zip
+fi
 
 exit 0
