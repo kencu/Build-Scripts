@@ -3,6 +3,11 @@
 # Written and placed in public domain by Jeffrey Walton
 # This script builds libattr from sources.
 
+# This library has both compile, link errors and failed self tests.
+# https://lists.nongnu.org/archive/html/acl-devel/2020-11/msg00007.html
+# https://lists.nongnu.org/archive/html/acl-devel/2020-11/msg00005.html
+# https://lists.nongnu.org/archive/html/acl-devel/2020-11/msg00003.html
+
 ATTR_VER=2.4.48
 ATTR_TAR=attr-${ATTR_VER}.tar.gz
 ATTR_DIR=attr-${ATTR_VER}
