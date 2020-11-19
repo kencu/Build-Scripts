@@ -10,7 +10,7 @@
 # is build-iconv-gettext.sh. You should use build-iconv-gettext.sh
 # instead of build-gettext.sh directly
 
-GETTEXT_VER=0.20.2
+GETTEXT_VER=0.21
 GETTEXT_TAR="gettext-${GETTEXT_VER}.tar.gz"
 GETTEXT_DIR="gettext-${GETTEXT_VER}"
 PKG_NAME=gettext
@@ -96,62 +96,13 @@ rm -rf "$GETTEXT_DIR" &>/dev/null
 gzip -d < "$GETTEXT_TAR" | tar xf -
 cd "$GETTEXT_DIR" || exit 1
 
-if false; then
-cp -p gettext-runtime/gnulib-lib/xalloc-oversized.h \
-    gettext-runtime/gnulib-lib/xalloc-oversized.h.orig
-cp -p libtextstyle/lib/xalloc-oversized.h \
-    libtextstyle/lib/xalloc-oversized.h.orig
-cp -p gettext-tools/libgettextpo/xalloc-oversized.h \
-    gettext-tools/libgettextpo/xalloc-oversized.h.orig
-cp -p gettext-tools/gnulib-lib/xalloc-oversized.h \
-    gettext-tools/gnulib-lib/xalloc-oversized.h.orig
-
-cp -p gettext-runtime/gnulib-lib/xalloc.h \
-    gettext-runtime/gnulib-lib/xalloc.h.orig
-cp -p libtextstyle/lib/xalloc.h \
-    libtextstyle/lib/xalloc.h.orig
-cp -p gnulib-local/lib/xalloc.h \
-    gnulib-local/lib/xalloc.h.orig
-cp -p gettext-tools/libgettextpo/xalloc.h \
-    gettext-tools/libgettextpo/xalloc.h.orig
-cp -p gettext-tools/gnulib-lib/xalloc.h \
-    gettext-tools/gnulib-lib/xalloc.h.orig
-
-cp -p gettext-tools/libgrep/cdefs.h \
-    gettext-tools/libgrep/cdefs.h.orig
-fi
+# find . -type f -name 'xalloc.h' -print0 | xargs --null -I{} cp {} {}.orig
+# find . -type f -name 'xalloc-oversized.h' -print0 | xargs --null -I{} cp {} {}.orig
 
 # Patches are created with 'diff -u' from the pkg root directory.
 if [[ -e ../patch/gettext.patch ]]; then
     patch -u -p0 < ../patch/gettext.patch
     echo ""
-fi
-
-if false; then
-echo -n "" > ../patch/gettext.patch
-
-diff -u gettext-runtime/gnulib-lib/xalloc-oversized.h.orig \
-    gettext-runtime/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
-diff -u libtextstyle/lib/xalloc-oversized.h.orig \
-    libtextstyle/lib/xalloc-oversized.h >> ../patch/gettext.patch
-diff -u gettext-tools/libgettextpo/xalloc-oversized.h.orig \
-    gettext-tools/libgettextpo/xalloc-oversized.h >> ../patch/gettext.patch
-diff -u gettext-tools/gnulib-lib/xalloc-oversized.h.orig \
-    gettext-tools/gnulib-lib/xalloc-oversized.h >> ../patch/gettext.patch
-
-diff -u gettext-runtime/gnulib-lib/xalloc.h.orig \
-    gettext-runtime/gnulib-lib/xalloc.h >> ../patch/gettext.patch
-diff -u libtextstyle/lib/xalloc.h.orig \
-    libtextstyle/lib/xalloc.h >> ../patch/gettext.patch
-diff -u gnulib-local/lib/xalloc.h.orig \
-    gnulib-local/lib/xalloc.h >> ../patch/gettext.patch
-diff -u gettext-tools/libgettextpo/xalloc.h.orig \
-    gettext-tools/libgettextpo/xalloc.h >> ../patch/gettext.patch
-diff -u gettext-tools/gnulib-lib/xalloc.h.orig \
-    gettext-tools/gnulib-lib/xalloc.h >> ../patch/gettext.patch
-
-diff -u gettext-tools/libgrep/cdefs.h.orig \
-    gettext-tools/libgrep/cdefs.h >> ../patch/gettext.patch
 fi
 
 # Fix sys_lib_dlsearch_path_spec
@@ -163,13 +114,13 @@ echo "***************************"
 
 # Some non-GNU systems have Gzip, but it is anemic.
 # GZIP_ENV = --best causes a autopoint-3 test failure.
-(IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
+IFS="" find "$PWD" -name 'Makefile.in' -print | while read -r file
 do
     sed -e 's/GZIP_ENV = --best/GZIP_ENV = -7/g' "$file" > "$file.fixed"
     mv "$file.fixed" "$file"
-done)
+done
 
-if [[ -e "$INSTX_PREFIX/bin/sed" ]]; then
+if [ -e "$INSTX_PREFIX/bin/sed" ]; then
     export SED="$INSTX_PREFIX/bin/sed"
 fi
 
