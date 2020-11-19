@@ -90,9 +90,9 @@ echo "================ Unbound ==============="
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "***************************"
 echo "Downloading package"
-echo "**********************"
+echo "***************************"
 
 if ! "$WGET" -q -O "$UNBOUND_TAR" --ca-certificate="$IDENTRUST_ROOT" \
      "https://unbound.net/downloads/$UNBOUND_TAR"
@@ -113,9 +113,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "***************************"
 echo "Configuring package"
-echo "**********************"
+echo "***************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -133,8 +133,13 @@ echo "**********************"
     --with-libexpat="$INSTX_PREFIX" \
     --with-libhiredis="$INSTX_PREFIX"
 
-if [[ "$?" -ne 0 ]]; then
+if [[ "$?" -ne 0 ]]
+then
+    echo "***************************"
     echo "Failed to configure Unbound"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -142,34 +147,42 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "***************************"
 echo "Building package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("-j" "$INSTX_JOBS")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to build Unbound"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-echo "**********************"
+echo "***************************"
 echo "Testing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "***************************"
     echo "Failed to test Unbound"
+    echo "***************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
-echo "**********************"
+echo "***************************"
 echo "Installing package"
-echo "**********************"
+echo "***************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
