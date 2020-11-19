@@ -18,7 +18,11 @@ then
 
         touch -a -m -r "$file" "$file.timestamp"
         chmod a+w "$file"
+        # This is the one we want
         sed 's/LD_LIBRARY_PATH/DYLD_LIBRARY_PATH/g' "$file" > "$file.fixed"
+        mv "$file.fixed" "$file"
+        # In case we create a DYDYLD_LIBRARY_PATH
+        sed 's/DYDY/DY/g' "$file" > "$file.fixed"
         mv "$file.fixed" "$file"
 
         chmod go-w "$file"
