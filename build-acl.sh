@@ -123,7 +123,11 @@ echo "**********************"
 MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "**********************"
     echo "Failed to build libacl"
+    echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
@@ -140,6 +144,8 @@ then
     echo "**********************"
     echo "Failed to test libacl"
     echo "**********************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
