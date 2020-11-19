@@ -6,6 +6,7 @@
 ACL_VER=2.2.53
 ACL_TAR=acl-${ACL_VER}.tar.gz
 ACL_DIR=acl-${ACL_VER}
+PKG_NAME=acl
 
 ###############################################################################
 
@@ -24,6 +25,12 @@ if ! source ./setup-environ.sh
 then
     echo "Failed to set environment"
     exit 1
+fi
+
+if [[ -e "$INSTX_PKG_CACHE/$PKG_NAME" ]]; then
+    echo ""
+    echo "$PKG_NAME is already installed."
+    exit 0
 fi
 
 # The password should die when this subshell goes out of scope
@@ -166,6 +173,9 @@ else
 fi
 
 cd "$CURR_DIR" || exit 1
+
+# Set package status to installed. Delete the file to rebuild the package.
+touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
