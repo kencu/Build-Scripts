@@ -184,28 +184,23 @@ touch "$INSTX_PKG_CACHE/$PKG_NAME"
 
 ###############################################################################
 
-# Set to false to retain artifacts
-if true; then
-
-    ARTIFACTS=("$UNBOUND_TAR" "$UNBOUND_DIR")
-    for artifact in "${ARTIFACTS[@]}"; do
-        rm -rf "$artifact"
-    done
-
-    # ./build-unbound.sh 2>&1 | tee build-unbound.log
-    if [[ -e build-unbound.log ]]; then
-        rm -f build-unbound.log
-    fi
-fi
-
-###############################################################################
-
 # Now that Unbound is built and unbound-anchor is available
 # we can update the ICANN bundle and root key
 if ! ./build-rootkey.sh
 then
     echo "Failed to update Unbound Root Key"
-    #exit 1
+    exit 1
+fi
+
+###############################################################################
+
+# Set to false to retain artifacts
+if true;
+then
+    ARTIFACTS=("$UNBOUND_TAR" "$UNBOUND_DIR")
+    for artifact in "${ARTIFACTS[@]}"; do
+        rm -rf "$artifact"
+    done
 fi
 
 ###############################################################################

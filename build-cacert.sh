@@ -72,6 +72,7 @@ else
 fi
 
 CACERT_FILE="bootstrap/cacert.pem"
+ROOTKEY_FILE="bootstrap/root.key"
 
 if [[ -n "$SUDO_PASSWORD" ]]; then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_CACERT_PATH"
