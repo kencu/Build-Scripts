@@ -59,9 +59,9 @@ echo "=============== libattr ================"
 echo "========================================"
 
 echo ""
-echo "**********************"
+echo "************************"
 echo "Downloading package"
-echo "**********************"
+echo "************************"
 
 if ! "$WGET" -q -O "$ATTR_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://download.savannah.nongnu.org/releases/attr/$ATTR_TAR"
@@ -83,9 +83,9 @@ fi
 # Fix sys_lib_dlsearch_path_spec
 bash ../fix-configure.sh
 
-echo "**********************"
+echo "************************"
 echo "Configuring package"
-echo "**********************"
+echo "************************"
 
     PKG_CONFIG_PATH="${INSTX_PKGCONFIG[*]}" \
     CPPFLAGS="${INSTX_CPPFLAGS[*]}" \
@@ -108,36 +108,42 @@ fi
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
 
-echo "**********************"
+echo "************************"
 echo "Building package"
-echo "**********************"
+echo "************************"
 
 MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
+    echo "************************"
     echo "Failed to build libattr"
+    echo "************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
 # Fix flags in *.pc files
 bash ../fix-pkgconfig.sh
 
-echo "**********************"
+echo "************************"
 echo "Testing package"
-echo "**********************"
+echo "************************"
 
 MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "**********************"
+    echo "************************"
     echo "Failed to test libattr"
-    echo "**********************"
+    echo "************************"
+
+    bash ../collect-logs.sh
     exit 1
 fi
 
-echo "**********************"
+echo "************************"
 echo "Installing package"
-echo "**********************"
+echo "************************"
 
 MAKE_FLAGS=("install")
 if [[ -n "$SUDO_PASSWORD" ]]; then
