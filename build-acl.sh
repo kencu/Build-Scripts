@@ -45,9 +45,25 @@ fi
 
 ###############################################################################
 
+if ! ./build-iconv-gettext.sh
+then
+    echo echo "Failed to build iConv and GetText"
+    exit 1
+fi
+
+###############################################################################
+
+if ! ./build-attr.sh
+then
+    echo echo "Failed to build libattr"
+    exit 1
+fi
+
+###############################################################################
+
 echo ""
 echo "========================================"
-echo "================== ACL ================="
+echo "================ libacl ================"
 echo "========================================"
 
 echo ""
@@ -58,7 +74,7 @@ echo "**********************"
 if ! "$WGET" -q -O "$ACL_TAR" --ca-certificate="$LETS_ENCRYPT_ROOT" \
      "https://download.savannah.nongnu.org/releases/acl/$ACL_TAR"
 then
-    echo "Failed to download ACL"
+    echo "Failed to download libacl"
     exit 1
 fi
 
@@ -107,7 +123,7 @@ echo "**********************"
 MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
-    echo "Failed to build ACL"
+    echo "Failed to build libacl"
     exit 1
 fi
 
@@ -122,7 +138,7 @@ MAKE_FLAGS=("check" "-k" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "**********************"
-    echo "Failed to test ACL"
+    echo "Failed to test libacl"
     echo "**********************"
     exit 1
 fi
