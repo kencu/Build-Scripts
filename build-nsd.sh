@@ -4,8 +4,8 @@
 # This script builds NSD from sources.
 
 NSD_VER=4.3.3
-NSD_TAR=bc-${NSD_VER}.tar.gz
-NSD_DIR=bc-${NSD_VER}
+NSD_TAR=nsd-${NSD_VER}.tar.gz
+NSD_DIR=nsd-${NSD_VER}
 
 ###############################################################################
 
