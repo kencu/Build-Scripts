@@ -97,7 +97,8 @@ echo "***********************"
 ./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
-    --libdir="$INSTX_LIBDIR"
+    --libdir="$INSTX_LIBDIR" \
+    --with-ssl="$INSTX_PREFIX"
 
 if [[ "$?" -ne 0 ]]
 then
@@ -109,6 +110,10 @@ then
     exit 1
 fi
 
+# Fix config.h. We define NDEBUG in CPPFLAGS
+sed 's/#define NDEBUG \/\*\*\///g' config.h > config.h.fixed
+mv config.h.fixed config.h
+
 # Escape dollar sign for $ORIGIN in makefiles. Required so
 # $ORIGIN works in both configure tests and makefiles.
 bash ../fix-makefiles.sh
@@ -117,7 +122,7 @@ echo "***********************"
 echo "Building package"
 echo "***********************"
 
-MAKE_FLAGS=("MAKEINFO=true" "-j" "$INSTX_JOBS" "V=1")
+MAKE_FLAGS=("-j" "$INSTX_JOBS" "V=1")
 if ! "${MAKE}" "${MAKE_FLAGS[@]}"
 then
     echo "***********************"
