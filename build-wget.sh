@@ -295,7 +295,6 @@ then
         echo "Installing anyway..."
         echo "**********************"
 
-        RETAIN_ARTIFACTS=true
         bash ../collect-logs.sh
         # exit 1
     fi
@@ -348,18 +347,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to true to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$WGET_TAR" "$WGET_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-wget.sh 2>&1 | tee build-wget.log
-    if [[ -e build-wget.log ]]; then
-        rm -f build-wget.log
-    fi
 fi
 
 exit 0

@@ -350,18 +350,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to true to retain artifacts
-RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-false}"
-if [[ "${RETAIN_ARTIFACTS}" != "true" ]]; then
-
+if true;
+then
     ARTIFACTS=("$WGET_TAR" "$WGET_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-wget2.sh 2>&1 | tee build-wget2.log
-    if [[ -e build-wget2.log ]]; then
-        rm -f build-wget2.log
-    fi
 fi
 
 exit 0
