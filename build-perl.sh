@@ -12,8 +12,10 @@
 # something with it.
 #     curl -L http://cpanmin.us | perl - App::cpanminus
 
-PERL_TAR=perl-5.32.0.tar.gz
-PERL_DIR=perl-5.32.0
+# PERL_VER=5.32.0
+PERL_VER=5.33.4
+PERL_TAR=perl-${PERL_VER}.tar.gz
+PERL_DIR=perl-${PERL_VER}
 PKG_NAME=perl
 
 ###############################################################################
@@ -281,17 +283,12 @@ echo "**************************************************************************
 ###############################################################################
 
 # Set to false to retain artifacts
-if true; then
-
+if true;
+then
     ARTIFACTS=("$PERL_TAR" "$PERL_DIR")
     for artifact in "${ARTIFACTS[@]}"; do
         rm -rf "$artifact"
     done
-
-    # ./build-perl.sh 2>&1 | tee build-perl.log
-    if [[ -e build-perl.log ]]; then
-        rm -f build-perl.log
-    fi
 fi
 
 exit 0
