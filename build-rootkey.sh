@@ -69,7 +69,7 @@ ROOT_KEY=$(basename "$OPT_UNBOUND_ROOTKEY_FILE")
 if [[ -e "$INSTX_PREFIX/sbin/unbound-anchor" ]]; then
     UNBOUND_ANCHOR="$INSTX_PREFIX/sbin/unbound-anchor"
 else
-    UNBOUND_ANCHOR="/sbin/unbound-anchor"
+    UNBOUND_ANCHOR=""
 fi
 
 ###############################################################################
@@ -101,24 +101,18 @@ echo "========================================"
 echo "============ DNS Root Keys ============="
 echo "========================================"
 
-"$UNBOUND_ANCHOR" -a "$ROOT_KEY" -u data.iana.org
-
-if [[ ! -e "$ROOT_KEY" ]]
-then
-    echo "Failed to download $ROOT_KEY"
-    exit 1
-fi
+BOOTSTRAP_ROOTKEY_FILE="bootstrap/rootkey.pem"
 
 if [[ -n "$SUDO_PASSWORD" ]]
 then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$BOOTSTRAP_ROOTKEY_FILE" "$OPT_UNBOUND_ROOTKEY_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_PATH"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_FILE"
 else
     mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
-    cp "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+    cp "$BOOTSTRAP_ROOTKEY_FILE" "$OPT_UNBOUND_ROOTKEY_FILE"
     chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
 fi
 
