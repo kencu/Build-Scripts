@@ -84,6 +84,15 @@ fi
 
 ###############################################################################
 
+# Copy icannbundle.pem and rootkey.pem from bootstrap/
+if ! ./build-rootkey.sh
+then
+    echo "Failed to update Unbound Root Key"
+    exit 1
+fi
+
+###############################################################################
+
 echo ""
 echo "========================================"
 echo "================ Unbound ==============="
@@ -196,16 +205,6 @@ cd "$CURR_DIR" || exit 1
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
-
-###############################################################################
-
-# Now that Unbound is built and unbound-anchor is available
-# we can update the ICANN bundle and root key
-if ! ./build-rootkey.sh
-then
-    echo "Failed to update Unbound Root Key"
-    exit 1
-fi
 
 ###############################################################################
 
