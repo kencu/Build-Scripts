@@ -139,6 +139,8 @@ echo "***************************"
     --libdir="$INSTX_LIBDIR" \
     --enable-static-exe \
     --enable-shared \
+    --with-rootkey-file="$OPT_UNBOUND_ROOTKEY_FILE" \
+    --with-rootcert-file="$OPT_UNBOUND_ICANN_FILE" \
     --with-ssl="$INSTX_PREFIX" \
     --with-libexpat="$INSTX_PREFIX" \
     --with-libhiredis="$INSTX_PREFIX"
