@@ -4,7 +4,7 @@
 # This script builds Expat from sources.
 
 EXPAT_VER=2.2.10
-EXPAT_GIT_VER=2_2_10
+EXPAT_GIT_VER=R_2_2_10
 EXPAT_TAR=expat-${EXPAT_VER}.tar.bz2
 EXPAT_DIR=expat-${EXPAT_VER}
 PKG_NAME=expat
