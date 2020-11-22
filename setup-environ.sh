@@ -594,8 +594,8 @@ OPT_CACERT_PATH="$INSTX_PREFIX/etc/pki"
 OPT_CACERT_FILE="$INSTX_PREFIX/etc/pki/cacert.pem"
 OPT_UNBOUND_ROOTKEY_PATH="$INSTX_PREFIX/etc/unbound"
 OPT_UNBOUND_ROOTKEY_FILE="$INSTX_PREFIX/etc/unbound/root.key"
-OPT_UNBOUND_CACERT_PATH="$INSTX_PREFIX/etc/unbound"
-OPT_UNBOUND_CACERT_FILE="$INSTX_PREFIX/etc/unbound/icannbundle.pem"
+OPT_UNBOUND_ICANN_PATH="$INSTX_PREFIX/etc/unbound"
+OPT_UNBOUND_ICANN_FILE="$INSTX_PREFIX/etc/unbound/icannbundle.pem"
 
 ###############################################################################
 

@@ -62,6 +62,8 @@ fi
 
 ###############################################################################
 
+# Determine user:group owners
+
 if [[ -d /private/etc ]]
 then
     ROOT_USR=$(ls -ld /private/etc | head -n 1 | awk 'NR==1 {print $3}')
@@ -71,18 +73,25 @@ else
     ROOT_GRP=$(ls -ld /etc | head -n 1 | awk 'NR==1 {print $4}')
 fi
 
-CACERT_FILE="bootstrap/cacert.pem"
-ROOTKEY_FILE="bootstrap/root.key"
+###############################################################################
 
-if [[ -n "$SUDO_PASSWORD" ]]; then
+echo ""
+echo "========================================"
+echo "=========== Mozilla Root CAs ==========="
+echo "========================================"
+
+BOOTSTRAP_CACERT_FILE="bootstrap/cacert.pem"
+
+if [[ -n "$SUDO_PASSWORD" ]]
+then
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_CACERT_PATH"
-    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$CACERT_FILE" "$OPT_CACERT_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$BOOTSTRAP_CACERT_FILE" "$OPT_CACERT_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR:$ROOT_GRP" "$OPT_CACERT_PATH"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_CACERT_FILE"
     printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR:$ROOT_GRP" "$OPT_CACERT_FILE"
 else
     mkdir -p "$OPT_CACERT_PATH"
-    cp "$CACERT_FILE" "$OPT_CACERT_FILE"
+    cp "$BOOTSTRAP_CACERT_FILE" "$OPT_CACERT_FILE"
     chmod 644 "$OPT_CACERT_FILE"
 fi
 

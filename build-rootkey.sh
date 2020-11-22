@@ -49,19 +49,7 @@ fi
 
 ###############################################################################
 
-ANY_FAIL=0
-ROOT_KEY=$(basename "$OPT_UNBOUND_ROOTKEY_FILE")
-ICANN_BUNDLE=$(basename "$OPT_UNBOUND_CACERT_FILE")
-
-if [[ -e "$INSTX_PREFIX/sbin/unbound-anchor" ]]; then
-    UNBOUND_ANCHOR="$INSTX_PREFIX/sbin/unbound-anchor"
-else
-    UNBOUND_ANCHOR="/sbin/unbound-anchor"
-fi
-
-###############################################################################
-
-"$UNBOUND_ANCHOR" -a "$ROOT_KEY" -u data.iana.org
+# Determine user:group owners
 
 if [[ -d /private/etc ]]
 then
@@ -72,25 +60,16 @@ else
     ROOT_GRP=$(ls -ld /etc | head -n 1 | awk 'NR==1 {print $4}')
 fi
 
-if [[ -s "$ROOT_KEY" ]]
-then
-    echo ""
-    echo "Installing $OPT_UNBOUND_ROOTKEY_FILE"
-    if [[ -n "$SUDO_PASSWORD" ]]
-    then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_FILE"
-    else
-        mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
-        cp "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
-        chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
-    fi
+###############################################################################
+
+# unbound-anchor program
+
+ROOT_KEY=$(basename "$OPT_UNBOUND_ROOTKEY_FILE")
+
+if [[ -e "$INSTX_PREFIX/sbin/unbound-anchor" ]]; then
+    UNBOUND_ANCHOR="$INSTX_PREFIX/sbin/unbound-anchor"
 else
-    ANY_FAIL=1
-    echo "Failed to download $ROOT_KEY"
+    UNBOUND_ANCHOR="/sbin/unbound-anchor"
 fi
 
 ###############################################################################
@@ -100,37 +79,47 @@ echo "========================================"
 echo "============ ICANN Root CAs ============"
 echo "========================================"
 
-echo ""
-echo "**********************"
-echo "Downloading package"
-echo "**********************"
+BOOTSTRAP_ICANN_FILE="bootstrap/icannbundle.pem"
 
-if ! "$WGET" -q -O "$ICANN_BUNDLE" --ca-certificate="$CA_ZOO" \
-     "https://data.iana.org/root-anchors/icannbundle.pem"
+if [[ -n "$SUDO_PASSWORD" ]]
 then
-    echo "Failed to download icannbundle.pem"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_ICANN_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S cp "$BOOTSTRAP_ICANN_FILE" "$OPT_UNBOUND_ICANN_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ICANN_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_ICANN_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ICANN_FILE"
+else
+    mkdir -p "$OPT_UNBOUND_ICANN_PATH"
+    cp "$BOOTSTRAP_ICANN_FILE" "$OPT_UNBOUND_ICANN_FILE"
+    chmod 644 "$OPT_UNBOUND_ICANN_FILE"
+fi
+
+###############################################################################
+
+echo ""
+echo "========================================"
+echo "============ DNS Root Keys ============="
+echo "========================================"
+
+"$UNBOUND_ANCHOR" -a "$ROOT_KEY" -u data.iana.org
+
+if [[ ! -e "$ROOT_KEY" ]]
+then
+    echo "Failed to download $ROOT_KEY"
     exit 1
 fi
 
-if [[ -s "$ICANN_BUNDLE" ]]
+if [[ -n "$SUDO_PASSWORD" ]]
 then
-    echo ""
-    echo "Installing $OPT_UNBOUND_CACERT_FILE"
-    if [[ -n "$SUDO_PASSWORD" ]]
-    then
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ICANN_BUNDLE" "$OPT_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_CACERT_PATH"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_CACERT_FILE"
-        printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_CACERT_FILE"
-    else
-        mkdir -p "$OPT_UNBOUND_CACERT_PATH"
-        cp "$ICANN_BUNDLE" "$OPT_UNBOUND_CACERT_FILE"
-        chmod 644 "$OPT_UNBOUND_CACERT_FILE"
-    fi
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S mv "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_PATH"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
+    printf "%s\n" "$SUDO_PASSWORD" | sudo -E -S chown "$ROOT_USR":"$ROOT_GRP" "$OPT_UNBOUND_ROOTKEY_FILE"
 else
-    ANY_FAIL=1
-    echo "Failed to download $ICANN_BUNDLE"
+    mkdir -p "$OPT_UNBOUND_ROOTKEY_PATH"
+    cp "$ROOT_KEY" "$OPT_UNBOUND_ROOTKEY_FILE"
+    chmod 644 "$OPT_UNBOUND_ROOTKEY_FILE"
 fi
 
 ###############################################################################
@@ -144,11 +133,10 @@ echo ""
 
 ###############################################################################
 
-if [[ "$ANY_FAIL" -ne 0 ]]; then
-    exit 1
-fi
-
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
+
+# Cleanup the download
+rm -f "$ROOT_KEY"
 
 exit 0

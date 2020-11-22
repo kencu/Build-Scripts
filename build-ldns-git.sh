@@ -127,8 +127,8 @@ echo "**********************"
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --with-ssl="$INSTX_PREFIX" \
-    --with-ca-file="$OPT_UNBOUND_CACERT_FILE" \
-    --with-ca-path="$OPT_UNBOUND_CACERT_PATH" \
+    --with-ca-file="$OPT_UNBOUND_ICANN_FILE" \
+    --with-ca-path="$OPT_UNBOUND_ICANN_PATH" \
     --with-trust-anchor="$OPT_UNBOUND_ROOTKEY_FILE" \
     --disable-dane-ta-usage
 

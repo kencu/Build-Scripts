@@ -21,4 +21,7 @@ fi
 echo "Updating bootstrap cacert.pem"
 wget -q -O ../bootstrap/cacert.pem 'https://curl.haxx.se/ca/cacert.pem'
 
+echo "Updating bootstrap icannbundle.pem"
+wget -q -O ../bootstrap/icannbundle.pem 'https://data.iana.org/root-anchors/icannbundle.pem'
+
 exit 0
