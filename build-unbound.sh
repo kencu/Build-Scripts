@@ -124,11 +124,12 @@ echo "***************************"
     CXXFLAGS="${INSTX_CXXFLAGS[*]}" \
     LDFLAGS="${INSTX_LDFLAGS[*]}" \
     LIBS="${INSTX_LIBS[*]}" \
-./configure --enable-shared \
+./configure \
     --build="$AUTOCONF_BUILD" \
     --prefix="$INSTX_PREFIX" \
     --libdir="$INSTX_LIBDIR" \
     --enable-static-exe \
+    --enable-shared \
     --with-ssl="$INSTX_PREFIX" \
     --with-libexpat="$INSTX_PREFIX" \
     --with-libhiredis="$INSTX_PREFIX"
