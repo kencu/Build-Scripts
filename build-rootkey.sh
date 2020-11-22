@@ -62,18 +62,6 @@ fi
 
 ###############################################################################
 
-# unbound-anchor program
-
-ROOT_KEY=$(basename "$OPT_UNBOUND_ROOTKEY_FILE")
-
-if [[ -e "$INSTX_PREFIX/sbin/unbound-anchor" ]]; then
-    UNBOUND_ANCHOR="$INSTX_PREFIX/sbin/unbound-anchor"
-else
-    UNBOUND_ANCHOR=""
-fi
-
-###############################################################################
-
 echo ""
 echo "========================================"
 echo "============ ICANN Root CAs ============"
@@ -129,8 +117,5 @@ echo ""
 
 # Set package status to installed. Delete the file to rebuild the package.
 touch "$INSTX_PKG_CACHE/$PKG_NAME"
-
-# Cleanup the download
-rm -f "$ROOT_KEY"
 
 exit 0
