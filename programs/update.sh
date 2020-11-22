@@ -27,7 +27,7 @@ wget -q -O ../bootstrap/icannbundle.pem 'https://data.iana.org/root-anchors/ican
 if [[ $(command -v unbound-anchor) ]]
 then
 	echo "Updating bootstrap rootkey.pem"
-	/sbin/unbound-anchor -a rootkey.pem -u data.iana.org
+	/sbin/unbound-anchor -a ../bootstrap/rootkey.pem -u data.iana.org
 else
     echo "Failed to update bootstrap rootkey.pem. Install unbound-anchor"
     exit 1
