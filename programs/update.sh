@@ -24,10 +24,18 @@ wget -q -O ../bootstrap/cacert.pem 'https://curl.haxx.se/ca/cacert.pem'
 echo "Updating bootstrap icannbundle.pem"
 wget -q -O ../bootstrap/icannbundle.pem 'https://data.iana.org/root-anchors/icannbundle.pem'
 
-if [[ $(command -v unbound-anchor) ]]
+# Not correct:
+#   wget -O root-anchors.p7s https://data.iana.org/root-anchors/root-anchors.p7s
+#   openssl pkcs7 -print_certs -in root-anchors.p7s -inform DER -out root-anchors.pem
+#   sed -i -e 's/^subject/#subject/g' -e 's/^issuer/#issuer/g' root-anchors.pem
+
+UNBOUND_ANCHOR=$(command -v unbound-anchor)
+if [ -z "$UNBOUND_ANCHOR" ]; then UNBOUND_ANCHOR=/sbin/unbound-anchor; fi
+
+if [[ $(ls "$UNBOUND_ANCHOR" 2>/dev/null) ]]
 then
 	echo "Updating bootstrap rootkey.pem"
-	/sbin/unbound-anchor -a ../bootstrap/rootkey.pem -u data.iana.org
+	"${UNBOUND_ANCHOR}" -a ../bootstrap/rootkey.pem -u data.iana.org
 else
     echo "Failed to update bootstrap rootkey.pem. Install unbound-anchor"
     exit 1
